@@ -131,6 +131,7 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 bioinformatica-practica/
 ├── modulo-00-preparacion/   # notebooks de cada módulo
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
+├── tools/                   # scripts para construir y probar los notebooks
 └── data/                    # copias de respaldo de datos pequeños
 ```
 

@@ -209,7 +209,8 @@ def animate(fig, update, frames, interval: int = 120, **kwargs):
     from IPython.display import HTML
     anim = animation.FuncAnimation(fig, update, frames=frames,
                                    interval=interval, **kwargs)
-    html = HTML(anim.to_jshtml(default_mode="once"))
+    with mpl.rc_context({"savefig.dpi": 96}):      # cuadros livianos: el notebook no se vuelve pesado
+        html = HTML(anim.to_jshtml(default_mode="once"))
     plt.close(fig)
     return html
 
