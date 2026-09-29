@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber build/cap02/cap02"] 1790713048.78323 "build/cap02/cap02.bcf" "build/cap02/cap02.bbl" "build/cap02/cap02" 1790714969.10651 0
+["biber build/cap02/cap02"] 1790713048.78323 "build/cap02/cap02.bcf" "build/cap02/cap02.bbl" "build/cap02/cap02" 1790715050.49352 0
   "bib/cap02.bib" 1790711367.64549 11489 518bf52f30b0ee6879cf30c0f694f722 ""
-  "build/cap02/cap02.bcf" 1790714968.42863 138178 9d504af76e54b30c509f4d711f9c0ede "lualatex"
+  "build/cap02/cap02.bcf" 1790715049.61846 138178 9d504af76e54b30c509f4d711f9c0ede "lualatex"
   (generated)
   "build/cap02/cap02.bbl"
   "build/cap02/cap02.blg"
   (rewritten before read)
-["lualatex"] 1790714949.61061 "build/cap02/cap02.tex" "build/cap02/cap02.pdf" "cap02" 1790714969.1068 0
+["lualatex"] 1790715025.28178 "build/cap02/cap02.tex" "build/cap02/cap02.pdf" "cap02" 1790715050.49389 0
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-medium.luc" 1790710272.77064 182725 27224749d640afb9be6cc6ad0752cf03 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-oblique.luc" 1790710272.83123 183636 3ed5ba597b0bed3ded643a35a1bc14a4 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-regular.luc" 1790710272.6472 182438 f241801388deb6dbd1843a704584a568 ""
@@ -474,21 +474,21 @@
   "build/cap02/_minted/DAF0E65AD5878B9A5E2C5417868C5CE8.highlight.minted" 1790711922.98868 645 b4db5cdd010ad3cd3dd0c47fff201904 ""
   "build/cap02/_minted/friendly.style.minted" 1790711922.88759 6511 10ee1c54a45212a1fd1d9825a4cd8b6a ""
   "build/cap02/_minted/monokai.style.minted" 1790711922.8535 7023 c7089e902f66ab873db0423d87473e40 ""
-  "build/cap02/cap02.aux" 1790714968.36623 28965 075a81f579f9d11068f9ec9c43d178d1 "lualatex"
+  "build/cap02/cap02.aux" 1790715049.54309 28965 d54ca8a089ff508a7e4ee039c16de74f "lualatex"
   "build/cap02/cap02.bbl" 1790713052.88056 150518 c139404f31f8395e7f21a80d077e5a46 "biber build/cap02/cap02"
-  "build/cap02/cap02.run.xml" 1790714968.42968 2400 20051aaa477dab37cfdea1dd71d72212 "lualatex"
-  "build/cap02/cap02.tex" 1790714906.2453 182 ac09f8621ad5a9b267f1966769fd6cbc ""
-  "capitulos/cap02.tex" 1790714905.18807 93281 d7ded6660611be196ddfd6b52aa1ee73 ""
+  "build/cap02/cap02.run.xml" 1790715049.61915 2400 20051aaa477dab37cfdea1dd71d72212 "lualatex"
+  "build/cap02/cap02.tex" 1790714986.43495 182 ac09f8621ad5a9b267f1966769fd6cbc ""
+  "capitulos/cap02.tex" 1790714986.40796 92955 5832d19652fbbbc17e583ebf41928cf9 ""
   "estilo/bioinfo.sty" 1790711624.00951 22652 d2ba805e6cbc276696dbdfff05c8bafb ""
-  "figuras/cap02/ascii_phred.tex" 1790714905.43432 12805 12ac0ea0a071158a7f07616ff324129f ""
-  "figuras/cap02/calidad_ciclo.dat" 1790714905.43242 5174 0be8c3e1ce45160d257c6be0e7ee7c00 ""
-  "figuras/cap02/cigar.tex" 1790714905.4352 14130 ede2fb6e82f45cce564a14ce7e2c70f4 ""
-  "figuras/cap02/ee_calib.dat" 1790714905.43308 181 284f393610ae6bc072862732b6513a26 ""
-  "figuras/cap02/fastq_registro.tex" 1790714905.43398 10314 fbd6acdd71b0c68acc3300a62439c49c ""
-  "figuras/cap02/flag.tex" 1790714905.43555 17103 9b36d18773c0a1967f294f39e9a935ab ""
-  "figuras/cap02/p53_variantes.dat" 1790714905.44212 2258 bc57dd597a2bcc34621cacc0eadd70f0 ""
-  "figuras/cap02/pdb_anual.dat" 1790714906.14912 447 906eb77d1448a5b7d62d6d5add6adb37 ""
-  "figuras/cap02/tp53_gen.tex" 1790714905.43664 4990 5d8e2ad810135a886ed2b678b8416604 ""
+  "figuras/cap02/ascii_phred.tex" 1790714985.54527 12805 12ac0ea0a071158a7f07616ff324129f ""
+  "figuras/cap02/calidad_ciclo.dat" 1790714985.54334 5174 0be8c3e1ce45160d257c6be0e7ee7c00 ""
+  "figuras/cap02/cigar.tex" 1790714985.54572 14130 ede2fb6e82f45cce564a14ce7e2c70f4 ""
+  "figuras/cap02/ee_calib.dat" 1790714985.54421 181 284f393610ae6bc072862732b6513a26 ""
+  "figuras/cap02/fastq_registro.tex" 1790714985.54493 10314 fbd6acdd71b0c68acc3300a62439c49c ""
+  "figuras/cap02/flag.tex" 1790714985.54605 17229 a31f06991459d6dbbc82a6ba0ff2a815 ""
+  "figuras/cap02/p53_variantes.dat" 1790714985.55314 2258 bc57dd597a2bcc34621cacc0eadd70f0 ""
+  "figuras/cap02/pdb_anual.dat" 1790714986.3018 447 906eb77d1448a5b7d62d6d5add6adb37 ""
+  "figuras/cap02/tp53_gen.tex" 1790714985.54725 4990 5d8e2ad810135a886ed2b678b8416604 ""
   (generated)
   "build/cap02/cap02.aux"
   "build/cap02/cap02.bcf"

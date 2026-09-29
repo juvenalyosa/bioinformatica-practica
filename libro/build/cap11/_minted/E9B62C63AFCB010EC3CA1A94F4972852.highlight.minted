@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{bh}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Valores p ajustados de Benjamini\PYGZhy{}Hochberg.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{p} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{asarray}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{)}\PYG{p}{;} \PYG{n}{m} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}
+    \PYG{n}{orden} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{argsort}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}
+    \PYG{n}{ajust} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[}\PYG{n}{orden}\PYG{p}{]} \PYG{o}{*} \PYG{n}{m} \PYG{o}{/} \PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{m} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{n}{ajust} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{minimum}\PYG{o}{.}\PYG{n}{accumulate}\PYG{p}{(}\PYG{n}{ajust}\PYG{p}{[}\PYG{p}{:}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}\PYG{p}{[}\PYG{p}{:}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}  \PYG{c+c1}{\PYGZsh{} monotonía}
+    \PYG{n}{salida} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{empty}\PYG{p}{(}\PYG{n}{m}\PYG{p}{)}\PYG{p}{;} \PYG{n}{salida}\PYG{p}{[}\PYG{n}{orden}\PYG{p}{]} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{minimum}\PYG{p}{(}\PYG{n}{ajust}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{salida}
+\end{MintedVerbatim}

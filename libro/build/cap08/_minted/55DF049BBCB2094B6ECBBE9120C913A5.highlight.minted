@@ -1,0 +1,11 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} lecturas pareadas ya recortadas (capítulo 6)}
+spades.py\PYG{+w}{ }\PYGZhy{}\PYGZhy{}isolate\PYG{+w}{ }\PYGZhy{}1\PYG{+w}{ }cepa\PYGZus{}R1.fq.gz\PYG{+w}{ }\PYGZhy{}2\PYG{+w}{ }cepa\PYGZus{}R2.fq.gz\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}k\PYG{+w}{ }\PYG{l+m}{21},33,55,77\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }\PYG{l+m}{32}\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }spades\PYGZus{}cepa
+
+ls\PYG{+w}{ }spades\PYGZus{}cepa/
+\PYG{c+c1}{\PYGZsh{} contigs.fasta  scaffolds.fasta  assembly\PYGZus{}graph.gfa  spades.log ...}
+
+\PYG{c+c1}{\PYGZsh{} contigs muy cortos o poco cubiertos suelen ser basura: filtrar}
+seqkit\PYG{+w}{ }seq\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }\PYG{l+m}{500}\PYG{+w}{ }spades\PYGZus{}cepa/contigs.fasta\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }contigs\PYGZus{}500.fasta
+\end{MintedVerbatim}

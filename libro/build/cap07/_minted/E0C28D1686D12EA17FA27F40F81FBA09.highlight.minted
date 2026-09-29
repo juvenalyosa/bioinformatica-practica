@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{zlib}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{minimizadores}\PYG{p}{(}\PYG{n}{s}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{15}\PYG{p}{,} \PYG{n}{w}\PYG{o}{=}\PYG{l+m+mi}{10}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Posiciones de los (w,k)\PYGZhy{}minimizadores de s.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{h} \PYG{o}{=} \PYG{p}{[}\PYG{n}{zlib}\PYG{o}{.}\PYG{n}{crc32}\PYG{p}{(}\PYG{n}{s}\PYG{p}{[}\PYG{n}{i}\PYG{p}{:}\PYG{n}{i} \PYG{o}{+} \PYG{n}{k}\PYG{p}{]}\PYG{o}{.}\PYG{n}{encode}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}         \PYG{c+c1}{\PYGZsh{} orden pseudoaleatorio}
+         \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{]}
+    \PYG{n}{elegidos} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{j} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{h}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{w} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{v} \PYG{o}{=} \PYG{n}{h}\PYG{p}{[}\PYG{n}{j}\PYG{p}{:}\PYG{n}{j} \PYG{o}{+} \PYG{n}{w}\PYG{p}{]}
+        \PYG{n}{elegidos}\PYG{o}{.}\PYG{n}{add}\PYG{p}{(}\PYG{n}{j} \PYG{o}{+} \PYG{n}{v}\PYG{o}{.}\PYG{n}{index}\PYG{p}{(}\PYG{n+nb}{min}\PYG{p}{(}\PYG{n}{v}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{elegidos}\PYG{p}{)}
+\end{MintedVerbatim}

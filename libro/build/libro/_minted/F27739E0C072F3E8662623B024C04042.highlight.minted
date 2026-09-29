@@ -1,0 +1,15 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{gc\PYGZus{}loop}\PYG{p}{(}\PYG{n}{seq}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:}
+    \PYG{n}{n} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{for} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n}{seq}\PYG{p}{:}                      \PYG{c+c1}{\PYGZsh{} una vuelta del intérprete por base}
+        \PYG{k}{if} \PYG{n}{b} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o+ow}{or} \PYG{n}{b} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}
+            \PYG{n}{n} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{k}{return} \PYG{n}{n} \PYG{o}{/} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{seq}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{gc\PYGZus{}numpy}\PYG{p}{(}\PYG{n}{seq}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{float}\PYG{p}{:}
+    \PYG{n}{a} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{frombuffer}\PYG{p}{(}\PYG{n}{seq}\PYG{o}{.}\PYG{n}{encode}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ascii}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{uint8}\PYG{p}{)}
+    \PYG{n}{is\PYGZus{}gc} \PYG{o}{=} \PYG{p}{(}\PYG{n}{a} \PYG{o}{==} \PYG{n+nb}{ord}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)} \PYG{err}{|} \PYG{p}{(}\PYG{n}{a} \PYG{o}{==} \PYG{n+nb}{ord}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}   \PYG{c+c1}{\PYGZsh{} máscara booleana}
+    \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{count\PYGZus{}nonzero}\PYG{p}{(}\PYG{n}{is\PYGZus{}gc}\PYG{p}{)} \PYG{o}{/} \PYG{n}{a}\PYG{o}{.}\PYG{n}{size}
+\end{MintedVerbatim}

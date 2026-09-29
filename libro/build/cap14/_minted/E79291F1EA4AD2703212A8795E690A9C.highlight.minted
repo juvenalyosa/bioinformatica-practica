@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+qiime\PYG{+w}{ }tools\PYG{+w}{ }import\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}type\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}SampleData[PairedEndSequencesWithQuality]\PYGZsq{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}input\PYGZhy{}path\PYG{+w}{ }manifiesto.tsv\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}input\PYGZhy{}format\PYG{+w}{ }PairedEndFastqManifestPhred33V2\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}output\PYGZhy{}path\PYG{+w}{ }demux.qza
+qiime\PYG{+w}{ }dada2\PYG{+w}{ }denoise\PYGZhy{}paired\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}i\PYGZhy{}demultiplexed\PYGZhy{}seqs\PYG{+w}{ }demux.qza\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}p\PYGZhy{}trunc\PYGZhy{}len\PYGZhy{}f\PYG{+w}{ }\PYG{l+m}{240}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}p\PYGZhy{}trunc\PYGZhy{}len\PYGZhy{}r\PYG{+w}{ }\PYG{l+m}{160}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}p\PYGZhy{}max\PYGZhy{}ee\PYGZhy{}f\PYG{+w}{ }\PYG{l+m}{2}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}p\PYGZhy{}max\PYGZhy{}ee\PYGZhy{}r\PYG{+w}{ }\PYG{l+m}{2}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}o\PYGZhy{}table\PYG{+w}{ }tabla.qza\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}o\PYGZhy{}representative\PYGZhy{}sequences\PYG{+w}{ }asv.qza\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}o\PYGZhy{}denoising\PYGZhy{}stats\PYG{+w}{ }estadisticas.qza
+qiime\PYG{+w}{ }feature\PYGZhy{}classifier\PYG{+w}{ }classify\PYGZhy{}sklearn\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}i\PYGZhy{}classifier\PYG{+w}{ }silva\PYGZhy{}515\PYGZhy{}806\PYGZhy{}nb\PYGZhy{}classifier.qza\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}i\PYGZhy{}reads\PYG{+w}{ }asv.qza\PYG{+w}{ }\PYGZhy{}\PYGZhy{}o\PYGZhy{}classification\PYG{+w}{ }taxonomia.qza
+\end{MintedVerbatim}

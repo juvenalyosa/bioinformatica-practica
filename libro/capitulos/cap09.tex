@@ -1,0 +1,1010 @@
+% =====================================================================
+%  Capítulo 9 · Detección de variantes
+% =====================================================================
+\chapter{Detección de variantes}\label{cap:09}
+
+\pgfplotsset{capnueve ancho/.style={curso, width=0.5\linewidth, height=4.9cm}}
+
+\epigrafe{A pesar de los rápidos avances en las tecnologías de secuenciación, identificar con exactitud las variantes genéticas presentes en un genoma individual a partir de miles de millones de lecturas cortas y con errores sigue siendo un desafío.}{\textcite{c09-poplin2018}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Distinguir los tipos de variación genética (SNV, \ingles{indels}, variantes estructurales y de número de copias) y reconocer cuáles puede detectar un llamador de variantes basado en lecturas cortas.
+  \item Derivar, a partir de las calidades Phred, la verosimilitud de cada genotipo diploide $P(D\mid G)$, combinarla con una distribución \emph{a priori} basada en la heterocigosidad $\theta$ y calcular la posterior, el QUAL, el GQ y los PL de un archivo VCF.
+  \item Construir y justificar paso a paso un flujo de llamado con \cmd{bcftools} (\cmd{mpileup}, \cmd{call}, \cmd{norm}, \cmd{filter}), normalizar \ingles{indels} y evaluar el resultado frente a Genome in a Bottle con precisión, sensibilidad y la razón ti/tv.
+  \item Anotar variantes con VEP o SnpEff usando los términos de la Sequence Ontology, interpretar frecuencias de gnomAD, predictores como SIFT, PolyPhen-2 y CADD, y aplicar la lógica de las guías ACMG/AMP.
+\end{itemize}
+\end{objetivos}
+
+En los capítulos anteriores convertimos moléculas en lecturas (\cref{cap:06}) y colocamos cada lectura en su sitio del genoma de referencia (\cref{cap:07}). Ahora llega la pregunta que justifica buena parte de la secuenciación que se hace en el mundo: \emph{¿en qué se diferencia este genoma de la referencia?} Un genoma humano típico difiere de la referencia en entre 4,1 y 5,0 millones de sitios \parencite{c09-auton2015}. Entre ellos se esconden la variante que explica la enfermedad rara de un niño, la mutación somática que hace a un tumor sensible a un fármaco o el polimorfismo que permite rastrear un brote bacteriano. Pero ninguna de esas variantes aparece escrita en los datos: lo que tenemos son columnas de bases apiladas, cada una con su calidad, su calidad de mapeo y su propia historia de errores. Detectar variantes es, por encima de todo, un problema de \emph{inferencia estadística bajo incertidumbre}.
+
+El capítulo se organiza en tres lecciones que siguen el recorrido real de los datos. En la \cref{sec:09-verosimilitud} construiremos, desde las calidades Phred, el modelo probabilístico que permite pasar de una columna de bases a un genotipo con una medida honesta de confianza; es la teoría que sostiene a todos los llamadores modernos. En la \cref{sec:09-bcftools} llevaremos esa teoría a la práctica con \cmd{bcftools}: produciremos un VCF, aprenderemos a normalizar \ingles{indels}, a filtrar y a medir la calidad del resultado frente a un conjunto de verdad. Por último, en la \cref{sec:09-anotacion} preguntaremos qué \emph{significan} esas variantes: dónde caen respecto a los genes, qué le hacen a la proteína, cuán frecuentes son en la población y cómo se razona, con criterios explícitos, sobre su posible patogenicidad.
+
+% ---------------------------------------------------------------------
+\section{Verosimilitud de genotipos}\label{sec:09-verosimilitud}
+% ---------------------------------------------------------------------
+\enlacerepo{9.1 · Verosimilitud de genotipos}
+
+\begin{intuicion}[Seis testigos de un mismo accidente]
+Un juez debe decidir de qué color era el coche que huyó de un accidente. Declaran seis testigos: tres dicen ``azul'' y tres dicen ``verde''. Pero no todos merecen la misma confianza: dos de los que dicen ``verde'' estaban a pocos metros y a plena luz, mientras que el tercero lo vio de noche y de lejos. El juez sensato no cuenta votos: pondera cada testimonio por la fiabilidad del testigo y se pregunta qué hipótesis explica mejor el \emph{conjunto} de declaraciones. Quizá la mejor explicación sea sorprendente: que había \emph{dos} coches, uno azul y otro verde. Además, antes de oír a nadie el juez ya sabe algo: en su ciudad los coches azules son mucho más comunes que los verdes. Cada lectura que cubre una posición del genoma es uno de esos testigos; su calidad Phred mide su fiabilidad; los dos coches son los dos cromosomas homólogos de un organismo diploide; y lo que el juez sabía de antemano es la distribución \emph{a priori}.
+\end{intuicion}
+
+\subsection{Qué es una variante}
+
+Una \emph{variante} es cualquier diferencia entre la secuencia de un individuo y una secuencia de referencia. La referencia no es un genoma ``normal'' ni ``sano'': es simplemente un sistema de coordenadas acordado, de modo que decir que un individuo porta el alelo de referencia en una posición solo significa que coincide con esa convención. Conviene distinguir los tipos de variantes por su tamaño, porque cada escala exige señales y algoritmos distintos (\cref{fig:09-tipos}).
+
+\begin{itemize}
+  \item \textbf{SNV} (\ingles{single nucleotide variant}): sustitución de una base por otra. Cuando es frecuente en la población se la suele llamar SNP. Es, con mucho, la clase más abundante: el Proyecto 1000 Genomas catalogó 84,7 millones de SNP frente a 3,6 millones de \ingles{indels} cortos \parencite{c09-auton2015}.
+  \item \textbf{MNV} (\ingles{multi-nucleotide variant}): varias sustituciones contiguas en el mismo haplotipo, que deben interpretarse juntas porque pueden caer en el mismo codón.
+  \item \textbf{\ingles{Indel}}: inserción o deleción de una a unas decenas de bases. Son más difíciles de detectar que las SNV, porque el alineador debe abrir un hueco (\cref{cap:07}) y porque en regiones repetitivas admiten varias representaciones equivalentes (\cref{sec:09-bcftools}).
+  \item \textbf{Variantes estructurales} (SV): reordenamientos de más de unas 50 bases, como grandes deleciones, inserciones, inversiones y translocaciones. Se detectan con señales distintas de la simple columna de bases: pares de lecturas con distancia o orientación anómalas, lecturas partidas y cambios de profundidad \parencite{c09-alkan2011}.
+  \item \textbf{CNV} (\ingles{copy number variants}): subclase de SV en la que un segmento está presente en un número de copias distinto de dos; su principal firma es la profundidad de cobertura.
+\end{itemize}
+
+Aunque las SV son pocas en número, afectan a más bases que todas las SNV juntas: un genoma típico contiene entre \num{2100} y \num{2500} variantes estructurales que en conjunto abarcan unos 20 millones de bases \parencite{c09-auton2015}. Este capítulo se concentra en las variantes \emph{pequeñas} (SNV e \ingles{indels}), que son las que tratan los llamadores basados en columnas de lecturas; las SV requieren herramientas específicas que merecen un tratamiento propio.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \tikzset{b/.style={nt=#1, minimum size=4.3mm, font=\ttfamily\bfseries\scriptsize},
+           hueco/.style={draw=gris, dashed, minimum size=4.3mm, inner sep=0pt, rounded corners=1.5pt},
+           marca/.style={draw=tinta, very thick, rounded corners=2pt}}
+  % ---------- (a) variantes pequeñas ----------
+  \node[font=\sffamily\bfseries\small, text=tinta, anchor=west] at (-0.3,3.05) {(a) Variantes pequeñas};
+  \foreach \px/\tit/\refs/\alts in {0/SNV/{A,C,G,T,A,C,G}/{A,C,G,C,A,C,G},
+                                    4.15/Inserción/{A,C,G,T,-,-,A}/{A,C,G,T,T,G,A},
+                                    8.3/Deleción/{A,C,G,T,C,A,G}/{A,C,G,-,-,A,G}}{
+    \node[font=\sffamily\bfseries\scriptsize, text=tinta2, anchor=west] at (\px,2.55) {\tit};
+    \node[etiqueta, anchor=east] at (\px+0.12,1.95) {ref};
+    \node[etiqueta, anchor=east] at (\px+0.12,1.35) {alt};
+    \foreach \b [count=\i] in \refs {
+      \if\b-\node[hueco] at (\px+\i*0.5,1.95) {};\else\node[b=\b] at (\px+\i*0.5,1.95) {\b};\fi}
+    \foreach \b [count=\i] in \alts {
+      \if\b-\node[hueco] at (\px+\i*0.5,1.35) {};\else\node[b=\b] at (\px+\i*0.5,1.35) {\b};\fi}
+  }
+  \draw[marca] (1.77,1.07) rectangle (2.23,2.23);
+  \draw[marca] (6.07,1.07) rectangle (7.03,2.23);
+  \draw[marca] (10.22,1.07) rectangle (11.18,2.23);
+  \node[etiqueta, anchor=north] at (2.0,0.95) {T$\to$C};
+  \node[etiqueta, anchor=north] at (6.55,0.95) {+TG};
+  \node[etiqueta, anchor=north] at (10.7,0.95) {$-$TC};
+  % ---------- (b) variantes estructurales ----------
+  \node[font=\sffamily\bfseries\small, text=tinta, anchor=west] at (-0.3,0.2) {(b) Variantes estructurales (escala de kb)};
+  \tikzset{seg/.style={single arrow, single arrow head extend=0pt, single arrow head indent=0pt,
+       minimum height=1.05cm, minimum width=4.4mm, inner sep=0pt, font=\sffamily\bfseries\scriptsize, text=white, fill=#1},
+       segi/.style={seg=#1, shape border rotate=180}}
+  \foreach \y/\tit in {-0.45/referencia, -1.15/deleción, -1.85/duplicación (CNV), -2.55/inversión, -3.25/translocación}{
+    \node[etiqueta, anchor=east] at (2.0,\y) {\tit};}
+  % referencia
+  \node[seg=azul]   at (2.7,-0.45) {1}; \node[seg=aqua] at (3.85,-0.45) {2};
+  \node[seg=naranja] at (5.0,-0.45) {3}; \node[seg=violeta] at (6.15,-0.45) {4};
+  % deleción
+  \node[seg=azul] at (2.7,-1.15) {1}; \node[seg=naranja] at (3.85,-1.15) {3}; \node[seg=violeta] at (5.0,-1.15) {4};
+  % duplicación
+  \node[seg=azul] at (2.7,-1.85) {1}; \node[seg=aqua] at (3.85,-1.85) {2}; \node[seg=aqua] at (5.0,-1.85) {2};
+  \node[seg=naranja] at (6.15,-1.85) {3}; \node[seg=violeta] at (7.3,-1.85) {4};
+  % inversión
+  \node[seg=azul] at (2.7,-2.55) {1}; \node[segi=aqua] at (3.85,-2.55) {2};
+  \node[seg=naranja] at (5.0,-2.55) {3}; \node[seg=violeta] at (6.15,-2.55) {4};
+  % translocación
+  \node[seg=azul] at (2.7,-3.25) {1}; \node[seg=aqua] at (3.85,-3.25) {2};
+  \node[seg=gris] at (5.0,-3.25) {X}; \node[seg=gris] at (6.15,-3.25) {Y};
+  % señales
+  \node[etiqueta, anchor=west, align=left, text width=3.9cm] at (8.0,-1.15) {menos profundidad; pares más separados};
+  \node[etiqueta, anchor=west, align=left, text width=3.9cm] at (8.0,-1.85) {más profundidad (3 copias)};
+  \node[etiqueta, anchor=west, align=left, text width=3.9cm] at (8.0,-2.55) {pares con igual orientación};
+  \node[etiqueta, anchor=west, align=left, text width=3.9cm] at (8.0,-3.25) {pares en cromosomas distintos};
+\end{tikzpicture}
+\caption[Tipos de variantes]{Tipos de variación genética según su escala. \textbf{(a)} Las variantes pequeñas se leen directamente en la columna de bases alineadas: una sustitución (SNV), una inserción de dos bases y una deleción de dos bases; los recuadros indican el cambio. \textbf{(b)} Las variantes estructurales reordenan segmentos de miles de bases (numerados y orientados con flechas). No se ven en una columna, sino en la \emph{geometría} de los alineamientos: profundidad, distancia y orientación de los pares, y lecturas partidas \parencite{c09-alkan2011}. A la derecha, la firma principal de cada una.}
+\label{fig:09-tipos}
+\end{figure}
+
+\subsection{La columna de bases: el \ingles{pileup}}
+
+Una vez alineadas las lecturas, cada posición del genoma de referencia queda cubierta por una \emph{columna} de bases, cada una con su calidad Phred. Esa columna, que en la jerga se llama \ingles{pileup} (apilamiento), es el dato bruto del llamado de variantes. El formato \cmd{pileup} nació con SAMtools y su sucesor, \cmd{mpileup}, sigue siendo el centro de \cmd{bcftools} \parencite{c09-danecek2021}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=0.56cm, y=0.52cm, font=\sffamily\scriptsize]
+  \tikzset{b/.style={nt=#1, minimum size=4.1mm, font=\ttfamily\bfseries\scriptsize}}
+  \begin{scope}[on background layer]
+    \fill[amarillo!22, rounded corners=2pt] (7.5,-6.55) rectangle (8.5,0.55);
+  \end{scope}
+  \foreach \b [count=\i] in {T,C,A,G,G,C,T,A,A,C,G,T,T,C,A}{
+    \node[b=\b] at (\i,0) {\b};
+    \node[etiqueta, text=gris, font=\sffamily\tiny] at (\i,0.75) {\i};}
+  \node[etiqueta, anchor=east] at (0.45,0) {referencia};
+  % lecturas: inicio/fin/fila/base/Q/opacidad/sentido
+  \foreach \s/\e/\y/\b/\q/\op/\dir in {1/11/1/A/30/1/d, 3/14/2/G/30/1/i, 2/12/3/A/30/1/d,
+                                       5/15/4/G/30/1/d, 4/13/5/A/20/0.7/i, 6/15/6/G/10/0.35/i}{
+    \if d\dir
+      \draw[line width=3.2mm, gris!35, -{Triangle[length=2.2mm, width=4.6mm]}] (\s-0.45,-\y) -- (\e+0.3,-\y);
+    \else
+      \draw[line width=3.2mm, gris!35, {Triangle[length=2.2mm, width=4.6mm]}-] (\s-0.3,-\y) -- (\e+0.45,-\y);
+    \fi
+    \node[b=\b, fill opacity=\op, text opacity=1] at (8,-\y) {\b};
+    \node[etiqueta, anchor=west] at (16.0,-\y) {Q\q};
+  }
+  % error de secuenciación aislado
+  \node[b=C, fill opacity=0.3, text opacity=1] at (12,-6) {C};
+  \draw[rojo, thick] (12,-6) circle (0.42);
+  \node[etiqueta, text=rojooscuro, anchor=north] at (12,-6.5) {error aislado (Q8)};
+  \node[etiqueta, anchor=north] at (8,-6.6) {columna 8};
+\end{tikzpicture}
+\caption[Un \ingles{pileup}]{Un \ingles{pileup} de seis lecturas (barras grises; la punta indica la hebra) sobre 15 posiciones de la referencia. Las bases que coinciden con la referencia se omiten y solo se muestran las que importan. En la columna 8 (sombreada) tres lecturas muestran la \nuc{A} de la referencia y tres una \nuc{G}; la intensidad del color codifica la calidad Phred de cada base, anotada a la derecha. En la columna 12 aparece una \nuc{C} aislada de baja calidad: un error de secuenciación típico que un buen modelo debe ignorar. Esta columna es el dato del \cref{ej:verosimilitud}.}
+\label{fig:09-pileup}
+\end{figure}
+
+La \cref{fig:09-pileup} muestra un caso sencillo pero instructivo. En la columna 8, la mitad de las lecturas apoya la base de la referencia y la otra mitad una base alternativa. ¿Es el individuo heterocigoto \texttt{A/G}? ¿Podría ser homocigoto \texttt{A/A} y las tres \texttt{G} errores de secuenciación? ¿Y qué hacemos con la \texttt{G} de calidad 10, que tiene un \SI{10}{\percent} de probabilidad de ser un error? Contar votos (``tres contra tres'') no responde nada. Necesitamos un modelo.
+
+\subsection{El modelo de error de una base}
+
+\begin{definicion}{Genotipo}{genotipo}
+En un organismo diploide, el \emph{genotipo} en un sitio es el par no ordenado de alelos $G=\{a_1,a_2\}$ presentes en los dos cromosomas homólogos. Para un sitio bialélico con alelo de referencia $R$ y alternativo $A$ hay tres genotipos: $RR$ (homocigoto de referencia, \texttt{0/0} en VCF), $RA$ (heterocigoto, \texttt{0/1}) y $AA$ (homocigoto alternativo, \texttt{1/1}).
+\end{definicion}
+
+Empecemos por la unidad mínima: \emph{una} base observada. Recuerde del \cref{cap:06} que una calidad Phred $Q$ corresponde a una probabilidad de error $\varepsilon=10^{-Q/10}$. Si la base verdadera de la molécula secuenciada es $a$, la máquina lee $a$ con probabilidad $1-\varepsilon$ y, en caso de error, lee cualquiera de las otras tres bases. El supuesto más simple es que las tres son igualmente probables:
+\begin{equation}\label{eq:09-pbase}
+P(b \mid a) =
+\begin{cases}
+1-\varepsilon & \text{si } b = a,\\[2pt]
+\varepsilon/3 & \text{si } b \neq a,
+\end{cases}
+\qquad \varepsilon = 10^{-Q/10}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$b$}{Base observada en la lectura (\texttt{A}, \texttt{C}, \texttt{G} o \texttt{T}).}
+\simbolo{$a$}{Base verdadera en el cromosoma del que proviene la lectura.}
+\simbolo{$Q,\ \varepsilon$}{Calidad Phred de la base y su probabilidad de error.}
+\end{simbolos}
+
+Ahora bien, en un diploide la lectura pudo provenir de cualquiera de los dos cromosomas. Si la biblioteca muestrea ambos por igual, cada uno con probabilidad $1/2$, la ley de la probabilidad total da
+\begin{equation}\label{eq:09-pbaseG}
+P(b \mid G=\{a_1,a_2\}) = \tfrac12\,P(b\mid a_1) + \tfrac12\,P(b\mid a_2).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$G$}{Genotipo diploide candidato.}
+\simbolo{$a_1,\ a_2$}{Alelos de los dos cromosomas homólogos.}
+\simbolo{$\tfrac12$}{Probabilidad de que la lectura provenga de cada cromosoma (muestreo equilibrado).}
+\end{simbolos}
+
+Para un homocigoto $a_1=a_2$ la ecuación se reduce a la \cref{eq:09-pbase}. Para un heterocigoto $\{R,A\}$, una base que coincida con cualquiera de los dos alelos tiene probabilidad $\tfrac12(1-\varepsilon)+\tfrac12\,\varepsilon/3 = \tfrac12 - \varepsilon/3$, que es casi exactamente $1/2$: en un heterocigoto, ver $R$ o ver $A$ es como lanzar una moneda, y la calidad casi no importa. En cambio, para un homocigoto, ver el alelo ``equivocado'' cuesta un factor $\varepsilon/3$, que para $Q30$ es $1/3000$. Toda la capacidad discriminatoria del modelo nace de esa asimetría.
+
+\subsection{La verosimilitud de un genotipo}
+
+Una columna contiene $n$ lecturas con bases $D=(b_1,\dots,b_n)$ y calidades $(Q_1,\dots,Q_n)$. Si los errores de lecturas distintas son independientes, y cada lectura proviene de un cromosoma elegido al azar independientemente de las demás, la probabilidad de toda la columna es el producto de las probabilidades individuales.
+
+\begin{teorema}{Verosimilitud de un genotipo diploide}{verosimilitud}
+Bajo los supuestos de errores independientes y muestreo equilibrado de los dos cromosomas,
+\begin{equation}\label{eq:09-lik}
+L(G) \;=\; P(D \mid G) \;=\; \prod_{i=1}^{n}\Bigl[\tfrac12\,P(b_i\mid a_1) + \tfrac12\,P(b_i\mid a_2)\Bigr],
+\end{equation}
+con $P(b_i\mid a)$ dada por la \cref{eq:09-pbase} y $\varepsilon_i=10^{-Q_i/10}$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$D$}{Datos: las $n$ bases de la columna con sus calidades.}
+\simbolo{$L(G)$}{Verosimilitud del genotipo $G$: probabilidad de observar $D$ si $G$ fuera el genotipo verdadero.}
+\simbolo{$n$}{Profundidad de la columna (lecturas que la cubren tras los filtros de calidad).}
+\end{simbolos}
+
+Vale la pena subrayar lo que la \cref{eq:09-lik} \emph{no} es: no es la probabilidad del genotipo. Es la probabilidad de los datos bajo cada hipótesis. Compararla entre genotipos nos dice cuál explica mejor lo observado, pero para obtener la probabilidad de cada genotipo hará falta el teorema de Bayes y una distribución \emph{a priori}.
+
+\paragraph{La forma de Li para cualquier ploidía} \textcite{c09-li2011stat} escribe el mismo modelo de manera compacta para un sitio bialélico y una ploidía $m$ cualquiera (útil para poliploides, para mezclas de ADN o para \ingles{pools}). Sea $g\in\{0,\dots,m\}$ el número de copias del alelo de \emph{referencia} en el genotipo, y ordene las lecturas de modo que las $l$ primeras muestren la referencia y las $n-l$ restantes el alelo alternativo. Entonces
+\begin{equation}\label{eq:09-li}
+L(g) = \frac{1}{m^{n}}\prod_{j=1}^{l}\Bigl[(m-g)\,\varepsilon_j + g\,(1-\varepsilon_j)\Bigr]\prod_{j=l+1}^{n}\Bigl[(m-g)(1-\varepsilon_j) + g\,\varepsilon_j\Bigr].
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$m$}{Ploidía (2 en diploides).}
+\simbolo{$g$}{Número de copias del alelo de referencia en el genotipo ($0\le g\le m$).}
+\simbolo{$l$}{Número de lecturas que muestran el alelo de referencia.}
+\simbolo{$\varepsilon_j$}{Probabilidad de error de la base de la lectura $j$.}
+\end{simbolos}
+
+Cada corchete es simplemente \cref{eq:09-pbaseG} generalizada: una lectura proviene de una de las $m$ copias (de ahí el factor $1/m$), de las cuales $g$ llevan la referencia. Hay una diferencia sutil con nuestra \cref{eq:09-pbase}: en la \cref{eq:09-li} un error convierte una base en \emph{el otro alelo} con probabilidad $\varepsilon$, no $\varepsilon/3$, porque el modelo es estrictamente bialélico. Las dos versiones dan resultados muy parecidos en la práctica; lo importante es no mezclarlas en un mismo cálculo.
+
+\begin{ejemplo}{Verosimilitudes de la columna 8}{verosimilitud}
+Tomemos la columna de la \cref{fig:09-pileup}: \nuc{A}(Q30), \nuc{A}(Q30), \nuc{A}(Q20), \nuc{G}(Q30), \nuc{G}(Q30), \nuc{G}(Q10), con $R=\texttt{A}$ y $A=\texttt{G}$, y usemos el modelo de cuatro bases (\cref{eq:09-pbase}). Las contribuciones de cada lectura son:
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Lectura & $\varepsilon$ & $P(b\mid RR)$ & $P(b\mid RA)$ & $P(b\mid AA)$\\
+\midrule
+\texttt{A}, Q30 ($\times2$) & $0{,}001$ & $0{,}999$ & $0{,}49967$ & $0{,}00033$\\
+\texttt{A}, Q20 & $0{,}01$ & $0{,}990$ & $0{,}49667$ & $0{,}00333$\\
+\texttt{G}, Q30 ($\times2$) & $0{,}001$ & $0{,}00033$ & $0{,}49967$ & $0{,}999$\\
+\texttt{G}, Q10 & $0{,}1$ & $0{,}03333$ & $0{,}46667$ & $0{,}900$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Multiplicando las seis filas (las marcadas con $\times2$ cuentan dos veces):
+\[
+L(RR)=3{,}66\times10^{-9},\qquad L(RA)=1{,}44\times10^{-2},\qquad L(AA)=3{,}33\times10^{-10}.
+\]
+El heterocigoto explica los datos unos siete órdenes de magnitud mejor que cualquiera de los homocigotos. Observe el papel de la \texttt{G} de Q10: bajo $RR$ contribuye con $0{,}033$, un factor pequeño pero no catastrófico; si hubiera tenido Q30 habría contribuido con $0{,}00033$. Las bases de baja calidad \emph{pesan menos}, exactamente como los testigos poco fiables del juez.
+\end{ejemplo}
+
+\subsection{De verosimilitudes a PL}
+
+Las verosimilitudes son números diminutos que se multiplican: con 30 lecturas, $L(RR)$ puede valer $10^{-90}$. Por eso los programas trabajan con logaritmos y, siguiendo la tradición de Phred, los expresan en una escala de decibanes normalizada.
+
+\begin{definicion}{Verosimilitudes en escala Phred (PL)}{pl}
+Para cada genotipo candidato $G$,
+\begin{equation}\label{eq:09-pl}
+\mathrm{PL}(G) = -10\log_{10}\frac{L(G)}{\max_{G'} L(G')},
+\end{equation}
+redondeado al entero más próximo. El genotipo más verosímil tiene $\mathrm{PL}=0$ y los demás, valores positivos.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\mathrm{PL}(G)$}{Cuántos ``decibanes'' peor explica los datos el genotipo $G$ que el mejor genotipo.}
+\simbolo{$\max_{G'}L(G')$}{Verosimilitud del genotipo que mejor explica los datos.}
+\end{simbolos}
+
+Para la columna del \cref{ej:verosimilitud}, $\log_{10}L = (-8{,}437;\ -1{,}840;\ -9{,}478)$ y, por tanto, $\mathrm{PL}=(66,\,0,\,76)$ en el orden $RR, RA, AA$ que usa el formato VCF. Un PL de 66 significa que $RR$ es $10^{6{,}6}\approx 4\times10^{6}$ veces menos verosímil que $RA$. En un VCF este vector aparece en el campo \texttt{FORMAT/PL} de cada muestra, y es la información mínima que hay que conservar si se desea recalcular genotipos más adelante.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm}, capnueve ancho]
+\nextgroupplot[xlabel={lecturas acumuladas $n$}, ylabel={$\log_{10}L(G) - \max_{G'}\log_{10}L(G')$},
+   xmin=0, xmax=41, ymin=-65, ymax=3, legend pos=south west, title={Una muestra heterocigota (Q30)}]
+  \addplot[naranja, very thick, const plot] table[x=n, y=RR] {figuras/cap09/lik_acum.dat}; \addlegendentry{$RR$}
+  \addplot[azul, very thick, const plot] table[x=n, y=RA] {figuras/cap09/lik_acum.dat}; \addlegendentry{$RA$}
+  \addplot[violeta, very thick, const plot] table[x=n, y=AA] {figuras/cap09/lik_acum.dat}; \addlegendentry{$AA$}
+\nextgroupplot[xlabel={profundidad $n$}, ylabel={$\Prob(\text{genotipo inferido}=RA)$},
+   xmin=2, xmax=40, ymin=0.3, ymax=1.02, legend pos=south east, title={Heterocigoto verdadero},
+   ytick={0.4,0.6,0.8,0.9,1}]
+  \addplot[azul, very thick] table[x=n, y=uniforme] {figuras/cap09/p_het.dat}; \addlegendentry{\emph{a priori} uniforme}
+  \addplot[naranja, very thick] table[x=n, y=theta3] {figuras/cap09/p_het.dat}; \addlegendentry{$\theta=10^{-3}$}
+  \addplot[aqua, thick, dashed] table[x=n, y=theta4] {figuras/cap09/p_het.dat}; \addlegendentry{$\theta=10^{-4}$}
+\end{groupplot}
+\end{tikzpicture}
+\caption[Verosimilitud de genotipos y profundidad]{\textbf{Izquierda}: log-verosimilitud relativa de los tres genotipos a medida que se acumulan, una a una, lecturas simuladas de un heterocigoto verdadero con calidad Q30. Con pocas lecturas los genotipos están cerca (las diferencias son de pocas unidades); cada nueva lectura añade $\approx\log_{10}(1/2)-\log_{10}(\varepsilon/3)\approx 3{,}2$ unidades de evidencia contra el homocigoto que contradice. Las curvas en escalón de $RR$ y $AA$ divergen casi linealmente con $n$. \textbf{Derecha}: probabilidad de que el genotipo de máxima posterior sea el correcto, promediada sobre el muestreo binomial de los alelos. Por debajo de unas 10 lecturas, el azar de ver pocas copias de un alelo hace fallar al llamador con frecuencia, y una distribución \emph{a priori} escéptica ($\theta$ pequeño) empeora la sensibilidad a baja profundidad. Datos de \archivo{figuras/cap09/generar.py}.}
+\label{fig:09-lik-prof}
+\end{figure}
+
+\subsection{La distribución \emph{a priori} y la heterocigosidad $\theta$}
+
+Antes de mirar ninguna lectura sabemos algo importante: en la inmensa mayoría de las posiciones del genoma un individuo es idéntico a la referencia. En humanos, dos cromosomas homólogos difieren en aproximadamente una de cada mil bases. Ignorar esta información, es decir, suponer que los tres genotipos son \emph{a priori} igual de probables, llevaría a llamar variantes en cualquier lugar donde unas pocas lecturas con errores coincidan.
+
+La forma estándar de introducir este conocimiento viene de la genética de poblaciones. Sea $\theta$ la \emph{heterocigosidad} esperada por sitio, es decir, la probabilidad de que dos cromosomas tomados al azar difieran en una posición. Bajo el modelo neutral de sitios infinitos, el número esperado de sitios en los que el alelo derivado aparece en exactamente $i$ de $k$ cromosomas muestreados es $\theta/i$. Con $k=2$ (los dos cromosomas de un diploide), el alelo alternativo aparece una vez (heterocigoto) con probabilidad $\theta$ y dos veces (homocigoto alternativo) con probabilidad $\theta/2$. Esto da la distribución \emph{a priori} que usan, con variantes, los principales llamadores \parencite{c09-nielsen2011,c09-li2011stat}:
+\begin{equation}\label{eq:09-prior}
+P(RA) = \theta,\qquad P(AA) = \frac{\theta}{2},\qquad P(RR) = 1-\frac{3\theta}{2}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\theta$}{Heterocigosidad (o tasa de mutación escalada) por sitio; del orden de $10^{-3}$ en humanos.}
+\simbolo{$P(G)$}{Probabilidad \emph{a priori} del genotipo, antes de ver las lecturas.}
+\end{simbolos}
+
+\begin{profundizacion}[De dónde sale $\theta/i$]
+En una población de tamaño efectivo $N_e$ con tasa de mutación $\mu$ por sitio y generación, se define $\theta = 4N_e\mu$. En la genealogía coalescente de $k$ cromosomas, la longitud total esperada de las ramas que sostienen exactamente $i$ hojas es $4N_e/i$ generaciones, de modo que el número esperado de mutaciones que aparecerán en exactamente $i$ copias es $\mu\cdot 4N_e/i = \theta/i$. Este es el \emph{espectro de frecuencias} neutral. Para $k=2$ solo hay $i\in\{1,2\}$, con probabilidades $\theta$ y $\theta/2$, cuando $\theta\ll1$. \textcite{c09-li2011stat} usa este mismo espectro como distribución \emph{a priori} de la frecuencia alélica en la llamada multimuestra.
+\end{profundizacion}
+
+\subsection{La posterior, QUAL y GQ}
+
+Con verosimilitud y distribución \emph{a priori}, el teorema de Bayes da la probabilidad de cada genotipo a la luz de los datos:
+\begin{equation}\label{eq:09-post}
+P(G\mid D) = \frac{P(D\mid G)\,P(G)}{\displaystyle\sum_{G'\in\{RR,RA,AA\}} P(D\mid G')\,P(G')}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$P(G\mid D)$}{Probabilidad posterior del genotipo $G$ dados los datos.}
+\simbolo{$P(D\mid G)$}{Verosimilitud (\cref{eq:09-lik}).}
+\simbolo{$P(G)$}{Distribución \emph{a priori} (\cref{eq:09-prior}).}
+\end{simbolos}
+
+El genotipo que se informa es el de máxima posterior, $\hat G=\argmax_G P(G\mid D)$. Dos preguntas distintas se responden con dos números distintos del VCF:
+
+\begin{definicion}{QUAL y GQ}{qualgq}
+\begin{equation}\label{eq:09-qual}
+\mathrm{QUAL} = -10\log_{10} P(G=RR \mid D),\qquad
+\mathrm{GQ} = -10\log_{10}\bigl[1 - P(\hat G\mid D)\bigr].
+\end{equation}
+QUAL mide la confianza en que el sitio es \emph{variable} (en alguna muestra); GQ mide la confianza en el \emph{genotipo concreto} asignado a una muestra.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{QUAL}{Calidad del sitio: probabilidad, en escala Phred, de que \emph{no} haya variante.}
+\simbolo{GQ}{Calidad del genotipo: probabilidad, en escala Phred, de que el genotipo informado sea incorrecto.}
+\simbolo{$\hat G$}{Genotipo de máxima posterior.}
+\end{simbolos}
+
+Los programas difieren en los detalles. La especificación VCF define GQ como la calidad del genotipo \emph{condicionada} a que el sitio sea variable \parencite{c09-danecek2011}; GATK la aproxima como la diferencia entre los dos PL más pequeños, es decir, sin distribución \emph{a priori} \parencite{c09-depristo2011}. Como veremos en el ejemplo siguiente, ambas convenciones pueden dar números muy diferentes, y por eso conviene saber cuál usa el programa antes de fijar umbrales.
+
+\begin{ejemplo}{Posterior, QUAL y GQ de la columna 8}{posterior}
+Con $\theta=10^{-3}$, las probabilidades \emph{a priori} son $P(RR)=0{,}9985$, $P(RA)=0{,}001$ y $P(AA)=0{,}0005$. Multiplicando por las verosimilitudes del \cref{ej:verosimilitud}:
+\[
+\begin{aligned}
+P(D\mid RR)P(RR) &= 3{,}66\times10^{-9}\times0{,}9985 = 3{,}65\times10^{-9},\\
+P(D\mid RA)P(RA) &= 1{,}44\times10^{-2}\times0{,}001 = 1{,}44\times10^{-5},\\
+P(D\mid AA)P(AA) &= 3{,}33\times10^{-10}\times0{,}0005 = 1{,}66\times10^{-13}.
+\end{aligned}
+\]
+Normalizando, $P(RA\mid D)=0{,}99975$, $P(RR\mid D)=2{,}5\times10^{-4}$ y $P(AA\mid D)\approx10^{-8}$. Por lo tanto
+\[
+\mathrm{QUAL} = -10\log_{10}(2{,}5\times10^{-4}) \approx 36,\qquad
+\mathrm{GQ} = -10\log_{10}(1-0{,}99975)\approx 36.
+\]
+Aquí coinciden porque la alternativa más probable a $RA$ es precisamente $RR$. En cambio, la versión ``sin \emph{a priori}'' de GQ, la diferencia entre los dos PL más pequeños, daría $66-0=66$. La diferencia de 30 unidades es exactamente $-10\log_{10}(0{,}001/0{,}9985)\approx30$: la distribución \emph{a priori} exige tres órdenes de magnitud adicionales de evidencia antes de creer en una variante.
+\end{ejemplo}
+
+La distribución \emph{a priori} pesa mucho a baja profundidad. Con solo dos lecturas de Q30, una \texttt{A} y una \texttt{G}, los datos favorecen al heterocigoto ($\mathrm{PL}=(29,0,29)$), pero con $\theta=10^{-3}$ la posterior es $P(RR\mid D)=0{,}571$: el genotipo informado sería $RR$. Una lectura alternativa aporta un factor $\approx(1/2)/(\varepsilon/3)=1500$ a favor del heterocigoto, insuficiente frente a la razón \emph{a priori} $0{,}9985/0{,}001\approx1000$ multiplicada por el factor $\approx2$ de la lectura de referencia.
+
+La \cref{fig:09-lik-prof} (derecha) cuantifica este fenómeno para un heterocigoto verdadero: además del error de secuenciación, está el \emph{error de muestreo}. Con $n$ lecturas, la probabilidad de no ver alguno de los dos alelos es $2\cdot(1/2)^n$, que vale $0{,}125$ con $n=4$ y $0{,}002$ con $n=10$. Con $\theta=10^{-3}$, la probabilidad de inferir correctamente el heterocigoto es $0{,}62$ con 4 lecturas, $0{,}87$ con 6, $0{,}988$ con 10 y $0{,}9998$ con 20. De ahí la regla práctica de que el genotipado individual fiable exige unas $15$--$20\times$ de profundidad, y de ahí también que los estudios de baja cobertura necesiten la llamada multimuestra que veremos enseguida.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.86\linewidth, height=4.6cm,
+   xlabel={lecturas con el alelo alternativo $k$ (de $n=20$, Q30)}, ylabel={$P(G\mid D)$},
+   xmin=0, xmax=20, ymin=0, ymax=1.05, xtick={0,2,...,20}, legend pos=outer north east,
+   legend style={font=\sffamily\scriptsize}]
+  \addplot[naranja, very thick, mark=*, mark size=1.4pt] table[x=k, y=RR] {figuras/cap09/post_k.dat}; \addlegendentry{$RR$}
+  \addplot[azul, very thick, mark=*, mark size=1.4pt] table[x=k, y=RA] {figuras/cap09/post_k.dat}; \addlegendentry{$RA$}
+  \addplot[violeta, very thick, mark=*, mark size=1.4pt] table[x=k, y=AA] {figuras/cap09/post_k.dat}; \addlegendentry{$AA$}
+  \node[etiqueta, anchor=south] at (axis cs:10,0.8) {$0/1$ para $3\le k\le 18$};
+  \draw[gris, dashed] (axis cs:2.5,0) -- (axis cs:2.5,1.05);
+  \draw[gris, dashed] (axis cs:18.5,0) -- (axis cs:18.5,1.05);
+\end{axis}
+\end{tikzpicture}
+\caption[Posterior del genotipo según la fracción alélica]{Probabilidad posterior de cada genotipo en función del número de lecturas alternativas $k$ en una columna de 20 lecturas Q30, con $\theta=10^{-3}$. Las fronteras de decisión son muy asimétricas: bastan 3 lecturas alternativas de 20 para declarar un heterocigoto ($P(RA\mid D)=0{,}96$), pero hacen falta 19 para declarar un homocigoto alternativo, porque bajo $RA$ ver 18 lecturas \texttt{G} de 20 es unas nueve veces más plausible que, bajo $AA$, ver dos errores de Q30. La distribución \emph{a priori} desplaza la frontera izquierda hacia la derecha: con 2 lecturas alternativas la posterior de $RR$ es todavía $0{,}99$.}
+\label{fig:09-post-k}
+\end{figure}
+
+\begin{codigo}[genotipos.py]
+import math
+
+def log10_lik(bases, quals, a1, a2):
+    """log10 P(D | G={a1,a2}) con el modelo de 4 bases."""
+    s = 0.0
+    for b, q in zip(bases, quals):
+        e = 10 ** (-q / 10)
+        p = lambda a: 1 - e if b == a else e / 3
+        s += math.log10(0.5 * p(a1) + 0.5 * p(a2))
+    return s
+
+def llamar(bases, quals, ref, alt, theta=1e-3):
+    G = {"0/0": (ref, ref), "0/1": (ref, alt), "1/1": (alt, alt)}
+    prior = {"0/0": 1 - 1.5 * theta, "0/1": theta, "1/1": theta / 2}
+    ll = {g: log10_lik(bases, quals, *a) for g, a in G.items()}
+    m = max(ll.values())
+    pl = {g: round(-10 * (v - m)) for g, v in ll.items()}
+    num = {g: 10 ** (ll[g] - m) * prior[g] for g in G}
+    z = sum(num.values())
+    post = {g: v / z for g, v in num.items()}
+    gt = max(post, key=post.get)
+    qual = -10 * math.log10(max(post["0/0"], 1e-30))
+    gq = -10 * math.log10(max(1 - post[gt], 1e-30))
+    return gt, pl, round(qual, 1), round(gq, 1)
+
+print(llamar("AAAGGG", [30, 30, 20, 30, 30, 10], "A", "G"))
+# ('0/1', {'0/0': 66, '0/1': 0, '1/1': 76}, 36.0, 36.0)
+\end{codigo}
+
+\subsection{BAQ: cuando el error no es de la base sino del alineamiento}
+
+El modelo de la \cref{eq:09-lik} trata cada base como si estuviera correctamente alineada. Cerca de un \ingles{indel} esto falla con frecuencia: si una lectura termina poco después de una deleción, el alineador puede preferir colocar dos o tres desapareamientos en lugar de abrir un hueco (\cref{cap:07}), y esas bases \emph{mal alineadas}, con calidades Phred altísimas, aparecen en el \ingles{pileup} como SNV falsas agrupadas junto al \ingles{indel}.
+
+\textcite{c09-li2011baq} propuso corregirlo con la \emph{calidad de alineamiento de la base} (BAQ). Para cada lectura se realinea localmente contra la referencia con un HMM de pares (el mismo tipo de modelo de tres estados que vimos en el algoritmo de Gotoh) y se calcula, por el algoritmo de avance-retroceso, la probabilidad posterior $p_i$ de que la base $i$ esté alineada con la posición a la que la asignó el alineador. La calidad efectiva de la base pasa a ser
+\begin{equation}\label{eq:09-baq}
+Q_i^{\text{ef}} = \min\bigl(Q_i,\ \mathrm{BAQ}_i\bigr),\qquad \mathrm{BAQ}_i = -10\log_{10}(1-p_i).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$Q_i$}{Calidad Phred original de la base $i$ (error de lectura).}
+\simbolo{$p_i$}{Probabilidad posterior, según el HMM de pares, de que la base esté bien alineada.}
+\simbolo{$\mathrm{BAQ}_i$}{Probabilidad de mal alineamiento en escala Phred.}
+\end{simbolos}
+
+Lejos de los \ingles{indels}, $p_i\approx1$ y la calidad no cambia; en las zonas ambiguas, la BAQ cae y las bases dudosas pierden peso en la verosimilitud. Es un ejemplo elegante de cómo \emph{propagar} una fuente de incertidumbre (el alineamiento) hacia la siguiente etapa en lugar de ignorarla. Un efecto similar se consigue con la calidad de mapeo (MAPQ, \cref{cap:07}): las lecturas con MAPQ bajo, que podrían pertenecer a otra copia de una repetición, se descartan o se ponderan a la baja.
+
+\subsection{Llamada conjunta de varias muestras}
+
+Cuando se secuencian muchos individuos de una población, analizarlos juntos es mucho más potente que analizarlos por separado. La idea es que la frecuencia del alelo alternativo en la población, $\psi$, es un parámetro compartido: si varias muestras muestran indicios débiles de la misma variante, la evidencia se acumula.
+
+Bajo equilibrio de Hardy-Weinberg, la distribución \emph{a priori} del genotipo de cada individuo depende de $\psi$: $P(RR)=(1-\psi)^2$, $P(RA)=2\psi(1-\psi)$ y $P(AA)=\psi^2$. \textcite{c09-li2011stat} estima $\psi$ por máxima verosimilitud con el algoritmo EM. Si $h$ indexa el número de alelos alternativos de un genotipo ($h\in\{0,1,2\}$) y $N$ es el número de muestras, cada iteración actualiza
+\begin{equation}\label{eq:09-em}
+\psi^{(t+1)} = \frac{1}{2N}\sum_{s=1}^{N}\ \sum_{h=0}^{2} h\;
+\frac{P(D_s\mid h)\,P(h\mid\psi^{(t)})}{\sum_{h'}P(D_s\mid h')\,P(h'\mid\psi^{(t)})}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\psi$}{Frecuencia del alelo alternativo en la población muestreada.}
+\simbolo{$D_s$}{Lecturas de la muestra $s$ en el sitio.}
+\simbolo{$h$}{Número de copias del alelo alternativo en el genotipo (0, 1 o 2).}
+\simbolo{$P(h\mid\psi)$}{Probabilidad de Hardy-Weinberg del genotipo con $h$ copias.}
+\simbolo{$N$}{Número de muestras analizadas conjuntamente.}
+\end{simbolos}
+
+La \cref{eq:09-em} tiene una lectura muy intuitiva: el paso E calcula, para cada muestra, el número \emph{esperado} de copias alternativas dados sus datos y la frecuencia actual; el paso M promedia esos números sobre los $2N$ cromosomas. Cada iteración no puede disminuir la verosimilitud conjunta, y el algoritmo converge rápidamente.
+
+\begin{ejemplo}{Ocho muestras de baja cobertura}{em}
+Ocho individuos se secuencian a 2--5$\times$ y en un sitio muestran (lecturas alternativas, profundidad) $=(1,3),(2,4),(0,3),(3,5),(1,2),(0,4),(2,3),(0,2)$, todas con Q20. Usando el modelo bialélico de la \cref{eq:09-li} y partiendo de $\psi^{(0)}=0{,}5$, el EM produce $0{,}354,\ 0{,}334,\ 0{,}331,\dots$ y converge en 12 iteraciones a $\hat\psi=0{,}331$. Considere la muestra M1, con una lectura alternativa de tres. Analizada sola, con la distribución \emph{a priori} de la \cref{eq:09-prior} y $\theta=10^{-3}$, su posterior es $P(RR)=0{,}987$: se la declararía homocigota de referencia. Analizada con las demás, cuya evidencia colectiva establece que la variante es común, su posterior pasa a $P(RA)=0{,}926$. La muestra no cambió; cambió lo que sabemos de la población.
+\end{ejemplo}
+
+La llamada conjunta no es gratuita: supone una población aproximadamente panmíctica, y un artefacto sistemático presente en todas las muestras quedará \emph{reforzado} como si fuera una variante común; los filtros de la \cref{sec:09-bcftools} existen precisamente para eso.
+
+\subsection{Más allá de la columna: HaplotypeCaller y DeepVariant}
+
+El modelo de la \cref{eq:09-lik} mira cada posición por separado. Los llamadores de última generación han ido más allá en dos direcciones.
+
+\paragraph{Reensamblaje local (GATK HaplotypeCaller)} El Genome Analysis Toolkit nació como un marco de programación para procesar datos de secuenciación a escala \parencite{c09-mckenna2010}, y \textcite{c09-depristo2011} lo convirtieron en un flujo completo de descubrimiento de variantes con recalibración de calidades de base (BQSR), realineamiento local y una recalibración de la calidad de las variantes (VQSR) basada en un modelo de mezcla gaussiana entrenado con sitios conocidos. Su sucesor, \cmd{HaplotypeCaller}, cambia el paradigma: detecta ``regiones activas'' con indicios de variación, reensambla localmente las lecturas de cada región con un grafo de De Bruijn para proponer \emph{haplotipos} candidatos, calcula con un HMM de pares la verosimilitud $P(\text{lectura}\mid\text{haplotipo})$ y solo entonces obtiene las verosimilitudes de los genotipos, marginalizando sobre los haplotipos. Así, SNV e \ingles{indels} cercanos se evalúan juntos y los errores del alineador pesan mucho menos. Para cohortes enormes, \textcite{c09-poplin2017} combinaron HaplotypeCaller con un \emph{modelo de confianza de referencia}: las verosimilitudes de genotipos se calculan de forma independiente por muestra, también en los sitios donde la muestra parece idéntica a la referencia, y se guardan en un GVCF con bloques de referencia y un alelo genérico \texttt{<NON\_REF>}; el genotipado conjunto de todas las muestras se hace después, sin volver a leer los BAM. Así llamaron más de \num{90000} exomas del consorcio ExAC y obtuvieron una matriz completa de genotipos en todas las posiciones. En la práctica, esto evita el llamado ``problema $N+1$'': añadir una muestra no obliga a repetir todo el análisis.
+
+\paragraph{Aprendizaje profundo (DeepVariant)} \textcite{c09-poplin2018} dieron un paso más radical: en lugar de escribir el modelo de error, lo \emph{aprenden}. DeepVariant convierte el \ingles{pileup} alrededor de cada candidato en una imagen de varios canales (base, calidad, hebra, MAPQ, soporte del alelo) y una red neuronal convolucional devuelve directamente las probabilidades de los tres genotipos. Entrenado con genomas cuyo genotipo verdadero es conocido (\cref{sec:09-bcftools}), supera a los métodos estadísticos clásicos y se adapta a otras tecnologías de secuenciación con solo reentrenarlo.
+
+\begin{historia}[De contar alelos a modelar la incertidumbre]
+Los primeros estudios con NGS llamaban variantes con reglas simples, del tipo ``al menos tres lecturas alternativas y un \SI{20}{\percent} de fracción alélica''. \textcite{c09-nielsen2011} mostraron que esas reglas desperdician información y no dan ninguna medida de incertidumbre, sobre todo a cobertura baja o media, y abogaron por métodos que calcularan verosimilitudes de genotipos y las propagaran a los análisis posteriores. Ese mismo año se publicaron los marcos estadísticos de SAMtools/BCFtools \parencite{c09-li2011stat} y de GATK \parencite{c09-depristo2011}.
+\end{historia}
+
+% ---------------------------------------------------------------------
+\section{Pipeline con bcftools}\label{sec:09-bcftools}
+% ---------------------------------------------------------------------
+\enlacerepo{9.2 · Pipeline con bcftools}
+
+\begin{intuicion}[La cocina de un restaurante]
+En la cocina de un buen restaurante nadie cocina ``un plato'': hay una estación que prepara los ingredientes, otra que cocina, otra que emplata y un jefe que prueba cada plato antes de que salga. Cada estación recibe algo en un formato conocido y entrega algo en otro formato conocido; si un plato sale mal, se sabe en qué estación buscar el problema. Y, sobre todo, el restaurante no mide su calidad por lo bien que \emph{cree} que cocina, sino por lo que dicen los comensales. Un flujo de llamado de variantes es esa cocina: \cmd{mpileup} prepara las columnas, \cmd{call} cocina los genotipos, \cmd{norm} emplata las variantes de forma estándar, \cmd{filter} prueba el resultado, y un conjunto de verdad como Genome in a Bottle hace de comensal exigente.
+\end{intuicion}
+
+\subsection{El formato VCF}
+
+Antes de producir variantes necesitamos un lugar donde escribirlas. El \ingles{Variant Call Format} (VCF) fue diseñado para el Proyecto 1000 Genomas como un formato de texto tabulado, extensible y capaz de representar desde una SNV hasta variantes estructurales para miles de muestras \parencite{c09-danecek2011}. Su versión binaria comprimida, BCF, es la que \cmd{bcftools} usa internamente para ganar velocidad.
+
+Un VCF tiene dos partes (\cref{fig:09-vcf}). La \emph{cabecera}, con líneas que empiezan por \texttt{\#\#}, declara la versión del formato, la referencia, los contigs y, sobre todo, el significado de cada campo \texttt{INFO}, \texttt{FORMAT} y \texttt{FILTER}. Esta autodescripción es clave: un campo que no está declarado en la cabecera no debería aparecer en los registros. El \emph{cuerpo} tiene una línea por sitio variable, con ocho columnas fijas (\texttt{CHROM}, \texttt{POS}, \texttt{ID}, \texttt{REF}, \texttt{ALT}, \texttt{QUAL}, \texttt{FILTER}, \texttt{INFO}), seguidas opcionalmente de una columna \texttt{FORMAT} y una columna por muestra.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \node[anchor=north west, fill=papel!60, rounded corners=2pt, inner sep=5pt, text width=11.2cm, font=\ttfamily\scriptsize, align=left] (cab) at (0,0) {%
+  \textcolor{gris}{\#\#fileformat=VCFv4.2}\\
+  \textcolor{gris}{\#\#reference=GRCh38.fa}\\
+  \textcolor{gris}{\#\#INFO=<ID=DP,Number=1,Type=Integer,Description="Profundidad total">}\\
+  \textcolor{gris}{\#\#FORMAT=<ID=PL,Number=G,Type=Integer,Description="Verosimilitudes Phred">}\\
+  \textcolor{gris}{\#\#FILTER=<ID=BajaCal,Description="QUAL<30 || DP<10">}};
+    \draw[decorate, decoration={brace, amplitude=4pt, mirror}, azul, thick] ([xshift=-3pt]cab.north west) -- ([xshift=-3pt]cab.south west)
+     node[midway, left=5pt, etiqueta, text=azul, align=right] {cabecera\\(\#\#)};
+  % fila de columnas fijas
+  \matrix[matrix of nodes, anchor=north west, nodes={font=\ttfamily\scriptsize, inner sep=2.5pt, anchor=center},
+      column sep=1pt, row sep=1pt] (m) at (0,-1.95) {
+    |[text=violeta,font=\ttfamily\bfseries\scriptsize]| \#CHROM & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| POS & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| ID &
+    |[text=violeta,font=\ttfamily\bfseries\scriptsize]| REF & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| ALT & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| QUAL &
+    |[text=violeta,font=\ttfamily\bfseries\scriptsize]| FILTER & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| INFO \\
+    chr1 & 10408 & . & |[fill=nucA!20]| A & |[fill=nucG!25]| G & |[fill=amarillo!25]| 36 & PASS & DP=6;AC=1;AN=2;MQ=60 \\
+  };
+  \matrix[matrix of nodes, anchor=north west, nodes={font=\ttfamily\scriptsize, inner sep=2.5pt, anchor=center},
+      column sep=1pt, row sep=1pt] (f) at (0,-3.15) {
+    |[text=violeta,font=\ttfamily\bfseries\scriptsize]| FORMAT & |[text=violeta,font=\ttfamily\bfseries\scriptsize]| muestra1 \\
+    GT:AD:DP:GQ:PL & |[fill=azul!12]| 0/1:3,3:6:36:66,0,76 \\
+  };
+  \draw[decorate, decoration={brace, amplitude=4pt, mirror}, naranja, thick] ([xshift=-3pt]m.north west) -- ([xshift=-3pt]f.south west)
+     node[midway, left=5pt, etiqueta, text=naranja!80!black, align=right] {cuerpo};
+  % anotaciones del campo de la muestra
+  \node[etiqueta, anchor=north west, align=left, text width=11.5cm] (an) at (0,-4.45) {%
+    \textbf{GT} \texttt{0/1}: heterocigoto (0 = REF, 1 = primer ALT);\quad
+    \textbf{AD} \texttt{3,3}: lecturas que apoyan REF y ALT;\quad
+    \textbf{DP} \texttt{6}: profundidad;\\
+    \textbf{GQ} \texttt{36}: calidad del genotipo (\cref{eq:09-qual});\quad
+    \textbf{PL} \texttt{66,0,76}: $\mathrm{PL}(RR),\mathrm{PL}(RA),\mathrm{PL}(AA)$;\quad
+    \textbf{QUAL} \texttt{36}: $-10\log_{10}P(RR\mid D)$};
+\end{tikzpicture}
+\caption[Anatomía de un registro VCF]{Anatomía de un VCF. La cabecera (líneas \texttt{\#\#}) declara el significado de cada campo; el cuerpo tiene una línea por sitio. Las ocho primeras columnas describen el sitio; \texttt{FORMAT} indica el orden de los campos por muestra. El registro corresponde a la columna 8 de la \cref{fig:09-pileup}: QUAL 36, PL $(66,0,76)$ y GQ 36, exactamente los valores calculados en los \cref{ej:verosimilitud,ej:posterior}. \texttt{POS} usa coordenadas que empiezan en 1, y \texttt{REF} debe coincidir con el genoma de referencia.}
+\label{fig:09-vcf}
+\end{figure}
+
+Algunos detalles del formato causan una cantidad sorprendente de errores. \texttt{POS} es 1-based (a diferencia de BED, que es 0-based y semiabierto). En los \ingles{indels}, \texttt{REF} y \texttt{ALT} incluyen una base de anclaje a la izquierda: una deleción de \texttt{TC} tras una \texttt{G} se escribe \texttt{REF=GTC}, \texttt{ALT=G}. El genotipo \texttt{0/1} indica que no se conoce la fase; \texttt{0|1} indica que el alelo de referencia está en el primer haplotipo. Y un sitio puede tener varios alelos alternativos (\texttt{ALT=G,T}), en cuyo caso el número de PL crece: con $k$ alelos hay $\binom{k+1}{2}$ genotipos diploides.
+
+\subsection{El flujo de trabajo}
+
+\cmd{bcftools} es el compañero de SAMtools para manipular VCF/BCF y llamar variantes; \textcite{c09-danecek2021} resumen doce años de su desarrollo. Un flujo mínimo para una o varias muestras tiene cinco pasos (\cref{fig:09-flujo}).
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, node distance=4mm and 4mm]
+  \tikzset{paso/.style={caja=#1, minimum width=1.95cm, minimum height=1.05cm, font=\sffamily\scriptsize, text width=1.8cm},
+           dato/.style={draw=gris, fill=papel, rounded corners=1pt, font=\ttfamily\scriptsize, inner sep=3pt, text=tinta2}}
+  \node[dato] (bam) {muestra.bam};
+  \node[dato, below=2mm of bam] (ref) {ref.fa};
+  \node[paso=azul, right=5mm of bam, yshift=-2.5mm] (mp) {\textbf{mpileup}\\ columnas, BAQ,\\ $P(D\mid G)$};
+  \node[paso=aqua, right=of mp] (call) {\textbf{call -mv}\\ \emph{a priori}, posterior,\\ GT, QUAL};
+  \node[paso=amarillo, right=of call] (norm) {\textbf{norm}\\ alinear a la izq.,\\ separar multialélicos};
+  \node[paso=naranja, right=of norm] (filt) {\textbf{filter}\\ QUAL, DP, MQ,\\ densidad de SNV};
+  \draw[flecha] (bam.east) -- (mp.west |- bam.east);
+  \draw[flecha] (ref.east) -- (mp.west |- ref.east);
+  \draw[flecha] (mp) -- (call); \draw[flecha] (call) -- (norm); \draw[flecha] (norm) -- (filt);
+  % salidas intermedias
+  \node[dato, below=5mm of mp] (o1) {BCF con PL};
+  \node[dato, below=5mm of call] (o2) {crudo.bcf};
+  \node[dato, below=5mm of norm] (o3) {norm.bcf};
+  \node[dato, below=5mm of filt] (o4) {final.vcf.gz};
+  \foreach \a/\b in {mp/o1, call/o2, norm/o3, filt/o4}{\draw[gris, densely dotted, thick] (\a) -- (\b);}
+  % evaluación
+  \node[paso=violeta, below=10mm of o2, text width=2.3cm] (stats) {\textbf{stats}\\ ti/tv, espectro,\\ \ingles{indels}};
+  \node[paso=violeta, below=10mm of o4, text width=2.3cm] (happy) {\textbf{hap.py}\\ vs.\ GIAB:\\ precisión, sensibilidad};
+  \draw[flecha=violeta] (o4) -- (happy);
+  \draw[flecha=violeta] (o4.south west) -- (stats.east);
+  \node[etiqueta, anchor=east, align=right, text=violeta] at ([xshift=-4mm]stats.west) {evaluación\\de calidad};
+  \draw[decorate, decoration={brace, amplitude=5pt}, tinta2] ([yshift=3mm]mp.north west) -- ([yshift=3mm]call.north east)
+     node[midway, above=5pt, etiqueta] {llamado (\cref{sec:09-verosimilitud})};
+  \draw[decorate, decoration={brace, amplitude=5pt}, tinta2] ([yshift=3mm]norm.north west) -- ([yshift=3mm]filt.north east)
+     node[midway, above=5pt, etiqueta] {limpieza (esta sección)};
+\end{tikzpicture}
+\caption[Flujo de llamado con bcftools]{Flujo de llamado de variantes con \cmd{bcftools}. \cmd{mpileup} construye las columnas y calcula las verosimilitudes de genotipos (ajustando las calidades con BAQ); \cmd{call} combina verosimilitudes y distribución \emph{a priori}, y con \texttt{-v} conserva solo los sitios variables; \cmd{norm} da a cada variante su representación canónica; \cmd{filter} marca o elimina las llamadas dudosas. La evaluación usa estadísticas internas (\cmd{bcftools stats}) y externas (\cmd{hap.py} frente a Genome in a Bottle). Los pasos pueden encadenarse con tuberías en formato BCF sin comprimir (\texttt{-Ou}) para evitar escribir archivos intermedios.}
+\label{fig:09-flujo}
+\end{figure}
+
+\begin{consola}[llamado\_bcftools.sh]
+REF=GRCh38.fa
+# 1-2. Columnas + verosimilitudes, y llamado multialelico
+bcftools mpileup -Ob -o pl.bcf -f $REF -q 20 -Q 20 \
+    -a FORMAT/AD,FORMAT/DP muestra.bam
+bcftools call -mv -Ob -o crudo.bcf pl.bcf
+# 3. Normalizacion: alinear a la izquierda y separar multialelicos
+bcftools norm -f $REF -m -any -Ob -o norm.bcf crudo.bcf
+# 4. Filtro "suave": marca en FILTER en lugar de borrar
+bcftools filter -s BajaCal -e 'QUAL<30 || INFO/DP<10' \
+    -Oz -o final.vcf.gz norm.bcf
+bcftools index -t final.vcf.gz
+# 5. Estadisticas (incluye ti/tv) de los sitios que pasan
+bcftools stats -f PASS final.vcf.gz > final.stats
+grep ^TSTV final.stats
+\end{consola}
+
+Detengámonos en las opciones, porque cada una traduce un supuesto del modelo:
+
+\begin{itemize}
+  \item \texttt{mpileup -f} carga la referencia: sin ella no se sabe qué base es ``referencia''. \texttt{-q 20} descarta lecturas con MAPQ menor que 20 y \texttt{-Q 20} ignora bases de calidad menor que 20; ambos umbrales eliminan testigos poco fiables antes de que entren en la \cref{eq:09-lik}. \texttt{-a FORMAT/AD,FORMAT/DP} añade al VCF el número de lecturas por alelo, imprescindible para filtrar y para detectar desequilibrios alélicos.
+  \item BAQ (\cref{eq:09-baq}) se aplica por omisión; \texttt{-B} lo desactiva. El modo predeterminado (completo o parcial, solo cerca de \ingles{indels}) ha cambiado entre versiones, así que conviene consultar \texttt{bcftools mpileup --help} de la versión instalada y registrarla en el cuaderno de laboratorio.
+  \item \texttt{call -m} usa el llamador multialélico, que evalúa todos los alelos observados en la columna; \texttt{-v} escribe solo sitios variables. La distribución \emph{a priori} se controla con \texttt{-P} (por omisión $1{,}1\times10^{-3}$, el papel de $\theta$ en la \cref{eq:09-prior}): aumentarla hace el llamador más sensible y menos específico. Para una especie de alta diversidad, como muchos insectos o plantas silvestres, conviene ajustarla.
+  \item Con varias muestras basta dar varios BAM (o una lista con \texttt{-b}) a \cmd{mpileup}: \cmd{call} hará entonces la llamada conjunta de la \cref{sec:09-verosimilitud}.
+\end{itemize}
+
+\subsection{Normalización de \ingles{indels}}
+
+Considere la referencia \secuencia{GGATCACACACAGT}, que contiene el microsatélite \texttt{(CA)}$_4$ en las posiciones 5--12, y un individuo que perdió una de las cuatro unidades \texttt{CA}. Su haplotipo es \secuencia{GGATCACACAGT}. ¿Dónde está la deleción? La pregunta no tiene respuesta biológica: borrar cualquiera de las cuatro unidades \texttt{CA}, o incluso los pares \texttt{AC} desfasados, produce exactamente el mismo haplotipo. Pero en un VCF hay que escribir una posición concreta, y distintos llamadores (o el mismo llamador con lecturas distintas) pueden elegir distintas. Dos archivos que describen la misma variante parecerán discrepar, y la anotación, la comparación con bases de datos y la evaluación frente a un conjunto de verdad se vendrán abajo.
+
+\textcite{c09-tan2015} formalizaron el problema y su solución.
+
+\begin{definicion}{Variante normalizada}{normalizada}
+Una variante $(\mathrm{POS},\mathrm{REF},\mathrm{ALT})$ está \emph{normalizada} si y solo si es \emph{parsimoniosa} (se representa con los alelos más cortos posibles, sin bases compartidas superfluas) y está \emph{alineada a la izquierda} (su posición no puede desplazarse más hacia la izquierda sin cambiar el haplotipo que representa).
+\end{definicion}
+
+El algoritmo es sorprendentemente simple y se aplica a cualquier par de alelos, sean \ingles{indels} o sustituciones complejas:
+
+\begin{enumerate}
+  \item Mientras los dos alelos terminen en la misma base, se elimina esa base final de ambos. Si alguno queda vacío, se antepone a ambos la base anterior de la referencia y se decrementa \texttt{POS}. Se repite hasta que ninguna de las dos condiciones se cumpla.
+  \item Mientras ambos alelos tengan longitud mayor que 1 y empiecen por la misma base, se elimina esa base inicial de ambos y se incrementa \texttt{POS}.
+\end{enumerate}
+
+El paso 1 ``empuja'' la variante hacia la izquierda a través de la repetición; el paso 2 recorta el contexto sobrante a la izquierda, manteniendo una sola base de anclaje. \textcite{c09-tan2015} demuestran que el resultado es único: todas las representaciones de un mismo haplotipo convergen a la misma forma normalizada.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=0.45cm, y=0.62cm, font=\sffamily\scriptsize]
+  \tikzset{b/.style={nt=#1, minimum size=3.7mm, font=\ttfamily\bfseries\scriptsize},
+           bx/.style={nt=#1, minimum size=3.7mm, font=\ttfamily\bfseries\scriptsize, fill opacity=0.18, text opacity=0.45},
+           reg/.style={font=\ttfamily\scriptsize, anchor=west, text=tinta}}
+  \def\capnueveseq{G,G,A,T,C,A,C,A,C,A,C,A,G,T}
+  % fila de referencia
+  \foreach \b [count=\i] in \capnueveseq {\node[b=\b] at (\i,0) {\b}; \node[etiqueta, font=\sffamily\tiny, text=gris] at (\i,0.7) {\i};}
+  \node[etiqueta, anchor=east] at (0.4,0) {referencia};
+  \node[font=\sffamily\bfseries\scriptsize, text=tinta2, anchor=west] at (15.4,0.7) {registro VCF (POS REF ALT)};
+  \begin{scope}[on background layer]\fill[amarillo!18] (4.5,-5.6) rectangle (12.5,0.4);\end{scope}
+  % representaciones: fila / bases borradas (i,j) / registro / color
+  \foreach \y/\da/\db/\txt/\col in {1/11/12/{10\ \ ACA\ \ A}/tinta2, 2/10/11/{9\ \ \ CAC\ \ C}/tinta2,
+                                    3/7/8/{6\ \ \ ACA\ \ A}/tinta2, 4/9/10/{8\ \ \ ACACA\ \ ACA}/rojooscuro,
+                                    5/5/6/{4\ \ \ TCA\ \ T}/verde}{
+    \foreach \b [count=\i] in \capnueveseq {
+      \ifnum\i=\da \node[bx=\b] at (\i,-\y) {\b};
+      \else\ifnum\i=\db \node[bx=\b] at (\i,-\y) {\b};
+      \else \node[b=\b] at (\i,-\y) {\b};\fi\fi}
+    \draw[rojo, very thick] (\da-0.35,-\y) -- (\db+0.35,-\y);
+    \node[reg, text=\col] at (15.4,-\y) {\txt};
+  }
+  \node[etiqueta, anchor=west, text=rojooscuro] at (20.9,-4) {no parsimoniosa};
+  \node[etiqueta, anchor=west, text=verde] at (20.9,-5) {\textbf{normalizada}};
+  \draw[verde, thick, rounded corners=2pt] (0.5,-5.45) rectangle (24.3,-4.55);
+  \node[etiqueta, anchor=north west, align=left] at (0.5,-5.8) {Haplotipo resultante en todos los casos: \texttt{GGATCACACAGT}};
+\end{tikzpicture}
+\caption[Normalización de una deleción en una repetición]{Una misma deleción de dos bases en el microsatélite \texttt{(CA)}$_4$ (sombreado) admite muchas representaciones en VCF. Las bases tachadas son las que cada registro declara borradas; todas producen el haplotipo \texttt{GGATCACACAGT}. El registro de la cuarta fila, además, no es parsimonioso: arrastra bases compartidas por \texttt{REF} y \texttt{ALT}. El algoritmo de \textcite{c09-tan2015}, implementado en \cmd{bcftools norm} y \cmd{vt normalize}, lleva todas ellas a la forma única de la última fila: la deleción más a la izquierda posible, con una sola base de anclaje (\texttt{POS=4}, \texttt{TCA}$\to$\texttt{T}). Otra representación válida, anclada a la derecha, es \texttt{11\ CAG\ G}, que también normaliza a la última fila.}
+\label{fig:09-norm}
+\end{figure}
+
+\begin{ejemplo}{Normalizar paso a paso}{norm}
+Tomemos el registro \texttt{POS=10, REF=ACA, ALT=A} de la \cref{fig:09-norm}. Paso 1: ambos alelos terminan en \texttt{A}; se elimina: \texttt{AC}/vacío. \texttt{ALT} quedó vacío, así que se antepone la base 9 (\texttt{C}): \texttt{POS=9}, \texttt{CAC}/\texttt{C}. Terminan en \texttt{C}: \texttt{CA}/vacío; se antepone la base 8 (\texttt{A}): \texttt{POS=8}, \texttt{ACA}/\texttt{A}. El ciclo se repite desplazando la deleción de dos en dos bases hasta \texttt{POS=4}, \texttt{TCA}/\texttt{T}: ahora terminan en \texttt{A} y \texttt{T}, distintas, y \texttt{T} no está vacío; el paso 1 se detiene. Paso 2: \texttt{T} tiene longitud 1, así que no hay nada que recortar. Resultado: \texttt{4\ TCA\ T}. El \cmd{generar.py} del capítulo comprueba que las seis representaciones de la figura convergen al mismo registro.
+\end{ejemplo}
+
+\begin{codigo}[normalizar.py]
+def normalizar(pos, ref, alt, genoma):
+    """Tan et al. (2015). pos es 1-based; genoma, la referencia."""
+    while True:
+        cambio = False
+        if ref and alt and ref[-1] == alt[-1]:   # recorte der.
+            ref, alt = ref[:-1], alt[:-1]
+            cambio = True
+        if not ref or not alt:                   # extender izq.
+            pos -= 1
+            b = genoma[pos - 1]
+            ref, alt = b + ref, b + alt
+            cambio = True
+        if not cambio:
+            break
+    while len(ref) > 1 and len(alt) > 1 and ref[0] == alt[0]:
+        ref, alt, pos = ref[1:], alt[1:], pos + 1   # recorte izq.
+    return pos, ref, alt
+
+print(normalizar(10, "ACA", "A", "GGATCACACACAGT"))   # (4, 'TCA', 'T')
+\end{codigo}
+
+La opción \texttt{-m -any} de \cmd{bcftools norm} hace una segunda normalización, igualmente importante: separa los sitios multialélicos (\texttt{ALT=G,T}) en un registro por alelo alternativo, de modo que cada línea describa una sola variante. Sin este paso, un sitio con \texttt{ALT=GA,G} (una inserción y una SNV en el mismo lugar) no puede alinearse a la izquierda correctamente ni compararse con bases de datos que almacenan una variante por línea. Normalice siempre, con la misma versión de la referencia, antes de intersectar dos VCF, anotar o evaluar frente a un conjunto de verdad: una fracción notable de las ``discrepancias'' entre llamadores en \ingles{indels} desaparece al hacerlo \parencite{c09-tan2015}.
+
+\subsection{Filtrado}
+
+Un llamado crudo contiene inevitablemente falsos positivos. Sus causas típicas son conocidas: lecturas mal mapeadas en regiones repetitivas o duplicaciones segmentarias ausentes de la referencia; errores de secuenciación sistemáticos dependientes del contexto; errores de PCR; y regiones de baja complejidad donde los \ingles{indels} son ambiguos. \textcite{c09-li2014} estudió estos artefactos con un ingenioso diseño: llamó variantes en un genoma humano \emph{haploide} (una línea celular de mola hidatiforme), donde todo heterocigoto es por definición un error. Identificó dos fuentes principales: el realineamiento erróneo en regiones de baja complejidad y la incompletitud del genoma de referencia respecto a la muestra, cuyas secuencias ausentes se mapean sobre copias parecidas y producen falsos heterocigotos, a menudo con profundidad excesiva. Estimó que los genotipos crudos tienen un error cada 10--15 kb, y que un filtrado cuidadoso lo reduce a uno cada 100--200 kb sin pérdida apreciable de sensibilidad. Por eso, además de umbrales mínimos de QUAL y profundidad, es habitual imponer un umbral \emph{máximo} de profundidad en genomas completos, del orden de la media más unas pocas desviaciones típicas de Poisson.
+
+Los filtros más comunes para llamados de \cmd{bcftools} son:
+\begin{itemize}
+  \item \textbf{QUAL} mínimo (evidencia de variación) y \textbf{GQ} mínimo por muestra.
+  \item \textbf{DP} mínimo (poca evidencia) y máximo (copias colapsadas).
+  \item \textbf{MQ} medio bajo: el sitio está en una región de mapeo ambiguo.
+  \item \textbf{Sesgo de hebra}: una variante real debe aparecer en lecturas de ambas hebras; si todas las lecturas alternativas vienen de la misma, sospeche de un artefacto.
+  \item \textbf{Desequilibrio alélico}: en un heterocigoto germinal, la fracción alternativa $\mathrm{AD}_\text{alt}/\mathrm{DP}$ debe rondar $0{,}5$; un $0{,}1$ sugiere contaminación, un error sistemático o una variante somática en mosaico.
+  \item \textbf{Proximidad a \ingles{indels}} (\texttt{bcftools filter -g}) y \textbf{densidad de SNV} (\texttt{-G}): racimos de SNV alrededor de un \ingles{indel} suelen ser artefactos de alineamiento.
+\end{itemize}
+
+Los filtros ``duros'' son transparentes, pero fijan cada umbral por separado; VQSR, de GATK, aprende en cambio un modelo de mezcla gaussiana sobre las anotaciones de sitios de alta confianza, y requiere cohortes grandes o genomas completos \parencite{c09-depristo2011}.
+
+\subsection{La razón ti/tv como termómetro}
+
+¿Cómo saber si un conjunto de variantes es bueno si no conocemos la verdad? Un indicador clásico aprovecha la química de las mutaciones. Las \emph{transiciones} (ti) cambian una purina por otra purina (\texttt{A}$\leftrightarrow$\texttt{G}) o una pirimidina por otra (\texttt{C}$\leftrightarrow$\texttt{T}); las \emph{transversiones} (tv), una purina por una pirimidina o viceversa. De las 12 sustituciones posibles, 4 son transiciones y 8 transversiones, de modo que si las variantes fueran errores aleatorios uniformes, la razón ti/tv sería $4/8=0{,}5$. Las mutaciones reales, en cambio, están muy sesgadas hacia las transiciones (por ejemplo, por la desaminación de citosinas metiladas en dinucleótidos CpG), y en humanos la razón observada en variantes de alta calidad ronda 2,0--2,1 en genomas completos y valores más altos, cercanos a 3, en exomas, donde abundan los CpG. \textcite{c09-depristo2011} usaron la ti/tv como una de sus métricas centrales de calidad.
+
+Suponga que las variantes verdaderas tienen razón $R_T$ y los falsos positivos, razón $R_F=0{,}5$. Si una fracción $\alpha$ del conjunto son falsos positivos, la fracción observada de transiciones es una mezcla:
+\begin{equation}\label{eq:09-titv}
+p_{\text{obs}} = (1-\alpha)\,p_T + \alpha\,p_F,\qquad p = \frac{R}{1+R}
+\quad\Longrightarrow\quad
+\alpha = \frac{p_T - p_{\text{obs}}}{p_T - p_F}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$R_T,\ R_F$}{Razón ti/tv de las variantes verdaderas y de los errores.}
+\simbolo{$p_T,\ p_F,\ p_\text{obs}$}{Fracción de transiciones entre las verdaderas, los errores y el conjunto observado.}
+\simbolo{$\alpha$}{Fracción de falsos positivos en el conjunto.}
+\end{simbolos}
+
+Con $R_T=2{,}1$ y un conjunto observado con $R_\text{obs}=1{,}8$: $p_T=0{,}677$, $p_\text{obs}=0{,}643$ y $p_F=0{,}333$, así que $\alpha\approx0{,}10$. Una caída de la ti/tv de 2,1 a 1,8, que parece modesta, delata que uno de cada diez sitios es falso. Con $R_\text{obs}=2{,}0$ la estimación baja a $\alpha\approx0{,}03$. La estimación es aproximada (los errores reales no son uniformes y $R_T$ depende de la región), pero como alarma temprana es muy útil: si al relajar un filtro la ti/tv cae, lo que se está añadiendo es sobre todo ruido.
+
+\subsection{Evaluar frente a la verdad: Genome in a Bottle}
+
+La única forma rigurosa de medir la exactitud de un llamador es compararlo con un genoma cuyo genotipo verdadero se conozca. El consorcio Genome in a Bottle (GIAB), coordinado por el NIST, construyó exactamente eso: \textcite{c09-zook2014} integraron y arbitraron 14 conjuntos de datos de NA12878 (HG001), obtenidos con cinco tecnologías de secuenciación, siete alineadores y tres llamadores, para producir genotipos de alta confianza (SNP, \ingles{indels} y homocigotos de referencia), junto con la delimitación de las regiones donde no era posible un genotipo confiable. \textcite{c09-zook2019} añadieron seis genomas del Personal Genome Project con consentimiento abierto (entre ellos, los tríos HG002--HG004 y HG005--HG007), con un flujo reproducible que combina lecturas cortas y enlazadas; respecto a las versiones anteriores, el nuevo recurso contiene un 17\,\% más de SNV, un 176\,\% más de \ingles{indels} y regiones de referencia un 12\,\% mayores.
+
+Comparar dos VCF no es trivial: las mismas variantes pueden estar representadas de forma diferente (\cref{fig:09-norm}), incluso más allá de la normalización, cuando varias variantes cercanas se escriben como una sola sustitución compleja. El equipo de evaluación de la Global Alliance for Genomics and Health estableció buenas prácticas y herramientas, como \cmd{hap.py}, que comparan \emph{haplotipos} en lugar de registros \parencite{c09-krusche2019}. Esos autores ilustran también por qué importa restringirse a las regiones de alta confianza: la concordancia de SNV entre dos métodos era del 99,7\,\% dentro de ellas y de solo el 76,5\,\% fuera. Las herramientas distinguen además varios niveles de coincidencia: que la variante esté (ignorando el genotipo), que el genotipo coincida, o que coincida la fase.
+
+\begin{definicion}{Métricas de evaluación}{metricas}
+Sean TP las variantes del conjunto de verdad correctamente llamadas, FP las llamadas ausentes de la verdad y FN las variantes de la verdad no llamadas, todas restringidas a las regiones de alta confianza. Entonces
+\begin{equation}\label{eq:09-metricas}
+\text{precisión} = \frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\qquad
+\text{sensibilidad} = \frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}},\qquad
+F_1 = \frac{2\,\mathrm{TP}}{2\,\mathrm{TP}+\mathrm{FP}+\mathrm{FN}}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{TP, FP, FN}{Verdaderos positivos, falsos positivos y falsos negativos.}
+\simbolo{precisión}{Fracción de llamadas que son reales (su complemento es la tasa de falsos descubrimientos).}
+\simbolo{sensibilidad}{Fracción de variantes reales que se detectaron (\ingles{recall}).}
+\simbolo{$F_1$}{Media armónica de precisión y sensibilidad.}
+\end{simbolos}
+
+Observe que no aparecen los verdaderos negativos: en un genoma hay miles de millones de posiciones sin variante, y cualquier métrica que los incluyera (como la especificidad) sería prácticamente 1 para cualquier llamador. Por la misma razón, en este contexto se prefieren las curvas de precisión-sensibilidad a las curvas ROC.
+
+\begin{ejemplo}{Leer un informe de \cmd{hap.py}}{happy}
+Un llamador aplicado a HG002 produce, en las regiones de alta confianza, $\mathrm{TP}=\num{3290000}$ SNV, $\mathrm{FP}=\num{9800}$ y $\mathrm{FN}=\num{21500}$ (cifras redondas de orden realista). La precisión es $\num{3290000}/\num{3299800}=0{,}99703$, la sensibilidad $\num{3290000}/\num{3311500}=0{,}99351$ y $F_1=0{,}99527$. Todo parece excelente, pero en valores absolutos hay casi diez mil falsos positivos y más de veinte mil variantes perdidas. Por eso se informan las métricas por separado para SNV e \ingles{indels} y estratificadas por tipo de región.
+\end{ejemplo}
+
+\subsection{Elegir el umbral de QUAL}
+
+Todo filtro establece un compromiso: subir el umbral elimina falsos positivos, pero también verdaderos. La \cref{fig:09-pr} muestra ese compromiso en una simulación con \num{10000} variantes verdaderas, de las cuales el llamador propone \num{9850} (las 150 restantes nunca se llaman, por ejemplo por falta de cobertura), más \num{1500} falsos positivos con QUAL típicamente bajo. Sin filtro, la precisión es $0{,}868$ y la sensibilidad $0{,}985$. Con QUAL $\ge 20$, la precisión sube a $0{,}934$ perdiendo apenas 19 verdaderos; con QUAL $\ge 30$ llega a $0{,}957$ con sensibilidad $0{,}978$. El máximo de $F_1$ ($0{,}968$) se alcanza hacia QUAL $=32$. Más allá, cada unidad de precisión se paga cara: con QUAL $\ge 100$ la precisión es $0{,}995$, pero la sensibilidad se desploma a $0{,}774$.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.5cm}, capnueve ancho]
+\nextgroupplot[xlabel={umbral de QUAL $t$}, ylabel={métrica}, xmin=0, xmax=200, ymin=0.6, ymax=1.01,
+   legend pos=south west, title={Métricas según el umbral}]
+  \addplot[azul, very thick] table[x=t, y=prec] {figuras/cap09/pr_qual.dat}; \addlegendentry{precisión}
+  \addplot[naranja, very thick] table[x=t, y=sens] {figuras/cap09/pr_qual.dat}; \addlegendentry{sensibilidad}
+  \addplot[aqua, thick, dashed] table[x=t, y=f1] {figuras/cap09/pr_qual.dat}; \addlegendentry{$F_1$}
+  \draw[gris, densely dotted, thick] (axis cs:32,0.6) -- (axis cs:32,1.01);
+  \node[etiqueta, anchor=south west, rotate=90] at (axis cs:36,0.62) {máx.\ $F_1$};
+\nextgroupplot[xlabel={sensibilidad}, ylabel={precisión}, xmin=0.7, xmax=1.0, ymin=0.85, ymax=1.002,
+   title={Curva precisión-sensibilidad}, xtick={0.7,0.8,0.9,1}]
+  \addplot[violeta, very thick] table[x=sens, y=prec] {figuras/cap09/pr_qual.dat};
+  \addplot[only marks, mark=*, mark size=2pt, naranja] coordinates {(0.985,0.8678)(0.9831,0.9344)(0.9775,0.9568)(0.9404,0.9812)(0.7742,0.995)};
+  \node[etiqueta, anchor=east] at (axis cs:0.982,0.8678) {$t=0$};
+  \node[etiqueta, anchor=east] at (axis cs:0.980,0.9344) {$t=20$};
+  \node[etiqueta, anchor=east] at (axis cs:0.974,0.9568) {$t=30$};
+  \node[etiqueta, anchor=north east] at (axis cs:0.94,0.979) {$t=50$};
+  \node[etiqueta, anchor=north west] at (axis cs:0.776,0.993) {$t=100$};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Precisión y sensibilidad según el umbral de QUAL]{Efecto del umbral de QUAL en una simulación con \num{10000} variantes verdaderas y \num{1500} falsos positivos. \textbf{Izquierda}: la precisión sube rápidamente con los primeros umbrales, porque los falsos positivos se concentran en QUAL bajo, mientras que la sensibilidad apenas baja hasta $t\approx40$ y luego cae. \textbf{Derecha}: la misma información como curva precisión-sensibilidad; los puntos marcan algunos umbrales. La sensibilidad nunca supera $0{,}985$: ningún filtro recupera las variantes que el llamador no propuso. El umbral óptimo depende del uso: un cribado clínico de primera línea prioriza la sensibilidad; un catálogo de referencia, la precisión. Datos de \archivo{figuras/cap09/generar.py}.}
+\label{fig:09-pr}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\section{Anotación funcional de variantes}\label{sec:09-anotacion}
+% ---------------------------------------------------------------------
+\enlacerepo{9.3 · Anotación funcional de variantes}
+
+\begin{intuicion}[Una errata en un libro de recetas]
+Una errata en un libro de cocina puede ser inocua o desastrosa según dónde caiga. En el prólogo, nadie la nota. En el nombre de un plato, confunde pero no arruina la cena. En la cantidad de sal (``500 g'' en lugar de ``5 g'') arruina el plato. Y si la errata borra una línea entera de instrucciones, todo lo que sigue queda desfasado y la receta se vuelve incomprensible. Además, el daño depende de si el plato es uno que se cocina todos los días o uno que casi nadie prepara, y de si otras ediciones del libro ya tenían esa misma errata sin que nadie se quejara. Anotar una variante es responder, con datos, a estas mismas preguntas: dónde cae, qué cambia, si se ha visto antes en personas sanas y qué sabemos de su efecto.
+\end{intuicion}
+
+\subsection{Consecuencias sobre la estructura del gen}
+
+El primer paso de la anotación es geométrico: cruzar la posición de cada variante con un modelo de genes (por ejemplo, los transcritos de Ensembl o RefSeq) y decidir qué parte de qué transcrito afecta. Para que distintos programas hablen el mismo idioma, las consecuencias se describen con términos de la \emph{Sequence Ontology} (SO), una ontología de los elementos y alteraciones de las secuencias biológicas \parencite{c09-eilbeck2005}. Términos como \texttt{missense\_variant}, \texttt{splice\_donor\_variant} o \texttt{frameshift\_variant} tienen una definición precisa y un lugar en una jerarquía, lo que permite, por ejemplo, preguntar por todas las variantes ``que alteran la secuencia de la proteína'' sin enumerarlas.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, x=1.08cm]
+  \tikzset{alto/.style={fill=rojo}, mod/.style={fill=naranja}, bajo/.style={fill=amarillo}, modif/.style={fill=gris}}
+  % línea genómica y gen
+  \draw[base, thick] (0,0) -- (11.8,0);
+  \draw[tinta2, thick] (1.1,0) -- (10.2,0);
+  % exones: UTR (delgado) y CDS (grueso)
+  \fill[azulclaro] (1.1,-0.15) rectangle (1.8,0.15);
+  \fill[azul] (1.8,-0.28) rectangle (2.8,0.28);
+  \fill[azul] (4.6,-0.28) rectangle (6.0,0.28);
+  \fill[azul] (7.9,-0.28) rectangle (9.1,0.28);
+  \fill[azulclaro] (9.1,-0.15) rectangle (10.2,0.15);
+  % intrones con chevrones
+  \foreach \x in {3.3,3.8,4.3,6.5,7.0,7.5}{\draw[tinta2] (\x-0.1,0.08) -- (\x,0) -- (\x-0.1,-0.08);}
+  \node[etiqueta, anchor=north] at (1.45,-0.35) {5' UTR};
+  \node[etiqueta, anchor=north] at (9.65,-0.35) {3' UTR};
+  \node[etiqueta, anchor=north] at (3.7,-0.35) {intrón};
+  \node[etiqueta, anchor=north] at (5.3,-0.35) {exón (CDS)};
+  \node[etiqueta, anchor=north, text=gris] at (0.45,-0.35) {\emph{upstream}};
+  \node[etiqueta, anchor=north, text=gris] at (11.1,-0.35) {\emph{downstream}};
+  \node[etiqueta, font=\sffamily\tiny, text=tinta2] at (2.93,0.42) {GT};
+  \node[etiqueta, font=\sffamily\tiny, text=tinta2] at (4.47,0.42) {AG};
+  % alfileres: x / altura / estilo / etiqueta
+  \foreach \x/\h/\s/\t in {0.5/1.1/modif/{upstream\_gene\\variant}, 1.45/2.1/modif/{5\_prime\_UTR\\variant}, 1.9/1.1/alto/{start\_lost},
+       2.95/2.1/alto/{splice\_donor\\variant}, 3.7/1.1/modif/{intron\\variant}, 4.45/2.1/alto/{splice\_acceptor\\variant},
+       5.0/1.1/mod/{missense\\variant}, 5.7/2.9/bajo/{synonymous\\variant}, 8.2/1.1/alto/{frameshift\\variant},
+       8.8/2.1/alto/{stop\_gained}, 9.65/1.1/modif/{3\_prime\_UTR\\variant}, 11.1/2.1/modif/{downstream\_gene\\variant}}{
+    \draw[tinta2] (\x,0.3) -- (\x,\h);
+    \fill[\s] (\x,\h) circle (0.09);
+    \node[etiqueta, anchor=south, font=\ttfamily\tiny, align=center] at (\x,\h+0.08) {\t};
+  }
+  % leyenda
+  \foreach \s/\t [count=\i] in {alto/HIGH, mod/MODERATE, bajo/LOW, modif/MODIFIER}{
+    \fill[\s] (1.2+\i*2.1,-1.25) circle (0.09);
+    \node[etiqueta, anchor=west] at (1.32+\i*2.1,-1.25) {\t};}
+  \node[etiqueta, anchor=east] at (3.1,-1.25) {impacto:};
+\end{tikzpicture}
+\caption[Consecuencias según la posición en el gen]{Consecuencias de una variante según dónde caiga en un gen de tres exones, con los términos de la Sequence Ontology que usan VEP y SnpEff. Las cajas gruesas son la región codificante (CDS) y las delgadas las regiones no traducidas (UTR); \texttt{GT} y \texttt{AG} marcan los sitios canónicos de corte y empalme del primer intrón. El color resume la categoría de impacto: \textsc{high} (probable pérdida de función: sitios de \ingles{splicing} canónicos, \ingles{frameshift}, codón de parada prematuro, pérdida del inicio), \textsc{moderate} (cambio de aminoácido), \textsc{low} (sinónima) y \textsc{modifier} (no codificante). La categoría es una heurística, no un veredicto: una variante intrónica profunda puede crear un sitio de \ingles{splicing} nuevo y ser patogénica.}
+\label{fig:09-gen}
+\end{figure}
+
+Un mismo cambio de base puede tener consecuencias distintas en distintos transcritos del mismo gen, y un gen humano tiene, en promedio, varios transcritos. Por eso los anotadores devuelven una lista de consecuencias por variante (una por transcrito afectado), y ofrecen opciones para elegir un transcrito representativo, por ejemplo el canónico o el de mayor impacto. La descripción textual de la variante sigue la nomenclatura HGVS \parencite{c09-dendunnen2016}: \texttt{NM\_000546.6:c.743G>A} indica una sustitución en la posición 743 de la secuencia codificante del transcrito, y \texttt{p.(Arg248Gln)} su efecto predicho sobre la proteína; el paréntesis señala que el efecto es una predicción, no una observación experimental.
+
+\subsection{Consecuencias sobre el codón}
+
+Dentro de la región codificante, la consecuencia depende del código genético. La \cref{fig:09-codon} muestra los casos principales sobre una secuencia de cinco codones.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=0.42cm, y=0.66cm, font=\sffamily\scriptsize]
+  \tikzset{b/.style={nt=#1, minimum size=3.6mm, font=\ttfamily\bfseries\tiny},
+           aa/.style={font=\ttfamily\bfseries\scriptsize, text=tinta, minimum width=1.2cm},
+           cambio/.style={draw=tinta, very thick, rounded corners=1.5pt}}
+  \foreach \y/\tit/\seq/\prot/\col/\cons in {
+      0/referencia/{A,T,G,G,C,T,T,G,G,C,A,A,G,G,A}/{M,A,W,Q,G}/tinta/{},
+      1/sinónima/{A,T,G,G,C,C,T,G,G,C,A,A,G,G,A}/{M,A,W,Q,G}/amarillo!70!black/{GCT$\to$GCC: Ala$\to$Ala},
+      2/de sentido erróneo/{A,T,G,G,C,T,T,G,G,C,G,A,G,G,A}/{M,A,W,R,G}/naranja/{CAA$\to$CGA: Gln$\to$Arg},
+      3/codón de parada/{A,T,G,G,C,T,T,G,A,C,A,A,G,G,A}/{M,A,*,,}/rojo/{TGG$\to$TGA: Trp$\to$Stop},
+      4/deleción en marco/{A,T,G,G,C,T,-,-,-,C,A,A,G,G,A}/{M,A,--,Q,G}/naranja/{$-$TGG: pierde Trp},
+      5/desplazamiento/{A,T,G,G,-,T,T,G,G,C,A,A,G,G,A}/{M,V,G,K,}/rojo/{$-$C: M-V-G-K\dots}}{
+    \node[etiqueta, anchor=east, text=\col] at (0.2,-\y*1.25) {\textbf{\tit}};
+    \foreach \b [count=\i] in \seq {
+      \pgfmathtruncatemacro{\gap}{(\i-1)/3}
+      \if\b-\node[draw=gris, dashed, minimum size=3.6mm, inner sep=0pt] at (\i+\gap*0.45,-\y*1.25) {};
+      \else\node[b=\b] at (\i+\gap*0.45,-\y*1.25) {\b};\fi}
+    \foreach \a [count=\j from 0] in \prot {
+      \node[font=\ttfamily\bfseries\tiny, text=tinta2] at (2+\j*3.45,-\y*1.25-0.5) {\a};}
+    \node[etiqueta, anchor=west, text=\col] at (18.2,-\y*1.25) {\cons};
+  }
+  \draw[cambio] (6.0,-1.25-0.28) rectangle (6.9,-1.25+0.28);
+  \draw[cambio] (11.9,-2.5-0.28) rectangle (12.8,-2.5+0.28);
+  \draw[cambio] (9.45,-3.75-0.28) rectangle (10.35,-3.75+0.28);
+  \draw[cambio] (7.45,-5.0-0.28) rectangle (10.35,-5.0+0.28);
+  \draw[cambio] (5.0,-6.25-0.28) rectangle (5.9,-6.25+0.28);
+\end{tikzpicture}
+\caption[Consecuencias sobre los codones]{Efecto de cinco variantes sobre la secuencia codificante \texttt{ATG GCT TGG CAA GGA} (Met-Ala-Trp-Gln-Gly). Debajo de cada codón, el aminoácido resultante. Una sustitución en la tercera posición de \texttt{GCT} no cambia la alanina (\texttt{synonymous\_variant}); \texttt{CAA}$\to$\texttt{CGA} cambia glutamina por arginina (\texttt{missense\_variant}); \texttt{TGG}$\to$\texttt{TGA} crea un codón de parada prematuro (\texttt{stop\_gained}). Una deleción de tres bases elimina un aminoácido sin alterar el resto (\texttt{inframe\_deletion}), mientras que la deleción de una sola base desplaza el marco de lectura y cambia todos los aminoácidos siguientes (\texttt{frameshift\_variant}).}
+\label{fig:09-codon}
+\end{figure}
+
+¿Con qué frecuencia cae una SNV en cada categoría? Podemos responderlo exhaustivamente: los 61 codones con sentido admiten $61\times 9=549$ sustituciones de una base. Recorriéndolas con la tabla del código genético estándar, 134 (24,4\,\%) son sinónimas, 392 (71,4\,\%) de sentido erróneo y 23 (4,2\,\%) crean un codón de parada. La distribución por posición del codón es muy desigual (\cref{fig:09-snvcod}): en la segunda posición \emph{ninguna} sustitución es sinónima, mientras que en la tercera lo son dos de cada tres. Esta es la base del cociente $d_N/d_S$ de la evolución molecular, y también de un hecho práctico: bajo neutralidad esperaríamos unas tres variantes de sentido erróneo por cada sinónima, así que un gen en el que la población muestra muchas menos está sometido a selección purificadora. Esa es precisamente la lógica de las métricas de restricción de gnomAD que veremos más adelante.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.8\linewidth, height=4.5cm, ybar stacked, bar width=26pt,
+   xlabel={posición en el codón}, ylabel={número de SNV posibles}, xtick={1,2,3},
+   ymin=0, ymax=225, xmin=0.4, xmax=3.6, legend pos=outer north east, grid=none,
+   enlarge x limits=false]
+  \addplot[fill=amarillo, draw=none] table[x=pos, y=sin] {figuras/cap09/snv_codon.dat}; \addlegendentry{sinónima}
+  \addplot[fill=naranja, draw=none] table[x=pos, y=mis] {figuras/cap09/snv_codon.dat}; \addlegendentry{sentido erróneo}
+  \addplot[fill=rojo, draw=none] table[x=pos, y=non] {figuras/cap09/snv_codon.dat}; \addlegendentry{\ingles{stop gained}}
+  \addplot[fill=gris, draw=none] table[x=pos, y expr=\thisrow{stoplost}+\thisrow{stopret}] {figuras/cap09/snv_codon.dat}; \addlegendentry{codones de parada}
+  \node[etiqueta, text=tinta] at (axis cs:1,208) {8 / 166 / 9};
+  \node[etiqueta, text=tinta] at (axis cs:2,208) {0 / 176 / 7};
+  \node[etiqueta, text=tinta] at (axis cs:3,208) {126 / 50 / 7};
+\end{axis}
+\end{tikzpicture}
+\caption[Consecuencias de todas las SNV posibles]{Las 576 sustituciones de una base posibles en los 64 codones del código genético estándar, clasificadas por posición y consecuencia (los números indican sinónimas / de sentido erróneo / \ingles{stop gained} sobre codones con sentido; en gris, los cambios que afectan a codones de parada, que se pierden o se mantienen). La tercera posición concentra casi todas las sinónimas, lo que refleja la degeneración del código; en la segunda, todo cambio altera el aminoácido. Calculado con la tabla de Biopython en \archivo{figuras/cap09/generar.py}.}
+\label{fig:09-snvcod}
+\end{figure}
+
+\subsection{Herramientas de anotación: VEP, SnpEff y ANNOVAR}
+
+Tres herramientas dominan la anotación de variantes. \textbf{VEP} (\ingles{Variant Effect Predictor}), de Ensembl, determina el efecto de cada variante sobre genes, transcritos, secuencias proteicas y regiones reguladoras, y puede añadir frecuencias poblacionales, identificadores conocidos y predicciones de SIFT y PolyPhen \parencite{c09-mclaren2016}. \textbf{SnpEff} clasifica los efectos y les asigna las categorías de impacto de la \cref{fig:09-gen}; se distingue por su rapidez y por la facilidad para construir bases de datos de organismos no modelo a partir de un FASTA y un GTF \parencite{c09-cingolani2012}. \textbf{ANNOVAR} organiza la anotación en tres tipos (basada en genes, en regiones y en filtros contra bases de datos) y fue de las primeras en permitir priorizar variantes candidatas en estudios de exoma \parencite{c09-wang2010}. Las tres escriben su resultado dentro del propio VCF, en un campo \texttt{INFO} (\texttt{CSQ} en VEP, \texttt{ANN} en SnpEff) cuyos subcampos, separados por barras verticales, se describen en la cabecera. \cmd{bcftools} incluye además su propio anotador de consecuencias, \cmd{bcftools csq}, que tiene en cuenta la fase para evaluar juntas las variantes de un mismo codón \parencite{c09-danecek2021}.
+
+\begin{consola}[anotar.sh]
+# VEP con cache local (GRCh38) y salida VCF
+vep -i final.vcf.gz --cache --offline --assembly GRCh38 \
+    --everything --pick --vcf --compress_output bgzip \
+    -o anotado.vcf.gz
+# Alternativa: SnpEff (base de datos preconstruida)
+java -Xmx8g -jar snpEff.jar GRCh38.105 final.vcf.gz \
+    > anotado_snpeff.vcf
+\end{consola}
+
+\subsection{Frecuencia poblacional: gnomAD}
+
+La pregunta más informativa sobre una variante suele ser la más simple: \emph{¿se ha visto antes, y con qué frecuencia, en personas sin la enfermedad?} Una variante que porta el 5\,\% de la población no puede causar una enfermedad rara y grave de herencia dominante. La base de datos de referencia es gnomAD (\ingles{Genome Aggregation Database}); su versión 2 reunió \num{125748} exomas y \num{15708} genomas, \num{141456} individuos en total \parencite{c09-karczewski2020}. Para cada variante informa el número de alelos observados (AC), el de alelos genotipados (AN) y la frecuencia $\mathrm{AF}=\mathrm{AC}/\mathrm{AN}$, desglosada por población.
+
+Dos razonamientos cuantitativos son útiles aquí. El primero acota la frecuencia de una variante \emph{no observada}. Si $\mathrm{AC}=0$ entre $\mathrm{AN}$ alelos, el límite superior al 95\,\% de la frecuencia verdadera cumple $(1-f)^{\mathrm{AN}}=0{,}05$, de donde
+\begin{equation}\label{eq:09-tres}
+f_{95} = 1-0{,}05^{1/\mathrm{AN}} \approx \frac{3}{\mathrm{AN}}
+\end{equation}
+(la ``regla del tres''). Con $\mathrm{AN}=\num{250000}$, $f_{95}\approx1{,}2\times10^{-5}$: la ausencia en gnomAD es informativa, pero no demuestra que la variante sea inexistente en la población.
+
+\begin{simbolos}
+\simbolo{AC, AN}{Número de alelos alternativos observados y número total de alelos genotipados.}
+\simbolo{$f_{95}$}{Frecuencia máxima compatible, al 95\,\%, con no haber observado la variante.}
+\end{simbolos}
+
+El segundo razonamiento pregunta cuál es la frecuencia \emph{máxima} que podría tener una variante causal de una enfermedad dada. Para una enfermedad dominante de prevalencia $\pi$, penetrancia $\rho$, y en la que ninguna variante individual explica más de una fracción $h$ de los casos, los portadores (con frecuencia $\approx 2f$) que enferman no pueden superar $h\pi$:
+\begin{equation}\label{eq:09-fmax}
+2f\rho \le h\,\pi \quad\Longrightarrow\quad f_{\max} = \frac{h\,\pi}{2\rho}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\pi$}{Prevalencia de la enfermedad en la población.}
+\simbolo{$\rho$}{Penetrancia: probabilidad de enfermar siendo portador.}
+\simbolo{$h$}{Máxima fracción de casos atribuible a una sola variante (heterogeneidad alélica).}
+\simbolo{$f_{\max}$}{Frecuencia alélica máxima compatible con que la variante sea causal.}
+\end{simbolos}
+
+\begin{ejemplo}{¿Demasiado común para ser causal?}{fmax}
+Una miocardiopatía hipotética de herencia dominante tiene prevalencia $\pi=1/500$, penetrancia $\rho=0{,}5$, y ninguna variante explica más del 2\,\% de los casos ($h=0{,}02$). Entonces $f_{\max}=0{,}02\times0{,}002/(2\times0{,}5)=4\times10^{-5}$. Una variante candidata observada en gnomAD con $\mathrm{AF}=10^{-3}$ es 25 veces más frecuente de lo que permitiría ser causal con esa arquitectura; salvo que alguno de los supuestos sea muy erróneo, se descarta. Este tipo de argumento es la base de los criterios de frecuencia de las guías ACMG que veremos al final de la sección.
+\end{ejemplo}
+
+gnomAD aporta además una medida de \emph{restricción} por gen. Con un modelo mutacional que depende del contexto trinucleotídico y de la metilación, se predice cuántas variantes de pérdida de función (pLoF) \emph{esperaríamos} ver en cada gen en ausencia de selección, y se compara con las \emph{observadas}. El cociente observado/esperado, y en particular el límite superior de su intervalo de confianza (LOEUF), resume cuán intolerante es el gen a perder una copia: los genes con LOEUF bajo están fuertemente restringidos, y una variante pLoF en ellos merece más atención \parencite{c09-karczewski2020}.
+
+\subsection{Predictores de efecto: SIFT, PolyPhen-2 y CADD}
+
+Para las variantes de sentido erróneo, que son la mayoría de las codificantes y las más difíciles de interpretar, existen predictores computacionales.
+
+\paragraph{SIFT} \textcite{c09-ng2003} partieron de una idea evolutiva: si una posición de la proteína ha tolerado muchos aminoácidos distintos a lo largo de la evolución, un cambio en ella probablemente será tolerado. SIFT busca homólogos de la proteína, construye un alineamiento múltiple y estima, en cada posición $i$, la probabilidad $p_{ia}$ de cada aminoácido $a$ (con pseudoconteos que añaden aminoácidos plausibles no observados). La puntuación es la probabilidad normalizada por la del aminoácido más frecuente,
+\begin{equation}\label{eq:09-sift}
+S_{ia} = \frac{p_{ia}}{\max_{a'} p_{ia'}},
+\end{equation}
+y se predice ``deletérea'' la sustitución si $S_{ia}<0{,}05$.
+
+\begin{simbolos}
+\simbolo{$p_{ia}$}{Probabilidad estimada del aminoácido $a$ en la posición $i$ del alineamiento de homólogos.}
+\simbolo{$S_{ia}$}{Puntuación SIFT: 1 para el aminoácido más frecuente; cerca de 0 para los nunca vistos.}
+\end{simbolos}
+
+\paragraph{PolyPhen-2} \textcite{c09-adzhubei2010} combinan conservación con rasgos estructurales (accesibilidad al solvente, cambios en volumen e hidrofobicidad, proximidad a sitios funcionales anotados) en un clasificador bayesiano ingenuo entrenado con variantes causales de enfermedad y variantes neutrales. Devuelve una probabilidad de que la variante sea dañina, que se resume en tres clases: benigna, posiblemente dañina y probablemente dañina.
+
+\paragraph{CADD} Los dos anteriores solo evalúan cambios de aminoácido. \textcite{c09-kircher2014} propusieron un marco general, aplicable a cualquier SNV o \ingles{indel} del genoma, con una idea ingeniosa para obtener datos de entrenamiento sin etiquetas clínicas. Compararon variantes \emph{observadas}, fijadas en el linaje humano desde el ancestro común con el chimpancé y, por tanto, filtradas por la selección natural, con variantes \emph{simuladas} con el mismo modelo mutacional pero sin selección. Un clasificador (una máquina de vectores de soporte en la versión original; regresión logística en las posteriores) aprende a distinguirlas a partir de decenas de anotaciones: conservación, efecto sobre la proteína, marcas reguladoras, etc. Las variantes que ``parecen simuladas'' son las que la selección habría eliminado: probablemente deletéreas. La puntuación bruta se convierte en una escala Phred del \emph{rango}:
+\begin{equation}\label{eq:09-cadd}
+C = -10\log_{10}\frac{r}{N},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$r$}{Posición de la variante en el ordenamiento de todas las SNV posibles del genoma, de más a menos deletérea.}
+\simbolo{$N$}{Número total de SNV posibles en el genoma de referencia (unos $8{,}6\times10^{9}$).}
+\simbolo{$C$}{Puntuación CADD escalada (\ingles{PHRED-like}).}
+\end{simbolos}
+
+de modo que $C\ge10$ corresponde al 10\,\% más deletéreo de todas las sustituciones posibles, $C\ge20$ al 1\,\% y $C\ge30$ al 0,1\,\%. \textcite{c09-rentzsch2019} describen las versiones posteriores, que incorporan más anotaciones, soporte para GRCh38 y un servicio web.
+
+\begin{cuidado}[Los predictores no son diagnósticos]
+SIFT, PolyPhen-2 y CADD están correlacionados entre sí (usan información parecida, sobre todo conservación) y su exactitud en variantes individuales es limitada. Una puntuación ``dañina'' es evidencia de apoyo, nunca prueba de patogenicidad; y dos predictores que coinciden no son dos evidencias independientes. Las guías ACMG, precisamente por eso, les conceden el peso más bajo.
+\end{cuidado}
+
+\subsection{Del catálogo al diagnóstico: ClinVar y las guías ACMG/AMP}
+
+\textbf{ClinVar} es el archivo público de las interpretaciones clínicas de variantes: laboratorios de diagnóstico, grupos de expertos e investigadores depositan sus clasificaciones con la evidencia que las respalda, y la base de datos muestra las discrepancias entre remitentes y un nivel de revisión (las ``estrellas'') que va desde una sola clasificación sin criterios hasta la revisión por un panel de expertos \parencite{c09-landrum2018}. Encontrar una variante en ClinVar como ``patogénica'' con varias estrellas es una evidencia fuerte; encontrarla con una sola estrella y clasificaciones contradictorias, no tanto.
+
+Para clasificar una variante de manera reproducible, el American College of Medical Genetics and Genomics y la Association for Molecular Pathology publicaron unas guías que hoy son el estándar internacional \parencite{c09-richards2015}. Proponen cinco categorías: patogénica, probablemente patogénica, de significado incierto (VUS), probablemente benigna y benigna. Cada tipo de evidencia recibe un código y una fuerza: \emph{muy fuerte} (PVS1: variante nula, como un \ingles{frameshift} o un \ingles{stop gained}, en un gen donde la pérdida de función causa la enfermedad), \emph{fuerte} (PS1--PS4; p.\,ej., PS2: aparición \emph{de novo} confirmada), \emph{moderada} (PM1--PM6; p.\,ej., PM2: ausente o extremadamente rara en controles poblacionales), y \emph{de apoyo} (PP1--PP5; p.\,ej., PP3: múltiples predictores computacionales coinciden en un efecto dañino). Del lado benigno hay criterios independientes (BA1: frecuencia alélica mayor del 5\,\%), fuertes (BS1--BS4; p.\,ej., BS1: frecuencia mayor de lo esperado para la enfermedad, como en el \cref{ej:fmax}) y de apoyo (BP1--BP7). La \cref{tab:09-acmg} resume las reglas de combinación.
+
+\begin{table}[t]
+\centering
+\small
+\caption[Reglas de combinación ACMG/AMP]{Reglas de combinación de evidencias de las guías ACMG/AMP \parencite{c09-richards2015}. MF: muy fuerte; F: fuerte; M: moderada; A: de apoyo. Si se cumplen a la vez criterios patogénicos y benignos contradictorios, o no se alcanza ninguna regla, la variante es de significado incierto (VUS).}
+\label{tab:09-acmg}
+\begin{tabularx}{\linewidth}{@{}lX@{}}
+\toprule
+\textbf{Clasificación} & \textbf{Combinaciones suficientes}\\
+\midrule
+Patogénica & 1 MF + ($\ge$1 F, o $\ge$2 M, o 1 M + 1 A, o $\ge$2 A);\quad $\ge$2 F;\quad 1 F + ($\ge$3 M, o 2 M + $\ge$2 A, o 1 M + $\ge$4 A)\\[2pt]
+Probablemente patogénica & 1 MF + 1 M;\quad 1 F + 1--2 M;\quad 1 F + $\ge$2 A;\quad $\ge$3 M;\quad 2 M + $\ge$2 A;\quad 1 M + $\ge$4 A\\[2pt]
+Benigna & BA1 (independiente);\quad $\ge$2 criterios benignos fuertes\\[2pt]
+Probablemente benigna & 1 benigno fuerte + 1 de apoyo;\quad $\ge$2 benignos de apoyo\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{ejemplo}{Clasificar una variante}{acmg}
+En un niño con un trastorno del neurodesarrollo, la secuenciación del trío revela una variante \texttt{stop\_gained} en heterocigosis, ausente en ambos padres (paternidad confirmada) y ausente en gnomAD. El gen tiene LOEUF muy bajo y la haploinsuficiencia es un mecanismo establecido de la enfermedad. Criterios: PVS1 (variante nula en un gen donde la pérdida de función es el mecanismo, muy fuerte), PS2 (\emph{de novo} confirmada, fuerte) y PM2 (ausente en controles, moderada). La regla ``1 MF + $\ge$1 F'' basta para clasificarla como \textbf{patogénica}. Si, en cambio, fuese una variante de sentido erróneo heredada de un progenitor sano, con CADD 24 y ausente de gnomAD, solo tendríamos PM2 y PP3: ninguna regla se cumple y la variante quedaría como \textbf{VUS}, a la espera de más evidencia (segregación familiar, estudios funcionales, nuevos casos).
+\end{ejemplo}
+
+\subsection{El embudo de priorización}
+
+En la práctica, todo lo anterior se encadena en un \emph{embudo} que reduce millones de variantes a unas pocas candidatas (\cref{fig:09-embudo}). Los números de las primeras etapas proceden del Proyecto 1000 Genomas: un genoma típico contiene entre 149 y 182 sitios con variantes que truncan proteínas y entre \num{10000} y \num{12000} sitios con variantes que alteran la secuencia peptídica \parencite{c09-auton2015}. Cada filtro posterior, basado en frecuencia, modo de herencia, fenotipo e interpretación, debe aplicarse con conciencia de lo que puede perder: una variante causal en un gen aún no asociado a enfermedad, una variante no codificante o una variante estructural atravesarán intactas este embudo sin ser vistas.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \foreach \i/\w/\n/\t/\c/\tc in {0/7.0/{4,1--5,0 millones}/{variantes frente a la referencia$^{\ast}$}/azulpalido/tinta,
+                              1/6.0/{$\sim$\num{11000}}/{alteran la secuencia de la proteína$^{\ast}$}/azulclaro/tinta,
+                              2/5.0/{cientos}/{raras en gnomAD (p.\,ej., AF $<$ 0,1\,\%)}/azulmedio/white,
+                              3/4.0/{decenas}/{herencia compatible (\emph{de novo}, recesiva)}/azul/white,
+                              4/3.0/{pocas}/{genes coherentes con el fenotipo}/azulprofundo/white,
+                              5/2.0/{1--3}/{clasificación ACMG/AMP}/azulnoche/white}{
+    \pgfmathsetmacro{\wn}{\w-1.0}
+    \fill[\c, rounded corners=1pt] ({-\w/2},{-\i*0.72}) -- ({\w/2},{-\i*0.72}) -- ({\wn/2},{-\i*0.72-0.62}) -- ({-\wn/2},{-\i*0.72-0.62}) -- cycle;
+    \node[font=\sffamily\bfseries\scriptsize, text=\tc] at (0,{-\i*0.72-0.31}) {\n};
+    \draw[gris, densely dotted] ({\w/2-0.3},{-\i*0.72-0.31}) -- (3.8,{-\i*0.72-0.31});
+    \node[etiqueta, anchor=west, align=left] at (3.85,{-\i*0.72-0.31}) {\t};
+  }
+  \node[etiqueta, anchor=north west] at (3.85,-4.4) {$^{\ast}$por individuo, Proyecto 1000 Genomas};
+\end{tikzpicture}
+\caption[El embudo de priorización]{El embudo de priorización de variantes en un caso de enfermedad rara. Las dos primeras etapas usan las cifras por genoma del Proyecto 1000 Genomas \parencite{c09-auton2015}; las siguientes son órdenes de magnitud ilustrativos, que dependen del diseño (individuo o trío, exoma o genoma) y de la población. Cada estrechamiento es una hipótesis explícita (``la variante causal es rara'', ``es codificante'', ``sigue un modelo dominante'') y debe revisarse si el análisis no encuentra candidatas.}
+\label{fig:09-embudo}
+\end{figure}
+
+% ---------------------------------------------------------------------
+\begin{resumen}
+\begin{itemize}
+  \item Las variantes se clasifican por escala: SNV, MNV e \ingles{indels} se leen en la columna del \ingles{pileup}; las variantes estructurales y CNV, en la geometría de los alineamientos (profundidad, pares anómalos, lecturas partidas).
+  \item Con errores independientes, $P(D\mid G)=\prod_i[\tfrac12P(b_i\mid a_1)+\tfrac12P(b_i\mid a_2)]$, con $P(b\mid a)=1-\varepsilon$ o $\varepsilon/3$ y $\varepsilon=10^{-Q/10}$. Los PL expresan estas verosimilitudes en escala Phred relativa al mejor genotipo.
+  \item La distribución \emph{a priori} $P(RA)=\theta$, $P(AA)=\theta/2$ procede del espectro de frecuencias neutral. La posterior da el genotipo, QUAL $=-10\log_{10}P(RR\mid D)$ y GQ $=-10\log_{10}[1-P(\hat G\mid D)]$. A baja profundidad la distribución \emph{a priori} y el muestreo de alelos dominan: un genotipado individual fiable pide unas 15--20 lecturas.
+  \item BAQ reduce la calidad de las bases posiblemente mal alineadas; la llamada conjunta estima la frecuencia alélica por EM y la usa como distribución \emph{a priori} de Hardy-Weinberg. HaplotypeCaller reensambla haplotipos localmente y DeepVariant aprende el modelo de error con una red convolucional.
+  \item El flujo \cmd{mpileup} $\to$ \cmd{call -mv} $\to$ \cmd{norm} $\to$ \cmd{filter} produce un VCF limpio. La normalización (parsimonia y alineamiento a la izquierda) da una representación única a cada \ingles{indel} y es imprescindible antes de comparar.
+  \item La razón ti/tv ($\approx2{,}0$--$2{,}1$ en genomas humanos, $0{,}5$ para errores aleatorios) estima la fracción de falsos positivos. La evaluación rigurosa usa Genome in a Bottle, \cmd{hap.py} y las métricas de precisión, sensibilidad y $F_1$, estratificadas por tipo de variante y región.
+  \item La anotación asigna consecuencias con términos de la Sequence Ontology (VEP, SnpEff, ANNOVAR), consulta frecuencias en gnomAD (regla del tres, frecuencia máxima compatible con la enfermedad), predictores (SIFT, PolyPhen-2, CADD) y ClinVar, y combina la evidencia con las reglas ACMG/AMP.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Una columna tiene 8 lecturas de Q30: 7 \texttt{C} (referencia) y 1 \texttt{T}. Calcule $\log_{10}L$ para $CC$, $CT$ y $TT$ con la \cref{eq:09-lik}, los PL correspondientes y el genotipo de máxima posterior con $\theta=10^{-3}$. ¿Cuántas lecturas \texttt{T} harían falta para que el genotipo inferido fuese $CT$?
+\ej{1} Escriba en formato VCF (con base de anclaje) una inserción de \texttt{AG} inmediatamente después de la posición 100, donde la referencia tiene una \texttt{T}. Escriba después un sitio con dos alelos alternativos (\texttt{G} y \texttt{T}) e indique cuántos valores debe tener su campo PL y en qué orden.
+\ej{1} Normalice a mano, con la referencia \secuencia{CTTTTTAG} (posiciones 1--8), la deleción \texttt{POS=5, REF=TT, ALT=T}. Compruebe su resultado con la función \py{normalizar}.
+\ej{2} Demuestre que, para un heterocigoto, $P(b\mid RA)=\tfrac12-\varepsilon/3$ tanto si $b=R$ como si $b=A$, y que para $b\notin\{R,A\}$ vale $\varepsilon/3$. Use este resultado para explicar por qué, a partir de cierta profundidad, $\log_{10}L(RR)-\log_{10}L(RA)$ decrece linealmente con el número de lecturas alternativas.
+\ej{2} Un conjunto de variantes de exoma tiene ti/tv $=2{,}4$. Si las variantes verdaderas de exoma tienen ti/tv $=3{,}0$, estime con la \cref{eq:09-titv} la fracción de falsos positivos. Discuta dos razones por las que esta estimación podría estar sesgada.
+\ej{2} Descargue un BAM de una región de HG002 (por ejemplo, un cromosoma pequeño) y la verdad de GIAB correspondiente. Ejecute el flujo de la \cref{fig:09-flujo} con y sin BAQ (\texttt{-B}) y compare precisión y sensibilidad para SNV e \ingles{indels} con \cmd{hap.py}. ¿Dónde se concentran las diferencias?
+\ej{3} Implemente el algoritmo EM de la \cref{eq:09-em} y reproduzca el \cref{ej:em}. Luego simule 200 muestras a $4\times$ con una variante de frecuencia $0{,}05$ y compare la sensibilidad de la llamada individual y la conjunta en función de la frecuencia. ¿Qué ocurre si la mitad de las muestras proceden de una población en la que la variante no existe?
+\ej{3} Reproduzca la \cref{fig:09-snvcod} y extiéndala: pondere cada una de las 576 sustituciones por una tasa de mutación en la que las transiciones son el doble de probables que cada transversión. ¿Cómo cambia la fracción esperada de variantes sinónimas? Relacione el resultado con el cálculo de $d_N/d_S$.
+\end{ejercicios}
+
+\referenciascapitulo

@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n}{PARADAS\PYGZus{}11} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TAA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TAG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TGA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}           \PYG{c+c1}{\PYGZsh{} tabla estándar/bacteriana}
+\PYG{n}{PARADAS\PYGZus{}4} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TAA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{TAG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}                   \PYG{c+c1}{\PYGZsh{} Mycoplasma: TGA = Trp}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{buscar\PYGZus{}orfs}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{min\PYGZus{}cod}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{inicios}\PYG{o}{=}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ATG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,}\PYG{p}{)}\PYG{p}{,} \PYG{n}{paradas}\PYG{o}{=}\PYG{n}{PARADAS\PYGZus{}11}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}ORFs en los 6 marcos; coordenadas 0\PYGZhy{}based [ini, fin) en x.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{L}\PYG{p}{,} \PYG{n}{orfs} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{for} \PYG{n}{hebra}\PYG{p}{,} \PYG{n}{s} \PYG{o+ow}{in} \PYG{p}{(}\PYG{p}{(}\PYG{o}{+}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{x}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{complemento\PYGZus{}reverso}\PYG{p}{(}\PYG{n}{x}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{f} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{abierto} \PYG{o}{=} \PYG{k+kc}{None}
+            \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{2}\PYG{p}{,} \PYG{l+m+mi}{3}\PYG{p}{)}\PYG{p}{:}
+                \PYG{n}{c} \PYG{o}{=} \PYG{n}{s}\PYG{p}{[}\PYG{n}{k}\PYG{p}{:}\PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{3}\PYG{p}{]}
+                \PYG{k}{if} \PYG{n}{abierto} \PYG{o+ow}{is} \PYG{k+kc}{None} \PYG{o+ow}{and} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{inicios}\PYG{p}{:}
+                    \PYG{n}{abierto} \PYG{o}{=} \PYG{n}{k}                       \PYG{c+c1}{\PYGZsh{} se abre}
+                \PYG{k}{elif} \PYG{n}{abierto} \PYG{o+ow}{is} \PYG{o+ow}{not} \PYG{k+kc}{None} \PYG{o+ow}{and} \PYG{n}{c} \PYG{o+ow}{in} \PYG{n}{paradas}\PYG{p}{:}
+                    \PYG{n}{n} \PYG{o}{=} \PYG{p}{(}\PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{n}{abierto}\PYG{p}{)} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{3}            \PYG{c+c1}{\PYGZsh{} codones}
+                    \PYG{k}{if} \PYG{n}{n} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{n}{min\PYGZus{}cod}\PYG{p}{:}
+                        \PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o}{=} \PYG{n}{abierto}\PYG{p}{,} \PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{3}
+                        \PYG{k}{if} \PYG{n}{hebra} \PYG{o}{==} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{:}               \PYG{c+c1}{\PYGZsh{} a hebra +}
+                            \PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o}{=} \PYG{n}{L} \PYG{o}{\PYGZhy{}} \PYG{n}{b}\PYG{p}{,} \PYG{n}{L} \PYG{o}{\PYGZhy{}} \PYG{n}{a}
+                        \PYG{n}{orfs}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{,} \PYG{n}{hebra}\PYG{p}{,} \PYG{n}{f} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{n}\PYG{p}{)}\PYG{p}{)}
+                    \PYG{n}{abierto} \PYG{o}{=} \PYG{k+kc}{None}                    \PYG{c+c1}{\PYGZsh{} se cierra}
+    \PYG{k}{return} \PYG{n}{orfs}
+\end{MintedVerbatim}

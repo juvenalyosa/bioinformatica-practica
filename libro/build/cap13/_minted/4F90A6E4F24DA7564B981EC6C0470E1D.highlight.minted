@@ -1,0 +1,8 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+bismark\PYGZus{}genome\PYGZus{}preparation\PYG{+w}{ }genoma/\PYG{+w}{            }\PYG{c+c1}{\PYGZsh{} versiones C\PYGZhy{}\PYGZgt{}T y G\PYGZhy{}\PYGZgt{}A}
+bismark\PYG{+w}{ }\PYGZhy{}\PYGZhy{}genome\PYG{+w}{ }genoma/\PYG{+w}{ }\PYGZhy{}1\PYG{+w}{ }m1\PYGZus{}R1.fq.gz\PYG{+w}{ }\PYGZhy{}2\PYG{+w}{ }m1\PYGZus{}R2.fq.gz
+deduplicate\PYGZus{}bismark\PYG{+w}{ }\PYGZhy{}\PYGZhy{}bam\PYG{+w}{ }m1\PYGZus{}R1\PYGZus{}bismark\PYGZus{}bt2\PYGZus{}pe.bam
+bismark\PYGZus{}methylation\PYGZus{}extractor\PYG{+w}{ }\PYGZhy{}\PYGZhy{}bedGraph\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cytosine\PYGZus{}report\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}genome\PYGZus{}folder\PYG{+w}{ }genoma/\PYG{+w}{ }m1\PYGZus{}R1\PYGZus{}bismark\PYGZus{}bt2\PYGZus{}pe.deduplicated.bam
+\PYG{c+c1}{\PYGZsh{} salida: por cada CpG, lecturas metiladas y no metiladas}
+\end{MintedVerbatim}

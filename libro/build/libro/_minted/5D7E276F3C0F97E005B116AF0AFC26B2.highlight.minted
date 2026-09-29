@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{time}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nn}{random}\PYG{o}{,}\PYG{+w}{ }\PYG{n+nn}{requests}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{get\PYGZus{}json}\PYG{p}{(}\PYG{n}{url}\PYG{p}{,} \PYG{n}{params}\PYG{o}{=}\PYG{k+kc}{None}\PYG{p}{,} \PYG{n}{t0}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{,} \PYG{n}{tmax}\PYG{o}{=}\PYG{l+m+mi}{30}\PYG{p}{,} \PYG{n}{tries}\PYG{o}{=}\PYG{l+m+mi}{6}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{tries}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{r} \PYG{o}{=} \PYG{n}{requests}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{url}\PYG{p}{,} \PYG{n}{params}\PYG{o}{=}\PYG{n}{params}\PYG{p}{,} \PYG{n}{timeout}\PYG{o}{=}\PYG{l+m+mi}{30}\PYG{p}{,}
+                         \PYG{n}{headers}\PYG{o}{=}\PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Accept}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{application/json}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{\PYGZcb{}}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{r}\PYG{o}{.}\PYG{n}{status\PYGZus{}code} \PYG{o}{==} \PYG{l+m+mi}{200}\PYG{p}{:}
+            \PYG{k}{return} \PYG{n}{r}\PYG{o}{.}\PYG{n}{json}\PYG{p}{(}\PYG{p}{)}
+        \PYG{k}{if} \PYG{n}{r}\PYG{o}{.}\PYG{n}{status\PYGZus{}code} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{p}{(}\PYG{l+m+mi}{429}\PYG{p}{,} \PYG{l+m+mi}{500}\PYG{p}{,} \PYG{l+m+mi}{502}\PYG{p}{,} \PYG{l+m+mi}{503}\PYG{p}{,} \PYG{l+m+mi}{504}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{r}\PYG{o}{.}\PYG{n}{raise\PYGZus{}for\PYGZus{}status}\PYG{p}{(}\PYG{p}{)}           \PYG{c+c1}{\PYGZsh{} error del cliente}
+        \PYG{n}{wait} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{r}\PYG{o}{.}\PYG{n}{headers}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Retry\PYGZhy{}After}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{wait} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{wait}\PYG{p}{,} \PYG{n+nb}{min}\PYG{p}{(}\PYG{n}{tmax}\PYG{p}{,} \PYG{n}{t0} \PYG{o}{*} \PYG{l+m+mi}{2} \PYG{o}{*}\PYG{o}{*} \PYG{n}{k}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{time}\PYG{o}{.}\PYG{n}{sleep}\PYG{p}{(}\PYG{n}{wait} \PYG{o}{+} \PYG{n}{random}\PYG{o}{.}\PYG{n}{uniform}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{t0}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{raise} \PYG{n+ne}{RuntimeError}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{sin respuesta tras }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{tries}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ intentos}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

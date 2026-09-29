@@ -1,0 +1,1513 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{1}
+  \datalist[entry]{apa/apasortcite//global/global/global}
+    \entry{c13-amemiya2019}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=8dd294d3cc42a79612ecd86098e02f06}{%
+           family={Amemiya},
+           familyi={A\bibinitperiod},
+           given={Haley\bibnamedelima M.},
+           giveni={H\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=0b07fb906d12d0ba303d42e9df8b423e}{%
+           family={Boyle},
+           familyi={B\bibinitperiod},
+           given={Alan\bibnamedelima P.},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{7637b0d9fedea80c35467ee088adcfb2}
+      \strng{fullhash}{9f800f6606bbe24638975df87a77083b}
+      \strng{fullhashraw}{9f800f6606bbe24638975df87a77083b}
+      \strng{bibnamehash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authorbibnamehash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authornamehash}{7637b0d9fedea80c35467ee088adcfb2}
+      \strng{authorfullhash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authorfullhashraw}{9f800f6606bbe24638975df87a77083b}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scientific Reports}
+      \field{number}{1}
+      \field{title}{The ENCODE blacklist: Identification of problematic regions of the genome}
+      \field{volume}{9}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{pages}{9354}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1038/s41598-019-45839-z
+      \endverb
+    \endentry
+    \entry{c13-buenrostro2013}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=adf1df935b371c1fb3285fa1e44ff2a1}{%
+           family={Buenrostro},
+           familyi={B\bibinitperiod},
+           given={Jason\bibnamedelima D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=e359720b2b0f9255b15a3201105f8a45}{%
+           family={Giresi},
+           familyi={G\bibinitperiod},
+           given={Paul\bibnamedelima G.},
+           giveni={P\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=7c19bc12625563fab9315e853fbcfb28}{%
+           family={Zaba},
+           familyi={Z\bibinitperiod},
+           given={Lisa\bibnamedelima C.},
+           giveni={L\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=5d226992dbc53a52d032f595d1361ee9}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={Howard\bibnamedelima Y.},
+           giveni={H\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=0091a16254ba6b728454f63b52eec2ed}{%
+           family={Greenleaf},
+           familyi={G\bibinitperiod},
+           given={William\bibnamedelima J.},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{fullhash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{fullhashraw}{7a625c90da787b0beac182e98e89ac87}
+      \strng{bibnamehash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authorbibnamehash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authornamehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{authorfullhash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authorfullhashraw}{7a625c90da787b0beac182e98e89ac87}
+      \field{extraname}{1}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Methods}
+      \field{number}{12}
+      \field{title}{Transposition of native chromatin for fast and sensitive epigenomic profiling of open chromatin, DNA-binding proteins and nucleosome position}
+      \field{volume}{10}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{pages}{1213\bibrangedash 1218}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1038/nmeth.2688
+      \endverb
+    \endentry
+    \entry{c13-buenrostro2015}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=adf1df935b371c1fb3285fa1e44ff2a1}{%
+           family={Buenrostro},
+           familyi={B\bibinitperiod},
+           given={Jason\bibnamedelima D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=3c88871ca494c5289f7970f57ce62a6b}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Beijing},
+           giveni={B\bibinitperiod}}}%
+        {{hash=5d226992dbc53a52d032f595d1361ee9}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={Howard\bibnamedelima Y.},
+           giveni={H\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=0091a16254ba6b728454f63b52eec2ed}{%
+           family={Greenleaf},
+           familyi={G\bibinitperiod},
+           given={William\bibnamedelima J.},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{fullhash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{fullhashraw}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{bibnamehash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authorbibnamehash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authornamehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{authorfullhash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authorfullhashraw}{79a6a3f29d16837a0b642c25c94ba12f}
+      \field{extraname}{2}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Current Protocols in Molecular Biology}
+      \field{number}{1}
+      \field{title}{ATAC-seq: A method for assaying chromatin accessibility genome-wide}
+      \field{volume}{109}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{21.29.1\bibrangedash 21.29.9}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1002/0471142727.mb2129s109
+      \endverb
+    \endentry
+    \entry{c13-encode2012}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=1fbb5d2ef5829f013caaa5f390fefa5e}{%
+           family={{ENCODE Project Consortium}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{fullhash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{fullhashraw}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{bibnamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorbibnamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authornamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorfullhash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorfullhashraw}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7414}
+      \field{title}{An integrated encyclopedia of DNA elements in the human genome}
+      \field{volume}{489}
+      \field{year}{2012}
+      \field{dateera}{ce}
+      \field{pages}{57\bibrangedash 74}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1038/nature11247
+      \endverb
+    \endentry
+    \entry{c13-encode2020}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=1fbb5d2ef5829f013caaa5f390fefa5e}{%
+           family={{ENCODE Project Consortium}},
+           familyi={E\bibinitperiod}}}%
+        {{hash=ac556d38f57a432e6f86479ffc40d1fc}{%
+           family={Abascal},
+           familyi={A\bibinitperiod},
+           given={Federico},
+           giveni={F\bibinitperiod}}}%
+        {{hash=7840e68cb7c2dca4ee7d143ccc6b2074}{%
+           family={Acosta},
+           familyi={A\bibinitperiod},
+           given={Reyes},
+           giveni={R\bibinitperiod}}}%
+        {{hash=021b5cb21ffbaa70c00b64e447ee885a}{%
+           family={Addleman},
+           familyi={A\bibinitperiod},
+           given={Nicholas\bibnamedelima J.},
+           giveni={N\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=bfee7a6bcb8ad821f8d88e0c88e9487c}{%
+           family={Adrian},
+           familyi={A\bibinitperiod},
+           given={Jessika},
+           giveni={J\bibinitperiod}}}%
+        {{hash=bd0da4d8dfff141bbb03074fc59832cf}{%
+           family={Afzal},
+           familyi={A\bibinitperiod},
+           given={Veena},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{95cb851a5319fae4c19c327f4c9bc144}
+      \strng{fullhash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{fullhashraw}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{bibnamehash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authorbibnamehash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authornamehash}{95cb851a5319fae4c19c327f4c9bc144}
+      \strng{authorfullhash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authorfullhashraw}{3d3e6bc367e4aceabd9e12ebef906520}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7818}
+      \field{title}{Expanded encyclopaedias of DNA elements in the human and mouse genomes}
+      \field{volume}{583}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{pages}{699\bibrangedash 710}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1038/s41586-020-2493-4
+      \endverb
+    \endentry
+    \entry{c13-jenuwein2001}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=13d56d9498db232d2734b6c5a82ee92f}{%
+           family={Jenuwein},
+           familyi={J\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+        {{hash=6528edf9b24550413639c23670123051}{%
+           family={Allis},
+           familyi={A\bibinitperiod},
+           given={C.\bibnamedelimi David},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{fullhash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{fullhashraw}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{bibnamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorbibnamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authornamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorfullhash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorfullhashraw}{170622a583e83c156ea1f9f24ec46ccd}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{5532}
+      \field{title}{Translating the histone code}
+      \field{volume}{293}
+      \field{year}{2001}
+      \field{dateera}{ce}
+      \field{pages}{1074\bibrangedash 1080}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1126/science.1063127
+      \endverb
+    \endentry
+    \entry{c13-johnson2007}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=8f805225d8e433c29a18a566d1f6acc6}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={David\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=c3562acf55b61e562ff47221e309b39e}{%
+           family={Mortazavi},
+           familyi={M\bibinitperiod},
+           given={Ali},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e1ed5d8b27d6ba9b572994831e6a6f79}{%
+           family={Myers},
+           familyi={M\bibinitperiod},
+           given={Richard\bibnamedelima M.},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=530e94609b5073870ac8d4067b6928e2}{%
+           family={Wold},
+           familyi={W\bibinitperiod},
+           given={Barbara},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{c8817472457540d8edb09f241dd2bb05}
+      \strng{fullhash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{fullhashraw}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{bibnamehash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authorbibnamehash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authornamehash}{c8817472457540d8edb09f241dd2bb05}
+      \strng{authorfullhash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authorfullhashraw}{d4079740f537a0f9b324bfb6812b3f85}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{5830}
+      \field{title}{Genome-wide mapping of in vivo protein-DNA interactions}
+      \field{volume}{316}
+      \field{year}{2007}
+      \field{dateera}{ce}
+      \field{pages}{1497\bibrangedash 1502}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1126/science.1141319
+      \endverb
+    \endentry
+    \entry{c13-kharchenko2008}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=7f4a1befbdf4ff9fee318034b865073e}{%
+           family={Kharchenko},
+           familyi={K\bibinitperiod},
+           given={Peter\bibnamedelima V.},
+           giveni={P\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=3797f3cc06379b3c96fb8b7b4dc316af}{%
+           family={Tolstorukov},
+           familyi={T\bibinitperiod},
+           given={Michael\bibnamedelima Y.},
+           giveni={M\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=3d85caa963ffda60c7aeec4c230bbab2}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{5974f2ca5f5e9833d2e6ac544d44ac41}
+      \strng{fullhash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{fullhashraw}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{bibnamehash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authorbibnamehash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authornamehash}{5974f2ca5f5e9833d2e6ac544d44ac41}
+      \strng{authorfullhash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authorfullhashraw}{d6bc0933dd24f23ffdfc22956da75211}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Biotechnology}
+      \field{number}{12}
+      \field{title}{Design and analysis of ChIP-seq experiments for DNA-binding proteins}
+      \field{volume}{26}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{pages}{1351\bibrangedash 1359}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1038/nbt.1508
+      \endverb
+    \endentry
+    \entry{c13-landt2012}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=86ea37010302bbf64fbb3380344caa03}{%
+           family={Landt},
+           familyi={L\bibinitperiod},
+           given={Stephen\bibnamedelima G.},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=e22c6eacd4e2bdd92130832e3060b2d0}{%
+           family={Marinov},
+           familyi={M\bibinitperiod},
+           given={Georgi\bibnamedelima K.},
+           giveni={G\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=12b963de44fd4f2793ed8cc9e0dbc945}{%
+           family={Kheradpour},
+           familyi={K\bibinitperiod},
+           given={Pouya},
+           giveni={P\bibinitperiod}}}%
+        {{hash=7fac82cdbde551ecbcc2eca73257c7c2}{%
+           family={Pauli},
+           familyi={P\bibinitperiod},
+           given={Florencia},
+           giveni={F\bibinitperiod}}}%
+        {{hash=880ea6551f1f22786b9841098b84ebed}{%
+           family={Batzoglou},
+           familyi={B\bibinitperiod},
+           given={Serafim},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{e81494d0b09df69e4bf66ba9dc68e3a5}
+      \strng{fullhash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{fullhashraw}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{bibnamehash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authorbibnamehash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authornamehash}{e81494d0b09df69e4bf66ba9dc68e3a5}
+      \strng{authorfullhash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authorfullhashraw}{e6ab5cdcc1e36c361996aa74881db811}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Genome Research}
+      \field{number}{9}
+      \field{title}{ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia}
+      \field{volume}{22}
+      \field{year}{2012}
+      \field{dateera}{ce}
+      \field{pages}{1813\bibrangedash 1831}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1101/gr.136184.111
+      \endverb
+    \endentry
+    \entry{c13-li2011}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=648f941baf22576f7a907f38049cfbec}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Qunhua},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=53aad1e4f1d440695d8f561e110a7b73}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={James\bibnamedelima B.},
+           giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=138f5c8d589ba1067e612ea3358b0ae4}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Haiyan},
+           giveni={H\bibinitperiod}}}%
+        {{hash=4cbb7e2b2b68aff0e8c8ad3f0cf5f335}{%
+           family={Bickel},
+           familyi={B\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{72e707bf13ade7f80d92f4e314b48256}
+      \strng{fullhash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{fullhashraw}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{bibnamehash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authorbibnamehash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authornamehash}{72e707bf13ade7f80d92f4e314b48256}
+      \strng{authorfullhash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authorfullhashraw}{980f9dfca0b8e28756330e4df1109f75}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Applied Statistics}
+      \field{number}{3}
+      \field{title}{Measuring reproducibility of high-throughput experiments}
+      \field{volume}{5}
+      \field{year}{2011}
+      \field{dateera}{ce}
+      \field{pages}{1752\bibrangedash 1779}
+      \range{pages}{28}
+      \verb{doi}
+      \verb 10.1214/11-AOAS466
+      \endverb
+    \endentry
+    \entry{c13-luger1997}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=a18d41a7d21786a2380e3deb1e041bfa}{%
+           family={Luger},
+           familyi={L\bibinitperiod},
+           given={Karolin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=c6c1948f04a9c6b2ce93de71454992f0}{%
+           family={Mäder},
+           familyi={M\bibinitperiod},
+           given={Armin\bibnamedelima W.},
+           giveni={A\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=a242914a408e9cc61a0441fc473f83be}{%
+           family={Richmond},
+           familyi={R\bibinitperiod},
+           given={Robin\bibnamedelima K.},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=8ba314a6f29b431d96a61e759e8d56e3}{%
+           family={Sargent},
+           familyi={S\bibinitperiod},
+           given={David\bibnamedelima F.},
+           giveni={D\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=9e4ac7bca1a3223549fd59cb914387f3}{%
+           family={Richmond},
+           familyi={R\bibinitperiod},
+           given={Timothy\bibnamedelima J.},
+           giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a398ba7c30a34f165b48a2b9b8ece84}
+      \strng{fullhash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{fullhashraw}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{bibnamehash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authorbibnamehash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authornamehash}{9a398ba7c30a34f165b48a2b9b8ece84}
+      \strng{authorfullhash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authorfullhashraw}{d93a1444027a32c33d02ecb67f12a0d4}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{6648}
+      \field{title}{Crystal structure of the nucleosome core particle at 2.8 Å resolution}
+      \field{volume}{389}
+      \field{year}{1997}
+      \field{dateera}{ce}
+      \field{pages}{251\bibrangedash 260}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1038/38444
+      \endverb
+    \endentry
+    \entry{c13-park2009}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=3d85caa963ffda60c7aeec4c230bbab2}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{fullhash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{fullhashraw}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{bibnamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorbibnamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authornamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorfullhash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorfullhashraw}{3d85caa963ffda60c7aeec4c230bbab2}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Reviews Genetics}
+      \field{number}{10}
+      \field{title}{ChIP-seq: Advantages and challenges of a maturing technology}
+      \field{volume}{10}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{pages}{669\bibrangedash 680}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1038/nrg2641
+      \endverb
+    \endentry
+    \entry{c13-kundaje2015}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=637ad4b431f461f2a313d909f335e259}{%
+           family={{Roadmap Epigenomics Consortium}},
+           familyi={R\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9384437bb37bffa96f6a2116a25b2edf}{%
+           family={Meuleman},
+           familyi={M\bibinitperiod},
+           given={Wouter},
+           giveni={W\bibinitperiod}}}%
+        {{hash=7fde20fbe841962a5aaf772894e066f6}{%
+           family={Ernst},
+           familyi={E\bibinitperiod},
+           given={Jason},
+           giveni={J\bibinitperiod}}}%
+        {{hash=b96c5ba59b04a6423617a7dc6c4d4a26}{%
+           family={Bilenky},
+           familyi={B\bibinitperiod},
+           given={Misha},
+           giveni={M\bibinitperiod}}}%
+        {{hash=439c3058a97540f805c6f6efa59b57c7}{%
+           family={Yen},
+           familyi={Y\bibinitperiod},
+           given={Angela},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{c3a64ff45cec627f158156dd00a120e0}
+      \strng{fullhash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{fullhashraw}{a014e30609c23d55f376be1c9f26e161}
+      \strng{bibnamehash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authorbibnamehash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authornamehash}{c3a64ff45cec627f158156dd00a120e0}
+      \strng{authorfullhash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authorfullhashraw}{a014e30609c23d55f376be1c9f26e161}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7539}
+      \field{title}{Integrative analysis of 111 reference human epigenomes}
+      \field{volume}{518}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{317\bibrangedash 330}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1038/nature14248
+      \endverb
+    \endentry
+    \entry{c13-skene2017}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5f61676154f149f0d92da4f20656173c}{%
+           family={Skene},
+           familyi={S\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=655a0d95ff8b3f41ffc65b3426fef81a}{%
+           family={Henikoff},
+           familyi={H\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{fullhash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{fullhashraw}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{bibnamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorbibnamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authornamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorfullhash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorfullhashraw}{800dd02c6f92551fffb68d69d9432ff4}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{eLife}
+      \field{title}{An efficient targeted nuclease strategy for high-resolution mapping of DNA binding sites}
+      \field{volume}{6}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{pages}{e21856}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.7554/eLife.21856
+      \endverb
+    \endentry
+    \entry{c13-zhang2008}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=2c81656c924858824dfb10d50423b77a}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=b9ea953e38962ea62150af4914b3a85b}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Tao},
+           giveni={T\bibinitperiod}}}%
+        {{hash=7f45dec415e8e50476d675d4cdab15e3}{%
+           family={Meyer},
+           familyi={M\bibinitperiod},
+           given={Clifford\bibnamedelima A.},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=1f36d87ab17349e4246063e1b433b043}{%
+           family={Eeckhoute},
+           familyi={E\bibinitperiod},
+           given={Jérôme},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8f805225d8e433c29a18a566d1f6acc6}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={David\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=b1492fc9a6dad81cfb914cab0699b4cd}{%
+           family={Bernstein},
+           familyi={B\bibinitperiod},
+           given={Bradley\bibnamedelima E.},
+           giveni={B\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{2810de8af34d5dab287ae58a8692e0cf}
+      \strng{fullhash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{fullhashraw}{190f5f9e19519c35a762b125a38a6276}
+      \strng{bibnamehash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authorbibnamehash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authornamehash}{2810de8af34d5dab287ae58a8692e0cf}
+      \strng{authorfullhash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authorfullhashraw}{190f5f9e19519c35a762b125a38a6276}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Genome Biology}
+      \field{number}{9}
+      \field{title}{Model-based analysis of ChIP-Seq (MACS)}
+      \field{volume}{9}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{pages}{R137}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1186/gb-2008-9-9-r137
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{c13-amemiya2019}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=8dd294d3cc42a79612ecd86098e02f06}{%
+           family={Amemiya},
+           familyi={A\bibinitperiod},
+           given={Haley\bibnamedelima M.},
+           giveni={H\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=0b07fb906d12d0ba303d42e9df8b423e}{%
+           family={Boyle},
+           familyi={B\bibinitperiod},
+           given={Alan\bibnamedelima P.},
+           giveni={A\bibinitperiod\bibinitdelim P\bibinitperiod}}}%
+      }
+      \strng{namehash}{7637b0d9fedea80c35467ee088adcfb2}
+      \strng{fullhash}{9f800f6606bbe24638975df87a77083b}
+      \strng{fullhashraw}{9f800f6606bbe24638975df87a77083b}
+      \strng{bibnamehash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authorbibnamehash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authornamehash}{7637b0d9fedea80c35467ee088adcfb2}
+      \strng{authorfullhash}{9f800f6606bbe24638975df87a77083b}
+      \strng{authorfullhashraw}{9f800f6606bbe24638975df87a77083b}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Scientific Reports}
+      \field{number}{1}
+      \field{title}{The ENCODE blacklist: Identification of problematic regions of the genome}
+      \field{volume}{9}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{pages}{9354}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1038/s41598-019-45839-z
+      \endverb
+    \endentry
+    \entry{c13-buenrostro2013}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=adf1df935b371c1fb3285fa1e44ff2a1}{%
+           family={Buenrostro},
+           familyi={B\bibinitperiod},
+           given={Jason\bibnamedelima D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=e359720b2b0f9255b15a3201105f8a45}{%
+           family={Giresi},
+           familyi={G\bibinitperiod},
+           given={Paul\bibnamedelima G.},
+           giveni={P\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=7c19bc12625563fab9315e853fbcfb28}{%
+           family={Zaba},
+           familyi={Z\bibinitperiod},
+           given={Lisa\bibnamedelima C.},
+           giveni={L\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=5d226992dbc53a52d032f595d1361ee9}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={Howard\bibnamedelima Y.},
+           giveni={H\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=0091a16254ba6b728454f63b52eec2ed}{%
+           family={Greenleaf},
+           familyi={G\bibinitperiod},
+           given={William\bibnamedelima J.},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{fullhash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{fullhashraw}{7a625c90da787b0beac182e98e89ac87}
+      \strng{bibnamehash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authorbibnamehash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authornamehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{authorfullhash}{7a625c90da787b0beac182e98e89ac87}
+      \strng{authorfullhashraw}{7a625c90da787b0beac182e98e89ac87}
+      \field{extraname}{1}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Methods}
+      \field{number}{12}
+      \field{title}{Transposition of native chromatin for fast and sensitive epigenomic profiling of open chromatin, DNA-binding proteins and nucleosome position}
+      \field{volume}{10}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{pages}{1213\bibrangedash 1218}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1038/nmeth.2688
+      \endverb
+    \endentry
+    \entry{c13-buenrostro2015}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=adf1df935b371c1fb3285fa1e44ff2a1}{%
+           family={Buenrostro},
+           familyi={B\bibinitperiod},
+           given={Jason\bibnamedelima D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=3c88871ca494c5289f7970f57ce62a6b}{%
+           family={Wu},
+           familyi={W\bibinitperiod},
+           given={Beijing},
+           giveni={B\bibinitperiod}}}%
+        {{hash=5d226992dbc53a52d032f595d1361ee9}{%
+           family={Chang},
+           familyi={C\bibinitperiod},
+           given={Howard\bibnamedelima Y.},
+           giveni={H\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=0091a16254ba6b728454f63b52eec2ed}{%
+           family={Greenleaf},
+           familyi={G\bibinitperiod},
+           given={William\bibnamedelima J.},
+           giveni={W\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{fullhash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{fullhashraw}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{bibnamehash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authorbibnamehash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authornamehash}{1b07f30172b3e50d6de81b87f9433118}
+      \strng{authorfullhash}{79a6a3f29d16837a0b642c25c94ba12f}
+      \strng{authorfullhashraw}{79a6a3f29d16837a0b642c25c94ba12f}
+      \field{extraname}{2}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Current Protocols in Molecular Biology}
+      \field{number}{1}
+      \field{title}{ATAC-seq: A method for assaying chromatin accessibility genome-wide}
+      \field{volume}{109}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{21.29.1\bibrangedash 21.29.9}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1002/0471142727.mb2129s109
+      \endverb
+    \endentry
+    \entry{c13-encode2012}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=1fbb5d2ef5829f013caaa5f390fefa5e}{%
+           family={{ENCODE Project Consortium}},
+           familyi={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{fullhash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{fullhashraw}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{bibnamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorbibnamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authornamehash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorfullhash}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \strng{authorfullhashraw}{1fbb5d2ef5829f013caaa5f390fefa5e}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7414}
+      \field{title}{An integrated encyclopedia of DNA elements in the human genome}
+      \field{volume}{489}
+      \field{year}{2012}
+      \field{dateera}{ce}
+      \field{pages}{57\bibrangedash 74}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1038/nature11247
+      \endverb
+    \endentry
+    \entry{c13-encode2020}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=1fbb5d2ef5829f013caaa5f390fefa5e}{%
+           family={{ENCODE Project Consortium}},
+           familyi={E\bibinitperiod}}}%
+        {{hash=ac556d38f57a432e6f86479ffc40d1fc}{%
+           family={Abascal},
+           familyi={A\bibinitperiod},
+           given={Federico},
+           giveni={F\bibinitperiod}}}%
+        {{hash=7840e68cb7c2dca4ee7d143ccc6b2074}{%
+           family={Acosta},
+           familyi={A\bibinitperiod},
+           given={Reyes},
+           giveni={R\bibinitperiod}}}%
+        {{hash=021b5cb21ffbaa70c00b64e447ee885a}{%
+           family={Addleman},
+           familyi={A\bibinitperiod},
+           given={Nicholas\bibnamedelima J.},
+           giveni={N\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=bfee7a6bcb8ad821f8d88e0c88e9487c}{%
+           family={Adrian},
+           familyi={A\bibinitperiod},
+           given={Jessika},
+           giveni={J\bibinitperiod}}}%
+        {{hash=bd0da4d8dfff141bbb03074fc59832cf}{%
+           family={Afzal},
+           familyi={A\bibinitperiod},
+           given={Veena},
+           giveni={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{95cb851a5319fae4c19c327f4c9bc144}
+      \strng{fullhash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{fullhashraw}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{bibnamehash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authorbibnamehash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authornamehash}{95cb851a5319fae4c19c327f4c9bc144}
+      \strng{authorfullhash}{3d3e6bc367e4aceabd9e12ebef906520}
+      \strng{authorfullhashraw}{3d3e6bc367e4aceabd9e12ebef906520}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7818}
+      \field{title}{Expanded encyclopaedias of DNA elements in the human and mouse genomes}
+      \field{volume}{583}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{pages}{699\bibrangedash 710}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1038/s41586-020-2493-4
+      \endverb
+    \endentry
+    \entry{c13-jenuwein2001}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=13d56d9498db232d2734b6c5a82ee92f}{%
+           family={Jenuwein},
+           familyi={J\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+        {{hash=6528edf9b24550413639c23670123051}{%
+           family={Allis},
+           familyi={A\bibinitperiod},
+           given={C.\bibnamedelimi David},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{fullhash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{fullhashraw}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{bibnamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorbibnamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authornamehash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorfullhash}{170622a583e83c156ea1f9f24ec46ccd}
+      \strng{authorfullhashraw}{170622a583e83c156ea1f9f24ec46ccd}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{5532}
+      \field{title}{Translating the histone code}
+      \field{volume}{293}
+      \field{year}{2001}
+      \field{dateera}{ce}
+      \field{pages}{1074\bibrangedash 1080}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1126/science.1063127
+      \endverb
+    \endentry
+    \entry{c13-johnson2007}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=8f805225d8e433c29a18a566d1f6acc6}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={David\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=c3562acf55b61e562ff47221e309b39e}{%
+           family={Mortazavi},
+           familyi={M\bibinitperiod},
+           given={Ali},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e1ed5d8b27d6ba9b572994831e6a6f79}{%
+           family={Myers},
+           familyi={M\bibinitperiod},
+           given={Richard\bibnamedelima M.},
+           giveni={R\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=530e94609b5073870ac8d4067b6928e2}{%
+           family={Wold},
+           familyi={W\bibinitperiod},
+           given={Barbara},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{c8817472457540d8edb09f241dd2bb05}
+      \strng{fullhash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{fullhashraw}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{bibnamehash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authorbibnamehash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authornamehash}{c8817472457540d8edb09f241dd2bb05}
+      \strng{authorfullhash}{d4079740f537a0f9b324bfb6812b3f85}
+      \strng{authorfullhashraw}{d4079740f537a0f9b324bfb6812b3f85}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{5830}
+      \field{title}{Genome-wide mapping of in vivo protein-DNA interactions}
+      \field{volume}{316}
+      \field{year}{2007}
+      \field{dateera}{ce}
+      \field{pages}{1497\bibrangedash 1502}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1126/science.1141319
+      \endverb
+    \endentry
+    \entry{c13-kharchenko2008}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=7f4a1befbdf4ff9fee318034b865073e}{%
+           family={Kharchenko},
+           familyi={K\bibinitperiod},
+           given={Peter\bibnamedelima V.},
+           giveni={P\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=3797f3cc06379b3c96fb8b7b4dc316af}{%
+           family={Tolstorukov},
+           familyi={T\bibinitperiod},
+           given={Michael\bibnamedelima Y.},
+           giveni={M\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=3d85caa963ffda60c7aeec4c230bbab2}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{5974f2ca5f5e9833d2e6ac544d44ac41}
+      \strng{fullhash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{fullhashraw}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{bibnamehash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authorbibnamehash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authornamehash}{5974f2ca5f5e9833d2e6ac544d44ac41}
+      \strng{authorfullhash}{d6bc0933dd24f23ffdfc22956da75211}
+      \strng{authorfullhashraw}{d6bc0933dd24f23ffdfc22956da75211}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Biotechnology}
+      \field{number}{12}
+      \field{title}{Design and analysis of ChIP-seq experiments for DNA-binding proteins}
+      \field{volume}{26}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{pages}{1351\bibrangedash 1359}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1038/nbt.1508
+      \endverb
+    \endentry
+    \entry{c13-landt2012}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=86ea37010302bbf64fbb3380344caa03}{%
+           family={Landt},
+           familyi={L\bibinitperiod},
+           given={Stephen\bibnamedelima G.},
+           giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
+        {{hash=e22c6eacd4e2bdd92130832e3060b2d0}{%
+           family={Marinov},
+           familyi={M\bibinitperiod},
+           given={Georgi\bibnamedelima K.},
+           giveni={G\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=12b963de44fd4f2793ed8cc9e0dbc945}{%
+           family={Kheradpour},
+           familyi={K\bibinitperiod},
+           given={Pouya},
+           giveni={P\bibinitperiod}}}%
+        {{hash=7fac82cdbde551ecbcc2eca73257c7c2}{%
+           family={Pauli},
+           familyi={P\bibinitperiod},
+           given={Florencia},
+           giveni={F\bibinitperiod}}}%
+        {{hash=880ea6551f1f22786b9841098b84ebed}{%
+           family={Batzoglou},
+           familyi={B\bibinitperiod},
+           given={Serafim},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{e81494d0b09df69e4bf66ba9dc68e3a5}
+      \strng{fullhash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{fullhashraw}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{bibnamehash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authorbibnamehash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authornamehash}{e81494d0b09df69e4bf66ba9dc68e3a5}
+      \strng{authorfullhash}{e6ab5cdcc1e36c361996aa74881db811}
+      \strng{authorfullhashraw}{e6ab5cdcc1e36c361996aa74881db811}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Genome Research}
+      \field{number}{9}
+      \field{title}{ChIP-seq guidelines and practices of the ENCODE and modENCODE consortia}
+      \field{volume}{22}
+      \field{year}{2012}
+      \field{dateera}{ce}
+      \field{pages}{1813\bibrangedash 1831}
+      \range{pages}{19}
+      \verb{doi}
+      \verb 10.1101/gr.136184.111
+      \endverb
+    \endentry
+    \entry{c13-li2011}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=648f941baf22576f7a907f38049cfbec}{%
+           family={Li},
+           familyi={L\bibinitperiod},
+           given={Qunhua},
+           giveni={Q\bibinitperiod}}}%
+        {{hash=53aad1e4f1d440695d8f561e110a7b73}{%
+           family={Brown},
+           familyi={B\bibinitperiod},
+           given={James\bibnamedelima B.},
+           giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+        {{hash=138f5c8d589ba1067e612ea3358b0ae4}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Haiyan},
+           giveni={H\bibinitperiod}}}%
+        {{hash=4cbb7e2b2b68aff0e8c8ad3f0cf5f335}{%
+           family={Bickel},
+           familyi={B\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{72e707bf13ade7f80d92f4e314b48256}
+      \strng{fullhash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{fullhashraw}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{bibnamehash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authorbibnamehash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authornamehash}{72e707bf13ade7f80d92f4e314b48256}
+      \strng{authorfullhash}{980f9dfca0b8e28756330e4df1109f75}
+      \strng{authorfullhashraw}{980f9dfca0b8e28756330e4df1109f75}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Applied Statistics}
+      \field{number}{3}
+      \field{title}{Measuring reproducibility of high-throughput experiments}
+      \field{volume}{5}
+      \field{year}{2011}
+      \field{dateera}{ce}
+      \field{pages}{1752\bibrangedash 1779}
+      \range{pages}{28}
+      \verb{doi}
+      \verb 10.1214/11-AOAS466
+      \endverb
+    \endentry
+    \entry{c13-luger1997}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=a18d41a7d21786a2380e3deb1e041bfa}{%
+           family={Luger},
+           familyi={L\bibinitperiod},
+           given={Karolin},
+           giveni={K\bibinitperiod}}}%
+        {{hash=c6c1948f04a9c6b2ce93de71454992f0}{%
+           family={Mäder},
+           familyi={M\bibinitperiod},
+           given={Armin\bibnamedelima W.},
+           giveni={A\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=a242914a408e9cc61a0441fc473f83be}{%
+           family={Richmond},
+           familyi={R\bibinitperiod},
+           given={Robin\bibnamedelima K.},
+           giveni={R\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=8ba314a6f29b431d96a61e759e8d56e3}{%
+           family={Sargent},
+           familyi={S\bibinitperiod},
+           given={David\bibnamedelima F.},
+           giveni={D\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=9e4ac7bca1a3223549fd59cb914387f3}{%
+           family={Richmond},
+           familyi={R\bibinitperiod},
+           given={Timothy\bibnamedelima J.},
+           giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a398ba7c30a34f165b48a2b9b8ece84}
+      \strng{fullhash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{fullhashraw}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{bibnamehash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authorbibnamehash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authornamehash}{9a398ba7c30a34f165b48a2b9b8ece84}
+      \strng{authorfullhash}{d93a1444027a32c33d02ecb67f12a0d4}
+      \strng{authorfullhashraw}{d93a1444027a32c33d02ecb67f12a0d4}
+      \field{sortinit}{L}
+      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{6648}
+      \field{title}{Crystal structure of the nucleosome core particle at 2.8 Å resolution}
+      \field{volume}{389}
+      \field{year}{1997}
+      \field{dateera}{ce}
+      \field{pages}{251\bibrangedash 260}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1038/38444
+      \endverb
+    \endentry
+    \entry{c13-park2009}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=3d85caa963ffda60c7aeec4c230bbab2}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{fullhash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{fullhashraw}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{bibnamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorbibnamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authornamehash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorfullhash}{3d85caa963ffda60c7aeec4c230bbab2}
+      \strng{authorfullhashraw}{3d85caa963ffda60c7aeec4c230bbab2}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Reviews Genetics}
+      \field{number}{10}
+      \field{title}{ChIP-seq: Advantages and challenges of a maturing technology}
+      \field{volume}{10}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{pages}{669\bibrangedash 680}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1038/nrg2641
+      \endverb
+    \endentry
+    \entry{c13-kundaje2015}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=637ad4b431f461f2a313d909f335e259}{%
+           family={{Roadmap Epigenomics Consortium}},
+           familyi={R\bibinitperiod}}}%
+        {{hash=90c89a3bd50a98c5cf297a3ca7939696}{%
+           family={Kundaje},
+           familyi={K\bibinitperiod},
+           given={Anshul},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9384437bb37bffa96f6a2116a25b2edf}{%
+           family={Meuleman},
+           familyi={M\bibinitperiod},
+           given={Wouter},
+           giveni={W\bibinitperiod}}}%
+        {{hash=7fde20fbe841962a5aaf772894e066f6}{%
+           family={Ernst},
+           familyi={E\bibinitperiod},
+           given={Jason},
+           giveni={J\bibinitperiod}}}%
+        {{hash=b96c5ba59b04a6423617a7dc6c4d4a26}{%
+           family={Bilenky},
+           familyi={B\bibinitperiod},
+           given={Misha},
+           giveni={M\bibinitperiod}}}%
+        {{hash=439c3058a97540f805c6f6efa59b57c7}{%
+           family={Yen},
+           familyi={Y\bibinitperiod},
+           given={Angela},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{c3a64ff45cec627f158156dd00a120e0}
+      \strng{fullhash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{fullhashraw}{a014e30609c23d55f376be1c9f26e161}
+      \strng{bibnamehash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authorbibnamehash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authornamehash}{c3a64ff45cec627f158156dd00a120e0}
+      \strng{authorfullhash}{a014e30609c23d55f376be1c9f26e161}
+      \strng{authorfullhashraw}{a014e30609c23d55f376be1c9f26e161}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{7539}
+      \field{title}{Integrative analysis of 111 reference human epigenomes}
+      \field{volume}{518}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{317\bibrangedash 330}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1038/nature14248
+      \endverb
+    \endentry
+    \entry{c13-skene2017}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5f61676154f149f0d92da4f20656173c}{%
+           family={Skene},
+           familyi={S\bibinitperiod},
+           given={Peter\bibnamedelima J.},
+           giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=655a0d95ff8b3f41ffc65b3426fef81a}{%
+           family={Henikoff},
+           familyi={H\bibinitperiod},
+           given={Steven},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{fullhash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{fullhashraw}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{bibnamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorbibnamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authornamehash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorfullhash}{800dd02c6f92551fffb68d69d9432ff4}
+      \strng{authorfullhashraw}{800dd02c6f92551fffb68d69d9432ff4}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{eLife}
+      \field{title}{An efficient targeted nuclease strategy for high-resolution mapping of DNA binding sites}
+      \field{volume}{6}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{pages}{e21856}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.7554/eLife.21856
+      \endverb
+    \endentry
+    \entry{c13-zhang2008}{article}{}{}
+      \true{moreauthor}
+      \true{morelabelname}
+      \name{author}{6}{}{%
+        {{hash=2c81656c924858824dfb10d50423b77a}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Yong},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=b9ea953e38962ea62150af4914b3a85b}{%
+           family={Liu},
+           familyi={L\bibinitperiod},
+           given={Tao},
+           giveni={T\bibinitperiod}}}%
+        {{hash=7f45dec415e8e50476d675d4cdab15e3}{%
+           family={Meyer},
+           familyi={M\bibinitperiod},
+           given={Clifford\bibnamedelima A.},
+           giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=1f36d87ab17349e4246063e1b433b043}{%
+           family={Eeckhoute},
+           familyi={E\bibinitperiod},
+           given={Jérôme},
+           giveni={J\bibinitperiod}}}%
+        {{hash=8f805225d8e433c29a18a566d1f6acc6}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={David\bibnamedelima S.},
+           giveni={D\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+        {{hash=b1492fc9a6dad81cfb914cab0699b4cd}{%
+           family={Bernstein},
+           familyi={B\bibinitperiod},
+           given={Bradley\bibnamedelima E.},
+           giveni={B\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{2810de8af34d5dab287ae58a8692e0cf}
+      \strng{fullhash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{fullhashraw}{190f5f9e19519c35a762b125a38a6276}
+      \strng{bibnamehash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authorbibnamehash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authornamehash}{2810de8af34d5dab287ae58a8692e0cf}
+      \strng{authorfullhash}{190f5f9e19519c35a762b125a38a6276}
+      \strng{authorfullhashraw}{190f5f9e19519c35a762b125a38a6276}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Genome Biology}
+      \field{number}{9}
+      \field{title}{Model-based analysis of ChIP-Seq (MACS)}
+      \field{volume}{9}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{pages}{R137}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1186/gb-2008-9-9-r137
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

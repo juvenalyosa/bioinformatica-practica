@@ -1,0 +1,29 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{math}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{log10\PYGZus{}lik}\PYG{p}{(}\PYG{n}{bases}\PYG{p}{,} \PYG{n}{quals}\PYG{p}{,} \PYG{n}{a1}\PYG{p}{,} \PYG{n}{a2}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}log10 P(D | G=\PYGZob{}a1,a2\PYGZcb{}) con el modelo de 4 bases.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{s} \PYG{o}{=} \PYG{l+m+mf}{0.0}
+    \PYG{k}{for} \PYG{n}{b}\PYG{p}{,} \PYG{n}{q} \PYG{o+ow}{in} \PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{bases}\PYG{p}{,} \PYG{n}{quals}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{e} \PYG{o}{=} \PYG{l+m+mi}{10} \PYG{o}{*}\PYG{o}{*} \PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{q} \PYG{o}{/} \PYG{l+m+mi}{10}\PYG{p}{)}
+        \PYG{n}{p} \PYG{o}{=} \PYG{k}{lambda} \PYG{n}{a}\PYG{p}{:} \PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{e} \PYG{k}{if} \PYG{n}{b} \PYG{o}{==} \PYG{n}{a} \PYG{k}{else} \PYG{n}{e} \PYG{o}{/} \PYG{l+m+mi}{3}
+        \PYG{n}{s} \PYG{o}{+}\PYG{o}{=} \PYG{n}{math}\PYG{o}{.}\PYG{n}{log10}\PYG{p}{(}\PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{p}\PYG{p}{(}\PYG{n}{a1}\PYG{p}{)} \PYG{o}{+} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{p}\PYG{p}{(}\PYG{n}{a2}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{s}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{llamar}\PYG{p}{(}\PYG{n}{bases}\PYG{p}{,} \PYG{n}{quals}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{,} \PYG{n}{theta}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}3}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{G} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{0/0}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{ref}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{0/1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{)}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1/1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{p}{(}\PYG{n}{alt}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{prior} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{0/0}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{l+m+mf}{1.5} \PYG{o}{*} \PYG{n}{theta}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{0/1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{theta}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{1/1}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:} \PYG{n}{theta} \PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{ll} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{g}\PYG{p}{:} \PYG{n}{log10\PYGZus{}lik}\PYG{p}{(}\PYG{n}{bases}\PYG{p}{,} \PYG{n}{quals}\PYG{p}{,} \PYG{o}{*}\PYG{n}{a}\PYG{p}{)} \PYG{k}{for} \PYG{n}{g}\PYG{p}{,} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n}{G}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{m} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{ll}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{pl} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{g}\PYG{p}{:} \PYG{n+nb}{round}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{10} \PYG{o}{*} \PYG{p}{(}\PYG{n}{v} \PYG{o}{\PYGZhy{}} \PYG{n}{m}\PYG{p}{)}\PYG{p}{)} \PYG{k}{for} \PYG{n}{g}\PYG{p}{,} \PYG{n}{v} \PYG{o+ow}{in} \PYG{n}{ll}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{num} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{g}\PYG{p}{:} \PYG{l+m+mi}{10} \PYG{o}{*}\PYG{o}{*} \PYG{p}{(}\PYG{n}{ll}\PYG{p}{[}\PYG{n}{g}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{m}\PYG{p}{)} \PYG{o}{*} \PYG{n}{prior}\PYG{p}{[}\PYG{n}{g}\PYG{p}{]} \PYG{k}{for} \PYG{n}{g} \PYG{o+ow}{in} \PYG{n}{G}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{z} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{num}\PYG{o}{.}\PYG{n}{values}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{post} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{g}\PYG{p}{:} \PYG{n}{v} \PYG{o}{/} \PYG{n}{z} \PYG{k}{for} \PYG{n}{g}\PYG{p}{,} \PYG{n}{v} \PYG{o+ow}{in} \PYG{n}{num}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+    \PYG{n}{gt} \PYG{o}{=} \PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{post}\PYG{p}{,} \PYG{n}{key}\PYG{o}{=}\PYG{n}{post}\PYG{o}{.}\PYG{n}{get}\PYG{p}{)}
+    \PYG{n}{qual} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{10} \PYG{o}{*} \PYG{n}{math}\PYG{o}{.}\PYG{n}{log10}\PYG{p}{(}\PYG{n+nb}{max}\PYG{p}{(}\PYG{n}{post}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{0/0}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{l+m+mf}{1e\PYGZhy{}30}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{gq} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{10} \PYG{o}{*} \PYG{n}{math}\PYG{o}{.}\PYG{n}{log10}\PYG{p}{(}\PYG{n+nb}{max}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{post}\PYG{p}{[}\PYG{n}{gt}\PYG{p}{]}\PYG{p}{,} \PYG{l+m+mf}{1e\PYGZhy{}30}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{gt}\PYG{p}{,} \PYG{n}{pl}\PYG{p}{,} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{qual}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{,} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{gq}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{llamar}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{AAAGGG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{l+m+mi}{30}\PYG{p}{,} \PYG{l+m+mi}{30}\PYG{p}{,} \PYG{l+m+mi}{20}\PYG{p}{,} \PYG{l+m+mi}{30}\PYG{p}{,} \PYG{l+m+mi}{30}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{]}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} (\PYGZsq{}0/1\PYGZsq{}, \PYGZob{}\PYGZsq{}0/0\PYGZsq{}: 66, \PYGZsq{}0/1\PYGZsq{}: 0, \PYGZsq{}1/1\PYGZsq{}: 76\PYGZcb{}, 36.0, 36.0)}
+\end{MintedVerbatim}

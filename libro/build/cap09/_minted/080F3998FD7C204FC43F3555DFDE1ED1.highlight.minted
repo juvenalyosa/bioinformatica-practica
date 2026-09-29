@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{normalizar}\PYG{p}{(}\PYG{n}{pos}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{,} \PYG{n}{genoma}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Tan et al. (2015). pos es 1\PYGZhy{}based; genoma, la referencia.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{k}{while} \PYG{k+kc}{True}\PYG{p}{:}
+        \PYG{n}{cambio} \PYG{o}{=} \PYG{k+kc}{False}
+        \PYG{k}{if} \PYG{n}{ref} \PYG{o+ow}{and} \PYG{n}{alt} \PYG{o+ow}{and} \PYG{n}{ref}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{==} \PYG{n}{alt}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{:}   \PYG{c+c1}{\PYGZsh{} recorte der.}
+            \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt} \PYG{o}{=} \PYG{n}{ref}\PYG{p}{[}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{[}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}
+            \PYG{n}{cambio} \PYG{o}{=} \PYG{k+kc}{True}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{ref} \PYG{o+ow}{or} \PYG{o+ow}{not} \PYG{n}{alt}\PYG{p}{:}                   \PYG{c+c1}{\PYGZsh{} extender izq.}
+            \PYG{n}{pos} \PYG{o}{\PYGZhy{}}\PYG{o}{=} \PYG{l+m+mi}{1}
+            \PYG{n}{b} \PYG{o}{=} \PYG{n}{genoma}\PYG{p}{[}\PYG{n}{pos} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{]}
+            \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt} \PYG{o}{=} \PYG{n}{b} \PYG{o}{+} \PYG{n}{ref}\PYG{p}{,} \PYG{n}{b} \PYG{o}{+} \PYG{n}{alt}
+            \PYG{n}{cambio} \PYG{o}{=} \PYG{k+kc}{True}
+        \PYG{k}{if} \PYG{o+ow}{not} \PYG{n}{cambio}\PYG{p}{:}
+            \PYG{k}{break}
+    \PYG{k}{while} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{ref}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1} \PYG{o+ow}{and} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{alt}\PYG{p}{)} \PYG{o}{\PYGZgt{}} \PYG{l+m+mi}{1} \PYG{o+ow}{and} \PYG{n}{ref}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{==} \PYG{n}{alt}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{:}
+        \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{,} \PYG{n}{pos} \PYG{o}{=} \PYG{n}{ref}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}\PYG{p}{,} \PYG{n}{alt}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}\PYG{p}{,} \PYG{n}{pos} \PYG{o}{+} \PYG{l+m+mi}{1}   \PYG{c+c1}{\PYGZsh{} recorte izq.}
+    \PYG{k}{return} \PYG{n}{pos}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{,} \PYG{n}{alt}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{normalizar}\PYG{p}{(}\PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ACA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{GGATCACACACAGT}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}   \PYG{c+c1}{\PYGZsh{} (4, \PYGZsq{}TCA\PYGZsq{}, \PYGZsq{}T\PYGZsq{})}
+\end{MintedVerbatim}

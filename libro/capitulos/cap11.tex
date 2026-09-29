@@ -1,0 +1,1124 @@
+% =====================================================================
+%  Capítulo 11 · Transcriptómica (RNA-seq)
+% =====================================================================
+\chapter{Transcriptómica (RNA-seq)}\label{cap:11}
+
+\epigrafe{Los estudios que usan este método ya han alterado nuestra visión de la extensión y la complejidad de los transcriptomas eucariotas.}{\textcite{c11-wang2009}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Diseñar un experimento de RNA-seq con réplicas biológicas suficientes y describir el camino que va del ARN extraído a una matriz de conteos, por alineamiento con empalmes o por pseudoalineamiento.
+  \item Formular la cuantificación de isoformas como un problema de máxima verosimilitud con lecturas ambiguas, resolverlo con el algoritmo EM y distinguir con precisión RPKM, TPM y conteos estimados.
+  \item Explicar por qué los conteos requieren normalización por composición (TMM, mediana de razones) y por qué su variabilidad biológica se modela con la binomial negativa y no con la distribución de Poisson.
+  \item Ajustar e interpretar un modelo lineal generalizado binomial negativo con contracción empírica de dispersiones y de \ingles{log fold changes}, y leer gráficos MA y \ingles{volcano}.
+  \item Controlar la tasa de falsos descubrimientos (Benjamini-Hochberg, $q$-valores, filtrado independiente) y diagnosticar un análisis con el histograma de valores $p$.
+  \item Realizar e interpretar análisis de enriquecimiento funcional (sobrerrepresentación con GO y KEGG, corrección por sesgo de longitud y GSEA).
+\end{itemize}
+\end{objetivos}
+
+Todas las células de un organismo llevan, salvo excepciones, el mismo genoma; lo que distingue a una neurona de un hepatocito es \emph{qué} genes se expresan y \emph{cuánto}. El transcriptoma, el conjunto de moléculas de ARN presentes en una muestra en un momento dado, es por eso una fotografía del estado funcional de las células, y medirlo ha sido una obsesión de la biología molecular desde los \ingles{northern blots} hasta los microarreglos. La secuenciación masiva cambió la naturaleza de esa medida: en lugar de hibridar contra sondas predefinidas, convertimos el ARN en ADN complementario, lo secuenciamos y \emph{contamos} fragmentos. \textcite{c11-mortazavi2008} mostraron que ese recuento, con decenas de millones de lecturas, cubre cinco órdenes de magnitud de expresión, detecta isoformas y descubre transcritos no anotados. Desde entonces el RNA-seq es el experimento de genómica funcional más común.
+
+Pero contar bien es difícil. Una lectura puede ser compatible con varias isoformas de un gen; el número de lecturas de un gen depende de su longitud, de la profundidad de secuenciación y de lo que expresen \emph{los demás} genes; y la variación entre réplicas biológicas es mucho mayor que la del muestreo. Encima, al comparar dos condiciones hacemos veinte mil pruebas estadísticas a la vez. Este capítulo recorre, con el rigor que el problema exige, las cuatro etapas del análisis estándar. Primero convertiremos lecturas en abundancias de transcritos con el algoritmo EM y el pseudoalineamiento (\cref{sec:11-cuant}). Luego haremos comparables las muestras y modelaremos la variabilidad con la binomial negativa (\cref{sec:11-norm}). Después detectaremos genes diferencialmente expresados controlando la tasa de falsos descubrimientos (\cref{sec:11-de}). Por último, traduciremos listas de genes en hipótesis biológicas mediante el enriquecimiento funcional (\cref{sec:11-enriq}). La revisión de \textcite{c11-conesa2016} es la mejor guía general del campo, y el libro de \textcite{c11-holmes2019} ofrece el fondo estadístico con un enfoque muy cercano al de este capítulo.
+
+% ---------------------------------------------------------------------
+\section{Cuantificación de transcritos}\label{sec:11-cuant}
+% ---------------------------------------------------------------------
+\enlacerepo{11.1 · Cuantificación (Salmon)}
+
+\begin{intuicion}[Tiras de papel de varias ediciones]
+Imagine que una trituradora ha convertido en tiras la biblioteca de una escuela y que le piden estimar cuántos ejemplares había de cada libro. Muchas tiras son inconfundibles: contienen una frase que solo aparece en un libro. Pero la biblioteca tenía tres ediciones de \emph{Cien años de soledad}, que comparten casi todo el texto y difieren en el prólogo o en un capítulo añadido. Una tira del capítulo tercero pudo salir de cualquiera de las tres. ¿Qué hacer con ella? Descartarla desperdicia información; asignarla al azar introduce ruido. Lo sensato es repartirla \emph{en proporción} a lo que ya sabemos: si las tiras exclusivas del prólogo de la segunda edición abundan, es probable que la tira ambigua también venga de ella. Y como ese reparto cambia nuestra estimación de cuántos ejemplares hay de cada edición, conviene repetir el razonamiento hasta que deje de cambiar. Ese ir y venir entre ``repartir'' y ``volver a contar'' es exactamente el algoritmo EM con el que se cuantifican las isoformas.
+\end{intuicion}
+
+\subsection{Del ARN a las lecturas: diseño y bibliotecas}
+
+Un experimento de RNA-seq empieza mucho antes del secuenciador, y las decisiones que se toman en el laboratorio limitan lo que la estadística podrá rescatar después. \textcite{c11-conesa2016} enumeran las principales.
+
+\paragraph{Réplicas biológicas} Una \emph{réplica biológica} es una unidad experimental independiente (otro ratón, otro paciente, otro cultivo sembrado por separado); una \emph{réplica técnica} es la misma muestra secuenciada dos veces. Las réplicas técnicas solo miden el ruido del muestreo de lecturas, que, como veremos en la \cref{sec:11-norm}, es pequeño comparado con la variación entre individuos. La inferencia sobre ``el efecto del tratamiento'' se refiere a la población de la que salen los individuos, y la única forma de estimar su variabilidad es tener varios. Tres réplicas por condición es el mínimo con el que los métodos de este capítulo funcionan; con más réplicas la potencia crece mucho más que con más profundidad, sobre todo para genes de expresión moderada.
+
+\paragraph{Lotes y aleatorización} Si todas las muestras control se extraen un lunes y todas las tratadas un martes, el efecto del día (el \emph{efecto de lote}) queda confundido con el del tratamiento y ningún método puede separarlos. Hay que repartir las condiciones entre lotes, carriles e índices de forma balanceada y registrar esas variables para incluirlas en el modelo (\cref{sec:11-norm}).
+
+\paragraph{Selección del ARN} Más del \SI{80}{\percent} del ARN total es ARN ribosómico. Para no gastar lecturas en él, se \emph{seleccionan} los ARNm por su cola poli(A) con oligo-dT, o se \emph{depleciona} el ARNr con sondas específicas. La primera opción da bibliotecas más limpias de ARN mensajero maduro; la segunda conserva ARN no poliadenilados (muchos ARN largos no codificantes, histonas) y pre-ARNm con intrones, útil con muestras degradadas.
+
+\paragraph{Biblioteca} El ARN se fragmenta, se retrotranscribe a ADNc y se ligan adaptadores (\cref{cap:06}). Los protocolos \emph{con hebra} (\ingles{stranded}) marcan químicamente una de las hebras del ADNc y permiten saber si la lectura procede del transcrito sentido o antisentido, información valiosa cuando dos genes se solapan en hebras opuestas. Las lecturas pareadas mejoran la asignación a isoformas, porque el fragmento completo abarca más uniones exón-exón.
+
+\paragraph{Profundidad} Entre 20 y 40 millones de fragmentos por muestra suelen bastar para expresión diferencial a nivel de gen en organismos con genomas del tamaño del humano; el estudio de isoformas o de transcritos poco abundantes exige más. La \cref{fig:11-flujo} resume el flujo completo que seguiremos.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+  paso/.style={caja=#1,font=\sffamily\scriptsize,text width=2.3cm,minimum height=1.05cm,inner sep=3pt},
+  node distance=0.3cm]
+  \node[paso=gris] (dis) {diseño: réplicas biológicas, lotes balanceados};
+  \node[paso=gris,right=of dis] (arn) {ARN total $\to$ poli(A) o depleción de ARNr};
+  \node[paso=gris,right=of arn] (lib) {fragmentación,\\ADNc,\\adaptadores};
+  \node[paso=gris,right=of lib] (seq) {secuenciación $\to$ FASTQ (\cref{cap:06})};
+  \draw[flecha] (dis) -- (arn); \draw[flecha] (arn) -- (lib); \draw[flecha] (lib) -- (seq);
+  % rama genoma
+  \node[paso=azul,below=1.05cm of arn] (star) {alineamiento con empalmes\\(STAR, HISAT2)};
+  \node[paso=azul,below=0.42cm of star] (cnt) {conteo de lecturas por gen};
+  % rama transcriptoma
+  \node[paso=naranja,below=1.05cm of seq] (sal) {pseudo-\\alineamiento\\(kallisto, Salmon)};
+  \node[paso=naranja,below=0.42cm of sal] (em) {clases de\\equivalencia + EM};
+  \node[paso=naranja,left=of em] (txi) {TPM y conteos estimados $\to$ \cmd{tximport}};
+  \draw[flecha=azul] (seq.south) |- ++(0,-0.35) -| (star.north);
+  \draw[flecha=naranja] (seq) -- (sal);
+  \draw[flecha=azul] (star) -- (cnt);
+  \draw[flecha=naranja] (sal) -- (em); \draw[flecha=naranja] (em) -- (txi);
+  % matriz
+  \node[paso=aqua,below=1.3cm of cnt,text width=3.2cm] (mat) {matriz de conteos\\genes $\times$ muestras};
+  \node[paso=violeta,right=0.5cm of mat,text width=2.6cm] (de) {normalización y modelo\\binomial negativo};
+  \node[paso=rojo,right=0.5cm of de,text width=2.6cm] (fun) {genes DE (FDR)\\$\to$ enriquecimiento};
+  \draw[flecha=azul] (cnt) -- (mat);
+  \draw[flecha=naranja] (txi.south) |- ($(mat.north east)+(-0.35,0.4)$) -- ($(mat.north east)+(-0.35,0)$);
+  \draw[flecha] (mat) -- (de); \draw[flecha] (de) -- (fun);
+  \node[etiqueta,anchor=west,text=azulprofundo] at ($(star.east)+(0.05,0.3)$) {genoma};
+  \node[etiqueta,anchor=west,text=naranja!70!black] at ($(sal.east)+(-0.05,0.75)$) {transcriptoma};
+  \node[etiqueta,anchor=east,text=tinta2] at ($(dis.south west)+(0.9,-0.35)$) {\S\,11.1};
+  \node[etiqueta,anchor=west,text=tinta2] at ($(mat.south west)+(0,-0.3)$) {\S\,11.2--11.4};
+\end{tikzpicture}
+\caption[Flujo de un análisis de RNA-seq]{Flujo de un análisis de RNA-seq. Las decisiones del laboratorio (gris) condicionan todo lo demás. Las lecturas pueden seguir dos rutas: alinearse al \emph{genoma} con un alineador que admite empalmes y contarse por gen (azul), o asignarse directamente al \emph{transcriptoma} por pseudoalineamiento y cuantificarse por isoforma con el algoritmo EM (naranja); \cmd{tximport} agrega después las estimaciones por transcrito al nivel de gen. Ambas rutas desembocan en una matriz de conteos, que es la entrada de la normalización, el modelo estadístico y el análisis funcional.}
+\label{fig:11-flujo}
+\end{figure}
+
+\subsection{Alinear lecturas que atraviesan intrones}
+
+En eucariotas, el ARNm maduro es una concatenación de exones; los intrones, a veces de decenas de kilobases, han sido eliminados. Una lectura de 100 bases tomada cerca de una unión exón-exón queda, en el genoma, partida en dos trozos separados por el intrón. Los alineadores de ADN del \cref{cap:07} no admiten ese salto: necesitamos alineadores \emph{con empalmes} (\ingles{spliced aligners}).
+
+\textcite{c11-dobin2013} diseñaron STAR alrededor de una idea sencilla: buscar, desde el inicio de la lectura, el \emph{prefijo mapeable más largo} (\ingles{maximal mappable prefix}) que coincide exactamente con el genoma, usando un arreglo de sufijos sin comprimir. Si la lectura cruza una unión, el prefijo se detiene justo en el borde del exón; la búsqueda se reinicia con el resto de la lectura y encuentra el siguiente exón más adelante. Las semillas así obtenidas se agrupan y se ``cosen'' con un alineamiento local que permite un hueco largo (el intrón), favoreciendo los motivos canónicos \texttt{GT}\ldots\texttt{AG} en sus bordes. El precio es memoria (unos \SI{30}{GB} para el genoma humano); la recompensa, una velocidad que los autores cifraron en más de cincuenta veces la de los alineadores de su tiempo. HISAT2 \parencite{c11-kim2019} toma el camino opuesto: comprime el genoma, junto con variantes conocidas, en un índice FM sobre un \emph{grafo}, dividido jerárquicamente en un índice global y miles de índices locales pequeños que permiten extender con rapidez los fragmentos cortos que caen a ambos lados de un intrón, con requisitos de memoria del orden de un ordenador portátil.
+
+Una vez alineadas, las lecturas se \emph{cuentan} por gen, sumando las que caen en la unión de sus exones. Es la ruta azul de la \cref{fig:11-flujo}, sencilla y robusta. Pero descarta, o resuelve de forma arbitraria, las lecturas que caen en exones compartidos por genes solapados, y renuncia a distinguir isoformas.
+
+\subsection{El problema de las isoformas}
+
+El empalme alternativo hace que un mismo gen produzca varios transcritos (\emph{isoformas}) que comparten exones. La \cref{fig:11-isoformas} muestra un gen de juguete con cuatro exones y tres isoformas. Una lectura que atraviesa la unión \texttt{E1}--\texttt{E2} solo puede venir de T1; una que cae dentro de \texttt{E4} es compatible con las tres. Si queremos saber cuánto de cada isoforma hay en la muestra, las lecturas ambiguas, que suelen ser la mayoría, tienen que repartirse de algún modo.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,x=1cm,y=1cm]
+  \def\ex#1#2#3#4{\fill[#4!75,draw=#4!60!black,rounded corners=1pt] (#1,#3-0.17) rectangle (#2,#3+0.17);}
+  % genoma
+  \draw[gris,thick] (0,3.2) -- (9.5,3.2);
+  \ex{0}{1.0}{3.2}{azul}\ex{2.2}{3.2}{3.2}{aqua}\ex{4.6}{6.6}{3.2}{amarillo}\ex{8.4}{9.4}{3.2}{violeta}
+  \foreach \x/\n in {0.5/E1,2.7/E2,5.6/E3,8.9/E4}{\node[etiqueta,text=tinta] at (\x,3.62) {\texttt{\n}};}
+  \node[etiqueta,anchor=west] at (9.6,3.2) {genoma};
+  \node[etiqueta,anchor=west,text=gris] at (9.6,2.9) {(1 cm $=$ \SI{500}{pb})};
+  % isoformas
+  \foreach \y/\n/\l in {2.2/T1/1500,1.45/T2/1000,0.7/T3/2000}{
+     \node[etiqueta,anchor=east,text=tinta,font=\sffamily\scriptsize\bfseries] at (-0.15,\y) {\n};
+     \node[etiqueta,anchor=west] at (9.6,\y) {$\ell=\num{\l}$ pb};}
+  % T1: E1 E2 E4
+  \ex{0}{1.0}{2.2}{azul}\ex{2.2}{3.2}{2.2}{aqua}\ex{8.4}{9.4}{2.2}{violeta}
+  \draw[gris] (1.0,2.2) -- (1.6,2.45) -- (2.2,2.2); \draw[gris] (3.2,2.2) -- (5.8,2.45) -- (8.4,2.2);
+  % T2: E1 E4
+  \ex{0}{1.0}{1.45}{azul}\ex{8.4}{9.4}{1.45}{violeta}
+  \draw[gris] (1.0,1.45) -- (4.7,1.7) -- (8.4,1.45);
+  % T3: E2 E3 E4
+  \ex{2.2}{3.2}{0.7}{aqua}\ex{4.6}{6.6}{0.7}{amarillo}\ex{8.4}{9.4}{0.7}{violeta}
+  \draw[gris] (3.2,0.7) -- (3.9,0.95) -- (4.6,0.7); \draw[gris] (6.6,0.7) -- (7.5,0.95) -- (8.4,0.7);
+  % lecturas (en coordenadas del genoma)
+  \begin{scope}[shift={(0,-0.5)}]
+    \node[etiqueta,anchor=east,text=tinta,font=\sffamily\scriptsize\bfseries] at (-0.15,-0.5) {lecturas};
+    \draw[rojo,line width=2pt] (0.2,0) -- (0.7,0);  \node[etiqueta,below] at (0.45,-0.07) {\{1,2\}};
+    \draw[rojo,line width=2pt] (2.4,0) -- (2.9,0);  \node[etiqueta,below] at (2.65,-0.07) {\{1,3\}};
+    \draw[rojo,line width=2pt] (5.0,0) -- (5.5,0);  \node[etiqueta,below] at (5.25,-0.07) {\{3\}};
+    \draw[rojo,line width=2pt] (8.7,0) -- (9.2,0);  \node[etiqueta,below] at (8.95,-0.07) {\{1,2,3\}};
+    \draw[rojo,line width=2pt] (0.75,-0.75) -- (1.0,-0.75); \draw[rojo,dotted] (1.0,-0.75) -- (2.2,-0.75);
+    \draw[rojo,line width=2pt] (2.2,-0.75) -- (2.45,-0.75);
+    \node[etiqueta,anchor=west] at (2.55,-0.75) {\{1\}: unión \texttt{E1}--\texttt{E2}};
+    \draw[rojo,line width=2pt] (0.75,-1.3) -- (1.0,-1.3); \draw[rojo,dotted] (1.0,-1.3) -- (8.4,-1.3);
+    \draw[rojo,line width=2pt] (8.4,-1.3) -- (8.65,-1.3);
+    \node[etiqueta,fill=white,inner sep=1pt] at (4.7,-1.3) {\{2\}: unión \texttt{E1}--\texttt{E4}};
+  \end{scope}
+\end{tikzpicture}
+\caption[Isoformas y lecturas ambiguas]{Un gen de juguete con cuatro exones y tres isoformas: T1 (\texttt{E1}--\texttt{E2}--\texttt{E4}), T2 (\texttt{E1}--\texttt{E4}, que omite el segundo exón) y T3 (\texttt{E2}--\texttt{E3}--\texttt{E4}, con un promotor alternativo). Cada lectura (rojo; las líneas punteadas indican el intrón que salta) se etiqueta con el conjunto de isoformas con las que es compatible. Solo las lecturas que tocan una unión o un exón exclusivo son informativas por sí solas; las demás, como las que caen en \texttt{E4}, forman \emph{clases de equivalencia} ambiguas que el algoritmo EM debe repartir.}
+\label{fig:11-isoformas}
+\end{figure}
+
+\subsection{Un modelo generativo de fragmentos}
+
+Para repartir con criterio necesitamos un modelo de cómo se generan los fragmentos. El modelo de RSEM \parencite{c11-li2011}, que heredan kallisto y Salmon, es el siguiente. Hay $T$ transcritos; el transcrito $t$ tiene longitud $\ell_t$ y está presente en la muestra en una fracción molar $\tau_t$ (fracción de \emph{moléculas}, $\sum_t\tau_t=1$). Un fragmento se genera eligiendo primero un transcrito y después una posición de inicio uniforme a lo largo de él. Como un transcrito largo ofrece más posiciones de inicio, la probabilidad de que un fragmento venga de $t$ no es $\tau_t$ sino $\alpha_t\propto\tau_t\tilde\ell_t$.
+
+\begin{definicion}{Longitud efectiva}{leff}
+Si la longitud de los fragmentos sigue una distribución $P_F$, el número esperado de posiciones de inicio válidas en el transcrito $t$ es
+\begin{equation}\label{eq:11-leff}
+\tilde\ell_t=\sum_{l=1}^{\ell_t} P_F(l)\,(\ell_t-l+1)\;\approx\;\ell_t-\mu_F+1,
+\end{equation}
+donde la aproximación vale cuando $\ell_t$ es mucho mayor que los fragmentos.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\ell_t$}{Longitud del transcrito $t$ (en nucleótidos).}
+\simbolo{$\tilde\ell_t$}{Longitud efectiva: número esperado de posiciones donde puede empezar un fragmento completo.}
+\simbolo{$P_F(l)$}{Probabilidad de que un fragmento mida $l$ nucleótidos, estimada de los pares de lecturas.}
+\simbolo{$\mu_F$}{Longitud media de los fragmentos.}
+\end{simbolos}
+
+La longitud efectiva importa sobre todo para transcritos cortos: uno de 300 nucleótidos con fragmentos de 250 tiene $\tilde\ell\approx51$, seis veces menos posiciones de las que su longitud sugiere. Con ella, la relación entre las dos fracciones es
+\begin{equation}\label{eq:11-alfatau}
+\alpha_t=\frac{\tau_t\,\tilde\ell_t}{\sum_u \tau_u\,\tilde\ell_u},\qquad
+\tau_t=\frac{\alpha_t/\tilde\ell_t}{\sum_u \alpha_u/\tilde\ell_u}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\tau_t$}{Fracción de \emph{moléculas} de ARN que son del transcrito $t$ (la cantidad biológica de interés).}
+\simbolo{$\alpha_t$}{Fracción de \emph{fragmentos} secuenciados que proceden de $t$ (lo que las lecturas miden directamente).}
+\end{simbolos}
+
+Sea ahora $y_{jt}\in\{0,1\}$ la indicadora de que el fragmento $j$ es compatible con $t$. Ignorando por el momento sesgos y errores de secuenciación, la probabilidad de observar el fragmento $j$ es la de elegir un transcrito compatible y una de sus $\tilde\ell_t$ posiciones:
+\begin{equation}\label{eq:11-veros}
+\mathcal L(\alpha)=\prod_{j=1}^{N}\;\sum_{t=1}^{T} y_{jt}\,\frac{\alpha_t}{\tilde\ell_t}
+\;=\;\prod_{C}\Big(\sum_{t\in C}\frac{\alpha_t}{\tilde\ell_t}\Big)^{n_C}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$N$}{Número total de fragmentos.}
+\simbolo{$y_{jt}$}{1 si el fragmento $j$ es compatible con el transcrito $t$; 0 si no.}
+\simbolo{$C$}{Clase de equivalencia: conjunto de transcritos con el que es compatible un grupo de fragmentos.}
+\simbolo{$n_C$}{Número de fragmentos de la clase $C$.}
+\end{simbolos}
+
+La segunda igualdad es la observación que hace rápidos a los cuantificadores modernos: dos fragmentos compatibles con el mismo conjunto de transcritos aportan el mismo factor a la verosimilitud, así que basta guardar las \emph{clases de equivalencia} y sus conteos. Treinta millones de lecturas se resumen en unas pocas centenas de miles de clases.
+
+\subsection{El algoritmo EM}
+
+Maximizar la \cref{eq:11-veros} directamente es incómodo: el logaritmo de una suma no se separa. Pero si supiéramos de qué transcrito vino cada fragmento (una variable \emph{latente} $z_j$), la estimación sería trivial: $\hat\alpha_t$ sería la fracción de fragmentos con $z_j=t$. El algoritmo \ingles{Expectation-Maximization} de \textcite{c11-dempster1977} convierte esa intuición en un método: alterna entre adivinar, de forma probabilística, los $z_j$ (paso E) y reestimar $\alpha$ como si esa adivinanza fuera cierta (paso M).
+
+\begin{teorema}{EM para cuantificación de transcritos}{em}
+Partiendo de $\alpha^{(0)}$ (por ejemplo, uniforme), repita hasta convergencia:
+\begin{align}
+\text{Paso E:}\quad & \hat n_{Ct}^{(k)} = n_C\,\frac{\alpha_t^{(k)}/\tilde\ell_t}{\sum_{u\in C}\alpha_u^{(k)}/\tilde\ell_u}\quad (t\in C),\label{eq:11-estep}\\[2pt]
+\text{Paso M:}\quad & \alpha_t^{(k+1)} = \frac{1}{N}\sum_{C\ni t}\hat n_{Ct}^{(k)}.\label{eq:11-mstep}
+\end{align}
+Cada iteración no disminuye la log-verosimilitud: $\log\mathcal L(\alpha^{(k+1)})\ge\log\mathcal L(\alpha^{(k)})$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\hat n_{Ct}^{(k)}$}{Número esperado de fragmentos de la clase $C$ que proceden de $t$, dada la estimación actual.}
+\simbolo{$\alpha^{(k)}$}{Estimación de las fracciones de fragmentos en la iteración $k$.}
+\simbolo{$C\ni t$}{Suma sobre todas las clases que contienen a $t$.}
+\end{simbolos}
+
+Observe la \cref{eq:11-estep} con atención, porque es el lugar donde más se equivocan las implementaciones ingenuas: el reparto es proporcional a $\alpha_t/\tilde\ell_t$, no a $\alpha_t$. La razón es que la probabilidad de un fragmento \emph{concreto} dado el transcrito es $1/\tilde\ell_t$: entre dos transcritos igual de representados en fragmentos, uno corto concentra esos fragmentos en menos posiciones y, por tanto, explica mejor cada uno.
+
+¿Por qué la verosimilitud no baja nunca? Llamemos \emph{responsabilidades} a las probabilidades que calcula el paso E, $\gamma_{jt}=\Prob(z_j=t\mid j,\alpha^{(k)})$. Para cualquier $\alpha$, la desigualdad de Jensen aplicada al logaritmo (una función cóncava) da
+\begin{equation}\label{eq:11-jensen}
+\log\sum_t y_{jt}\frac{\alpha_t}{\tilde\ell_t}
+=\log\sum_t \gamma_{jt}\,\frac{y_{jt}\,\alpha_t/\tilde\ell_t}{\gamma_{jt}}
+\;\ge\;\sum_t\gamma_{jt}\log\frac{y_{jt}\,\alpha_t/\tilde\ell_t}{\gamma_{jt}},
+\end{equation}
+con igualdad cuando $\alpha=\alpha^{(k)}$. El lado derecho, sumado sobre $j$, es una cota inferior de $\log\mathcal L(\alpha)$ que toca a la curva en $\alpha^{(k)}$; el paso M la maximiza (es un problema de multinomial con solución cerrada, la \cref{eq:11-mstep}), y como la cota está por debajo de la curva, la verosimilitud en el nuevo punto es al menos tan alta como en el anterior. La \cref{eq:11-veros} es, además, cóncava en $\alpha$, así que EM converge al máximo global, aunque puede hacerlo con lentitud cuando dos isoformas son casi indistinguibles.
+
+\begin{ejemplo}{EM paso a paso con tres isoformas}{em}
+Tomemos el gen de la \cref{fig:11-isoformas} con fragmentos de $\mu_F=200$: las longitudes efectivas son $\tilde\ell=(1301,\,801,\,1801)$. Se observaron $N=1200$ fragmentos repartidos así:
+\begin{center}\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Clase $C$ & \{T1\} & \{T2\} & \{T3\} & \{T1,T2\} & \{T1,T3\} & \{T1,T2,T3\}\\
+$n_C$ & 120 & 30 & 200 & 250 & 150 & 450\\
+\bottomrule
+\end{tabular}
+\end{center}
+\emph{Iteración 1.} Con $\alpha^{(0)}=(\tfrac13,\tfrac13,\tfrac13)$ los pesos $\alpha_t/\tilde\ell_t$ son proporcionales a $1/\tilde\ell_t$, de modo que la clase \{T1,T2,T3\} se reparte en $(134{,}5;\ 218{,}4;\ 97{,}1)$ fragmentos: T2, el más corto, recibe la mayor parte. La clase \{T1,T2\} se reparte en $(95{,}3;\ 154{,}7)$ y \{T1,T3\} en $(87{,}1;\ 62{,}9)$. Sumando, T1 acumula $120+95{,}3+87{,}1+134{,}5=436{,}9$ fragmentos, y el paso M da $\alpha^{(1)}=(0{,}364;\ 0{,}336;\ 0{,}300)$.
+
+\emph{Iteraciones siguientes.} La segunda iteración da $\alpha^{(2)}=(0{,}383;\ 0{,}332;\ 0{,}286)$ y la tercera, $\alpha^{(3)}=(0{,}395;\ 0{,}326;\ 0{,}279)$. El cambio máximo cae por debajo de $10^{-4}$ en la iteración 20, y el punto fijo es $\hat\alpha=(0{,}426;\ 0{,}301;\ 0{,}273)$, es decir, $511{,}3$, $361{,}7$ y $327{,}0$ fragmentos. La log-verosimilitud subió de $-9107{,}6$ a $-9099{,}0$.
+
+\emph{Fracciones molares.} Por la \cref{eq:11-alfatau}, $\hat\tau=(0{,}383;\ 0{,}440;\ 0{,}177)$. T2 recibe menos fragmentos que T1 pero tiene \emph{más moléculas}, porque es más corto; T3 recibe un cuarto de los fragmentos pero solo un sexto de las moléculas, porque es el más largo. Confundir $\alpha$ con $\tau$ es confundir ``cuántas lecturas'' con ``cuánto ARN''.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1,horizontal sep=1.55cm},
+   curso, width=0.48\linewidth, height=5.2cm, xmin=0, xmax=40, xlabel={iteración $k$}]
+\nextgroupplot[ylabel={$\alpha_t^{(k)}$}, ymin=0.25, ymax=0.45,
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2},
+   legend style={at={(0.97,0.5)},anchor=east}]
+  \addplot[azul, very thick] table[x=it,y=a1]{figuras/cap11/em.dat};\addlegendentry{T1}
+  \addplot[naranja, very thick] table[x=it,y=a2]{figuras/cap11/em.dat};\addlegendentry{T2}
+  \addplot[aqua, very thick] table[x=it,y=a3]{figuras/cap11/em.dat};\addlegendentry{T3}
+  \addplot[only marks, mark=*, mark size=1.3pt, azul] table[x=it,y=a1]{figuras/cap11/em.dat};
+  \addplot[only marks, mark=*, mark size=1.3pt, naranja] table[x=it,y=a2]{figuras/cap11/em.dat};
+  \addplot[only marks, mark=*, mark size=1.3pt, aqua] table[x=it,y=a3]{figuras/cap11/em.dat};
+\nextgroupplot[ylabel={$\log\mathcal L(\alpha^{(k)})-\log\mathcal L(\hat\alpha)$}, ymin=-9, ymax=0.5]
+  \addplot[violeta, very thick, mark=*, mark size=1.1pt] table[x=it,y=ll]{figuras/cap11/em_ll.dat};
+  \node[etiqueta,anchor=south west] at (axis cs:3,-8.6) {monótona creciente};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Convergencia del algoritmo EM]{El algoritmo EM aplicado al \cref{ej:em}. \textbf{Izquierda}: trayectoria de las fracciones de fragmentos $\alpha_t^{(k)}$ desde el punto de partida uniforme. En la primera iteración T2 gana peso porque es corto y absorbe más de lo que le corresponde de las lecturas ambiguas; las lecturas exclusivas de T1 (clase \{T1\}, 120 fragmentos) y las de la unión \texttt{E1}--\texttt{E4} (solo 30) terminan corrigiendo ese exceso. \textbf{Derecha}: la log-verosimilitud sube en cada paso, como garantiza el \cref{teo:em}; la mayor parte de la ganancia se obtiene en las primeras cinco iteraciones. Datos: \archivo{figuras/cap11/generar.py}.}
+\label{fig:11-em}
+\end{figure}
+
+\begin{codigo}[em\_isoformas.py]
+import numpy as np
+
+def em_isoformas(clases, leff, iters=500, tol=1e-8):
+    """clases: lista de (tupla de índices, conteo); leff: array."""
+    T = len(leff); N = sum(n for _, n in clases)
+    alfa = np.full(T, 1.0 / T)
+    for _ in range(iters):
+        esperado = np.zeros(T)
+        for C, n in clases:                 # paso E
+            idx = list(C)
+            w = alfa[idx] / leff[idx]       # ¡dividir por leff!
+            esperado[idx] += n * w / w.sum()
+        nuevo = esperado / N                # paso M
+        if np.abs(nuevo - alfa).max() < tol:
+            break
+        alfa = nuevo
+    tau = (alfa / leff) / (alfa / leff).sum()
+    return alfa, tau
+\end{codigo}
+
+\begin{historia}[De RPKM a RSEM]
+El primer gran estudio de RNA-seq en mamíferos \parencite{c11-mortazavi2008} ya tropezó con las lecturas que mapean en varios lugares: las asignó en proporción a las lecturas únicas de cada locus, una especie de ``paso E'' de una sola iteración. \textcite{c11-li2011} formalizaron el problema como un modelo generativo completo, lo resolvieron con EM y añadieron intervalos de credibilidad por muestreo de Gibbs; su programa, RSEM, funciona incluso sin genoma de referencia, con un transcriptoma ensamblado \emph{de novo}. Casi todos los cuantificadores posteriores son variaciones sobre ese modelo.
+\end{historia}
+
+\subsection{Pseudoalineamiento y mapeo selectivo}
+
+El modelo anterior no necesita saber \emph{dónde} alinea un fragmento dentro de un transcrito, solo \emph{con qué transcritos es compatible}. \textcite{c11-bray2016} explotaron esa observación en kallisto. Construyen un grafo de De~Bruijn del transcriptoma (con $k=31$ por defecto), en el que cada $k$-mer lleva anotado el conjunto de transcritos que lo contienen. Para una lectura se buscan sus $k$-mers en el índice y se \emph{intersecan} los conjuntos: el resultado es la clase de equivalencia de la lectura. Como los $k$-mers consecutivos de un mismo tramo del grafo tienen el mismo conjunto, basta consultar unos pocos y saltar el resto. No hay alineamiento base a base, y por eso el procedimiento se llama \emph{pseudoalineamiento}. Los autores cuantificaron 30 millones de lecturas humanas en menos de tres minutos en un ordenador de escritorio, con una exactitud comparable a la de los mejores métodos basados en alineamiento.
+
+Salmon \parencite{c11-patro2017} persigue el mismo objetivo con otra arquitectura. Su \emph{cuasi-mapeo} usa un índice de sufijos del transcriptoma para localizar coincidencias exactas largas y obtener también la posición y la orientación aproximadas; la inferencia se hace en dos fases, una ``en línea'' mientras llegan las lecturas y otra ``fuera de línea'' que refina las abundancias sobre las clases de equivalencia con EM o con Bayes variacional. Su aportación central es incorporar al modelo los \emph{sesgos} de las bibliotecas reales: la probabilidad de muestrear un fragmento depende de su contenido en GC, de la secuencia en torno a los extremos (los hexámeros aleatorios del cebado no son tan aleatorios) y de la posición a lo largo del transcrito (degradación en 5' o 3'). Salmon estima esos sesgos a partir de los propios datos y los usa para corregir las longitudes efectivas de cada transcrito, lo que mejora la reproducibilidad entre laboratorios. Versiones posteriores sustituyeron el cuasi-mapeo por un \emph{alineamiento selectivo}, que verifica con un alineamiento rápido las coincidencias candidatas y puede usar el genoma como señuelo para evitar asignar al transcriptoma lecturas de intrones o de regiones no anotadas.
+
+\begin{consola}[Cuantificación con Salmon]
+# 1. Índice del transcriptoma (con el genoma como señuelo)
+grep '^>' genoma.fa | cut -d ' ' -f 1 | sed 's/>//' > decoys.txt
+cat transcritos.fa genoma.fa > gentrome.fa
+salmon index -t gentrome.fa -d decoys.txt -i idx_salmon -k 31
+
+# 2. Cuantificación de una muestra pareada con corrección de sesgos
+salmon quant -i idx_salmon -l A \
+    -1 ctrl1_R1.fastq.gz -2 ctrl1_R2.fastq.gz \
+    --validateMappings --gcBias --seqBias \
+    -p 8 -o quant/ctrl1
+# quant/ctrl1/quant.sf: Name Length EffectiveLength TPM NumReads
+\end{consola}
+
+\subsection{Unidades: RPKM, TPM y conteos}
+
+El archivo \archivo{quant.sf} ofrece dos columnas de abundancia que conviene no confundir. \emph{NumReads} es el número \emph{esperado} de fragmentos asignados al transcrito, $N\hat\alpha_t$; no es entero porque procede de repartos fraccionarios. \emph{TPM} es una estimación de la fracción molar $\hat\tau_t$ multiplicada por un millón. Para comparar la expresión de genes de distinta longitud dentro de una muestra, \textcite{c11-mortazavi2008} propusieron dividir el conteo por la longitud en kilobases y por el total de lecturas en millones, las \emph{lecturas por kilobase por millón} (RPKM, o FPKM si se cuentan fragmentos pareados). La otra unidad, TPM, invierte el orden de las operaciones:
+\begin{equation}\label{eq:11-tpm}
+\mathrm{RPKM}_t=\frac{c_t}{\left(\tilde\ell_t/10^3\right)\left(N/10^6\right)},\qquad
+\mathrm{TPM}_t=10^6\,\frac{c_t/\tilde\ell_t}{\sum_u c_u/\tilde\ell_u}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$c_t$}{Fragmentos asignados al transcrito (o gen) $t$.}
+\simbolo{$N$}{Fragmentos totales de la muestra, $\sum_u c_u$.}
+\simbolo{$\tilde\ell_t$}{Longitud efectiva (en la práctica, a veces la longitud sin corregir).}
+\end{simbolos}
+
+La diferencia parece cosmética, pero no lo es. Los TPM de una muestra suman siempre $10^6$, y por la \cref{eq:11-alfatau} estiman directamente $10^6\,\tau_t$. Los RPKM suman $10^9/\bar\ell$, donde $\bar\ell$ es la longitud media, ponderada por fragmentos, de lo que se expresa en esa muestra, y esa media cambia de una muestra a otra. \textcite{c11-wagner2012} mostraron que por eso los RPKM no son consistentes entre muestras: un mismo valor no significa la misma proporción de moléculas, y recomendaron usar TPM.
+
+\begin{ejemplo}{El mismo gen, dos unidades, dos historias}{tpm}
+Dos muestras expresan cuatro genes de longitudes 1, 2, 4 y \SI{0,5}{kb} y se secuencian a 10 millones de fragmentos. En A, los cuatro tienen el mismo número de moléculas; en B, el gen 4 (el corto) tiene cuatro veces más moléculas que en A y los otros tres no cambian en números absolutos. En A, los fragmentos se reparten en proporción a moléculas $\times$ longitud: $1{,}33$, $2{,}67$, $5{,}33$ y $0{,}67$ millones; los cuatro RPKM valen $\num{133333}$ y los cuatro TPM, $\num{250000}$. En B, los fragmentos son $1{,}11$, $2{,}22$, $4{,}44$ y $2{,}22$ millones; los RPKM de los genes 1--3 bajan a $\num{111111}$ y el del gen 4 sube a $\num{444444}$, con una suma total de $\num{777778}$ frente a $\num{533333}$ en A. Los TPM son $\num{142857}$ para los genes 1--3 y $\num{571429}$ para el 4, con suma $10^6$. La proporción real de moléculas del gen 1 en B es $10/70=0{,}143$: exactamente lo que dice su TPM. Su RPKM, en cambio, sugiere una caída del \SI{17}{\percent} cuando la fracción molar cayó un \SI{43}{\percent}.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1,horizontal sep=1.5cm},
+   curso, width=0.5\linewidth, height=5cm, ybar, /pgf/bar width=6pt, ymin=0,
+   xtick={1,2,3,4}, xticklabels={gen 1,gen 2,gen 3,gen 4}, xmin=0.4, xmax=4.6,
+   grid=none, ymajorgrids, enlarge x limits=false,
+   legend style={at={(0.03,0.97)},anchor=north west}]
+\nextgroupplot[ylabel={RPKM (miles)}, ymax=500, title={RPKM: sumas 533 (A) y 778 (B)}]
+  \addplot[fill=azul!70,draw=azul!70!black] table[x=g,y expr=\thisrow{A}/1000]{figuras/cap11/rpkm.dat};
+  \addplot[fill=naranja!70,draw=naranja!70!black] table[x=g,y expr=\thisrow{B}/1000]{figuras/cap11/rpkm.dat};
+  \legend{muestra A, muestra B}
+\nextgroupplot[ylabel={TPM (miles)}, ymax=650, title={TPM: suma \num{1000} en ambas}]
+  \addplot[fill=azul!70,draw=azul!70!black] table[x=g,y=A]{figuras/cap11/tpm.dat};
+  \addplot[fill=naranja!70,draw=naranja!70!black] table[x=g,y=B]{figuras/cap11/tpm.dat};
+\end{groupplot}
+\end{tikzpicture}
+\caption[RPKM frente a TPM]{Los datos del \cref{ej:tpm}. Entre A y B, solo el gen 4 cambió su número absoluto de moléculas (se multiplicó por cuatro). Como el total de lecturas es fijo, los otros tres genes pierden lecturas en ambas unidades, pero los RPKM de cada muestra suman cantidades distintas y no pueden leerse como proporciones de moléculas. Los TPM suman siempre un millón y reflejan la fracción molar de cada transcrito. Ninguna de las dos unidades distingue ``el gen 1 bajó'' de ``el gen 4 subió'': ese problema de \emph{composición} se trata en la \cref{sec:11-norm}.}
+\label{fig:11-tpm}
+\end{figure}
+
+\subsection{Del transcrito al gen: tximport}
+
+La expresión diferencial suele analizarse a nivel de gen, donde las estimaciones son más estables. Sumar los TPM de las isoformas de un gen da su fracción molar, pero los métodos de la \cref{sec:11-norm} necesitan \emph{conteos}, no TPM. \textcite{c11-soneson2015} mostraron que la forma correcta de pasar de uno a otro no es contar lecturas por gen directamente sobre un alineamiento, sino sumar los conteos \emph{estimados} por transcrito y, además, calcular para cada gen y muestra una \emph{longitud efectiva media}, ponderada por la abundancia de sus isoformas. Si una muestra expresa sobre todo la isoforma larga y otra la corta, el gen producirá más fragmentos en la primera aunque tenga el mismo número de moléculas; la longitud media, usada como \emph{desplazamiento} en el modelo, corrige ese efecto. Su paquete \cmd{tximport} hace esa agregación y encaja directamente con los métodos de la sección siguiente.
+
+\begin{cuidado}[TPM no es una entrada para expresión diferencial]
+Los TPM sirven para describir y visualizar, pero no deben alimentar un modelo de conteos: al dividir por la longitud y reescalar se pierde la información sobre la precisión de cada medida (cien lecturas no son tan ruidosas como diez, aunque den el mismo TPM), y el reescalado a un millón hereda el problema de composición. Use los conteos estimados, con las longitudes medias como desplazamientos, tal como hace \cmd{tximport}.
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{Normalización y binomial negativa}\label{sec:11-norm}
+% ---------------------------------------------------------------------
+\enlacerepo{11.2 · Normalización y binomial negativa}
+
+\begin{intuicion}[El reparto de la pizza]
+Seis amigos piden una pizza de ocho porciones y cada uno come aproximadamente lo mismo. Al día siguiente vuelven con un séptimo invitado, un adolescente hambriento que se come la mitad de la pizza. Si solo le enseñan la \emph{fracción} de pizza que comió cada uno, usted concluirá que los seis amigos perdieron el apetito: cada uno comió un doceavo en lugar de un sexto. Pero nadie cambió de hábitos salvo el invitado; lo que cambió es el denominador. El RNA-seq mide exactamente fracciones de una pizza de tamaño fijo, las lecturas de la muestra, y un puñado de genes muy expresados puede hacer que todos los demás parezcan disminuir.
+\end{intuicion}
+
+\subsection{Qué hay que corregir}
+
+El conteo $K_{ij}$ del gen $i$ en la muestra $j$ depende de su expresión, pero también de factores técnicos: la \emph{profundidad} de secuenciación, la \emph{longitud} del gen, su contenido en GC y la \emph{composición} del transcriptoma. Para comparar un \emph{mismo gen} entre muestras, la longitud se cancela (salvo cambios de isoforma, que \cmd{tximport} corrige) y lo esencial es la profundidad y la composición.
+
+La corrección más obvia divide por el total de lecturas: los \emph{conteos por millón}, $\mathrm{CPM}_{ij}=10^6K_{ij}/N_j$. Escribamos qué esperamos observar. Si $\mu_{ij}$ es el número de moléculas del gen $i$ en la muestra $j$ y $L_i$ su longitud, la fracción de lecturas que produce es $\mu_{ij}L_i/S_j$, con
+\begin{equation}\label{eq:11-composicion}
+\E[K_{ij}]=N_j\,\frac{\mu_{ij}L_i}{S_j},\qquad S_j=\sum_{g=1}^{G}\mu_{gj}L_g.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$K_{ij}$}{Conteo observado del gen $i$ en la muestra $j$.}
+\simbolo{$N_j$}{Total de lecturas asignadas en la muestra $j$ (profundidad).}
+\simbolo{$\mu_{ij},\ L_i$}{Número de moléculas del gen $i$ en la muestra $j$ y longitud del gen.}
+\simbolo{$S_j$}{``Producción total de ARN'' de la muestra: el tamaño de la pizza.}
+\end{simbolos}
+
+Dividir por $N_j$ elimina la profundidad, pero deja el denominador $S_j$. Si un conjunto de genes se dispara en la muestra B, $S_B$ crece y todos los demás genes ven reducida su fracción aunque su $\mu$ no haya cambiado. \textcite{c11-robinson2010tmm} documentaron el efecto con datos reales de hígado y riñón: una parte pequeña de genes muy expresados en un tejido basta para sesgar el cociente de todos los demás, y la normalización por total convierte ese sesgo en miles de falsos positivos.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap11/comp_lineas.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.3cm,
+   xlabel={$A$: expresión media ($\log_2$ CPM)}, ylabel={$M=\log_2(\mathrm{CPM}_B/\mathrm{CPM}_A)$},
+   xmin=1, xmax=14.5, ymin=-3.2, ymax=4.6, legend pos=south east,
+   legend style={font=\sffamily\scriptsize}]
+  \addplot[only marks, mark=*, mark size=0.55pt, gris, opacity=0.55] table[x=A,y=M]{figuras/cap11/comp_ns.dat};
+  \addlegendentry{genes sin cambio}
+  \addplot[only marks, mark=*, mark size=0.7pt, naranja, opacity=0.8] table[x=A,y=M]{figuras/cap11/comp_up.dat};
+  \addlegendentry{\SI{5}{\percent} de genes $\times 8$ en B}
+  \addplot[tinta2, dashed, thick, domain=1:14.5] {0};
+  \addlegendentry{normalización por total ($M=0$)}
+  \addplot[azul, very thick, domain=1:14.5] {\caponcetmm};
+  \addlegendentry{TMM}
+  \addplot[aqua, very thick, densely dotted, domain=1:14.5] {\caponcemor};
+  \addlegendentry{mediana de razones}
+\end{axis}
+\end{tikzpicture}
+\caption[El efecto de composición]{Efecto de composición en dos muestras simuladas con la misma profundidad. En B, un \SI{5}{\percent} de los genes (naranja) multiplica por ocho su expresión y pasa a acaparar el \SI{33}{\percent} de las lecturas (frente al \SI{6}{\percent} en A). Los demás genes (gris) no cambiaron, pero con la normalización por total su $M$ se centra en $-0{,}49$: parecen reprimidos. TMM ($\log_2 f=-0{,}461$, azul) y la mediana de razones ($-0{,}460$, puntos aqua) recuperan el centro de la nube de genes sin cambio, prácticamente sobre el valor teórico de $-0{,}486$; ambas líneas casi coinciden. Por debajo de $A\approx4$ la nube se abre en abanico: con pocas lecturas, el cociente es muy ruidoso.}
+\label{fig:11-composicion}
+\end{figure}
+
+\subsection{TMM: media recortada de cocientes}
+
+La solución de \textcite{c11-robinson2010tmm} parte de un supuesto biológico: \emph{la mayoría de los genes no cambia}. Si es así, sus cocientes de expresión entre muestras deben estar centrados en cero después de normalizar, y el desplazamiento de su centro mide el sesgo de composición. Con una muestra de referencia $r$, se definen para cada gen el cociente logarítmico y la expresión media:
+\begin{equation}\label{eq:11-ma}
+M_i=\log_2\frac{K_{ij}/N_j}{K_{ir}/N_r},\qquad
+A_i=\tfrac12\log_2\!\left(\frac{K_{ij}}{N_j}\cdot\frac{K_{ir}}{N_r}\right).
+\end{equation}
+Se descartan los genes con $M$ extremo (por defecto, el \SI{30}{\percent} de cada cola) y con $A$ extremo (el \SI{5}{\percent}), y se promedian los $M$ restantes con pesos iguales al inverso de su varianza aproximada:
+\begin{equation}\label{eq:11-tmm}
+\log_2 f_j=\frac{\sum_{i\in\mathcal R} w_i M_i}{\sum_{i\in\mathcal R} w_i},\qquad
+w_i^{-1}=\frac{N_j-K_{ij}}{N_jK_{ij}}+\frac{N_r-K_{ir}}{N_rK_{ir}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$M_i,\ A_i$}{Cociente logarítmico y expresión media del gen $i$ entre la muestra $j$ y la referencia $r$.}
+\simbolo{$\mathcal R$}{Genes que sobreviven al doble recorte.}
+\simbolo{$w_i$}{Peso: inverso de la varianza aproximada (método delta) de $M_i$.}
+\simbolo{$f_j$}{Factor TMM; el tamaño efectivo de la biblioteca es $N_jf_j$.}
+\end{simbolos}
+
+El recorte cumple el papel de la mediana: vuelve el estimador inmune a los genes que realmente cambian, siempre que sean minoría o que se repartan de forma aproximadamente simétrica entre subidas y bajadas. Los pesos dan más voz a los genes con muchas lecturas, cuyos cocientes son más precisos.
+
+\subsection{La mediana de razones}
+
+\textcite{c11-anders2010} propusieron, para DESeq, un estimador aún más directo. Se construye una \emph{pseudomuestra de referencia} con la media geométrica de cada gen a través de todas las muestras, y el factor de tamaño de cada muestra es la mediana de sus cocientes con esa referencia:
+\begin{equation}\label{eq:11-mor}
+\hat s_j=\operatorname*{mediana}_{i:\,K_{iv}>0\ \forall v}\;\frac{K_{ij}}{\left(\prod_{v=1}^{m}K_{iv}\right)^{1/m}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\hat s_j$}{Factor de tamaño de la muestra $j$; los conteos normalizados son $K_{ij}/\hat s_j$.}
+\simbolo{$m$}{Número de muestras.}
+\simbolo{$\left(\prod_v K_{iv}\right)^{1/m}$}{Media geométrica del gen $i$: la pseudomuestra de referencia.}
+\end{simbolos}
+
+La mediana se calcula solo sobre genes sin ceros, porque un cero anula la media geométrica. Como la media geométrica es simétrica respecto a todas las muestras, no hace falta elegir una referencia, y el producto de los factores es aproximadamente 1. En la \cref{fig:11-composicion} ambos métodos coinciden hasta la tercera cifra decimal.
+
+\begin{ejemplo}{Factores de tamaño a mano}{mor}
+Cinco genes en tres muestras:
+\begin{center}\small
+\begin{tabular}{@{}lrrrcr@{}}
+\toprule
+Gen & $K_{i1}$ & $K_{i2}$ & $K_{i3}$ & & media geom.\\
+\midrule
+g1 & 500 & 1100 & 700 && 727{,}5\\
+g2 & 80 & 190 & 105 && 116{,}9\\
+g3 & 1200 & 2600 & 1550 && 1691{,}1\\
+g4 & 30 & 64 & 42 && 43{,}2\\
+g5 & 10 & 0 & 9 && --\\
+\bottomrule
+\end{tabular}
+\end{center}
+El gen g5 tiene un cero y queda fuera. Los cocientes con la media geométrica de la muestra 1 son $0{,}687$, $0{,}685$, $0{,}710$ y $0{,}694$; su mediana es $\hat s_1=0{,}691$. Del mismo modo, $\hat s_2=1{,}525$ y $\hat s_3=0{,}939$. La muestra 2 se secuenció, en efecto, a algo más del doble de profundidad que la 1. Observe que los cocientes de cada columna son muy parecidos entre sí: esa coherencia es la que justifica usar su mediana como factor común.
+\end{ejemplo}
+
+\begin{codigo}[factores\_tamano.py]
+import numpy as np
+
+def factores_tamano(K):
+    """K: matriz genes x muestras de conteos crudos."""
+    K = np.asarray(K, dtype=float)
+    ok = (K > 0).all(axis=1)              # genes sin ceros
+    logK = np.log(K[ok])
+    log_geo = logK.mean(axis=1, keepdims=True)
+    return np.exp(np.median(logK - log_geo, axis=0))
+
+K = [[500, 1100, 700], [80, 190, 105], [1200, 2600, 1550],
+     [30, 64, 42], [10, 0, 9]]
+print(factores_tamano(K).round(3))        # [0.691 1.525 0.939]
+\end{codigo}
+
+\begin{cuidado}[Cuando la mayoría sí cambia]
+TMM y la mediana de razones suponen que la mayoría de los genes no cambia, o que los cambios son equilibrados. Ese supuesto falla en situaciones como una amplificación transcripcional global (células con MYC hiperactivo que producen más ARN de todo tipo) o al comparar tejidos muy distintos. En esos casos ninguna normalización interna es fiable, y se recurre a controles externos añadidos en cantidad conocida a cada muestra (\ingles{spike-ins}) o a un número de células conocido.
+\end{cuidado}
+
+\subsection{De Poisson a la binomial negativa}
+
+Una vez normalizados, ¿cuánto varían los conteos? Si una biblioteca contiene un gen en proporción $p$ y secuenciamos $N$ fragmentos, el número de lecturas del gen sigue una binomial $\mathrm{Bin}(N,p)$; con $N$ enorme y $p$ diminuta, eso es prácticamente una Poisson de media $\mu=Np$, cuya varianza es \emph{igual} a la media. Las réplicas técnicas, secuenciar dos veces la misma biblioteca, se comportan en efecto así. Pero las réplicas biológicas añaden una segunda fuente de variación: la proporción $p$ misma varía de un individuo a otro. El modelo natural es jerárquico.
+
+\begin{teorema}{Mezcla gamma-Poisson}{nb}
+Si $\lambda\sim\mathrm{Gamma}(\text{forma}=1/\alpha,\ \text{escala}=\alpha\mu)$ y, condicionado a $\lambda$, $K\sim\mathrm{Poisson}(\lambda)$, entonces $K$ sigue una binomial negativa con
+\begin{equation}\label{eq:11-nbpmf}
+\Prob(K=k)=\frac{\Gamma(k+1/\alpha)}{\Gamma(1/\alpha)\,k!}\left(\frac{1}{1+\alpha\mu}\right)^{1/\alpha}\left(\frac{\alpha\mu}{1+\alpha\mu}\right)^{k},
+\end{equation}
+y sus dos primeros momentos son
+\begin{equation}\label{eq:11-nbvar}
+\E[K]=\mu,\qquad \Var[K]=\mu+\alpha\mu^2.
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\lambda$}{Expresión ``verdadera'' del gen en un individuo concreto (variable entre réplicas biológicas).}
+\simbolo{$\mu$}{Media poblacional del conteo.}
+\simbolo{$\alpha$}{Dispersión: $\sqrt\alpha$ es el coeficiente de variación biológico de $\lambda$.}
+\end{simbolos}
+
+La varianza de la \cref{eq:11-nbvar} se obtiene con la ley de la varianza total, sin necesidad de la función de masa: $\Var[K]=\E[\Var(K\mid\lambda)]+\Var[\E(K\mid\lambda)]=\E[\lambda]+\Var[\lambda]=\mu+\alpha\mu^2$. Los dos sumandos tienen una lectura transparente. El término $\mu$ es el ruido de Poisson del muestreo de lecturas, que domina para genes poco expresados. El término $\alpha\mu^2$ es la variación biológica, que domina para genes muy expresados: el coeficiente de variación al cuadrado es $\Var[K]/\mu^2=1/\mu+\alpha$, y tiende a $\alpha$ por mucho que se secuencie. \emph{Más profundidad reduce el primer término; solo más réplicas permiten estimar y promediar el segundo.} Es el argumento cuantitativo a favor de las réplicas que anticipamos en la \cref{sec:11-cuant}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.2cm, ybar=0pt, bar width=2.1pt,
+   xlabel={conteo $k$}, ylabel={$\Prob(K=k)$}, xmin=-1, xmax=71, ymin=0,
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2},
+   grid=none, ymajorgrids, legend pos=north east]
+  \addplot[fill=azul!70, draw=none] table[x=k,y=pois]{figuras/cap11/pmf.dat};
+  \addlegendentry{Poisson, $\mu=20$ (varianza 20)}
+  \addplot[fill=naranja!80, draw=none] table[x=k,y=nb]{figuras/cap11/pmf.dat};
+  \addlegendentry{binomial negativa, $\mu=20$, $\alpha=0{,}2$ (varianza 100)}
+\end{axis}
+\end{tikzpicture}
+\caption[Poisson frente a binomial negativa]{Dos distribuciones con la misma media. La Poisson (azul) concentra la masa entre 12 y 28 lecturas; la binomial negativa con dispersión $\alpha=0{,}2$ (un coeficiente de variación biológico del \SI{45}{\percent}, típico de muestras humanas) es cinco veces más variable. Un conteo de 40 o más tiene probabilidad $5\times10^{-5}$ bajo la Poisson, pero $0{,}044$ bajo la binomial negativa: lo que la Poisson declararía un cambio extraordinario es, con variación biológica, un suceso corriente.}
+\label{fig:11-pmf}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.4cm, xmode=log, ymode=log,
+   xlabel={media de 6 réplicas}, ylabel={varianza entre réplicas},
+   xmin=0.3, xmax=3e4, ymin=0.05, ymax=5e8, legend pos=north west,
+   xtick={1,10,100,1000,10000}, ytick={0.1,10,1000,100000,10000000},
+   log basis x=10]
+  \addplot[only marks, mark=*, mark size=0.6pt, azul, opacity=0.6] table[x=m,y=v]{figuras/cap11/mv_pois.dat};
+  \addlegendentry{réplicas técnicas (Poisson)}
+  \addplot[only marks, mark=*, mark size=0.6pt, naranja, opacity=0.6] table[x=m,y=v]{figuras/cap11/mv_nb.dat};
+  \addlegendentry{réplicas biológicas (NB, $\alpha=0{,}1$)}
+  \addplot[azulprofundo, thick, domain=0.3:3e4, samples=50] {x};
+  \addlegendentry{$\Var=\mu$}
+  \addplot[rojooscuro, thick, dashed, domain=0.3:3e4, samples=50] {x+0.1*x^2};
+  \addlegendentry{$\Var=\mu+\alpha\mu^2$}
+\end{axis}
+\end{tikzpicture}
+\caption[Relación media-varianza]{Relación media-varianza en \num{1500} genes simulados con seis réplicas, en escala doble logarítmica. Con variación puramente técnica (azul) la nube sigue la diagonal $\Var=\mu$. Con variación biológica (naranja) coincide con ella para genes poco expresados, donde manda el ruido de muestreo, pero se separa con pendiente 2 a partir de $\mu\approx1/\alpha=10$. Para los genes con media superior a \num{1000}, la varianza es unas 330 veces la media. La dispersión de los puntos alrededor de cada curva es el ruido de estimar una varianza con solo seis observaciones, y anticipa el problema de la \cref{sec:11-norm}: estimar $\alpha$ gen a gen es muy impreciso.}
+\label{fig:11-mediavar}
+\end{figure}
+
+\subsection{El modelo lineal generalizado}
+
+Con la distribución elegida, el modelo completo de DESeq2 \parencite{c11-love2014}, casi idéntico al de edgeR \parencite{c11-robinson2010edger}, es un \emph{modelo lineal generalizado} (GLM) con enlace logarítmico:
+\begin{equation}\label{eq:11-glm}
+K_{ij}\sim\mathrm{NB}\!\left(\mu_{ij},\,\alpha_i\right),\qquad
+\mu_{ij}=s_j\,q_{ij},\qquad
+\log_2 q_{ij}=\sum_{r}x_{jr}\,\beta_{ir}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$s_j$}{Factor de tamaño de la muestra (\cref{eq:11-mor}); entra como desplazamiento fijo, no se estima gen a gen.}
+\simbolo{$q_{ij}$}{Expresión normalizada esperada del gen $i$ en la muestra $j$.}
+\simbolo{$x_{jr}$}{Matriz de diseño: condición, lote, sexo\ldots\ de la muestra $j$.}
+\simbolo{$\beta_{ir}$}{Coeficientes del gen $i$; con un diseño ``$\sim$ lote $+$ condición'', el coeficiente de la condición es el $\log_2$ del cambio de expresión (LFC) corregido por lote.}
+\simbolo{$\alpha_i$}{Dispersión propia del gen $i$.}
+\end{simbolos}
+
+Esta formulación tiene tres virtudes. Los conteos se modelan \emph{crudos}, con la normalización como desplazamiento, así que el modelo sabe que 10 lecturas son menos fiables que \num{10000}. El enlace logarítmico hace que los efectos sean multiplicativos, que es como se comporta la expresión. Y la matriz de diseño admite cualquier experimento: covariables, lotes, interacciones, datos pareados. Los $\beta$ se estiman por máxima verosimilitud con mínimos cuadrados iterativamente reponderados (IRLS), cuyos pesos para la NB son
+\begin{equation}\label{eq:11-irls}
+W_{jj}=\frac{\mu_{ij}}{1+\alpha_i\mu_{ij}},\qquad
+\widehat{\mathrm{Cov}}(\hat\beta_i)=\left(X^{\top}WX\right)^{-1}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$W$}{Matriz diagonal de pesos: la información de Fisher que aporta cada observación.}
+\simbolo{$X$}{Matriz de diseño ($m$ muestras $\times$ $p$ coeficientes).}
+\end{simbolos}
+
+El peso tiende a $1/\alpha_i$ cuando $\mu$ crece: por muchos conteos que tenga una muestra, su información está acotada por la variación biológica. De aquí sale el error estándar de cada LFC, que usaremos en la \cref{sec:11-de}.
+
+\subsection{Estimar la dispersión con pocas réplicas: contracción}
+
+Todo depende de $\alpha_i$, y $\alpha_i$ es muy difícil de estimar con tres réplicas por grupo: la \cref{fig:11-mediavar} muestra cuánto se dispersan las varianzas muestrales. Si subestimamos $\alpha_i$, los errores estándar serán demasiado pequeños y aparecerán falsos positivos; si la sobreestimamos, perderemos potencia. La salida es compartir información entre genes. Aunque cada gen tiene su propia dispersión, los genes de expresión similar tienen dispersiones parecidas, y con veinte mil genes podemos aprender esa regularidad con gran precisión. El procedimiento de DESeq2, un ejemplo de \emph{Bayes empírico}, tiene tres pasos:
+\begin{enumerate}
+  \item \textbf{Estimación gen a gen}, $\hat\alpha_i^{\,\mathrm{gw}}$, por máxima verosimilitud con el ajuste de Cox-Reid, que corrige el sesgo de estimar la dispersión después de haber estimado los $\beta$ con las mismas observaciones.
+  \item \textbf{Tendencia}: se ajusta una curva $\alpha_{\mathrm{tr}}(\bar\mu)$ de las estimaciones gen a gen frente a la media normalizada.
+  \item \textbf{Contracción}: se combina la verosimilitud de cada gen con una distribución previa log-normal centrada en la tendencia y se toma el máximo \emph{a posteriori}.
+\end{enumerate}
+En fórmulas,
+\begin{gather}
+\alpha_{\mathrm{tr}}(\bar\mu)=a_0+\frac{a_1}{\bar\mu},\qquad
+\log\alpha_i\sim\mathcal N\!\left(\log\alpha_{\mathrm{tr}}(\bar\mu_i),\,\sigma_d^2\right),\label{eq:11-disp}\\
+\hat\alpha_i^{\,\mathrm{MAP}}=\argmax_{\alpha}\Big[\ell_i(\alpha)+\log p(\alpha)\Big].\label{eq:11-map}
+\end{gather}
+
+\begin{simbolos}
+\simbolo{$\bar\mu_i$}{Media de los conteos normalizados del gen $i$.}
+\simbolo{$a_0,\ a_1$}{Parámetros de la tendencia: $a_0$ es la dispersión biológica asintótica; $a_1/\bar\mu$ recoge el exceso de variabilidad de los genes poco expresados.}
+\simbolo{$\sigma_d^2$}{Varianza previa: cuánto se apartan de verdad las dispersiones de la tendencia, estimada restando a la varianza de los residuos la varianza de muestreo esperada.}
+\simbolo{$\ell_i(\alpha)$}{Log-verosimilitud (ajustada por Cox-Reid) del gen $i$ como función de la dispersión.}
+\end{simbolos}
+
+La cantidad de contracción se regula sola. Con pocas réplicas, la verosimilitud de cada gen es plana y la previa pesa mucho; con muchas, la verosimilitud es aguda y domina. Los genes cuya estimación gen a gen queda muy por encima de la tendencia (más de dos desviaciones previas) conservan su valor propio, para no ocultar una variabilidad real. edgeR sigue la misma filosofía con una verosimilitud ponderada entre la del gen y la común \parencite{c11-robinson2010edger}. limma-voom toma otro camino: transforma los conteos a $\log_2$ CPM, estima la tendencia media-varianza de esos logaritmos y la convierte en un \emph{peso de precisión} para cada observación, lo que permite usar toda la maquinaria de modelos lineales normales y la contracción de varianzas de limma \parencite{c11-law2014,c11-ritchie2015}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.4cm, xmode=log, ymode=log,
+   xlabel={media de los conteos normalizados $\bar\mu_i$}, ylabel={dispersión $\alpha_i$},
+   xmin=0.5, xmax=2e4, ymin=5e-5, ymax=30, legend columns=2,
+   legend style={at={(0.5,1.03)},anchor=south},
+   xtick={1,10,100,1000,10000}, ytick={0.0001,0.001,0.01,0.1,1,10},
+   legend style={font=\sffamily\scriptsize}]
+  \addplot[only marks, mark=*, mark size=0.6pt, gris, opacity=0.5] table[x=m,y=a]{figuras/cap11/disp_gw.dat};
+  \addlegendentry{gen a gen (MV + Cox-Reid)}
+  \addplot[only marks, mark=*, mark size=0.6pt, azul, opacity=0.6] table[x=m,y=a]{figuras/cap11/disp_map.dat};
+  \addlegendentry{final (MAP; gen a gen si es atípica)}
+  \addplot[naranja, ultra thick] table[x=m,y=a]{figuras/cap11/disp_fit.dat};
+  \addlegendentry{tendencia ajustada $a_0+a_1/\bar\mu$}
+  \addplot[tinta, thick, dashed] table[x=m,y=a]{figuras/cap11/disp_true.dat};
+  \addlegendentry{tendencia verdadera}
+\end{axis}
+\end{tikzpicture}
+\caption[Contracción de dispersiones]{Estimación de dispersiones en un experimento simulado de \num{9992} genes con tres réplicas por grupo (se muestran \num{2500}). Las estimaciones gen a gen (gris) son muy ruidosas; muchas caen al límite inferior de la búsqueda ($10^{-4}$) porque, con seis muestras, la varianza observada puede ser menor que la de Poisson por puro azar. La tendencia ajustada (naranja, $a_0=0{,}048$, $a_1=1{,}76$) sigue de cerca a la verdadera ($0{,}05$ y $1$). Las estimaciones contraídas (azul) se agrupan alrededor de la tendencia sin colapsar sobre ella: conservan la variación genuina entre genes y reducen el error cuadrático medio en escala logarítmica de $6{,}6$ a $0{,}17$. Los puntos azules muy por encima de la curva son genes con dispersión atípica que conservan su estimación propia.}
+\label{fig:11-dispersion}
+\end{figure}
+
+\begin{ejemplo}{Un gen con media 20}{disp}
+En la simulación de la \cref{fig:11-dispersion}, un gen con media normalizada $\bar\mu=20{,}0$ tiene una dispersión verdadera de $0{,}162$. Su estimación gen a gen es $0{,}351$: más del doble, por el azar de tres réplicas. La tendencia en ese nivel de expresión vale $0{,}136$, y la estimación contraída, $0{,}183$, un compromiso entre ambas mucho más cercano a la verdad. Con $0{,}351$ el gen habría perdido potencia; con la tendencia sola, se habría ignorado que es algo más variable que sus vecinos. La varianza previa usada fue $\hat\sigma_d^2=0{,}257$: la varianza robusta de los residuos logarítmicos alrededor de la tendencia ($0{,}950^2=0{,}903$) menos la que se espera solo por muestreo con cuatro grados de libertad residuales ($0{,}645$).
+\end{ejemplo}
+
+\begin{cuidado}[Conteos normalizados: para mirar, no para modelar]
+Los conteos divididos por $\hat s_j$ son útiles para gráficos y tablas, pero nunca deben entrar en DESeq2 o edgeR, que esperan conteos crudos y aplican la normalización internamente. Para análisis exploratorios (agrupamiento, componentes principales) conviene además estabilizar la varianza, con la transformación logarítmica regularizada o la estabilizadora de varianza de DESeq2, porque en la escala logarítmica simple los genes poco expresados dominan la variabilidad.
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{Expresión diferencial y FDR}\label{sec:11-de}
+% ---------------------------------------------------------------------
+\enlacerepo{11.3 · Expresión diferencial y FDR}
+
+\begin{intuicion}[Diez mil detectores de metales]
+Una playa se divide en diez mil cuadrículas y en cada una se pasa un detector de metales que pita, por error, una vez de cada veinte cuando no hay nada enterrado. Si en la playa hay quinientas monedas, el detector pitará sobre muchas de ellas, pero también sobre unas quinientas cuadrículas vacías. Excavar todas las que pitaron significa que la mitad de las excavaciones serán inútiles. Si solo nos preocupara no excavar \emph{nunca} en vano, podríamos exigir un pitido tan fuerte que casi ninguna cuadrícula vacía lo produjera, pero perderíamos la mayoría de las monedas. Hay un término medio razonable: aceptar que, de todas las excavaciones, una fracción pequeña y conocida (digamos un diez por ciento) sea en balde. Esa fracción es la tasa de falsos descubrimientos.
+\end{intuicion}
+
+\subsection{Contrastes sobre el modelo: Wald y razón de verosimilitudes}
+
+Con el GLM de la \cref{eq:11-glm} ajustado, la pregunta ``¿cambia la expresión del gen $i$ entre condiciones?'' se convierte en la hipótesis nula $H_0:\beta_{i,\mathrm{cond}}=0$. DESeq2 ofrece dos contrastes \parencite{c11-love2014}.
+
+\begin{definicion}{Prueba de Wald}{wald}
+El estadístico de Wald divide el coeficiente estimado por su error estándar, obtenido de la matriz de información de la \cref{eq:11-irls}:
+\begin{equation}\label{eq:11-wald}
+z_i=\frac{\hat\beta_{i,\mathrm{cond}}}{\widehat{\mathrm{SE}}(\hat\beta_{i,\mathrm{cond}})},\qquad p_i=2\,\Phi\!\left(-|z_i|\right).
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\hat\beta_{i,\mathrm{cond}}$}{LFC estimado del gen $i$ entre condiciones (en $\log_2$).}
+\simbolo{$\widehat{\mathrm{SE}}$}{Raíz del elemento diagonal correspondiente de $(X^\top WX)^{-1}$, convertido a escala $\log_2$.}
+\simbolo{$\Phi$}{Función de distribución de la normal estándar.}
+\end{simbolos}
+
+\begin{definicion}{Prueba de razón de verosimilitudes (LRT)}{lrt}
+Se ajustan un modelo completo y uno reducido sin los términos de interés, y se compara su log-verosimilitud:
+\begin{equation}\label{eq:11-lrt}
+D_i=2\left[\ell_i\big(\hat\beta^{\,\mathrm{completo}}\big)-\ell_i\big(\hat\beta^{\,\mathrm{reducido}}\big)\right]\;\overset{H_0}{\sim}\;\chi^2_{\,p_c-p_r}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\ell_i(\cdot)$}{Log-verosimilitud binomial negativa del gen $i$, con la dispersión fija en su estimación final.}
+\simbolo{$p_c,\ p_r$}{Número de coeficientes de los modelos completo y reducido.}
+\end{simbolos}
+
+Para un solo coeficiente, ambas pruebas son asintóticamente equivalentes; en nuestra simulación, los $\log_{10}p$ de una y otra tienen una correlación de $0{,}990$. La LRT es preferible cuando se quiere contrastar varios coeficientes a la vez: ``¿cambia la expresión a lo largo de cualquiera de los cinco tiempos?'' o ``¿hay efecto de lote?''. La prueba de Wald, además de un valor $p$, entrega directamente el tamaño del efecto con su error estándar.
+
+\subsection{Tamaños de efecto: contracción del LFC}
+
+El LFC de máxima verosimilitud tiene un defecto grave para genes con pocas lecturas: es enormemente variable. Un gen con 0, 1 y 0 lecturas en el control y 4, 2 y 6 en el tratamiento tiene un LFC de más de 3, y no significa casi nada. Si ordenamos los genes por LFC para elegir candidatos, la cabeza de la lista se llenará de genes ruidosos poco expresados. \textcite{c11-love2014} propusieron \emph{contraer} los LFC hacia cero con una previa normal ajustada a los propios datos, $\beta_i\sim\mathcal N(0,\sigma_p^2)$. La estimación resultante es, aproximadamente, la media \emph{a posteriori}:
+\begin{equation}\label{eq:11-shrink}
+\tilde\beta_i\;\approx\;\hat\beta_i\,\frac{\sigma_p^2}{\sigma_p^2+\widehat{\mathrm{SE}}_i^{\,2}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\tilde\beta_i$}{LFC contraído del gen $i$.}
+\simbolo{$\sigma_p^2$}{Varianza previa de los LFC verdaderos, estimada de la distribución de los LFC observados.}
+\simbolo{$\widehat{\mathrm{SE}}_i$}{Error estándar del LFC de máxima verosimilitud.}
+\end{simbolos}
+
+El factor de contracción depende del error estándar: los genes muy expresados, con $\mathrm{SE}$ pequeño, apenas cambian; los poco expresados se acercan mucho a cero. La previa normal tiene un inconveniente: también encoge los efectos grandes \emph{y bien medidos}, porque la cola normal considera muy improbables los cambios de 5 o 6 unidades $\log_2$. \textcite{c11-zhu2019} la reemplazaron por una previa de colas pesadas (Cauchy) en el método apeglm, que contrae con fuerza el ruido pero deja casi intactos los efectos grandes con evidencia sólida; es la opción que recomiendan hoy DESeq2 y PyDESeq2. Una idea importante: la contracción cambia la \emph{estimación} del tamaño de efecto, pero en DESeq2 los valores $p$ siguen saliendo de la prueba de Wald sobre el LFC sin contraer.
+
+\begin{ejemplo}{Un gen ruidoso}{shr}
+En la simulación (\num{9992} genes, 3 frente a 3 réplicas, \num{946} genes con cambio real), un gen \emph{sin} cambio real y con media normalizada de $3{,}15$ lecturas obtuvo un LFC de máxima verosimilitud de $4{,}20$, con error estándar $1{,}76$ y $p=0{,}017$. Con la previa estimada, $\sigma_p=0{,}650$, su LFC contraído es $4{,}20\times0{,}650^2/(0{,}650^2+1{,}76^2)\approx0{,}51$. En el conjunto de genes con media mayor que 1, el error cuadrático medio del LFC respecto al valor verdadero baja de $1{,}24$ (máxima verosimilitud) a $0{,}117$ (contraído).
+\end{ejemplo}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1,horizontal sep=0.35cm,yticklabels at=edge left},
+   curso, width=0.51\linewidth, height=5.6cm, xmode=log, xmin=0.3, xmax=3e4,
+   ymin=-6.3, ymax=6.3, xtick={1,10,100,1000,10000},
+   xlabel={media normalizada}]
+\nextgroupplot[ylabel={$\log_2$ fold change}, title={máxima verosimilitud}]
+  \addplot[only marks, mark=*, mark size=0.5pt, gris, opacity=0.5] table[x=a,y=m]{figuras/cap11/ma_mle_ns.dat};
+  \addplot[only marks, mark=*, mark size=0.7pt, rojo, opacity=0.8] table[x=a,y=m]{figuras/cap11/ma_mle_sig.dat};
+  \addplot[tinta2, thin, domain=0.3:3e4] {0};
+\nextgroupplot[title={contraído}]
+  \addplot[only marks, mark=*, mark size=0.5pt, gris, opacity=0.5] table[x=a,y=m]{figuras/cap11/ma_shr_ns.dat};
+  \addplot[only marks, mark=*, mark size=0.7pt, rojo, opacity=0.8] table[x=a,y=m]{figuras/cap11/ma_shr_sig.dat};
+  \addplot[tinta2, thin, domain=0.3:3e4] {0};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Gráficos MA]{Gráficos MA del experimento simulado: cada punto es un gen, con su expresión media en el eje horizontal (escala logarítmica) y su LFC en el vertical; en rojo, los \num{404} genes significativos con FDR $<0{,}1$. \textbf{Izquierda}: los LFC de máxima verosimilitud forman un ``embudo'' abierto hacia la izquierda, donde los genes con pocas lecturas alcanzan cambios aparentes de $\pm6$ (valores recortados a ese rango). \textbf{Derecha}: tras la contracción (\cref{eq:11-shrink}), el embudo se cierra; los genes poco expresados se acercan a cero y los significativos, que tienen errores estándar pequeños, apenas se mueven. Ordenar genes por LFC solo tiene sentido en el panel derecho.}
+\label{fig:11-ma}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=6.4cm,
+   xlabel={$\log_2$ fold change (máxima verosimilitud)}, ylabel={$-\log_{10}p$},
+   xmin=-8.3, xmax=8.3, ymin=0, ymax=62, legend pos=north west,
+   legend style={font=\sffamily\scriptsize}]
+  \addplot[only marks, mark=*, mark size=0.55pt, gris, opacity=0.5] table[x=l,y=p]{figuras/cap11/vol_ns.dat};
+  \addlegendentry{no significativos o $|\mathrm{LFC}|\le1$}
+  \addplot[only marks, mark=*, mark size=0.8pt, rojo, opacity=0.85] table[x=l,y=p]{figuras/cap11/vol_up.dat};
+  \addlegendentry{sobreexpresados (224)}
+  \addplot[only marks, mark=*, mark size=0.8pt, azul, opacity=0.85] table[x=l,y=p]{figuras/cap11/vol_dn.dat};
+  \addlegendentry{reprimidos (141)}
+  \addplot[tinta2, dashed, domain=-8.3:8.3] {2.39};
+  \addplot[tinta2, dashed] coordinates {(-1,0) (-1,62)};
+  \addplot[tinta2, dashed] coordinates {(1,0) (1,62)};
+  \node[etiqueta, anchor=south east] at (axis cs:8.1,2.5) {FDR $=0{,}1$ ($p=0{,}004$)};
+\end{axis}
+\end{tikzpicture}
+\caption[Gráfico volcano]{Gráfico \ingles{volcano}: tamaño del efecto frente a significación. La línea horizontal marca el valor $p$ que corresponde a FDR $=0{,}1$ según Benjamini-Hochberg y las verticales, un cambio de dos veces. Los genes de las esquinas superiores combinan un efecto grande y una evidencia fuerte. Los puntos grises con $|\mathrm{LFC}|>3$ y $p$ modesto son genes poco expresados: efecto aparente grande, evidencia débil. Los valores de $-\log_{10}p$ se recortaron en 60 para la figura.}
+\label{fig:11-volcano}
+\end{figure}
+
+\subsection{Diez mil pruebas a la vez}
+
+En un experimento de RNA-seq contrastamos $m\approx\num{10000}$--\num{20000} hipótesis. Si usamos el umbral clásico $p<0{,}05$ para cada una, esperamos que un 5\,\% de los genes \emph{sin} cambio resulten ``significativos'': cientos de falsos positivos. Clasifiquemos los resultados:
+\begin{center}\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+ & declarados no significativos & declarados significativos & total\\
+\midrule
+$H_0$ verdadera & $U$ & $V$ & $m_0$\\
+$H_0$ falsa & $T$ & $S$ & $m-m_0$\\
+total & $m-R$ & $R$ & $m$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Solo $m$ y $R$ son observables. La corrección clásica controla la \emph{tasa de error por familia}, $\mathrm{FWER}=\Prob(V\ge1)$; el método de Bonferroni lo consigue declarando significativos los genes con $p_i\le\alpha/m$. Es una exigencia apropiada cuando un único falso positivo es costoso, pero en genómica es excesiva: con $m=\num{10000}$, un gen necesita $p<10^{-5}$ para ser significativo al nivel 0,1.
+
+\begin{definicion}{Tasa de falsos descubrimientos}{fdr}
+La FDR es la proporción esperada de falsos positivos entre los descubrimientos,
+\begin{equation}\label{eq:11-fdr}
+\mathrm{FDR}=\E\!\left[\frac{V}{\max(R,1)}\right].
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$V$}{Número de hipótesis nulas verdaderas rechazadas (falsos descubrimientos).}
+\simbolo{$R$}{Número total de rechazos (descubrimientos).}
+\simbolo{$m_0$}{Número de hipótesis nulas verdaderas, desconocido.}
+\end{simbolos}
+
+\textcite{c11-benjamini1995} propusieron controlar esta cantidad, mucho más adecuada para un experimento de cribado: lo que importa no es evitar todo error, sino que la lista de candidatos que pasará a validación sea mayoritariamente correcta. Y dieron un procedimiento sorprendentemente sencillo.
+
+\begin{teorema}{Procedimiento de Benjamini-Hochberg}{bh}
+Ordene los valores $p$, $p_{(1)}\le p_{(2)}\le\cdots\le p_{(m)}$, y sea
+\begin{equation}\label{eq:11-bh}
+k^{*}=\max\left\{\,i:\ p_{(i)}\le\frac{i}{m}\,\alpha\,\right\}.
+\end{equation}
+Si se rechazan las hipótesis $H_{(1)},\dots,H_{(k^*)}$ y las pruebas son independientes, entonces $\mathrm{FDR}\le\frac{m_0}{m}\alpha\le\alpha$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$p_{(i)}$}{El $i$-ésimo valor $p$ más pequeño.}
+\simbolo{$\alpha$}{Nivel deseado de FDR (en RNA-seq es habitual 0,05 o 0,1).}
+\simbolo{$k^*$}{Número de descubrimientos.}
+\end{simbolos}
+
+El umbral crece linealmente con el rango: el gen más significativo debe superar la exigencia de Bonferroni, $\alpha/m$, pero el décimo solo necesita $10\alpha/m$. Si hay muchos genes con señal, el procedimiento se vuelve permisivo; si no hay ninguno, se comporta casi como Bonferroni. La demostración original supone independencia; resultados posteriores la extienden a formas de dependencia positiva que cubren razonablemente la correlación entre genes coexpresados. El \emph{valor $p$ ajustado} de BH (la columna \texttt{padj} de DESeq2) es el menor $\alpha$ al que el gen sería declarado significativo.
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1,horizontal sep=1.6cm},
+   curso, width=0.48\linewidth, height=5.4cm]
+\nextgroupplot[xlabel={rango $i$}, ylabel={$p_{(i)}$}, xmin=0, xmax=1200, ymin=0, ymax=0.02,
+   scaled y ticks=false, yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=3},
+   legend pos=south east, title={procedimiento BH}]
+  \addplot[only marks, mark=*, mark size=0.6pt, rojo] table[x=i,y=p]{figuras/cap11/bh_de.dat};
+  \addlegendentry{cambio real}
+  \addplot[only marks, mark=*, mark size=0.6pt, gris] table[x=i,y=p]{figuras/cap11/bh_null.dat};
+  \addlegendentry{sin cambio}
+  \addplot[azul, very thick, domain=0:1200] {0.1*x/9992};
+  \addlegendentry{$i\alpha/m$}
+  \addplot[tinta2, dashed] coordinates {(404,0) (404,0.02)};
+  \node[etiqueta, anchor=north west] at (axis cs:410,0.0195) {$k^*=404$};
+\nextgroupplot[xlabel={fracción de genes filtrados por media}, ylabel={descubrimientos (FDR $0{,}1$)},
+   xmin=0, xmax=0.8, ymin=300, ymax=440, title={filtrado independiente},
+   xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1}]
+  \addplot[violeta, very thick, mark=*, mark size=1.1pt] table[x=q,y=n]{figuras/cap11/filtro.dat};
+  \addplot[only marks, mark=*, mark size=2.2pt, naranja] coordinates {(0.125,418)};
+  \node[etiqueta, anchor=south] at (axis cs:0.125,422) {418};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Benjamini-Hochberg y filtrado independiente]{\textbf{Izquierda}: los \num{1200} valores $p$ más pequeños del experimento simulado, ordenados, frente a la recta $i\alpha/m$ con $\alpha=0{,}1$. El último punto bajo la recta está en $i=404$ ($p_{(404)}=0{,}0040$), y todos los genes hasta ese rango se declaran significativos, aunque alguno anterior quede por encima de la recta: por eso el procedimiento se llama ``de subida''. Entre los 404 hay 33 genes sin cambio real (gris), una proporción de $0{,}082$. \textbf{Derecha}: número de descubrimientos al eliminar antes de la corrección una fracción creciente de los genes menos expresados. Quitar el \SI{12,5}{\percent} inferior (media normalizada $<5{,}6$) aumenta los descubrimientos de 404 a 418 sin romper el control de la FDR; filtrar demasiado acaba desechando genes con señal.}
+\label{fig:11-bh}
+\end{figure}
+
+\begin{ejemplo}{Tres criterios sobre el mismo experimento}{multiple}
+En la simulación, con \num{9992} genes y \num{946} cambios reales:
+\begin{itemize}
+  \item $p<0{,}05$ sin corrección: 915 genes, de los que 373 (\SI{41}{\percent}) no tienen cambio real.
+  \item Bonferroni con FWER $0{,}1$ ($p<10^{-5}$): 185 genes, solo 2 falsos, pero se detecta menos de una quinta parte de los cambios.
+  \item Benjamini-Hochberg con FDR $0{,}1$: 404 genes, 33 falsos. La proporción observada de falsos descubrimientos, $0{,}082$, está por debajo del nivel nominal, y la potencia es del \SI{39}{\percent}.
+\end{itemize}
+El umbral efectivo de BH resulta ser $p\le0{,}0040$, cuatrocientas veces más permisivo que Bonferroni y doce veces más exigente que el umbral ingenuo. La potencia modesta no es un fallo del método: con tres réplicas, muchos de los cambios reales son pequeños o afectan a genes con pocas lecturas.
+\end{ejemplo}
+
+\begin{codigo}[benjamini\_hochberg.py]
+import numpy as np
+
+def bh(p):
+    """Valores p ajustados de Benjamini-Hochberg."""
+    p = np.asarray(p, float); m = len(p)
+    orden = np.argsort(p)
+    ajust = p[orden] * m / np.arange(1, m + 1)
+    ajust = np.minimum.accumulate(ajust[::-1])[::-1]  # monotonía
+    salida = np.empty(m); salida[orden] = np.minimum(ajust, 1)
+    return salida
+\end{codigo}
+
+\subsection{El histograma de valores $p$ y los $q$-valores}
+
+Bajo la hipótesis nula, un valor $p$ continuo es uniforme en $[0,1]$. El histograma de los $m$ valores $p$ de un experimento es por tanto una mezcla: una base plana de altura proporcional a $m_0$ más un pico cerca de cero producido por los genes con señal. \textcite{c11-storey2003} usaron esa estructura para estimar la proporción de nulas verdaderas, $\pi_0=m_0/m$: por encima de un umbral $\lambda$ casi todos los valores $p$ vienen de nulas, así que
+\begin{equation}\label{eq:11-pi0}
+\hat\pi_0(\lambda)=\frac{\#\{p_i>\lambda\}}{m\,(1-\lambda)}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\pi_0$}{Proporción de genes sin cambio real.}
+\simbolo{$\lambda$}{Umbral a partir del cual se supone que solo hay nulas (p.\,ej., 0,5).}
+\end{simbolos}
+
+Como la base del histograma contiene también algunos valores $p$ de genes con cambios pequeños, $\hat\pi_0$ tiende a \emph{sobreestimar} $\pi_0$, un sesgo conservador. Con esa estimación se define el \emph{$q$-valor} de un gen como la menor FDR a la que puede ser declarado significativo,
+\begin{equation}\label{eq:11-qvalor}
+q(p_i)=\min_{t\ge p_i}\ \frac{\hat\pi_0\,m\,t}{\#\{p_j\le t\}},
+\end{equation}
+que es el valor $p$ ajustado de BH multiplicado por $\hat\pi_0$. Cuando $\pi_0$ es claramente menor que 1, los $q$-valores ganan potencia; en RNA-seq, con $\pi_0$ cercano a 1, la diferencia suele ser pequeña.
+
+\begin{figure}[!htb]
+\centering
+\input{figuras/cap11/phist.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.8cm, ybar stacked, bar width=4.2mm,
+   xlabel={valor $p$}, ylabel={número de genes}, xmin=0, xmax=1, ymin=0, ymax=1350,
+   xtick={0,0.2,0.4,0.6,0.8,1}, grid=none, ymajorgrids,
+   xticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1},
+   legend pos=north east]
+  \addplot[fill=gris!60, draw=gris!80!black] table[x=x,y=h0]{figuras/cap11/phist.dat};
+  \addlegendentry{genes sin cambio real}
+  \addplot[fill=rojo!75, draw=rojooscuro] table[x=x,y=h1]{figuras/cap11/phist.dat};
+  \addlegendentry{genes con cambio real}
+\end{axis}
+\begin{axis}[curso, width=0.9\linewidth, height=5.8cm, xmin=0, xmax=1, ymin=0, ymax=1350,
+   axis lines=none, grid=none]
+  \addplot[azul, very thick, dashed, domain=0:1] {\caponcepinivel};
+  \node[etiqueta, anchor=south, text=azulprofundo] at (axis cs:0.5,\caponcepinivel) {nivel nulo estimado, $\hat\pi_0=0{,}99$};
+\end{axis}
+\end{tikzpicture}
+\caption[Histograma de valores $p$]{Histograma de los \num{9992} valores $p$ de la simulación, con barras apiladas según la verdad conocida. El pico en la barra izquierda contiene la mayoría de los cambios reales; el resto del histograma es aproximadamente plano, como corresponde a nulas uniformes. La línea discontinua es la altura de la base según $\hat\pi_0(0{,}5)=0{,}99$, mayor que el valor verdadero ($0{,}905$) porque algunos cambios pequeños tienen valores $p$ grandes. La barra de la derecha sobresale: los genes con muy pocas lecturas producen valores $p$ discretos y acumulados cerca de 1 (el \SI{22}{\percent} de los genes con media $<2$ tiene $p>0{,}95$). Un histograma con forma de U, o creciente hacia la derecha, delata un modelo mal especificado (dispersión sobreestimada, lotes no incluidos).}
+\label{fig:11-phist}
+\end{figure}
+
+\subsection{Filtrado independiente}
+
+Los genes con muy pocas lecturas no tienen ninguna posibilidad de alcanzar significación, pero cuentan en $m$ y encarecen la corrección para todos los demás. ¿Podemos eliminarlos antes de aplicar BH? \textcite{c11-bourgon2010} mostraron que sí, con una condición precisa: el estadístico de filtrado debe ser \emph{independiente del estadístico de prueba bajo la hipótesis nula}. La media de los conteos normalizados de todas las muestras, sin mirar a qué grupo pertenecen, cumple esa condición: para un gen sin cambio, saber que su media global es alta no dice nada sobre su valor $p$. Filtrar por el valor $p$ mismo, o por el LFC, no la cumple y destruye el control de la FDR. DESeq2 elige automáticamente el umbral de media que maximiza el número de descubrimientos, algo que, como muestra la \cref{fig:11-bh} derecha, suele ganar un puñado de genes a costa de ninguno.
+
+\begin{codigo}[deseq2\_python.py]
+import pandas as pd
+from pydeseq2.dds import DeseqDataSet
+from pydeseq2.ds import DeseqStats
+
+cuentas = pd.read_csv("cuentas.csv", index_col=0).T   # muestras x genes
+meta = pd.read_csv("muestras.csv", index_col=0)    # columna condicion
+dds = DeseqDataSet(counts=cuentas, metadata=meta,
+                   design="~condicion", refit_cooks=True)
+dds.deseq2()                        # factores, dispersiones, GLM
+print(dds.obs["size_factors"])
+ds = DeseqStats(dds, contrast=["condicion", "trat", "ctrl"],
+                alpha=0.1)          # FDR objetivo
+ds.summary()                        # Wald + filtrado + BH
+ds.lfc_shrink(coeff="condicion[T.trat]")   # previa de colas pesadas
+res = ds.results_df.sort_values("padj")
+print(res.head())
+\end{codigo}
+
+\begin{cuidado}[Tres errores clásicos de la expresión diferencial]
+\begin{enumerate}
+  \item \emph{Comparar listas.} Que un gen sea significativo en el tratamiento A y no en el B no demuestra que respondan distinto: hay que contrastar la diferencia de LFC directamente, con un término de interacción.
+  \item \emph{Confundir significación con relevancia.} Con muchas réplicas, un cambio del \SI{5}{\percent} puede ser muy significativo. Si interesan solo cambios grandes, contraste $H_0:|\beta|\le\log_2 1{,}5$ en lugar de filtrar los resultados por LFC a posteriori, lo cual no controla la FDR.
+  \item \emph{Ignorar el diseño.} Si hubo lotes, parejas o sexos, deben estar en la fórmula; un lote omitido infla la dispersión y se ve en el histograma de valores $p$.
+\end{enumerate}
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{Enriquecimiento funcional}\label{sec:11-enriq}
+% ---------------------------------------------------------------------
+\enlacerepo{11.4 · Enriquecimiento (GO, KEGG, GSEA)}
+
+\begin{intuicion}[Demasiados pelirrojos en el autobús]
+En una ciudad donde uno de cada cincuenta habitantes es pelirrojo, sube a un autobús de cuarenta pasajeros y cuenta siete pelirrojos. Algo pasa: quizá el autobús viene de un congreso de pelirrojos. Pero antes de concluirlo conviene hacerse dos preguntas. ¿Cuántos pelirrojos cabría esperar por azar en un autobús de ese tamaño? (Menos de uno.) ¿Y el autobús recoge a la gente al azar, o solo pasa por un barrio donde los pelirrojos abundan? La primera pregunta es la prueba hipergeométrica; la segunda, el sesgo de selección que obliga a corregirla. Cambie ``pelirrojos'' por ``genes de la fosforilación oxidativa'' y ``autobús'' por ``lista de genes diferencialmente expresados''.
+\end{intuicion}
+
+\subsection{Vocabularios de función: GO y KEGG}
+
+Una lista de 400 genes no es un resultado biológico; para interpretarla necesitamos saber qué hacen esos genes, y hacerlo de forma sistemática. La \emph{Gene Ontology} \parencite{c11-ashburner2000} nació para dar a las bases de datos de organismos modelo un vocabulario común con el que describir los productos génicos. Se compone de tres ontologías independientes: \emph{proceso biológico} (lo que el gen contribuye a conseguir, como ``fosforilación oxidativa''), \emph{función molecular} (la actividad bioquímica, como ``actividad de citocromo c oxidasa'') y \emph{componente celular} (dónde actúa, como ``membrana mitocondrial interna''). Los términos se organizan en un \emph{grafo acíclico dirigido}: un término puede tener varios padres, conectados por relaciones como \texttt{is\_a} (es un tipo de) o \texttt{part\_of} (es parte de). Hoy el recurso reúne decenas de miles de términos y millones de anotaciones de miles de especies \parencite{c11-go2023}.
+
+\begin{definicion}{Regla del camino verdadero}{truepath}
+Si un gen está anotado a un término, está implícitamente anotado a todos sus ancestros en el grafo. Por eso los términos generales (``proceso metabólico'') contienen miles de genes y los específicos, unas decenas.
+\end{definicion}
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+  go/.style={caja=#1,text width=2.55cm,minimum height=0.8cm,inner sep=3pt,font=\sffamily\scriptsize},
+  isa/.style={-{Stealth[length=2mm]},thick,tinta2},
+  partof/.style={-{Stealth[length=2mm]},thick,naranja,dashed}]
+  \node[go=gris] (bp) at (3.2,4.6) {proceso biológico\\\texttt{GO:0008150}};
+  \node[go=azul] (met) at (0.6,3.1) {proceso metabólico\\\texttt{GO:0008152}};
+  \node[go=azul] (cel) at (5.8,3.1) {proceso celular\\\texttt{GO:0009987}};
+  \node[go=azul] (cmet) at (3.2,1.6) {proceso metabólico celular};
+  \node[go=azul] (ener) at (0.6,0.1) {generación de metabolitos precursores y energía};
+  \node[go=azul] (resp) at (5.8,0.1) {respiración celular};
+  \node[go=rojo] (oxp) at (3.2,-1.5) {fosforilación oxidativa\\\texttt{GO:0006119}};
+  \draw[isa] (met) -- (bp); \draw[isa] (cel) -- (bp);
+  \draw[isa] (cmet) -- (met); \draw[isa] (cmet) -- (cel);
+  \draw[isa] (ener) -- (met); \draw[isa] (resp) -- (cmet); \draw[isa] (resp) -- (ener);
+  \draw[isa] (oxp) -- (ener); \draw[partof] (oxp) -- (resp);
+  % anotación
+  \node[caja=amarillo,font=\sffamily\scriptsize,text width=3.2cm] (gen) at (3.2,-3.25) {gen anotado (p.\,ej., una subunidad de la ATP sintasa)};
+  \draw[flecha=amarillo!70!black] (gen) -- node[etiqueta,right,pos=0.4]{anotación directa} (oxp);
+  \draw[amarillo!70!black,thick,dotted,-{Stealth}] (gen.west) -| node[etiqueta,left,align=right,pos=0.75]{heredada por la\\regla del camino\\verdadero} (ener.south);
+  % leyenda
+  \draw[isa] (6.3,-2.8) -- (7.1,-2.8); \node[etiqueta,anchor=west] at (7.15,-2.8) {\texttt{is\_a}};
+  \draw[partof] (6.3,-3.25) -- (7.1,-3.25); \node[etiqueta,anchor=west] at (7.15,-3.25) {\texttt{part\_of}};
+\end{tikzpicture}
+\caption[Un fragmento de la Gene Ontology]{Un fragmento simplificado de la ontología de procesos biológicos, con las relaciones apuntando del término hijo al padre. Un término puede tener varios padres (``proceso metabólico celular'' es a la vez metabólico y celular), por lo que la estructura es un grafo acíclico dirigido y no un árbol. Un gen anotado directamente a ``fosforilación oxidativa'' cuenta también, por la regla del camino verdadero, para todos sus ancestros. Esa herencia hace que los términos estén fuertemente anidados y que sus pruebas de enriquecimiento no sean independientes. Relaciones reales, completas y actualizadas, en los navegadores de la GO.}
+\label{fig:11-go}
+\end{figure}
+
+KEGG \parencite{c11-kanehisa2000} ofrece una organización complementaria: en lugar de un vocabulario jerárquico, un conjunto de \emph{mapas de rutas} dibujados a mano (metabolismo, señalización, enfermedades) en los que cada gen ocupa un nodo concreto. Sus conjuntos son menos numerosos y más fáciles de interpretar, a cambio de cubrir menos genes. La colección MSigDB reúne además miles de conjuntos de genes de estudios publicados; su colección \ingles{hallmark}, construida por \textcite{c11-liberzon2015}, condensa la redundancia de miles de conjuntos en 50 ``marcas'' de procesos biológicos bien definidos, una buena elección para una primera exploración.
+
+\subsection{Análisis de sobrerrepresentación}
+
+La pregunta más simple es: entre los $n$ genes de mi lista, ¿hay más genes del término $T$ de los que esperaría por azar? Supongamos que el universo tiene $N$ genes, de los cuales $K$ pertenecen a $T$, y que la lista se hubiera formado eligiendo $n$ genes al azar y sin reemplazo. El número $X$ de genes de $T$ en la lista seguiría una distribución hipergeométrica, y el valor $p$ de haber observado $k$ o más es
+\begin{equation}\label{eq:11-hiper}
+p=\Prob(X\ge k)=\sum_{x=k}^{\min(n,K)}\frac{\binom{K}{x}\binom{N-K}{n-x}}{\binom{N}{n}},\qquad \E[X]=\frac{nK}{N}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$N$}{Tamaño del universo: genes \emph{analizados} en el experimento.}
+\simbolo{$K$}{Genes del universo anotados al término $T$.}
+\simbolo{$n$}{Genes de la lista (p.\,ej., significativos con FDR $<0{,}1$).}
+\simbolo{$k$}{Genes de la lista que pertenecen a $T$.}
+\end{simbolos}
+
+Es exactamente la prueba exacta de Fisher unilateral sobre la tabla $2\times2$ que cruza ``en la lista / fuera de ella'' con ``en el término / fuera de él''. Se repite para cada uno de los miles de términos, y los valores $p$ resultantes se corrigen por BH (\cref{sec:11-de}).
+
+\begin{cuidado}[El universo no es el genoma]
+El universo debe ser el conjunto de genes que tuvieron alguna oportunidad de aparecer en la lista: los que se analizaron y pasaron el filtrado. Si se usa todo el genoma, los términos de genes que se expresan en el tejido estudiado aparecerán enriquecidos por el mero hecho de expresarse. Es un error frecuente en las herramientas web que piden solo la lista de genes.
+\end{cuidado}
+
+\subsection{El sesgo de longitud}
+
+El modelo hipergeométrico supone que todos los genes tenían la misma probabilidad de entrar en la lista. En RNA-seq no es así. \textcite{c11-young2010} observaron que, para un mismo cambio de expresión, un gen largo produce más lecturas y, por tanto, tiene más potencia estadística: la probabilidad de ser declarado significativo crece con la longitud. Los términos GO que agrupan genes largos aparecen entonces enriquecidos sin que haya nada biológico detrás. Su método, goseq, estima una \emph{función de probabilidad ponderada} (PWF), la probabilidad de ser significativo en función de la longitud, ajustando una curva monótona a los datos, y sustituye la hipergeométrica por la distribución que resulta de muestrear genes con esos pesos: la hipergeométrica no central de Wallenius, o su aproximación por remuestreo.
+
+\begin{figure}[!htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.85\linewidth, height=5.4cm, xmode=log,
+   xlabel={longitud del gen (pb, escala log)}, ylabel={proporción de genes DE},
+   xmin=250, xmax=16000, ymin=0, ymax=0.12, legend pos=north west,
+   xtick={300,1000,3000,10000}, xticklabels={300,\num{1000},\num{3000},\num{10000}},
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2}]
+  \addplot[only marks, mark=*, mark size=1.8pt, azul] table[x=l,y=p]{figuras/cap11/pwf.dat};
+  \addlegendentry{observado (20 bins de igual tamaño)}
+  \addplot[naranja, very thick] table[x=l,y=p]{figuras/cap11/pwf_fit.dat};
+  \addlegendentry{PWF ajustada (logística en $\log\ell$)}
+\end{axis}
+\end{tikzpicture}
+\caption[Sesgo de longitud en la detección]{Probabilidad de ser declarado diferencialmente expresado en función de la longitud del gen, en la simulación. Los cambios verdaderos se asignaron al \SI{10}{\percent} de los genes \emph{con independencia de su longitud}; aun así, en el bin de genes más cortos se detecta un \SI{2}{\percent} de genes y en el de los más largos, un \SI{9}{\percent}, porque los genes largos acumulan más lecturas y sus pruebas tienen más potencia. Esta curva es la función de probabilidad ponderada de goseq.}
+\label{fig:11-pwf}
+\end{figure}
+
+\begin{ejemplo}{Un enriquecimiento espurio}{hiper}
+En la simulación creamos un ``término GO'' de $K=150$ genes elegidos entre el \SI{20}{\percent} más largo, con 14 genes con cambio real, tantos como los que corresponden por azar ($150\times0{,}095\approx14{,}2$): no hay enriquecimiento biológico. La lista tiene $n=404$ genes significativos entre $N=\num{9992}$. Se esperaba $\E[X]=404\times150/\num{9992}=6{,}06$ genes del término en la lista y se observan $k=12$. La tabla de Fisher es
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+ & en el término & fuera\\
+\midrule
+en la lista & 12 & 392\\
+fuera de la lista & 138 & \num{9450}\\
+\bottomrule
+\end{tabular}
+\end{center}
+con una razón de momios de $2{,}10$ y $p=0{,}018$ (hipergeométrica y Fisher coinciden). El término parece enriquecido. Pero si la lista se genera muestreando genes con probabilidad proporcional a la PWF, el número esperado de genes del término sube a $8{,}79$ y el valor $p$ por remuestreo es $0{,}168$: el ``enriquecimiento'' era solo el reflejo de que los genes largos se detectan mejor.
+\end{ejemplo}
+
+\begin{figure}[!htb]
+\centering
+\input{figuras/cap11/hiper.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.4cm, ybar=0pt, bar width=3.2pt,
+   xlabel={genes del término en la lista ($X$)}, ylabel={probabilidad},
+   xmin=-0.8, xmax=26, ymin=0, ymax=0.19, grid=none, ymajorgrids,
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2},
+   legend style={at={(0.99,0.99)},anchor=north east}]
+  \addplot[fill=azul!70, draw=none] table[x=k,y=p]{figuras/cap11/hiper.dat};
+  \addlegendentry{hipergeométrica (muestreo uniforme)}
+  \addplot[fill=naranja!80, draw=none] table[x=k,y=p]{figuras/cap11/hiper_w.dat};
+  \addlegendentry{remuestreo ponderado por la PWF}
+  \draw[rojo, very thick, dashed] (axis cs:\caponcekobs,0) -- (axis cs:\caponcekobs,0.178);
+  \node[etiqueta, anchor=east, text=rojooscuro] at (axis cs:\caponcekobs,0.178) {observado: $k=\caponcekobs$};
+\end{axis}
+\end{tikzpicture}
+\caption[Distribuciones nulas de la sobrerrepresentación]{Distribución nula del número de genes de un término de 150 genes largos en una lista de 404 genes. La hipergeométrica (azul) supone que todos los genes tenían la misma probabilidad de entrar en la lista y está centrada en 6; el valor observado, 12, queda en su cola ($p=0{,}018$). La distribución obtenida muestreando con los pesos de la \cref{fig:11-pwf} (naranja, \num{4000} remuestreos) se desplaza hacia la derecha, y el mismo valor observado deja de ser llamativo ($p=0{,}17$).}
+\label{fig:11-hiper}
+\end{figure}
+
+\subsection{GSEA: sin umbrales}
+
+El análisis de sobrerrepresentación tiene dos debilidades. Depende de un umbral arbitrario (¿FDR 0,05 o 0,1?) y es ciego a cambios \emph{pequeños pero coordinados}: si los cien genes de una ruta bajan un \SI{20}{\percent} cada uno, quizá ninguno sea significativo, pero el conjunto lo es de forma abrumadora. Así ocurrió en el estudio de \textcite{c11-mootha2003} sobre músculo de pacientes con diabetes tipo 2: ningún gen individual destacaba tras corregir por pruebas múltiples, pero los genes de la fosforilación oxidativa aparecían consistentemente reprimidos. Para detectarlo idearon el \emph{análisis de enriquecimiento de conjuntos de genes} (GSEA), que \textcite{c11-subramanian2005} refinaron después en su forma actual.
+
+La idea es trabajar con la lista \emph{completa} de genes, ordenada por un estadístico de cambio (por ejemplo, el $z$ de Wald), y preguntar si los genes del conjunto $S$ tienden a concentrarse en uno de los extremos. Se recorre la lista de arriba abajo con un paseo que sube cada vez que encuentra un gen de $S$ y baja cuando encuentra uno que no está.
+
+\begin{definicion}{Puntuación de enriquecimiento}{es}
+Sean $r_1\ge r_2\ge\cdots\ge r_N$ los estadísticos ordenados, $N_H=|S|$ y $p\ge0$ un exponente de ponderación. Para cada posición $i$,
+\begin{equation}\label{eq:11-gsea}
+P_{\mathrm{hit}}(i)=\sum_{\substack{j\le i\\ g_j\in S}}\frac{|r_j|^{p}}{N_R},\qquad
+P_{\mathrm{miss}}(i)=\sum_{\substack{j\le i\\ g_j\notin S}}\frac{1}{N-N_H},\qquad
+N_R=\sum_{g_j\in S}|r_j|^{p},
+\end{equation}
+y la puntuación de enriquecimiento $\mathrm{ES}$ es la desviación máxima de $P_{\mathrm{hit}}(i)-P_{\mathrm{miss}}(i)$ respecto a cero, con su signo.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$r_j$}{Estadístico del gen en la posición $j$ de la lista ordenada.}
+\simbolo{$g_j$}{Gen en la posición $j$.}
+\simbolo{$N_H$}{Número de genes del conjunto presentes en la lista.}
+\simbolo{$p$}{Peso: con $p=0$ se obtiene el estadístico de Kolmogórov-Smirnov del trabajo original; con $p=1$ (por defecto), cada gen pesa según la magnitud de su cambio.}
+\end{simbolos}
+
+Las dos sumas acumuladas valen 1 al final de la lista, así que el paseo empieza y termina en cero. Si los genes de $S$ se reparten al azar, el paseo oscila cerca de cero; si se concentran arriba, sube con fuerza al principio. Los genes de $S$ que aparecen antes del máximo forman el \emph{núcleo líder} (\ingles{leading edge}), el subconjunto que más contribuye a la señal y el primero que conviene examinar. La significación se evalúa por permutación: lo ideal es permutar las etiquetas de las muestras, que conserva la correlación entre genes; con tres réplicas por grupo solo hay diez permutaciones distintas, y en la práctica se permutan los genes, que ignora esa correlación y es por tanto algo anticonservador. Para comparar conjuntos de distinto tamaño, $\mathrm{ES}$ se divide por la media de las ES nulas del mismo signo y se obtiene la puntuación normalizada NES. Como se evalúan miles de conjuntos, al final se calcula una FDR. Calcular millones de permutaciones es costoso; \textcite{c11-korotkevich2016} mostraron en fgsea que puede reutilizarse una misma muestra de permutaciones para todos los conjuntos de un tamaño dado, calculando las puntuaciones de forma acumulativa, lo que acelera el análisis en órdenes de magnitud y permite estimar valores $p$ muy pequeños con precisión.
+
+\begin{figure}[!htb]
+\centering
+\input{figuras/cap11/gsea.tex}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 3, vertical sep=3pt, xticklabels at=edge bottom},
+   curso, scale only axis, width=0.8\linewidth, xmin=1, xmax=9992]
+\nextgroupplot[height=3.6cm, ylabel={puntuación acumulada}, ymin=-0.12, ymax=0.78,
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=1}]
+  \addplot[verde, very thick] table[x=i,y=rs]{figuras/cap11/gsea_rs.dat};
+  \addplot[tinta2, thin] coordinates {(1,0) (9992,0)};
+  \addplot[rojo, dashed, thick] coordinates {(\caponceesx,0) (\caponceesx,\caponceesy)};
+  \addplot[only marks, mark=*, mark size=2pt, rojo] coordinates {(\caponceesx,\caponceesy)};
+  \node[etiqueta, anchor=west, text=rojooscuro] at (axis cs:1400,0.28) {$\mathrm{ES}=0{,}668$ en la posición \num{1087}};
+  \node[etiqueta, anchor=west] at (axis cs:1400,0.18) {NES $=2{,}41$, $p=0{,}0016$};
+\nextgroupplot[height=0.6cm, ymin=0, ymax=1, ytick=\empty, xtick=\empty, axis lines=box, grid=none,
+   axis line style={rejilla}]
+  \addplot[ycomb, tinta, thin] table[x=i, y expr=1]{figuras/cap11/gsea_hits.dat};
+\nextgroupplot[height=1.6cm, ylabel={$z$ de Wald}, ymin=-16, ymax=16,
+   xlabel={posición en la lista ordenada (de más sobreexpresado a más reprimido)},
+   xtick={1,2000,4000,6000,8000,9992}]
+  \addplot[gris, fill=gris!40, draw=gris] table[x=i,y=r]{figuras/cap11/gsea_metric.dat} \closedcycle;
+\end{groupplot}
+\end{tikzpicture}
+\caption[Paseo aleatorio de GSEA]{Anatomía de un GSEA sobre el experimento simulado, con un conjunto de 80 genes, 28 de ellos sobreexpresados de verdad y el resto sin cambio. \textbf{Arriba}: la puntuación acumulada $P_{\mathrm{hit}}-P_{\mathrm{miss}}$ (\cref{eq:11-gsea}, $p=1$) sube con fuerza en las primeras posiciones y alcanza su máximo, la ES, en la posición \num{1087}; después desciende lentamente. \textbf{Centro}: cada raya es un gen del conjunto; se aprecia su concentración en la cabeza de la lista. \textbf{Abajo}: el estadístico usado para ordenar. Los 30 genes a la izquierda del máximo forman el núcleo líder.}
+\label{fig:11-gsea}
+\end{figure}
+
+\begin{ejemplo}{Leer un resultado de GSEA}{gsea}
+En la \cref{fig:11-gsea}, la ES es $0{,}668$ y la NES, $2{,}41$: el conjunto está mucho más concentrado en la cabeza de la lista que los conjuntos aleatorios del mismo tamaño. En \num{1000} permutaciones de genes, ninguna ES aleatoria positiva alcanzó el valor observado, así que $p\approx1/(n_{+}+1)=0{,}0016$, donde $n_{+}$ es el número de permutaciones con ES positiva: el valor $p$ está limitado por el número de permutaciones, no por la evidencia. El núcleo líder tiene 30 genes, que incluyen casi todos los realmente sobreexpresados. Con la versión sin pesos ($p=0$) la ES es solo $0{,}295$: los 52 genes sin cambio diluyen la señal cuando todos los genes pesan lo mismo, mientras que la ponderación deja que los pocos genes con cambios fuertes dominen el paseo.
+\end{ejemplo}
+
+\begin{codigo}[gsea\_minimo.py]
+import numpy as np
+from scipy import stats
+
+def ora(k, N, K, n):
+    """p de sobrerrepresentación: P(X >= k), X hipergeométrica."""
+    return stats.hypergeom.sf(k - 1, N, K, n)
+
+def paseo_gsea(r, en_conjunto, p=1.0):
+    """r: estadísticos; en_conjunto: booleanos. Devuelve paseo y ES."""
+    o = np.argsort(-r)
+    hit = en_conjunto[o]
+    w = np.abs(r[o]) ** p
+    phit = np.cumsum(np.where(hit, w, 0)) / w[hit].sum()
+    pmiss = np.cumsum(~hit) / (~hit).sum()
+    paseo = phit - pmiss
+    return paseo, paseo[np.argmax(np.abs(paseo))]
+
+print(ora(12, 9992, 150, 404))      # 0.0184
+\end{codigo}
+
+\begin{cuidado}[Lo que un enriquecimiento no dice]
+Un término enriquecido es una \emph{hipótesis}, no una conclusión. Las anotaciones están sesgadas hacia los genes más estudiados; muchas se infieren electrónicamente sin validación experimental (código de evidencia IEA); y la estructura anidada de la GO hace que un mismo grupo de genes produzca decenas de términos redundantes que parecen resultados independientes. Informe siempre el universo, la versión de la anotación, el método de corrección y los genes que sostienen cada término, y prefiera pocos conjuntos bien definidos (\ingles{hallmarks}, rutas de KEGG) a miles de términos solapados cuando el objetivo sea interpretar.
+\end{cuidado}
+
+\begin{resumen}
+\begin{itemize}
+  \item El diseño manda: réplicas biológicas (al menos tres por condición), lotes balanceados y la biblioteca adecuada (poli(A) o depleción, con hebra, pareada) limitan todo lo que la estadística puede hacer después.
+  \item Las lecturas se alinean al genoma con alineadores con empalmes (STAR, HISAT2) o se asignan al transcriptoma por pseudoalineamiento (kallisto, Salmon). La ambigüedad entre isoformas se resuelve con máxima verosimilitud sobre clases de equivalencia mediante el algoritmo EM, cuyo paso E reparte las lecturas en proporción a $\alpha_t/\tilde\ell_t$.
+  \item Los TPM estiman fracciones molares y suman un millón; los RPKM no son comparables entre muestras. Para expresión diferencial se usan conteos (estimados y agregados con tximport), nunca TPM.
+  \item La normalización por total de lecturas no corrige la composición; TMM y la mediana de razones sí, bajo el supuesto de que la mayoría de los genes no cambia.
+  \item La variación biológica hace que $\Var=\mu+\alpha\mu^2$: los conteos siguen una binomial negativa. DESeq2 y edgeR ajustan un GLM con enlace logarítmico y contraen las dispersiones hacia una tendencia común; limma-voom usa pesos de precisión sobre $\log$-CPM.
+  \item La prueba de Wald y la LRT contrastan coeficientes; la contracción del LFC (previa normal o, mejor, de colas pesadas como en apeglm) estabiliza los tamaños de efecto de genes poco expresados.
+  \item Con miles de pruebas se controla la FDR con Benjamini-Hochberg; los $q$-valores incorporan $\hat\pi_0$; el filtrado independiente por media aumenta la potencia sin romper el control. El histograma de valores $p$ es el mejor diagnóstico del modelo.
+  \item El enriquecimiento funcional traduce listas en hipótesis: la sobrerrepresentación (hipergeométrica, con el universo correcto y corrección del sesgo de longitud) o GSEA, que usa la lista completa y detecta cambios pequeños y coordinados.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Un transcrito de \SI{600}{pb} y otro de \SI{6000}{pb} reciben el mismo número de fragmentos, con fragmentos de longitud media 250. Calcule sus longitudes efectivas aproximadas y la razón de sus fracciones molares $\tau$. ¿Qué error se comete si se ignora la longitud efectiva?
+\ej{1} Demuestre que los TPM de una muestra suman $10^6$ y que la suma de sus RPKM es $10^9/\bar\ell$, donde $\bar\ell$ es la media de las longitudes ponderada por los conteos.
+\ej{2} Modifique \py{em_isoformas} para que el paso E reparta en proporción a $\alpha_t$ en lugar de $\alpha_t/\tilde\ell_t$ y aplíquelo al \cref{ej:em}. Compare las estimaciones de $\tau$ con las correctas y explique la dirección del sesgo.
+\ej{2} Con la ley de la varianza total, derive la \cref{eq:11-nbvar}. Luego simule \num{10000} valores de una mezcla gamma-Poisson con $\mu=50$ y $\alpha=0{,}3$ y compruebe media y varianza empíricas.
+\ej{2} Tome una matriz de conteos real (por ejemplo, la del notebook de la lección) y calcule factores de tamaño por mediana de razones y por total de lecturas. Represente el gráfico MA entre dos muestras y marque ambos factores. ¿Cuál centra mejor la nube?
+\ej{2} Simule \num{10000} valores $p$ de los cuales \num{9000} son uniformes y \num{1000} proceden de una beta$(0{,}1;\,1)$. Aplique BH con $\alpha=0{,}1$ y calcule la proporción de falsos descubrimientos. Repita 200 veces y compare la media con $\pi_0\alpha$.
+\ej{3} Demuestre que filtrar genes por su valor $p$ antes de aplicar BH no controla la FDR, construyendo un contraejemplo con todas las hipótesis nulas verdaderas. ¿Por qué el filtrado por media global no sufre el mismo problema?
+\ej{3} Implemente GSEA con permutaciones de las etiquetas de muestra en un conjunto de datos con al menos seis réplicas por grupo, y compare los valores $p$ con los obtenidos permutando genes para un conjunto de genes muy correlacionados entre sí. Explique la diferencia.
+\ej{3} Para el \cref{ej:hiper}, implemente la corrección por longitud con la distribución hipergeométrica no central de Wallenius (en SciPy, la clase \py{nchypergeom_wallenius} del módulo \py{scipy.stats}), usando como peso del término la razón entre la PWF media de sus genes y la del resto. Compare el resultado con el obtenido por remuestreo.
+\end{ejercicios}
+
+\referenciascapitulo

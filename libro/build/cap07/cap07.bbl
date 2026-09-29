@@ -63,7 +63,6 @@
       \field{volume}{21}
       \field{year}{2011}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{974\bibrangedash 984}
       \range{pages}{11}
       \verb{doi}
@@ -112,7 +111,6 @@
       \field{title}{The Burrows-Wheeler Transform: Data Compression, Suffix Arrays, and Pattern Matching}
       \field{year}{2008}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1007/978-0-387-78909-5
       \endverb
@@ -197,7 +195,6 @@
       \field{volume}{10}
       \field{year}{2021}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1093/gigascience/giab008
       \endverb
@@ -236,7 +233,6 @@
       \field{volume}{30}
       \field{year}{2014}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{2503\bibrangedash 2505}
       \range{pages}{3}
       \verb{doi}
@@ -277,7 +273,6 @@
       \field{volume}{52}
       \field{year}{2005}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{552\bibrangedash 581}
       \range{pages}{30}
       \verb{doi}
@@ -316,7 +311,6 @@
       \field{title}{Algorithms on Strings, Trees and Sequences: Computer Science and Computational Biology}
       \field{year}{1997}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1017/CBO9780511574931
       \endverb
@@ -355,7 +349,6 @@
       \field{volume}{9}
       \field{year}{2012}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{357\bibrangedash 359}
       \range{pages}{3}
       \verb{doi}
@@ -407,7 +400,6 @@
       \field{volume}{10}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1186/gb-2009-10-3-r25
       \endverb
@@ -441,7 +433,6 @@
       \field{title}{Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM}
       \field{year}{2013}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.48550/arXiv.1303.3997
       \endverb
@@ -479,7 +470,6 @@
       \field{volume}{34}
       \field{year}{2018}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{3094\bibrangedash 3100}
       \range{pages}{7}
       \verb{doi}
@@ -521,7 +511,6 @@
       \field{volume}{25}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{1754\bibrangedash 1760}
       \range{pages}{7}
       \verb{doi}
@@ -563,7 +552,6 @@
       \field{volume}{26}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{589\bibrangedash 595}
       \range{pages}{7}
       \verb{doi}
@@ -604,7 +592,6 @@
       \field{volume}{11}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{473\bibrangedash 483}
       \range{pages}{11}
       \verb{doi}
@@ -651,7 +638,6 @@
       \field{volume}{18}
       \field{year}{2008}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{1851\bibrangedash 1858}
       \range{pages}{8}
       \verb{doi}
@@ -731,7 +717,6 @@
       \field{volume}{25}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{2078\bibrangedash 2079}
       \range{pages}{2}
       \verb{doi}
@@ -785,7 +770,6 @@
       \field{title}{Genome-Scale Algorithm Design: Biological Sequence Analysis in the Era of High-Throughput Sequencing}
       \field{year}{2015}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1017/CBO9781139940023
       \endverb
@@ -824,7 +808,6 @@
       \field{volume}{22}
       \field{year}{1993}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{935\bibrangedash 948}
       \range{pages}{14}
       \verb{doi}
@@ -877,7 +860,6 @@
       \field{volume}{376}
       \field{year}{2022}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{44\bibrangedash 53}
       \range{pages}{10}
       \verb{doi}
@@ -918,7 +900,6 @@
       \field{volume}{34}
       \field{year}{2018}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{867\bibrangedash 868}
       \range{pages}{2}
       \verb{doi}
@@ -959,7 +940,6 @@
       \field{volume}{26}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{841\bibrangedash 842}
       \range{pages}{2}
       \verb{doi}
@@ -1035,7 +1015,6 @@
       \field{volume}{44}
       \field{year}{2016}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{W160\bibrangedash W165}
       \range{pages}{-1}
       \verb{doi}
@@ -1091,7 +1070,6 @@
       \field{volume}{20}
       \field{year}{2004}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{3363\bibrangedash 3369}
       \range{pages}{7}
       \verb{doi}
@@ -1157,7 +1135,6 @@
       \field{volume}{29}
       \field{year}{2011}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{24\bibrangedash 26}
       \range{pages}{3}
       \verb{doi}
@@ -1191,7 +1168,6 @@
       \field{title}{Sequence Alignment/Map Format Specification}
       \field{year}{2024}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{urlraw}
       \verb https://samtools.github.io/hts-specs/SAMv1.pdf
       \endverb
@@ -1240,7 +1216,6 @@
       \field{title}{Winnowing}
       \field{year}{2003}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{76\bibrangedash 85}
       \range{pages}{10}
       \verb{doi}
@@ -1323,7 +1298,6 @@
       \field{volume}{27}
       \field{year}{2017}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{849\bibrangedash 864}
       \range{pages}{16}
       \verb{doi}
@@ -1369,7 +1343,6 @@
       \field{volume}{14}
       \field{year}{2013}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{178\bibrangedash 192}
       \range{pages}{15}
       \verb{doi}
@@ -1410,7 +1383,6 @@
       \field{volume}{13}
       \field{year}{2012}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{36\bibrangedash 46}
       \range{pages}{11}
       \verb{doi}
@@ -1463,7 +1435,6 @@
       \field{volume}{21}
       \field{year}{2011}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{974\bibrangedash 984}
       \range{pages}{11}
       \verb{doi}
@@ -1512,7 +1483,6 @@
       \field{title}{The Burrows-Wheeler Transform: Data Compression, Suffix Arrays, and Pattern Matching}
       \field{year}{2008}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1007/978-0-387-78909-5
       \endverb
@@ -1597,7 +1567,6 @@
       \field{volume}{10}
       \field{year}{2021}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1093/gigascience/giab008
       \endverb
@@ -1636,7 +1605,6 @@
       \field{volume}{30}
       \field{year}{2014}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{2503\bibrangedash 2505}
       \range{pages}{3}
       \verb{doi}
@@ -1677,7 +1645,6 @@
       \field{volume}{52}
       \field{year}{2005}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{552\bibrangedash 581}
       \range{pages}{30}
       \verb{doi}
@@ -1716,7 +1683,6 @@
       \field{title}{Algorithms on Strings, Trees and Sequences: Computer Science and Computational Biology}
       \field{year}{1997}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1017/CBO9780511574931
       \endverb
@@ -1755,7 +1721,6 @@
       \field{volume}{9}
       \field{year}{2012}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{357\bibrangedash 359}
       \range{pages}{3}
       \verb{doi}
@@ -1807,7 +1772,6 @@
       \field{volume}{10}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1186/gb-2009-10-3-r25
       \endverb
@@ -1841,7 +1805,6 @@
       \field{title}{Aligning sequence reads, clone sequences and assembly contigs with BWA-MEM}
       \field{year}{2013}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.48550/arXiv.1303.3997
       \endverb
@@ -1879,7 +1842,6 @@
       \field{volume}{34}
       \field{year}{2018}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{3094\bibrangedash 3100}
       \range{pages}{7}
       \verb{doi}
@@ -1921,7 +1883,6 @@
       \field{volume}{25}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{1754\bibrangedash 1760}
       \range{pages}{7}
       \verb{doi}
@@ -1963,7 +1924,6 @@
       \field{volume}{26}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{589\bibrangedash 595}
       \range{pages}{7}
       \verb{doi}
@@ -2043,7 +2003,6 @@
       \field{volume}{25}
       \field{year}{2009}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{2078\bibrangedash 2079}
       \range{pages}{2}
       \verb{doi}
@@ -2084,7 +2043,6 @@
       \field{volume}{11}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{473\bibrangedash 483}
       \range{pages}{11}
       \verb{doi}
@@ -2131,7 +2089,6 @@
       \field{volume}{18}
       \field{year}{2008}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{1851\bibrangedash 1858}
       \range{pages}{8}
       \verb{doi}
@@ -2185,7 +2142,6 @@
       \field{title}{Genome-Scale Algorithm Design: Biological Sequence Analysis in the Era of High-Throughput Sequencing}
       \field{year}{2015}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{doi}
       \verb 10.1017/CBO9781139940023
       \endverb
@@ -2224,7 +2180,6 @@
       \field{volume}{22}
       \field{year}{1993}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{935\bibrangedash 948}
       \range{pages}{14}
       \verb{doi}
@@ -2277,7 +2232,6 @@
       \field{volume}{376}
       \field{year}{2022}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{44\bibrangedash 53}
       \range{pages}{10}
       \verb{doi}
@@ -2318,7 +2272,6 @@
       \field{volume}{34}
       \field{year}{2018}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{867\bibrangedash 868}
       \range{pages}{2}
       \verb{doi}
@@ -2359,7 +2312,6 @@
       \field{volume}{26}
       \field{year}{2010}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{841\bibrangedash 842}
       \range{pages}{2}
       \verb{doi}
@@ -2435,7 +2387,6 @@
       \field{volume}{44}
       \field{year}{2016}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{W160\bibrangedash W165}
       \range{pages}{-1}
       \verb{doi}
@@ -2491,7 +2442,6 @@
       \field{volume}{20}
       \field{year}{2004}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{3363\bibrangedash 3369}
       \range{pages}{7}
       \verb{doi}
@@ -2557,7 +2507,6 @@
       \field{volume}{29}
       \field{year}{2011}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{24\bibrangedash 26}
       \range{pages}{3}
       \verb{doi}
@@ -2591,7 +2540,6 @@
       \field{title}{Sequence Alignment/Map Format Specification}
       \field{year}{2024}
       \field{dateera}{ce}
-      \true{nocite}
       \verb{urlraw}
       \verb https://samtools.github.io/hts-specs/SAMv1.pdf
       \endverb
@@ -2640,7 +2588,6 @@
       \field{title}{Winnowing}
       \field{year}{2003}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{76\bibrangedash 85}
       \range{pages}{10}
       \verb{doi}
@@ -2723,7 +2670,6 @@
       \field{volume}{27}
       \field{year}{2017}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{849\bibrangedash 864}
       \range{pages}{16}
       \verb{doi}
@@ -2769,7 +2715,6 @@
       \field{volume}{14}
       \field{year}{2013}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{178\bibrangedash 192}
       \range{pages}{15}
       \verb{doi}
@@ -2810,7 +2755,6 @@
       \field{volume}{13}
       \field{year}{2012}
       \field{dateera}{ce}
-      \true{nocite}
       \field{pages}{36\bibrangedash 46}
       \range{pages}{11}
       \verb{doi}

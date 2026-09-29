@@ -1,0 +1,15 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} 1) biblioteca de repeticiones de la especie y enmascarado blando}
+BuildDatabase\PYG{+w}{ }\PYGZhy{}name\PYG{+w}{ }especie\PYG{+w}{ }genoma.fasta
+RepeatModeler\PYG{+w}{ }\PYGZhy{}database\PYG{+w}{ }especie\PYG{+w}{ }\PYGZhy{}threads\PYG{+w}{ }\PYG{l+m}{16}
+RepeatMasker\PYG{+w}{ }\PYGZhy{}lib\PYG{+w}{ }especie\PYGZhy{}families.fa\PYG{+w}{ }\PYGZhy{}xsmall\PYG{+w}{ }\PYGZhy{}pa\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }genoma.fasta
+
+\PYG{c+c1}{\PYGZsh{} 2) predicción con evidencia de proteínas y RNA\PYGZhy{}seq alineado}
+braker.pl\PYG{+w}{ }\PYGZhy{}\PYGZhy{}genome\PYG{o}{=}genoma.fasta.masked\PYG{+w}{ }\PYGZhy{}\PYGZhy{}softmasking\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}prot\PYGZus{}seq\PYG{o}{=}orthodb\PYGZus{}proteinas.fa\PYG{+w}{ }\PYGZhy{}\PYGZhy{}bam\PYG{o}{=}rnaseq.bam\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}threads\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}workingdir\PYG{o}{=}braker\PYGZus{}out
+
+\PYG{c+c1}{\PYGZsh{} 3) completitud del conjunto de proteínas predicho}
+busco\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }braker\PYGZus{}out/braker.aa\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }proteins\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}l\PYG{+w}{ }eukaryota\PYGZus{}odb10\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }busco\PYGZus{}prot
+\end{MintedVerbatim}

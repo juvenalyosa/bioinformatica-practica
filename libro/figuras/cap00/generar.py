@@ -168,7 +168,7 @@ from Bio.Seq import Seq
 
 stops = {"TAA", "TAG", "TGA"}
 MINC = 100                                  # ORF mínimo (codones)
-S = 12.0 / L                                # cm por nucleótido
+S = 11.2 / L                                # cm por nucleótido
 rc = str(Seq(seq).reverse_complement())
 c = [r"\begin{tikzpicture}[font=\sffamily\scriptsize]"]
 frames = [("+1", seq, 0), ("+2", seq, 1), ("+3", seq, 2),
@@ -178,7 +178,7 @@ for r, (lab, s, off) in enumerate(frames):
     y = -r * 0.55 - (0.35 if r >= 3 else 0)
     rev = s is rc
     c.append(rf"\node[anchor=east,text=tinta2] at (-0.1,{y}) {{{lab}}};")
-    c.append(rf"\fill[papel] (0,{y-0.16}) rectangle (12,{y+0.16});")
+    c.append(rf"\fill[papel] (0,{y-0.16}) rectangle (11.2,{y+0.16});")
     last, cnt = off, 0
     stop_pos = []
     for i in range(off, len(s) - 2, 3):
@@ -208,8 +208,8 @@ for name, a, b in genes:
 for kb in range(0, 31, 5):
     x = kb * 1000 * S
     c.append(rf"\draw[base] ({x:.3f},-3.35) -- ({x:.3f},-3.45) node[below,text=gris] {{{kb}}};")
-c.append(r"\draw[base] (0,-3.35) -- (12,-3.35);")
-c.append(r"\node[text=tinta2] at (6,-4.0) {posición en el genoma (kb)};")
+c.append(r"\draw[base] (0,-3.35) -- (11.2,-3.35);")
+c.append(r"\node[text=tinta2] at (5.6,-4.0) {posición en el genoma (kb)};")
 c.append(r"\end{tikzpicture}")
 w("orfs.tex", "\n".join(c) + "\n")
 w("orfs_resumen.txt", f"{nlong}\n")

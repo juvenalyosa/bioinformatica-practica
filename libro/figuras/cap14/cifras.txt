@@ -1,0 +1,43 @@
+[dada2] lecturas=8510  únicas=2179  lecturas con error=3264 (38.4%)
+[dada2] variantes reales (d, a): [(0, 3075, 0), (1, 557, 1), (4, 1237, 2), (9, 256, 3), (15, 86, 4), (22, 35, 5)]
+[dada2] error más abundante: 9
+[dada2] umbral (d, a*, mu): [(1, 43, '2.02'), (2, 12, '0.00135'), (3, 8, '9.04e-07'), (4, 6, '6.04e-10')]
+[dada2] lambda(d=1)=4.050e-04  esperado=2.025  log10 p(a>=557) aprox (término dominante)=-1119
+[dada2] esperado con a>=10: log10 p = -4.29
+[ee] 250 pb a Q30: EE=0.25
+[ee] 250 pb a Q25: EE=0.79
+[ee] 250 pb a Q20: EE=2.50
+[ee] perfil 36->18: EE=0.42
+[bayes] Bacteroides: log P(S|G) = -3.313   P(w|G)=[0.938, 0.739, 0.061, 0.866]
+[bayes] Prevotella: log P(S|G) = -5.224   P(w|G)=[0.787, 0.127, 0.057, 0.942]
+[bayes] Escherichia: log P(S|G) = -9.618   P(w|G)=[0.024, 0.07, 0.959, 0.041]
+[bayes] posterior (priori uniforme) Bacteroides: 0.870
+[bayes] posterior (priori uniforme) Prevotella: 0.129
+[bayes] posterior (priori uniforme) Escherichia: 0.002
+[rare] A: S_real=400 N=30000 S_obs=237 f1=27 f2=12 Chao1(bc)=264.0  E[S_8000]=201.9  H=4.35
+[rare] B: S_real=180 N=18000 S_obs=169 f1=3 f2=5 Chao1(bc)=169.5  E[S_8000]=165.1  H=4.59
+[rare] C: S_real=90 N=8000 S_obs=90 f1=0 f2=0 Chao1(bc)=90.0  E[S_8000]=90.0  H=4.26
+[alfa] N=100 S=9 H=1.4952 expH=4.460 Simpson=0.3132 invSimpson=3.193 GiniSimpson=0.6868 Pielou=0.680 f1=3 f2=1 Chao1=13.50 Chao1bc=10.50
+[hill] q=0: A=60.00 B=20.00 C=40.00
+[hill] q=1: A=22.64 B=20.00 C=15.31
+[hill] q=2: A=6.02 B=20.00 C=7.45
+[hill] q=inf: A=2.50 B=20.00 C=3.21
+[compos] rel antes=[0.357 0.286 0.214 0.143] después=[0.156 0.125 0.094 0.625]
+[compos] clr antes=[ 0.413  0.189 -0.098 -0.504] después=[-0.163 -0.386 -0.674  1.223]
+[compos] log-razón t1/t2 antes=0.223 después=0.223
+[pcoa] var ejes: 0.379 0.108  autovalores negativos: 13 (mín -0.0630)
+[permanova] SST=5.0365 SSW=2.7158 F=17.94 R2=0.461 p=0.001
+[beta] BC medio dentro de sano: 0.363
+[beta] BC medio dentro de dieta: 0.306
+[beta] BC medio dentro de antibiotico: 0.395
+[beta] BC medio sano-antibiótico: 0.580
+[beta] ejemplo u=[10  0  5  3  2] v=[4 6 5 0 5]: sum|u-v|=18 sum=40 BC=0.4500  sum min=11  Jaccard=0.400
+[bracken] Kraken especie=[3000. 2400.  300.]  género=4300.0  P(S|G)=[0.685 0.219 0.096] Bracken=[5945. 3342.  712.]  verdad=[6000 3000 1000]
+[kmer] k=15: 4^-k=9.31e-10  espurias esperadas en 1e11 pb de referencia: 9.31e+01
+[kmer] k=21: 4^-k=2.27e-13  espurias esperadas en 1e11 pb de referencia: 2.27e-02
+[kmer] k=31: 4^-k=2.17e-19  espurias esperadas en 1e11 pb de referencia: 2.17e-08
+[kmer] k=35: 4^-k=8.47e-22  espurias esperadas en 1e11 pb de referencia: 8.47e-11
+[cov] abundancia 0.01: cobertura=15.0x   fracción no cubierta e^-c=3.06e-07
+[cov] abundancia 0.001: cobertura=1.5x   fracción no cubierta e^-c=2.23e-01
+[bin] contigs=260  por genoma=[49, 44, 59, 59, 49]
+[checkm] completitud=91.3% contaminación=5.8%

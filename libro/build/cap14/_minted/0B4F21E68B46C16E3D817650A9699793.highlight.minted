@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+kraken2\PYG{+w}{ }\PYGZhy{}\PYGZhy{}db\PYG{+w}{ }k2\PYGZus{}standard\PYG{+w}{ }\PYGZhy{}\PYGZhy{}threads\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}paired\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}confidence\PYG{+w}{ }\PYG{l+m}{0}.1\PYG{+w}{ }\PYGZhy{}\PYGZhy{}report\PYG{+w}{ }m1.k2report\PYG{+w}{ }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }m1.kraken2\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }m1\PYGZus{}R1.fastq.gz\PYG{+w}{ }m1\PYGZus{}R2.fastq.gz
+bracken\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }k2\PYGZus{}standard\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }m1.k2report\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }m1.bracken\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}r\PYG{+w}{ }\PYG{l+m}{150}\PYG{+w}{ }\PYGZhy{}l\PYG{+w}{ }S\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{10}
+metaphlan\PYG{+w}{ }m1\PYGZus{}R1.fastq.gz,m1\PYGZus{}R2.fastq.gz\PYG{+w}{ }\PYGZhy{}\PYGZhy{}input\PYGZus{}type\PYG{+w}{ }fastq\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYGZhy{}\PYGZhy{}nproc\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }m1\PYGZus{}metaphlan.txt
+\end{MintedVerbatim}

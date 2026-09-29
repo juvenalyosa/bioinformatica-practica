@@ -1,0 +1,6 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+pytest\PYG{+w}{ }\PYGZhy{}q\PYG{+w}{ }tests/\PYG{+w}{                          }\PYG{c+c1}{\PYGZsh{} pruebas unitarias}
+snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}lint\PYG{+w}{                          }\PYG{c+c1}{\PYGZsh{} buenas practicas del flujo}
+snakemake\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }\PYGZhy{}\PYGZhy{}configfile\PYG{+w}{ }tests/config\PYGZus{}mini.yaml\PYG{+w}{       }\PYG{c+c1}{\PYGZsh{} ensayo en seco}
+snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cores\PYG{+w}{ }\PYG{l+m}{2}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}sdm\PYG{+w}{ }conda\PYG{+w}{ }\PYGZhy{}\PYGZhy{}configfile\PYG{+w}{ }tests/config\PYGZus{}mini.yaml
+\end{MintedVerbatim}

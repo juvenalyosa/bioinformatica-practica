@@ -1,0 +1,8 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n}{channels}\PYG{p}{:}
+  \PYG{o}{\PYGZhy{}} \PYG{n}{conda}\PYG{o}{\PYGZhy{}}\PYG{n}{forge}
+  \PYG{o}{\PYGZhy{}} \PYG{n}{bioconda}
+\PYG{n}{dependencies}\PYG{p}{:}
+  \PYG{o}{\PYGZhy{}} \PYG{n}{bwa}\PYG{o}{=}\PYG{l+m+mf}{0.7}\PYG{l+m+mf}{.18}
+  \PYG{o}{\PYGZhy{}} \PYG{n}{samtools}\PYG{o}{=}\PYG{l+m+mf}{1.20}
+\end{MintedVerbatim}

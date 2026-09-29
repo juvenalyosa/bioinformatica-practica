@@ -1,0 +1,152 @@
+[
+ {
+  "key": "c11-conesa2016",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-dobin2013",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-kim2019",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-li2011",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-bray2016",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-patro2017",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-wagner2012",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-soneson2015",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-robinson2010tmm",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-anders2010",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-love2014",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-robinson2010edger",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-law2014",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-ritchie2015",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-zhu2019",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-benjamini1995",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-storey2003",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-bourgon2010",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-ashburner2000",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-go2023",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-kanehisa2000",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-young2010",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-subramanian2005",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-mootha2003",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-korotkevich2016",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-liberzon2015",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-mortazavi2008",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-wang2009",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-dempster1977",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c11-holmes2019",
+  "ok": true,
+  "msg": "ok isbn (título 1.00)"
+ }
+]

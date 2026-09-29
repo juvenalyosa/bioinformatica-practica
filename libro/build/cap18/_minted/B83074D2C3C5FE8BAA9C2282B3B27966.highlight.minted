@@ -1,0 +1,170 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n}{params}\PYG{o}{.}\PYG{n}{lecturas} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datos/*\PYGZus{}R}\PYG{l+s+s2}{\PYGZob{}}\PYG{l+s+s2}{1,2\PYGZcb{}.fastq.gz}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{n}{params}\PYG{o}{.}\PYG{n}{ref}      \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ref/genoma.fa}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{n}{params}\PYG{o}{.}\PYG{n}{snpeff}   \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{Mycobacterium\PYGZus{}tuberculosis\PYGZus{}h37rv}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{n}{params}\PYG{o}{.}\PYG{n}{outdir}   \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{resultados}\PYG{l+s+s2}{\PYGZdq{}}
+
+\PYG{n}{process} \PYG{n}{FASTP} \PYG{p}{\PYGZob{}}
+    \PYG{n}{tag} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/qc.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{cpus} \PYG{l+m+mi}{4}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{reads}\PYG{p}{)}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R*.fq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{emit}\PYG{p}{:} \PYG{n}{reads}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{.fastp.json}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{emit}\PYG{p}{:} \PYG{n}{json}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    fastp \PYGZhy{}i \PYGZdl{}\PYGZob{}reads[0]\PYGZcb{} \PYGZhy{}I \PYGZdl{}\PYGZob{}reads[1]\PYGZcb{} \PYGZhy{}w \PYGZdl{}\PYGZob{}task.cpus\PYGZcb{} \PYGZbs{}\PYGZbs{}}
+\PYG{l+s+sd}{        \PYGZhy{}o \PYGZdl{}\PYGZob{}id\PYGZcb{}\PYGZus{}R1.fq.gz \PYGZhy{}O \PYGZdl{}\PYGZob{}id\PYGZcb{}\PYGZus{}R2.fq.gz \PYGZhy{}j \PYGZdl{}\PYGZob{}id\PYGZcb{}.fastp.json}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{BWA\PYGZus{}INDEX} \PYG{p}{\PYGZob{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/mapeo.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{path} \PYG{n}{fa}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{path}\PYG{p}{(}\PYG{n}{fa}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}fa\PYGZcb{}}\PYG{l+s+s2}{.*}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    bwa index \PYGZdl{}\PYGZob{}fa\PYGZcb{}}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{MAPEAR} \PYG{p}{\PYGZob{}}
+    \PYG{n}{tag} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/mapeo.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{cpus} \PYG{l+m+mi}{8}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{reads}\PYG{p}{)}
+    \PYG{n+nb}{tuple} \PYG{n}{path}\PYG{p}{(}\PYG{n}{fa}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{idx}\PYG{p}{)}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{.ordenado.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    bwa mem \PYGZhy{}t \PYGZdl{}\PYGZob{}task.cpus\PYGZcb{} \PYGZhy{}R \PYGZsq{}@RG\PYGZbs{}\PYGZbs{}tID:\PYGZdl{}\PYGZob{}id\PYGZcb{}\PYGZbs{}\PYGZbs{}tSM:\PYGZdl{}\PYGZob{}id\PYGZcb{}\PYGZsq{} \PYGZbs{}\PYGZbs{}}
+\PYG{l+s+sd}{        \PYGZdl{}\PYGZob{}fa\PYGZcb{} \PYGZdl{}\PYGZob{}reads\PYGZcb{} \PYGZgt{} \PYGZdl{}\PYGZob{}id\PYGZcb{}.sam}
+\PYG{l+s+sd}{    samtools fixmate \PYGZhy{}m \PYGZdl{}\PYGZob{}id\PYGZcb{}.sam \PYGZdl{}\PYGZob{}id\PYGZcb{}.fm.bam}
+\PYG{l+s+sd}{    samtools sort \PYGZhy{}@ \PYGZdl{}\PYGZob{}task.cpus\PYGZcb{} \PYGZhy{}o \PYGZdl{}\PYGZob{}id\PYGZcb{}.ordenado.bam \PYGZdl{}\PYGZob{}id\PYGZcb{}.fm.bam}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{DEDUP} \PYG{p}{\PYGZob{}}
+    \PYG{n}{tag} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/mapeo.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{bam}\PYG{p}{)}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{val}\PYG{p}{(}\PYG{n+nb}{id}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{.dedup.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{.dedup.bam.bai}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    samtools markdup \PYGZdl{}\PYGZob{}bam\PYGZcb{} \PYGZdl{}\PYGZob{}id\PYGZcb{}.dedup.bam}
+\PYG{l+s+sd}{    samtools index \PYGZdl{}\PYGZob{}id\PYGZcb{}.dedup.bam}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{LLAMAR} \PYG{p}{\PYGZob{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/variantes.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{path} \PYG{n}{bams}
+    \PYG{n}{path} \PYG{n}{fa}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{crudo.bcf}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    bcftools mpileup \PYGZhy{}f \PYGZdl{}\PYGZob{}fa\PYGZcb{} \PYGZhy{}a AD,DP \PYGZhy{}Ob \PYGZhy{}o pila.bcf *.dedup.bam}
+\PYG{l+s+sd}{    bcftools call \PYGZhy{}\PYGZhy{}ploidy 1 \PYGZhy{}mv \PYGZhy{}V indels \PYGZhy{}Ob \PYGZhy{}o crudo.bcf pila.bcf}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{FILTRAR} \PYG{p}{\PYGZob{}}
+    \PYG{n}{publishDir} \PYG{n}{params}\PYG{o}{.}\PYG{n}{outdir}\PYG{p}{,} \PYG{n}{mode}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{copy}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/variantes.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{path} \PYG{n}{bcf}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{filtrado.vcf.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{filtrado.vcf.gz.tbi}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    bcftools filter \PYGZhy{}i \PYGZsq{}QUAL\PYGZgt{}=30 \PYGZam{}\PYGZam{} INFO/DP\PYGZgt{}=10\PYGZsq{} \PYGZbs{}\PYGZbs{}}
+\PYG{l+s+sd}{        \PYGZhy{}Oz \PYGZhy{}o filtrado.vcf.gz \PYGZdl{}\PYGZob{}bcf\PYGZcb{}}
+\PYG{l+s+sd}{    bcftools index \PYGZhy{}t filtrado.vcf.gz}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{ANOTAR} \PYG{p}{\PYGZob{}}
+    \PYG{n}{publishDir} \PYG{n}{params}\PYG{o}{.}\PYG{n}{outdir}\PYG{p}{,} \PYG{n}{mode}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{copy}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/anotacion.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n+nb}{tuple} \PYG{n}{path}\PYG{p}{(}\PYG{n}{vcf}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{tbi}\PYG{p}{)}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{anotado.vcf}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    snpEff ann \PYGZhy{}noStats \PYGZdl{}\PYGZob{}params.snpeff\PYGZcb{} \PYGZdl{}\PYGZob{}vcf\PYGZcb{} \PYGZgt{} anotado.vcf}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{CONSENSO} \PYG{p}{\PYGZob{}}
+    \PYG{n}{tag} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/variantes.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{val} \PYG{n+nb}{id}
+    \PYG{n+nb}{tuple} \PYG{n}{path}\PYG{p}{(}\PYG{n}{vcf}\PYG{p}{)}\PYG{p}{,} \PYG{n}{path}\PYG{p}{(}\PYG{n}{tbi}\PYG{p}{)}
+    \PYG{n}{path} \PYG{n}{fa}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+si}{\PYGZob{}id\PYGZcb{}}\PYG{l+s+s2}{.fa}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    bcftools consensus \PYGZhy{}f \PYGZdl{}\PYGZob{}fa\PYGZcb{} \PYGZhy{}s \PYGZdl{}\PYGZob{}id\PYGZcb{} \PYGZhy{}o tmp.fa \PYGZdl{}\PYGZob{}vcf\PYGZcb{}}
+\PYG{l+s+sd}{    sed \PYGZsq{}s/\PYGZca{}\PYGZgt{}.*/\PYGZgt{}\PYGZdl{}\PYGZob{}id\PYGZcb{}/\PYGZsq{} tmp.fa \PYGZgt{} \PYGZdl{}\PYGZob{}id\PYGZcb{}.fa}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{FILOGENIA} \PYG{p}{\PYGZob{}}
+    \PYG{n}{publishDir} \PYG{n}{params}\PYG{o}{.}\PYG{n}{outdir}\PYG{p}{,} \PYG{n}{mode}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{copy}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/filogenia.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{cpus} \PYG{l+m+mi}{4}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{path} \PYG{n}{fastas}
+    \PYG{n}{path} \PYG{n}{fa}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{arbol.treefile}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    cat \PYGZdl{}\PYGZob{}fa\PYGZcb{} \PYGZdl{}\PYGZob{}fastas\PYGZcb{} \PYGZgt{} aln.fa}
+\PYG{l+s+sd}{    iqtree2 \PYGZhy{}s aln.fa \PYGZhy{}m GTR+G \PYGZhy{}B 1000 \PYGZhy{}T \PYGZdl{}\PYGZob{}task.cpus\PYGZcb{} \PYGZhy{}\PYGZhy{}prefix arbol}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{process} \PYG{n}{MULTIQC} \PYG{p}{\PYGZob{}}
+    \PYG{n}{publishDir} \PYG{n}{params}\PYG{o}{.}\PYG{n}{outdir}\PYG{p}{,} \PYG{n}{mode}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{copy}\PYG{l+s+s1}{\PYGZsq{}}
+    \PYG{n}{conda} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{envs/qc.yaml}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{input}\PYG{p}{:}
+    \PYG{n}{path} \PYG{n}{jsons}
+    \PYG{n}{output}\PYG{p}{:}
+    \PYG{n}{path} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{multiqc.html}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n}{script}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{l+s+sd}{    multiqc . \PYGZhy{}n multiqc.html}
+\PYG{l+s+sd}{    \PYGZdq{}\PYGZdq{}\PYGZdq{}}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{n}{workflow} \PYG{p}{\PYGZob{}}
+    \PYG{n}{lecturas} \PYG{o}{=} \PYG{n}{Channel}\PYG{o}{.}\PYG{n}{fromFilePairs}\PYG{p}{(}\PYG{n}{params}\PYG{o}{.}\PYG{n}{lecturas}\PYG{p}{)}   \PYG{o}{/}\PYG{o}{/} \PYG{n}{cola}
+    \PYG{n}{ref} \PYG{o}{=} \PYG{n}{file}\PYG{p}{(}\PYG{n}{params}\PYG{o}{.}\PYG{n}{ref}\PYG{p}{)}                               \PYG{o}{/}\PYG{o}{/} \PYG{n}{valor}
+    \PYG{n}{FASTP}\PYG{p}{(}\PYG{n}{lecturas}\PYG{p}{)}
+    \PYG{n}{MULTIQC}\PYG{p}{(}\PYG{n}{FASTP}\PYG{o}{.}\PYG{n}{out}\PYG{o}{.}\PYG{n}{json}\PYG{o}{.}\PYG{n}{collect}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{BWA\PYGZus{}INDEX}\PYG{p}{(}\PYG{n}{ref}\PYG{p}{)}                                       \PYG{o}{/}\PYG{o}{/} \PYG{n}{valor}
+    \PYG{n}{MAPEAR}\PYG{p}{(}\PYG{n}{FASTP}\PYG{o}{.}\PYG{n}{out}\PYG{o}{.}\PYG{n}{reads}\PYG{p}{,} \PYG{n}{BWA\PYGZus{}INDEX}\PYG{o}{.}\PYG{n}{out}\PYG{p}{)}
+    \PYG{n}{DEDUP}\PYG{p}{(}\PYG{n}{MAPEAR}\PYG{o}{.}\PYG{n}{out}\PYG{p}{)}
+    \PYG{n}{bams} \PYG{o}{=} \PYG{n}{DEDUP}\PYG{o}{.}\PYG{n}{out}\PYG{o}{.}\PYG{n}{map} \PYG{p}{\PYGZob{}} \PYG{n+nb}{id}\PYG{p}{,} \PYG{n}{bam}\PYG{p}{,} \PYG{n}{bai} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{p}{[}\PYG{n}{bam}\PYG{p}{,} \PYG{n}{bai}\PYG{p}{]} \PYG{p}{\PYGZcb{}}\PYG{o}{.}\PYG{n}{collect}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{LLAMAR}\PYG{p}{(}\PYG{n}{bams}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{)}
+    \PYG{n}{FILTRAR}\PYG{p}{(}\PYG{n}{LLAMAR}\PYG{o}{.}\PYG{n}{out}\PYG{p}{)}
+    \PYG{n}{ANOTAR}\PYG{p}{(}\PYG{n}{FILTRAR}\PYG{o}{.}\PYG{n}{out}\PYG{p}{)}
+    \PYG{n}{ids} \PYG{o}{=} \PYG{n}{lecturas}\PYG{o}{.}\PYG{n}{map} \PYG{p}{\PYGZob{}} \PYG{n+nb}{id}\PYG{p}{,} \PYG{n}{reads} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{id} \PYG{p}{\PYGZcb{}}
+    \PYG{n}{CONSENSO}\PYG{p}{(}\PYG{n}{ids}\PYG{p}{,} \PYG{n}{FILTRAR}\PYG{o}{.}\PYG{n}{out}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{)}
+    \PYG{n}{FILOGENIA}\PYG{p}{(}\PYG{n}{CONSENSO}\PYG{o}{.}\PYG{n}{out}\PYG{o}{.}\PYG{n}{collect}\PYG{p}{(}\PYG{p}{)}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{)}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

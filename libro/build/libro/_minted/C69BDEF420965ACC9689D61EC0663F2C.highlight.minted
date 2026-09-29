@@ -1,0 +1,3 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n}{a} \PYG{o}{==} \PYG{l+m+mi}{71}
+\end{MintedVerbatim}

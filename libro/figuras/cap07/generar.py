@@ -150,8 +150,8 @@ lines.append(rf"\node[font=\sffamily\bfseries\small,text=tinta] at "
 lines.append(rf"\node[etiqueta,text=azulprofundo] at ({xs:.2f},{-n * rh + 0.05:.2f}) {{$F$}};")
 lines.append(rf"\node[etiqueta,text=naranja!70!black] at ({xs + (n - 1) * cw:.2f},"
              rf"{-n * rh + 0.05:.2f}) {{$L$}};")
-lines.append(rf"\node[etiqueta,anchor=west,align=left] at ({xs + (n - 1) * cw + 0.45:.2f},"
-             rf"{-(n - 1) * rh / 2:.2f}) {{$\mathrm{{BWT}}(T)=L$\\[2pt]{{\ttfamily\small {L.replace('$', chr(92) + '$')}}}}};")
+lines.append(rf"\node[etiqueta,anchor=north] at ({xs + (n - 1) * cw / 2:.2f},"
+             rf"{-n * rh - 0.25:.2f}) {{$\mathrm{{BWT}}(T)=L=$\ {{\ttfamily\small {L.replace('$', chr(92) + '$')}}}}};")
 lines.append(r"\end{tikzpicture}")
 w("rotaciones.tex", "\n".join(lines) + "\n")
 
@@ -202,11 +202,11 @@ say("[bwt] C tabla:", " ".join(f"{c}:{C[c]}" for c in "ACGT"))
 
 # Figura: búsqueda hacia atrás en pasos (ACA)
 steps = backward("ACA")
-cw = 0.255
+cw = 0.225
 lines = [r"\begin{tikzpicture}"]
-pw = (n - 1) * cw + 0.55
+pw = (n - 1) * cw + 0.5
 for p, (suf, a, b) in enumerate(steps):
-    x0 = p * (pw + 0.35) + 0.35
+    x0 = p * (pw + 0.3) + 0.35
     lines += grid_rows(M, x0, bold=len(suf), band=(a, b), dim=True)
     tit = "inicio" if not suf else rf"\texttt{{{suf}}}"
     lines.append(rf"\node[font=\sffamily\bfseries\small,text=tinta] at "
@@ -288,9 +288,9 @@ say(f"[minim] demo seq={seq_demo} k={kd} w={wd} (orden lexicográfico) seleccion
 nk = len(seq_demo) - kd + 1
 say(f"[minim] demo: {len(sel)} de {nk} k-meros; densidad={len(sel) / nk:.3f};"
     f" 2/(w+1)={2 / (wd + 1):.3f}")
-lines = [r"\begin{tikzpicture}[x=0.5cm,y=0.5cm]"]
+lines = [r"\begin{tikzpicture}[x=0.44cm,y=0.5cm]"]
 for i, ch in enumerate(seq_demo):
-    lines.append(rf"\node[nt={ch},minimum size=4.2mm,font=\ttfamily\bfseries\scriptsize] at ({i},0) {{{ch}}};")
+    lines.append(rf"\node[nt={ch},minimum size=4.0mm,font=\ttfamily\bfseries\scriptsize] at ({i},0) {{{ch}}};")
     lines.append(rf"\node[etiqueta,font=\sffamily\tiny] at ({i},0.75) {{{i}}};")
 NWIN = 6
 for j in range(NWIN):
@@ -308,7 +308,6 @@ ysel = -1.15 - NWIN * 0.9 - 0.25
 lines.append(rf"\node[etiqueta,anchor=east] at (-0.8,{ysel}) {{minimizadores}};")
 lines.append(rf"\draw[rejilla] (-0.5,{ysel}) -- ({len(seq_demo) - 0.5},{ysel});")
 for i in sel:
-    lines.append(rf"\draw[rojooscuro,line width=1.6pt] ({i - 0.3},{ysel}) -- ({i + kd - 1 + 0.3},{ysel + 0.0});")
     lines.append(rf"\fill[rojooscuro] ({i},{ysel}) circle (0.14);")
     lines.append(rf"\node[font=\ttfamily\tiny,text=rojooscuro,anchor=north] at ({i},{ysel - 0.2}) {{{seq_demo[i:i + kd]}}};")
 lines.append(r"\end{tikzpicture}")
@@ -550,7 +549,7 @@ for li, (s0, ln, st, isalt, errs, dele, sc) in placed:
     if sc:
         for q_ in range(s0 - sc, s0):
             bb = rng.choice(list("ACGT"))
-            lines.append(rf"\node[font=\ttfamily\bfseries\tiny,text=nuc{bb}!45] at ({q_ + 0.5},{y}) {{{bb}}};")
+            lines.append(rf"\node[font=\ttfamily\bfseries\tiny,text=nuc{bb}!60] at ({q_ + 0.5},{y}) {{{bb}}};")
         lines.append(rf"\draw[gris,densely dotted] ({s0 - sc},{y - 0.32}) rectangle ({s0},{y + 0.32});")
     if isalt and s0 <= snv < e_:
         lines.append(rf"\node[font=\ttfamily\bfseries\tiny,text=nuc{alt}] at ({snv + 0.5},{y}) {{{alt}}};")

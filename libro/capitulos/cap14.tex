@@ -1,0 +1,1058 @@
+% =====================================================================
+%  Capítulo 14 · Metagenómica y microbioma
+% =====================================================================
+\chapter{Metagenómica y microbioma}\label{cap:14}
+
+\epigrafe{Un análisis filogenético basado en la caracterización de secuencias de ARN ribosómico revela que los sistemas vivos representan una de tres líneas primordiales de descendencia.}{\textcite{c14-woese1977}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Explicar por qué el gen del ARNr 16S sirve como ``código de barras'' de bacterias y arqueas, y elegir una región hipervariable y un par de cebadores con criterio.
+  \item Distinguir OTUs y ASVs, y derivar el modelo de error y la prueba de abundancia con que DADA2 separa variantes biológicas de errores de secuenciación.
+  \item Calcular e interpretar medidas de diversidad alfa (riqueza, Shannon, Simpson, Chao1, números de Hill) y beta (Bray-Curtis, Jaccard, UniFrac), y contrastar diferencias entre grupos con PCoA y PERMANOVA.
+  \item Reconocer que los datos de microbioma son composicionales y discutir con argumentos la controversia sobre la rarefacción.
+  \item Describir la clasificación de lecturas por $k$-mers y ancestro común más bajo (Kraken 2, Bracken), el perfilado por marcadores (MetaPhlAn) y la reconstrucción de genomas a partir de metagenomas (ensamblaje, \ingles{binning}, CheckM, MIMAG).
+\end{itemize}
+\end{objetivos}
+
+En un gramo de heces humanas hay más células bacterianas que personas en el planeta, y la inmensa mayoría de esas especies nunca ha crecido en una placa de Petri. Durante un siglo, la microbiología estudió lo que podía cultivar; el resto era una ``materia oscura'' biológica que se intuía en el microscopio pero que no se podía nombrar. La secuenciación cambió las reglas del juego: ya no hace falta aislar un organismo para saber que está ahí, porque su ADN lo delata. La \emph{metagenómica} es el estudio del material genético recuperado directamente de una muestra ambiental (suelo, agua de mar, intestino, piel, un hospital) y el \emph{microbioma} es la comunidad de microorganismos que habita un ambiente, junto con sus genes y sus funciones. \textcite{c14-hmp2012} mostraron, con 242 adultos sanos muestreados en hasta 18 sitios del cuerpo, que incluso entre personas sanas la composición de estas comunidades varía enormemente, mientras que las funciones metabólicas que codifican son mucho más estables.
+
+Existen dos grandes estrategias para leer una comunidad microbiana. La \emph{secuenciación de amplicones} amplifica por PCR un único gen marcador, casi siempre el 16S, y pregunta \emph{quién está ahí}; su desafío estadístico es separar la variación biológica de los errores de la PCR y del secuenciador (\cref{sec:14-16s}). Con la tabla de abundancias resultante cuantificaremos cuán diversa es cada muestra y cuán distintas son entre sí, con herramientas de la ecología matemática y cuidado con la naturaleza relativa de los datos (\cref{sec:14-diversidad}). La \emph{metagenómica shotgun} secuencia todo el ADN de la muestra: permite clasificar lecturas contra genomas de referencia, estimar abundancias de especies, inventariar genes de resistencia y reconstruir genomas de organismos nunca cultivados (\cref{sec:14-shotgun}). Usaremos ideas de la filogenia (\cref{cap:05}), de la calidad y la cobertura (\cref{cap:06}) y de los $k$-mers y grafos de de Bruijn (\cref{cap:08}).
+
+% ---------------------------------------------------------------------
+\section{El gen 16S rRNA y las variantes de secuencia de amplicón}\label{sec:14-16s}
+% ---------------------------------------------------------------------
+\enlacerepo{14.1 · 16S rRNA y ASVs}
+
+\begin{intuicion}[El censo por el apellido]
+Imagine que debe hacer el censo de una ciudad enorme, pero nadie le abre la puerta. Lo único que puede hacer es recoger las cartas que llegan a los buzones y anotar los apellidos de los destinatarios. Con suerte, cada familia tiene un apellido distintivo; en la práctica, algunos apellidos se repiten entre familias no emparentadas, el cartero a veces escribe mal un nombre (``Gonzales'' por ``González'') y, de vez en cuando, dos sobres pegados producen un apellido compuesto que no existe. Si se toma en serio cada grafía distinta, el censo inventará cientos de familias ficticias; si se agrupan los apellidos ``parecidos'', se fundirán familias reales. El análisis de amplicones del 16S enfrenta exactamente este dilema: el gen es el apellido, los errores de secuenciación son las erratas del cartero y las quimeras de la PCR son los sobres pegados.
+\end{intuicion}
+
+\subsection{Un reloj molecular universal}
+
+Todo organismo celular necesita ribosomas, y todo ribosoma contiene ARN. En bacterias y arqueas, la subunidad pequeña del ribosoma lleva un ARN de unos 1500 nucleótidos, el ARNr 16S (la ``S'' es la unidad Svedberg de sedimentación). Tres propiedades lo convierten en un marcador casi ideal. Primero, es \emph{universal}: está presente en todos los procariotas. Segundo, su función, ensamblar el ribosoma y reconocer el ARNm, es tan antigua y tan restrictiva que buena parte de su secuencia evoluciona muy lentamente, lo que permite alinear genes de organismos separados por miles de millones de años. Tercero, intercaladas entre esas regiones conservadas hay regiones \emph{hipervariables} que evolucionan mucho más rápido y distinguen linajes cercanos.
+
+Esta combinación fue la que explotaron \textcite{c14-woese1977}. Sin secuenciadores automáticos, compararon catálogos de oligonucleótidos del ARNr 16S digerido con ribonucleasa T1 y encontraron que los metanógenos, clasificados hasta entonces como bacterias, eran tan distintos de las bacterias típicas como estas de los eucariotas. Propusieron una tercera línea primordial de la vida, las arqueobacterias (hoy \ingles{Archaea}), y con ella el árbol de tres dominios. La lección metodológica fue tan importante como la biológica: una sola molécula bien elegida basta para ordenar la diversidad microbiana en un árbol filogenético (\cref{cap:05}).
+
+\begin{historia}[De los catálogos de oligonucleótidos a los millones de lecturas]
+Woese y Fox trabajaron con fragmentos de ARN marcados radiactivamente y separados en geles bidimensionales, un proceso que tomaba semanas por organismo. Tres décadas después, \textcite{c14-caporaso2011} secuenciaron la región V4 del 16S con Illumina a una profundidad de millones de lecturas por corrida, combinando cientos de muestras gracias a códigos de barras en los cebadores. El salto no fue solo de escala: con tantas lecturas, los errores del secuenciador dejaron de ser una curiosidad y pasaron a ser la principal fuente de diversidad \emph{falsa}.
+\end{historia}
+
+\subsection{Regiones hipervariables y cebadores}
+
+El 16S de \especie{Escherichia coli}, que se usa como sistema de coordenadas de referencia, mide \num{1542} nucleótidos y contiene nueve regiones hipervariables, V1 a V9 (\cref{fig:14-16s}). Las lecturas cortas de Illumina (\numrange{150}{300} bases por extremo) no alcanzan para cubrir el gen completo, de modo que en la práctica se amplifica una o dos regiones contiguas con cebadores que se unen a las regiones conservadas que las flanquean. El par 515F/806R, que amplifica la región V4, fue popularizado por \textcite{c14-caporaso2011} y se usa en proyectos a gran escala; el par V3–V4 (aproximadamente 341F/805R) produce un amplicón más largo, que requiere lecturas de 300 bases por extremo.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.4cm, xmin=0, xmax=1560, ymin=-1.66, ymax=1.2,
+  axis lines=none, grid=none, clip=false, xtick=\empty, ytick=\empty]
+  % perfil esquemático de variabilidad
+  \addplot[azul!70, thick, fill=azulpalido, fill opacity=.6, domain=0:1542, samples=400]
+    {0.06 + 0.55*exp(-((x-84)/18)^2) + 0.9*exp(-((x-190)/40)^2) + 0.8*exp(-((x-465)/26)^2)
+     + 0.75*exp(-((x-629)/40)^2) + 0.55*exp(-((x-850)/22)^2) + 0.95*exp(-((x-1014)/22)^2)
+     + 0.5*exp(-((x-1145)/22)^2) + 0.45*exp(-((x-1268)/20)^2) + 0.5*exp(-((x-1450)/12)^2)} \closedcycle;
+  \node[etiqueta, anchor=west, text=azulprofundo] at (axis cs:1300,0.95) {variabilidad};
+  \node[etiqueta, anchor=west, text=azulprofundo] at (axis cs:1300,0.78) {(esquema)};
+  % gen: regiones conservadas
+  \fill[base!70] (axis cs:0,-0.32) rectangle (axis cs:1542,-0.08);
+  \foreach \a/\b/\v in {69/99/V1,137/242/V2,433/497/V3,576/682/V4,822/879/V5,986/1043/V6,1117/1173/V7,1243/1294/V8,1435/1465/V9}{
+    \pgfmathsetmacro{\m}{(\a+\b)/2}
+    \edef\temp{\noexpand\fill[naranja] (axis cs:\a,-0.32) rectangle (axis cs:\b,-0.08);
+    \noexpand\node[font=\noexpand\sffamily\noexpand\bfseries\noexpand\scriptsize, text=naranja!80!black] at (axis cs:\m,-0.44) {\v};}\temp
+  }
+  \node[etiqueta, anchor=east] at (axis cs:-5,-0.2) {5'};
+  \node[etiqueta, anchor=west] at (axis cs:1547,-0.2) {3'};
+  % cebadores V4
+  \draw[-{Stealth}, very thick, verde] (axis cs:515,-0.66) -- (axis cs:545,-0.66);
+  \draw[-{Stealth}, very thick, verde] (axis cs:806,-0.66) -- (axis cs:776,-0.66);
+  \node[etiqueta, text=verde, anchor=east] at (axis cs:512,-0.66) {515F};
+  \node[etiqueta, text=verde, anchor=west] at (axis cs:809,-0.66) {806R};
+  \draw[verde, thick] (axis cs:515,-0.8) -- (axis cs:515,-0.86) -- (axis cs:806,-0.86) -- (axis cs:806,-0.8);
+  \node[etiqueta, text=verde] at (axis cs:660,-0.99) {V4: amplicón de $\sim$290 pb};
+  % cebadores V3-V4
+  \draw[violeta, thick] (axis cs:341,-1.14) -- (axis cs:341,-1.2) -- (axis cs:805,-1.2) -- (axis cs:805,-1.14);
+  \node[etiqueta, text=violeta, anchor=west] at (axis cs:830,-1.2) {V3--V4 (341F--805R): $\sim$460 pb};
+  % gen completo
+  \draw[tinta2, thick] (axis cs:8,-1.38) -- (axis cs:8,-1.44) -- (axis cs:1510,-1.44) -- (axis cs:1510,-1.38);
+  \node[etiqueta, text=tinta2] at (axis cs:760,-1.56) {gen completo (27F--1492R): $\sim$1500 pb, solo con lecturas largas};
+  % escala
+  \foreach \t in {0,250,500,750,1000,1250,1500}{
+    \edef\temp{\noexpand\node[font=\noexpand\sffamily\noexpand\tiny, text=gris, anchor=south] at (axis cs:\t,1.08) {\t};
+    \noexpand\draw[rejilla, thin] (axis cs:\t,1.05) -- (axis cs:\t,0.0);}\temp
+  }
+\end{axis}
+\end{tikzpicture}
+\caption[Estructura del gen 16S rRNA]{Anatomía del gen del ARNr 16S en coordenadas de \especie{E.~coli} (en nucleótidos, arriba). Las nueve regiones hipervariables (naranja) alternan con regiones conservadas (gris), donde se diseñan los cebadores. La curva azul es un perfil \emph{esquemático} de variabilidad entre especies: los picos coinciden con las regiones V. Debajo, tres estrategias habituales: el amplicón V4 (515F/806R), el V3–V4, más largo e informativo pero más exigente con la calidad del extremo 3' de las lecturas, y el gen completo, accesible solo con lecturas largas (PacBio HiFi, Nanopore). Ninguna región discrimina igual de bien todos los grupos taxonómicos: la elección de cebadores es una decisión de diseño con consecuencias.}
+\label{fig:14-16s}
+\end{figure}
+
+Elegir la región es un compromiso. Una región más larga contiene más sitios informativos, pero exige lecturas más largas cuyo extremo 3' tiene peor calidad (\cref{cap:06}); una región corta se lee con precisión, pero puede no distinguir géneros cercanos. Además, ningún par de cebadores es verdaderamente ``universal'': los desajustes entre cebador y molde hacen que algunos linajes se amplifiquen peor que otros y queden subrepresentados. Por eso nunca deben compararse directamente abundancias obtenidas con cebadores distintos.
+
+\begin{cuidado}[El número de copias del 16S]
+Un genoma bacteriano puede llevar entre una y más de una docena de copias del operón ribosómico. Si una especie tiene siete copias y otra solo una, la primera producirá, a igual número de células, unas siete veces más amplicones. Las abundancias relativas de una tabla 16S son, por lo tanto, abundancias de \emph{genes}, no de células. Además, las copias de un mismo genoma pueden diferir ligeramente entre sí, de modo que un organismo puede aportar más de una variante de secuencia.
+\end{cuidado}
+
+\subsection{OTUs: agrupar al 97 \%}
+
+Durante una década, el procedimiento estándar para convertir millones de lecturas en una tabla de ``especies'' fue agruparlas en \emph{unidades taxonómicas operativas} (OTUs).
+
+\begin{definicion}{Unidad taxonómica operativa (OTU)}{otu}
+Una OTU al nivel $\theta$ es un grupo de secuencias tal que cada miembro tiene una identidad de al menos $\theta$ con la secuencia representativa (centroide) del grupo. El umbral clásico es $\theta = 97\,\%$, que se tomó como aproximación a la ``especie'' bacteriana.
+\end{definicion}
+
+Para un amplicón V4 de 253 nucleótidos (sin cebadores), el 97 \% de identidad admite hasta $\lfloor 0{,}03 \times 253\rfloor = 7$ diferencias. El agrupamiento resuelve un problema real: si cada lectura con un error de secuenciación se contara como un organismo distinto, la diversidad se inflaría de forma absurda. Pero el remedio tiene efectos secundarios serios (\cref{fig:14-otuasv}). \emph{Pierde resolución}: dos cepas que difieren en tres nucleótidos de V4, quizá una comensal y una patógena, quedan fundidas. \emph{Depende del conjunto de datos}: los centroides \emph{de novo} dependen del orden y la abundancia de las lecturas, así que al añadir muestras los límites cambian y una OTU de un estudio no es comparable con la ``misma'' OTU de otro. \emph{Deja sobrevivir errores}: una lectura con ocho errores, o una quimera, forma una OTU espuria. Y el 3\,\% \emph{carece de fundamento biológico}: es un compromiso histórico, no una ley.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \pgfmathsetseed{14}
+  \foreach \px/\tit in {0/{Agrupamiento en OTUs al 97\,\%},6.7/{Inferencia de ASVs (DADA2)}}{
+    \draw[rejilla,rounded corners=3pt,fill=papel!35] (\px,0) rectangle (\px+6.1,5.0);
+    \node[font=\sffamily\bfseries\scriptsize,text=tinta] at (\px+3.05,4.72) {\tit};
+  }
+  % nubes de errores alrededor de las tres variantes reales (ambos paneles)
+  \foreach \px in {0,6.7}{
+    \foreach \cx/\cy/\n in {1.9/2.2/26,2.55/2.45/14,4.6/1.6/18}{
+      \foreach \k in {1,...,\n}{
+        \pgfmathsetmacro{\ang}{360*rnd}\pgfmathsetmacro{\rr}{0.12+0.5*rnd}
+        \fill[gris!70] ({\px+\cx+\rr*cos(\ang)},{\cy+\rr*sin(\ang)}) circle (0.028);
+      }
+    }
+    % error lejano y quimera
+    \fill[gris!70] (\px+4.25,3.6) circle (0.035);
+    \fill[gris!70] (\px+4.4,3.7) circle (0.035);
+    \fill[gris!70] (\px+4.35,3.5) circle (0.035);
+  }
+  % panel OTU
+  \draw[azul,thick,fill=azul!8,fill opacity=.6] (2.1,2.3) circle (1.0);
+  \draw[naranja,thick,fill=naranja!8,fill opacity=.6] (4.6,1.6) circle (0.75);
+  \draw[rojo,thick,dashed,fill=rojo!6,fill opacity=.6] (4.33,3.6) circle (0.42);
+  \foreach \x/\y/\c in {1.9/2.2/azul,2.55/2.45/azul,4.6/1.6/naranja}{\fill[\c] (\x,\y) circle (0.08);}
+  \node[etiqueta,text=azulprofundo] at (1.5,0.95) {OTU 1: funde R1 y R2};
+  \node[etiqueta,text=naranja!80!black] at (4.6,0.55) {OTU 2};
+  \node[etiqueta,text=rojooscuro,anchor=west] at (4.8,3.6) {OTU 3};
+  \node[etiqueta,text=rojooscuro,anchor=west] at (4.8,3.3) {espuria};
+  % panel ASV
+  \foreach \x/\y/\c/\l in {1.9/2.2/azul/R1,2.55/2.45/violeta/R2,4.6/1.6/naranja/R3}{
+    \fill[\c] (6.7+\x,\y) circle (0.1);
+    \node[font=\sffamily\bfseries\scriptsize,text=\c] at (6.7+\x+0.05,\y+0.3) {\l};
+  }
+  \draw[rojo,thick] (6.7+4.15,3.4) -- (6.7+4.55,3.8);
+  \draw[rojo,thick] (6.7+4.15,3.8) -- (6.7+4.55,3.4);
+  \node[etiqueta,text=rojooscuro,anchor=west] at (6.7+4.7,3.6) {descartada};
+  \node[etiqueta,align=center,text=tinta2] at (6.7+3.05,0.55) {puntos grises: lecturas con errores, absorbidas\\por la variante real que las originó};
+\end{tikzpicture}
+\caption[OTUs frente a ASVs]{Dos maneras de resumir el mismo espacio de secuencias. Cada punto grande es una variante biológica real (R1 y R2 difieren en un solo nucleótido; R3 es otro linaje); los puntos grises son lecturas con errores de secuenciación, más numerosas alrededor de las variantes abundantes. \textbf{Izquierda}: el agrupamiento con un radio fijo del 3\,\% funde R1 y R2 en una sola OTU y convierte un pequeño grupo de lecturas aberrantes (quizá una quimera) en una OTU espuria. \textbf{Derecha}: la inferencia de ASVs no usa un radio fijo, sino un modelo de error: decide, lectura por lectura, si su abundancia es compatible con haber sido producida por errores de una variante más abundante.}
+\label{fig:14-otuasv}
+\end{figure}
+
+\subsection{De los errores a las variantes: la idea de DADA2}
+
+La alternativa moderna invierte la lógica. En lugar de preguntarse ``¿qué lecturas se parecen lo suficiente?'', pregunta: ``¿qué secuencias \emph{reales} tuvieron que estar en la muestra para producir las lecturas observadas, dado lo que sabemos de los errores del secuenciador?''. El resultado es un conjunto de \emph{variantes de secuencia de amplicón} (ASVs), secuencias exactas inferidas con resolución de un nucleótido. \textcite{c14-callahan2016} implementaron este enfoque en DADA2, y un año después \textcite{c14-callahan2017} argumentaron que las ASVs deben reemplazar a las OTUs como unidad de análisis por tres razones: son \emph{precisas} (distinguen variantes que difieren en una base), \emph{reproducibles} (la misma secuencia biológica produce la misma ASV en cualquier estudio) y \emph{reutilizables} (las tablas de distintos estudios pueden combinarse directamente, porque la etiqueta de cada unidad es su propia secuencia).
+
+\begin{definicion}{Variante de secuencia de amplicón (ASV)}{asv}
+Una ASV es una secuencia exacta que un procedimiento de inferencia estadística considera presente en la muestra, porque su abundancia observada es demasiado alta para explicarse como producto de errores de amplificación y secuenciación de otras secuencias más abundantes.
+\end{definicion}
+
+El núcleo de DADA2 es un modelo de error. Supongamos que una secuencia real $i$ produce lecturas que, por errores, se observan como la secuencia $j$. Si los errores en cada posición son independientes, la probabilidad de que una lectura de $i$ se lea exactamente como $j$ es el producto, posición a posición, de las probabilidades de transición:
+\begin{equation}\label{eq:14-lambda}
+\lambda_{ji} = \prod_{\ell=1}^{L} p\bigl(j(\ell)\mid i(\ell),\, q_j(\ell)\bigr).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\lambda_{ji}$}{Probabilidad de que una lectura originada en la secuencia real $i$ se observe como la secuencia $j$.}
+\simbolo{$L$}{Longitud de las secuencias (tras el recorte).}
+\simbolo{$i(\ell),\ j(\ell)$}{Nucleótidos de $i$ y de $j$ en la posición $\ell$.}
+\simbolo{$q_j(\ell)$}{Puntuación de calidad Phred de la posición $\ell$ en la lectura $j$ (\cref{cap:06}).}
+\simbolo{$p(b\mid a, q)$}{Probabilidad de leer la base $b$ cuando la verdadera es $a$, con calidad $q$; hay 16 transiciones por cada valor de $q$ (las 4 de la diagonal son lecturas correctas).}
+\end{simbolos}
+
+Las probabilidades $p(b\mid a, q)$ no se toman de la calidad nominal: DADA2 las \emph{aprende} de los propios datos, alternando entre inferir las variantes con la matriz actual y reestimar la matriz a partir de las transiciones observadas entre lecturas y variantes, hasta converger. Esto importa porque la calidad que reporta el secuenciador es solo aproximadamente calibrada, y porque cada corrida tiene su propio perfil de errores.
+
+Si una secuencia real $i$ tiene abundancia $n_i$ (número de lecturas en su partición), el número esperado de lecturas idénticas a $j$ que $i$ produce por error es $n_i\lambda_{ji}$. Bajo el supuesto de errores independientes entre lecturas, el número de copias de $j$ generadas por error sigue aproximadamente una distribución de Poisson con esa media. Esto permite preguntar si la abundancia observada de $j$, $a_j$, es \emph{sorprendente}.
+
+\begin{teorema}{Prueba de abundancia de DADA2}{dada2}
+Sea $a_j$ el número de lecturas idénticas a la secuencia $j$, y sea $i$ la variante de la partición a la que $j$ está asignada. Condicionando en que $j$ fue observada al menos una vez, el valor $p$ de abundancia es
+\begin{equation}\label{eq:14-pabund}
+p_A(j \mid i) = \frac{1}{1 - \rho(0;\, n_i\lambda_{ji})}\sum_{a \ge a_j} \rho(a;\, n_i\lambda_{ji}),
+\qquad \rho(a;\mu) = \frac{\mu^a e^{-\mu}}{a!}.
+\end{equation}
+Si $p_A(j\mid i) < \Omega_A$, la secuencia $j$ se declara una nueva variante (se crea una nueva partición con $j$ como centro); DADA2 usa por defecto $\Omega_A = 10^{-40}$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$a_j$}{Abundancia observada (número de lecturas idénticas) de la secuencia única $j$.}
+\simbolo{$n_i$}{Número total de lecturas asignadas a la partición cuyo centro es $i$.}
+\simbolo{$\rho(a;\mu)$}{Función de probabilidad de Poisson con media $\mu$.}
+\simbolo{$1-\rho(0;\mu)$}{Probabilidad de observar $j$ al menos una vez; condicionar en ella corrige el hecho de que solo evaluamos secuencias que sí aparecieron.}
+\simbolo{$\Omega_A$}{Umbral de significancia; muy pequeño porque se hacen miles de pruebas por muestra.}
+\end{simbolos}
+
+El algoritmo es divisivo. Empieza con todas las secuencias únicas en una sola partición cuyo centro es la más abundante. Calcula $p_A$ para cada secuencia; si la menor está por debajo de $\Omega_A$, esa secuencia se convierte en el centro de una nueva partición, las secuencias se reasignan al centro que mejor las explica (mayor $n_i\lambda_{ji}$) y el proceso se repite hasta que ninguna secuencia sea sorprendente. Los centros finales son las ASVs.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.9cm, ymode=log,
+   xlabel={distancia de Hamming a la variante real más cercana (y más abundante)},
+   ylabel={abundancia (lecturas idénticas)},
+   xmin=-0.7, xmax=24.5, ymin=0.6, ymax=6000,
+   xtick={0,2,...,24}, ytick={1,10,100,1000},
+   yticklabels={1,10,100,\num{1000}},
+   legend pos=north east, legend style={font=\sffamily\scriptsize}]
+  \addplot[only marks, mark=*, mark size=1.1pt, gris, fill opacity=.5, draw opacity=.5]
+     table[x=d, y=a] {figuras/cap14/dada2_err.dat};
+  \addlegendentry{secuencias con errores}
+  \addplot[const plot mark mid, rojo, thick, dashed] table[x=d, y=a] {figuras/cap14/dada2_umbral.dat};
+  \addlegendentry{umbral $p_A = 10^{-40}$ (frente a $n_i=\num{5000}$)}
+  \addplot[only marks, mark=diamond*, mark size=3.6pt, azul, draw=azulnoche]
+     table[x=d, y=a] {figuras/cap14/dada2_real.dat};
+  \addlegendentry{variantes reales}
+  \node[etiqueta, anchor=west, text=azulprofundo] at (axis cs:1.3,557) {variante a 1 nt};
+  \node[etiqueta, anchor=west, text=tinta2, align=left] (lbl) at (axis cs:5,60) {errores: \num{2173} secuencias\\únicas vistas 1--9 veces};
+  \draw[flecha=tinta2] (lbl.south west) -- (axis cs:2.4,4);
+\end{axis}
+\end{tikzpicture}
+\caption[Cómo DADA2 separa variantes de errores]{Simulación de un amplicón de 250 pb con seis variantes reales (\num{8510} moléculas en total) y una tasa de sustitución de $0{,}002$ por base. Cada punto gris es una secuencia única con al menos un error (hay \num{2179} secuencias únicas en total; el \SI{38}{\percent} de las lecturas contiene errores), situada según su distancia al centro más cercano (con una pequeña dispersión horizontal para que se vean) y su abundancia. Los rombos azules son las variantes reales, con su abundancia de lecturas sin error. La línea roja es la abundancia mínima que resulta ``sorprendente'' frente a la variante más abundante: a un nucleótido de distancia hacen falta 43 copias idénticas, y a partir de cuatro nucleótidos bastan seis. Ningún error supera 9 copias y todas las variantes reales, incluida la que difiere en \emph{un solo} nucleótido de la dominante, quedan muy por encima del umbral. Un agrupamiento al 97\,\% habría fundido las variantes a distancias 1 y 4 con la dominante. Datos: \archivo{figuras/cap14/generar.py}.}
+\label{fig:14-dada2}
+\end{figure}
+
+\begin{ejemplo}{¿Error o variante a un nucleótido?}{dada2}
+En la simulación de la \cref{fig:14-dada2}, la variante dominante produce $n_i = \num{5000}$ moléculas y la tasa de error es $e = 0{,}002$ por base, repartida por igual entre las tres bases incorrectas. La probabilidad de que una lectura de $i$ se lea como una secuencia concreta $j$ que difiere en una posición es
+\[
+\lambda_{ji} = \frac{e}{3}\,(1-e)^{249} = 6{,}67\times10^{-4}\times 0{,}607 = 4{,}05\times10^{-4},
+\]
+de modo que el número esperado de copias de $j$ generadas por error es $n_i\lambda_{ji} = 2{,}03$. Observar 3 o 4 copias no tiene nada de raro; observar 10 ya es improbable ($p_A \approx 5\times10^{-5}$), pero muy lejos de $10^{-40}$. La abundancia umbral, calculada con la \cref{eq:14-pabund}, es de 43 copias. La variante real a un nucleótido aparece \num{557} veces: su valor $p$ es del orden de $10^{-1119}$, y DADA2 la reconoce sin ambigüedad. Observe que la prueba no depende de un umbral de identidad: a un nucleótido de una variante con cinco millones de lecturas se esperarían unas \num{2025} copias por error, y 557 serían perfectamente compatibles con ruido, mientras que a diez nucleótidos de cualquier variante basta con unas pocas copias idénticas para que la secuencia sea real.
+\end{ejemplo}
+
+\begin{codigo}[pvalor\_abundancia.py]
+import numpy as np
+from scipy.special import gammaln, logsumexp
+
+def log10_pA(a_j, n_i, d, L=250, e=0.002):
+    """log10 del valor p de abundancia de DADA2 (ec. 14.2)."""
+    lam = (e / 3) ** d * (1 - e) ** (L - d)       # ec. 14.1
+    mu = n_i * lam
+    k = np.arange(a_j, a_j + 500)                  # cola de Poisson
+    lcola = logsumexp(k * np.log(mu) - mu - gammaln(k + 1))
+    lden = np.log(-np.expm1(-mu))                  # P(A > 0)
+    return (lcola - lden) / np.log(10)
+
+print(log10_pA(10, 5000, 1))     # -4.3: raro, pero no significativo
+print(log10_pA(557, 5000, 1))    # ~ -1119: variante real
+\end{codigo}
+
+\subsection{Filtrado previo: errores esperados}
+
+Antes de la inferencia conviene descartar lecturas cuya calidad hace inútil cualquier modelo. DADA2 y QIIME 2 usan el número de \emph{errores esperados}, que se deduce directamente de la escala Phred (\cref{cap:06}):
+\begin{equation}\label{eq:14-ee}
+\mathrm{EE} = \sum_{\ell=1}^{L} 10^{-q(\ell)/10}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathrm{EE}$}{Número esperado de errores en la lectura (suma de las probabilidades de error por posición).}
+\simbolo{$q(\ell)$}{Calidad Phred de la base $\ell$.}
+\end{simbolos}
+
+Por linealidad de la esperanza, la suma no requiere suponer independencia. Una lectura de 250 bases con $Q=30$ en todas sus posiciones tiene $\mathrm{EE}=0{,}25$; con $Q=20$, $\mathrm{EE}=2{,}5$. Un filtro habitual descarta lecturas con $\mathrm{EE}>2$, lo que es preferible a filtrar por calidad media, porque la media en escala Phred oculta las pocas bases malas que dominan la suma. El filtro se combina con un recorte de longitud elegido a la vista del perfil de calidad, dejando solapamiento suficiente para unir los dos extremos de cada par.
+
+\subsection{Quimeras}
+
+Durante la PCR, una hebra cuya extensión quedó incompleta puede, en el ciclo siguiente, hibridarse con un molde \emph{distinto} y completarse copiándolo. El producto es una \emph{quimera}: su extremo 5' procede de un organismo y su extremo 3' de otro. Las quimeras no tienen errores de secuenciación, así que un modelo de error no las detecta; pueden ser muy abundantes y fáciles de confundir con organismos nuevos. En datos de amplicones pueden representar una fracción apreciable de las secuencias únicas.
+
+La detección aprovecha una asimetría: una quimera se forma a partir de dos \emph{padres} que, al estar en la misma PCR, suelen ser más abundantes que ella. UCHIME \parencite{c14-edgar2011} busca, para cada secuencia candidata, dos secuencias más abundantes cuya combinación (un segmento izquierdo de una y un segmento derecho de la otra) la explique mejor que cualquier secuencia individual. DADA2 aplica la versión exacta de esta idea sobre las ASVs: marca como ``bimera'' toda variante que pueda reconstruirse \emph{sin errores} uniendo un prefijo de un padre más abundante con un sufijo de otro.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, node distance=3mm]
+  \tikzset{paso/.style={draw=#1, fill=#1!10, rounded corners=3pt, minimum height=9mm, text width=2.05cm, align=center, font=\sffamily\scriptsize, text=tinta},
+           paso/.default=azul}
+  % fila 1
+  \node[paso=gris] (a) at (0,3.2) {FASTQ pareados demultiplexados};
+  \node[paso] (b) at (2.75,3.2) {recorte y filtrado ($\mathrm{EE}\le 2$)};
+  \node[paso] (c) at (5.5,3.2) {aprender el modelo de error};
+  \node[paso] (d) at (8.25,3.2) {inferencia de ASVs (por extremo)};
+  \node[paso] (e) at (11.0,3.2) {unir extremos (solapamiento)};
+  % fila 2
+  \node[paso=naranja] (f) at (11.0,1.5) {eliminar quimeras (bimeras)};
+  \node[paso=aqua] (g) at (8.25,1.5) {tabla ASV $\times$ muestra};
+  \node[paso=aqua] (h) at (5.5,1.5) {taxonomía: Bayes ingenuo + SILVA};
+  \node[paso=aqua] (i) at (2.75,1.5) {árbol filogenético de ASVs};
+  \node[paso=violeta] (j) at (0,1.5) {diversidad alfa y beta (\cref{sec:14-diversidad})};
+  \foreach \u/\v in {a/b,b/c,c/d,d/e,f/g,g/h,h/i,i/j}{\draw[flecha=tinta2] (\u) -- (\v);}
+  \draw[flecha=tinta2] (e) -- (f);
+  % recuadro de la quimera
+  \begin{scope}[shift={(1.2,-0.9)}]
+    \node[etiqueta, anchor=west] at (-1.2,0.45) {padre A (abundante)};
+    \fill[azul] (2.8,0.35) rectangle (5.8,0.55);
+    \node[etiqueta, anchor=west] at (-1.2,-0.05) {padre B (abundante)};
+    \fill[naranja] (2.8,-0.15) rectangle (5.8,0.05);
+    \node[etiqueta, anchor=west] at (-1.2,-0.7) {quimera (menos abundante)};
+    \fill[azul] (2.8,-0.8) rectangle (4.4,-0.6);
+    \fill[naranja] (4.4,-0.8) rectangle (5.8,-0.6);
+    \draw[rojo, thick, dashed] (4.4,0.7) -- (4.4,-0.95);
+    \node[etiqueta, text=rojooscuro, anchor=west] at (6.0,-0.25) {punto de cambio: la extensión};
+    \node[etiqueta, text=rojooscuro, anchor=west] at (6.0,-0.55) {incompleta de A se completó sobre B};
+  \end{scope}
+\end{tikzpicture}
+\caption[Flujo de análisis de amplicones]{Flujo típico de análisis de amplicones del 16S con DADA2 dentro de QIIME 2. Azul: pasos de control de calidad y denoising, que se ejecutan por muestra; aqua: productos que se usan en todos los análisis posteriores. \textbf{Abajo}: cómo nace una quimera durante la PCR. Su prefijo coincide exactamente con el padre A y su sufijo con el padre B; esa estructura, junto con su menor abundancia, es lo que buscan UCHIME y la función de eliminación de bimeras de DADA2.}
+\label{fig:14-flujo16s}
+\end{figure}
+
+\subsection{Asignación taxonómica: el clasificador bayesiano ingenuo}
+
+Una ASV es una secuencia sin nombre. Para darle uno, se compara con una base de datos de referencia curada. La más usada es SILVA, que mantiene alineamientos y una taxonomía revisada de ARN ribosómicos de la subunidad pequeña y grande de los tres dominios \parencite{c14-quast2013}. El método de asignación clásico es el clasificador bayesiano ingenuo del Ribosomal Database Project \parencite{c14-wang2007}, que QIIME 2 reimplementa con scikit-learn.
+
+La idea es representar cada secuencia por el conjunto de sus palabras de longitud 8 (8-mers) y preguntar qué género hace más probable ese conjunto. Para un género $G$ con $M$ secuencias de referencia, la probabilidad de que una secuencia de $G$ contenga la palabra $w_i$ se estima como
+\begin{equation}\label{eq:14-bayes-w}
+P(w_i\mid G) = \frac{m(w_i) + P_i}{M + 1}, \qquad P_i = \frac{n(w_i) + 0{,}5}{N + 1},
+\end{equation}
+y, suponiendo que las palabras son independientes (de ahí lo de ``ingenuo''),
+\begin{equation}\label{eq:14-bayes}
+\log P(S\mid G) = \sum_{w_i \in S} \log P(w_i\mid G), \qquad \hat{G} = \argmax_G\, P(S\mid G).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$w_i$}{Una palabra (8-mer) presente en la secuencia consulta $S$.}
+\simbolo{$m(w_i)$}{Número de secuencias de referencia del género $G$ que contienen $w_i$.}
+\simbolo{$M$}{Número de secuencias de referencia del género $G$.}
+\simbolo{$n(w_i),\ N$}{Número de secuencias de \emph{toda} la base que contienen $w_i$, y número total de secuencias.}
+\simbolo{$P_i$}{Probabilidad previa de la palabra; actúa como pseudoconteo para que una palabra nunca vista en $G$ no anule el producto.}
+\simbolo{$\hat{G}$}{Género asignado.}
+\end{simbolos}
+
+Con una probabilidad previa uniforme sobre géneros, maximizar $P(S\mid G)$ equivale a maximizar la probabilidad posterior $P(G\mid S)$. La confianza no se obtiene de esa posterior, que suele ser engañosamente cercana a 1, sino por \emph{remuestreo}: se repite la clasificación con 100 subconjuntos aleatorios de un octavo de las palabras y se cuenta en cuántas réplicas se obtiene el mismo género. Si la confianza (el porcentaje de réplicas coincidentes) cae por debajo de un umbral, habitualmente \SI{80}{\percent}, la asignación se trunca al rango superior (familia, orden) en el que sí se alcanza.
+
+\begin{ejemplo}{Tres géneros y cuatro palabras}{bayes}
+Una base de juguete tiene $N=125$ secuencias: 40 de \especie{Bacteroides}, 25 de \especie{Prevotella} y 60 de \especie{Escherichia}. Una ASV contiene cuatro palabras $w_1,\dots,w_4$, presentes en $n(w)=59,\ 37,\ 61,\ 61$ secuencias de la base, respectivamente. Los conteos por género son:
+\begin{center}
+\small
+\begin{tabular}{@{}lcccc@{\qquad}c@{}}
+\toprule
+Género ($M$) & $m(w_1)$ & $m(w_2)$ & $m(w_3)$ & $m(w_4)$ & $\log P(S\mid G)$ \\
+\midrule
+\especie{Bacteroides} (40) & 38 & 30 & 2 & 35 & $-3{,}31$ \\
+\especie{Prevotella} (25) & 20 & 3 & 1 & 24 & $-5{,}22$ \\
+\especie{Escherichia} (60) & 1 & 4 & 58 & 2 & $-9{,}62$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Por ejemplo, para \especie{Bacteroides} y $w_1$: $P_1=(59+0{,}5)/126=0{,}472$ y $P(w_1\mid G) = (38+0{,}472)/41 = 0{,}938$. Sumando los logaritmos de las cuatro palabras se obtiene $-3{,}31$. Con probabilidad previa uniforme, las posteriores son $0{,}870$, $0{,}129$ y $0{,}002$: \especie{Bacteroides} es el género más probable. La palabra $w_2$ decide la competencia con \especie{Prevotella}, en la que solo aparece 3 veces de 25. Con 250 palabras reales en lugar de cuatro, las diferencias de log-verosimilitud se vuelven enormes, y por eso la confianza se mide con remuestreo.
+\end{ejemplo}
+
+La resolución tiene un techo: una región de 250 nucleótidos contiene pocas docenas de sitios variables entre especies de un género, y muchas especies (por ejemplo, de \especie{Escherichia}/\especie{Shigella}) comparten secuencias V4 idénticas. La ASV es exacta, pero un nombre de especie asignado a partir de ella rara vez lo es; para eso hacen falta el gen completo o la metagenómica shotgun (\cref{sec:14-shotgun}).
+
+\subsection{QIIME 2: reproducibilidad por diseño}
+
+QIIME 2 \parencite{c14-bolyen2019} no es un algoritmo sino una plataforma que envuelve decenas de métodos (DADA2, clasificadores, métricas de diversidad, pruebas estadísticas) bajo una interfaz común. Su rasgo más distintivo es el registro automático de procedencia: cada archivo \archivo{.qza} (artefacto) guarda, además de los datos, el historial completo de comandos, parámetros y versiones que lo produjeron, de modo que cualquier resultado puede rastrearse hasta los FASTQ originales. Los artefactos llevan \emph{tipos semánticos} que impiden, por ejemplo, pasar una tabla sin rarefacción a un método que la espera rarificada.
+
+\begin{consola}[De FASTQ a tabla de ASVs con QIIME 2]
+qiime tools import \
+  --type 'SampleData[PairedEndSequencesWithQuality]' \
+  --input-path manifiesto.tsv \
+  --input-format PairedEndFastqManifestPhred33V2 \
+  --output-path demux.qza
+qiime dada2 denoise-paired \
+  --i-demultiplexed-seqs demux.qza \
+  --p-trunc-len-f 240 --p-trunc-len-r 160 \
+  --p-max-ee-f 2 --p-max-ee-r 2 \
+  --o-table tabla.qza \
+  --o-representative-sequences asv.qza \
+  --o-denoising-stats estadisticas.qza
+qiime feature-classifier classify-sklearn \
+  --i-classifier silva-515-806-nb-classifier.qza \
+  --i-reads asv.qza --o-classification taxonomia.qza
+\end{consola}
+
+Elija \texttt{--p-trunc-len} mirando el perfil de calidad de \emph{sus} datos y revise las estadísticas de denoising: si la unión de extremos pierde más de la mitad de las lecturas, el recorte fue demasiado agresivo.
+
+\begin{ideaclave}
+Una OTU es un promedio de secuencias parecidas; una ASV es una secuencia exacta que un modelo de error no puede explicar como ruido. La segunda es más precisa, reproducible entre estudios y reutilizable.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\section{Diversidad alfa y beta}\label{sec:14-diversidad}
+% ---------------------------------------------------------------------
+\enlacerepo{14.2 · Diversidad alfa y beta}
+
+\begin{intuicion}[Dos bosques con veinte especies]
+Dos bosques tienen exactamente veinte especies de árboles. En el primero, cada especie aporta la misma cantidad de ejemplares: caminar por él es encontrarse a cada paso con algo distinto. En el segundo, un único pino representa el 95\,\% de los árboles y las otras diecinueve especies aparecen, con suerte, una vez por hectárea. ¿Son igual de diversos? Contar especies dice que sí; la experiencia de cualquier caminante dice que no. Y aún hay otra pregunta: si el primer bosque se muestreara solo durante una hora, ¿cuántas de sus veinte especies llegaríamos a ver? La ecología lleva un siglo afinando respuestas a estas dos preguntas (cómo medir la diversidad y cómo corregir por el esfuerzo de muestreo), y la microbiología las heredó con el mismo entusiasmo con que heredó sus trampas.
+\end{intuicion}
+
+\subsection{La tabla de abundancias}
+
+El producto de la \cref{sec:14-16s} (o de un perfilado shotgun, \cref{sec:14-shotgun}) es una tabla $X$ de conteos, con una fila por muestra y una columna por taxón (ASV, género, especie). Llamaremos $x_{ki}$ al número de lecturas del taxón $i$ en la muestra $k$, $N_k = \sum_i x_{ki}$ a la profundidad de secuenciación de la muestra y $p_{ki} = x_{ki}/N_k$ a su abundancia relativa. En cada muestra, la mayoría de las columnas son ceros: una tabla de 16S típica tiene más del 90\,\% de celdas vacías.
+
+Distinguiremos, siguiendo la tradición ecológica, dos escalas de diversidad. La \emph{diversidad alfa} describe una sola muestra: cuántos taxones contiene y cuán equitativamente se reparten las abundancias. La \emph{diversidad beta} describe la diferencia entre muestras: cuánto cambia la composición de una a otra.
+
+\subsection{Riqueza, Shannon y Simpson}
+
+\begin{definicion}{Índices clásicos de diversidad alfa}{alfa}
+Para una muestra con abundancias relativas $p_1,\dots,p_S$ (todas positivas),
+\begin{align}
+S &= \#\{i : p_i > 0\}, \label{eq:14-riqueza}\\
+H &= -\sum_{i=1}^{S} p_i \ln p_i, \label{eq:14-shannon}\\
+D &= \sum_{i=1}^{S} p_i^2, \label{eq:14-simpson}
+\end{align}
+son, respectivamente, la riqueza observada, la entropía de Shannon y el índice de concentración de Simpson.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$S$}{Riqueza: número de taxones observados en la muestra.}
+\simbolo{$p_i$}{Abundancia relativa del taxón $i$ (fracción de las lecturas de la muestra).}
+\simbolo{$H$}{Entropía de Shannon, en nats si se usa $\ln$; mide la incertidumbre sobre el taxón de una lectura elegida al azar.}
+\simbolo{$D$}{Probabilidad de que dos lecturas elegidas al azar (con reposición) pertenezcan al mismo taxón.}
+\end{simbolos}
+
+Cada índice responde una pregunta distinta. $S$ ignora las abundancias; da el mismo peso a un taxón con una lectura que a uno con un millón. $H$ es la entropía de la teoría de la información: es máxima, $\ln S$, cuando todos los taxones son igual de abundantes, y vale cero cuando uno solo acapara la muestra. $D$ está dominado por los taxones abundantes, porque eleva las proporciones al cuadrado; suele reportarse como $1-D$ (índice de Gini-Simpson, la probabilidad de que dos lecturas sean de taxones distintos) o como $1/D$ (Simpson inverso). La \emph{equidad} de Pielou, $J = H/\ln S$, normaliza la entropía por su máximo.
+
+\begin{ejemplo}{Una comunidad de nueve taxones}{alfa}
+Una muestra con $N=100$ lecturas tiene los conteos $(50, 20, 10, 10, 5, 2, 1, 1, 1)$. Entonces
+\[
+\begin{aligned}
+H &= -\bigl(0{,}5\ln 0{,}5 + 0{,}2\ln 0{,}2 + 2\times0{,}1\ln 0{,}1\\
+  &\qquad + 0{,}05\ln 0{,}05 + 0{,}02\ln 0{,}02 + 3\times 0{,}01\ln 0{,}01\bigr) = 1{,}495,
+\end{aligned}
+\]
+$D = 0{,}25 + 0{,}04 + 0{,}02 + 0{,}0025 + 0{,}0004 + 0{,}0003 = 0{,}3132$, de modo que $1-D = 0{,}687$ y $1/D = 3{,}19$. La equidad es $J = 1{,}495/\ln 9 = 0{,}680$. Observe que los tres índices viven en escalas incomparables: una entropía de 1,5 nats, una probabilidad de 0,69 y una ``cantidad'' de 3,2. En la \cref{sec:14-hill} veremos cómo ponerlos en la misma escala.
+\end{ejemplo}
+
+\subsection{Lo que no vimos: el estimador Chao1}
+
+La riqueza observada depende de la profundidad: con más lecturas aparecen más taxones raros. Lo que realmente interesa es la riqueza \emph{de la comunidad}, $S_{\text{real}} = S_{\text{obs}} + f_0$, donde $f_0$ es el número de taxones presentes pero no observados. Parece imposible estimar lo que no se ha visto, pero los taxones vistos una o dos veces contienen información sobre los que se han visto cero veces. Esta es la intuición del estimador de \textcite{c14-chao1987}, desarrollado originalmente para estimar tamaños de poblaciones animales por captura y recaptura.
+
+Llamemos $f_k$ al número de taxones observados exactamente $k$ veces (así, $f_1$ son los \ingles{singletons} y $f_2$ los \ingles{doubletons}). Supongamos que el taxón $i$ aparece en la muestra según una distribución de Poisson de media $\lambda_i$, que depende de su abundancia. Entonces
+\begin{equation}\label{eq:14-fk}
+\E[f_k] = \sum_{i=1}^{S_{\text{real}}} \frac{\lambda_i^k\, e^{-\lambda_i}}{k!}, \qquad k = 0, 1, 2, \dots
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$f_k$}{Número de taxones con exactamente $k$ lecturas en la muestra ($f_0$: no observados).}
+\simbolo{$\lambda_i$}{Número esperado de lecturas del taxón $i$ con la profundidad dada.}
+\simbolo{$S_{\text{real}}$}{Número total de taxones de la comunidad, observados o no.}
+\end{simbolos}
+
+\begin{teorema}{Cota inferior de Chao}{chao1}
+Bajo el modelo de la \cref{eq:14-fk}, $\E[f_0] \ge \E[f_1]^2 / \bigl(2\,\E[f_2]\bigr)$. En consecuencia, el estimador
+\begin{equation}\label{eq:14-chao1}
+\hat{S}_{\text{Chao1}} = S_{\text{obs}} + \frac{f_1^2}{2 f_2}
+\end{equation}
+estima una \emph{cota inferior} de la riqueza real. Cuando $f_2 = 0$ se usa la forma corregida por sesgo $S_{\text{obs}} + f_1(f_1-1)/\bigl(2(f_2+1)\bigr)$.
+\end{teorema}
+
+\emph{Demostración.} Escribamos $a_i = e^{-\lambda_i/2}$ y $b_i = \lambda_i e^{-\lambda_i/2}$. Por la desigualdad de Cauchy-Schwarz,
+\[
+\E[f_1]^2 = \Bigl(\sum_i \lambda_i e^{-\lambda_i}\Bigr)^2 = \Bigl(\sum_i a_i b_i\Bigr)^2 \le \Bigl(\sum_i a_i^2\Bigr)\Bigl(\sum_i b_i^2\Bigr) = \E[f_0]\cdot 2\,\E[f_2],
+\]
+y basta despejar. La igualdad se alcanza cuando todos los $\lambda_i$ son iguales; cuanto más heterogéneas sean las abundancias de los taxones raros, más holgada es la cota. $\square$
+
+La demostración explica también el uso correcto del estimador. Chao1 no ``adivina'' la riqueza: dice que, \emph{como mínimo}, faltan unos $f_1^2/(2f_2)$ taxones. Si muchos taxones aparecen una sola vez y pocos dos veces, la muestra está lejos de estar completa. Si casi no hay \ingles{singletons}, la muestra está saturada. En la muestra del \cref{ej:alfa}, con $f_1=3$ y $f_2=1$, obtenemos $\hat{S}_{\text{Chao1}} = 9 + 9/2 = 13{,}5$.
+
+\begin{cuidado}[Los \ingles{singletons} de un amplicón no son los de un censo]
+Chao1 descansa por completo en $f_1$ y $f_2$. Pero DADA2 elimina por defecto las secuencias vistas una sola vez, porque la mayoría son errores (\cref{sec:14-16s}). Una tabla de ASVs casi no tiene \ingles{singletons}, y en ella Chao1 coincide con la riqueza observada por construcción, no porque la comunidad esté completa. Con OTUs, el problema es el inverso: los errores de secuenciación inflan $f_1$ y con él la riqueza estimada. Los estimadores de riqueza basados en \ingles{singletons} deben usarse con mucha cautela en datos de amplicones.
+\end{cuidado}
+
+\subsection{Rarefacción}
+
+Si dos muestras tienen profundidades distintas, su riqueza observada no es comparable. La \emph{curva de rarefacción} responde a la pregunta: ¿cuántos taxones distintos esperaríamos ver si hubiéramos secuenciado solo $n$ de las $N$ lecturas? Elegir $n$ lecturas al azar sin reposición es un muestreo hipergeométrico, y la probabilidad de que el taxón $i$ (con $x_i$ lecturas) \emph{no} aparezca en la submuestra es el número de maneras de elegir las $n$ lecturas entre las $N-x_i$ que no son suyas, dividido por el total. Sumando sobre taxones \parencite{c14-chao2014}:
+\begin{equation}\label{eq:14-rare}
+\E[S_n] = \sum_{i=1}^{S_{\text{obs}}}\left[1 - \frac{\binom{N - x_i}{n}}{\binom{N}{n}}\right].
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\E[S_n]$}{Riqueza esperada en una submuestra aleatoria de $n$ lecturas.}
+\simbolo{$N,\ x_i$}{Profundidad total de la muestra y lecturas del taxón $i$.}
+\simbolo{$\binom{a}{b}$}{Coeficiente binomial; se evalúa en escala logarítmica (con $\ln\Gamma$) para evitar desbordamientos.}
+\end{simbolos}
+
+La curva crece rápido al principio, cuando cada lectura nueva tiene alta probabilidad de pertenecer a un taxón no visto, y se aplana cuando solo quedan por descubrir los raros (\cref{fig:14-rare}). Su pendiente final tiene una interpretación elegante: la probabilidad de que la \emph{siguiente} lectura pertenezca a un taxón nuevo es aproximadamente $f_1/N$. Su complemento, $\hat{C} \approx 1 - f_1/N$, es la \emph{cobertura de muestra} de Good y Turing: la fracción de la comunidad (ponderada por abundancia) que la muestra ya representa. \textcite{c14-chao2014} proponen comparar muestras no a igual número de lecturas, sino a igual cobertura, y extender las curvas por extrapolación en lugar de recortarlas.
+
+\input{figuras/cap14/rare_macros.tex}
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.6cm,
+   xlabel={lecturas submuestreadas $n$}, ylabel={riqueza esperada $\E[S_n]$},
+   xmin=0, xmax=31000, ymin=0, ymax=290,
+   xtick={0,5000,10000,15000,20000,25000,30000},
+   legend pos=south east]
+  \addplot[azul] table[x=n, y=s] {figuras/cap14/rare_A.dat};
+  \addlegendentry{A: 400 taxones reales, muy desigual}
+  \addplot[naranja] table[x=n, y=s] {figuras/cap14/rare_B.dat};
+  \addlegendentry{B: 180 taxones reales}
+  \addplot[aqua] table[x=n, y=s] {figuras/cap14/rare_C.dat};
+  \addlegendentry{C: 90 taxones reales, equitativa}
+  \addplot[azul, dashed, thin, domain=0:31000] {\capcatorceChaoA};
+  \addplot[naranja, dashed, thin, domain=0:31000] {\capcatorceChaoB};
+  \node[etiqueta, anchor=south east, text=azulprofundo] at (axis cs:30500,\capcatorceChaoA) {Chao1 = \capcatorceChaoA};
+  \node[etiqueta, anchor=south east, text=naranja!80!black] at (axis cs:17500,\capcatorceChaoB) {Chao1 = \capcatorceChaoB};
+  \addplot[tinta2, dotted, thick] coordinates {(8000,0) (8000,290)};
+  \node[etiqueta, anchor=west] at (axis cs:8200,125) {profundidad de rarefacción ($n=\num{8000}$)};
+\end{axis}
+\end{tikzpicture}
+\caption[Curvas de rarefacción]{Curvas de rarefacción exactas (\cref{eq:14-rare}) para tres comunidades simuladas secuenciadas a profundidades distintas (\num{30000}, \num{18000} y \num{8000} lecturas). La comunidad C, pequeña y equitativa, se satura enseguida: sus 90 taxones aparecen todos. La B casi se satura. La A, con 400 taxones y una larguísima cola de raros, sigue subiendo: se observan solo 237, y Chao1 (línea discontinua) estima 264, una cota inferior muy por debajo del valor real, como anticipa el \cref{teo:chao1}. Recortar las tres muestras a \num{8000} lecturas (línea punteada) hace comparables sus riquezas ($202$, $165$ y $90$), a costa de descartar el \SI{73}{\percent} de las lecturas de A.}
+\label{fig:14-rare}
+\end{figure}
+
+\paragraph{La controversia} En microbiología se popularizó otra práctica: \emph{rarificar} la tabla, es decir, submuestrear cada muestra hasta la profundidad de la más pobre y tirar el resto. \textcite{c14-mcmurdie2014} argumentaron que esto es ``inadmisible'' para el análisis de abundancia diferencial: desechar datos válidos aumenta la varianza, reduce la potencia, añade incertidumbre artificial (dos rarefacciones dan resultados distintos) y obliga a eliminar muestras. Propusieron modelos que tratan explícitamente la profundidad, como los de mezcla binomial negativa de RNA-seq. Para la \emph{diversidad alfa}, que depende intrínsecamente del esfuerzo de muestreo, alguna estandarización (por rarefacción, cobertura o extrapolación) sigue siendo necesaria: la curva de rarefacción como diagnóstico es siempre útil; la tabla rarificada para abundancia diferencial, no.
+
+\subsection{Números de Hill: una familia que unifica}\label{sec:14-hill}
+
+La discusión anterior dejó una incomodidad: la riqueza, Shannon y Simpson miden cosas distintas en escalas distintas. \textcite{c14-hill1973} mostró que son, en realidad, miembros de una única familia.
+
+\begin{definicion}{Números de Hill}{hill}
+El número de Hill de orden $q \ge 0$ de una comunidad con abundancias relativas $p_1,\dots,p_S$ es
+\begin{equation}\label{eq:14-hill}
+{}^{q}D = \left(\sum_{i=1}^{S} p_i^{\,q}\right)^{1/(1-q)}, \qquad q \ne 1,
+\end{equation}
+y ${}^{1}D = \lim_{q\to1} {}^{q}D$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{${}^{q}D$}{Diversidad de orden $q$, medida en ``número efectivo de taxones''.}
+\simbolo{$q$}{Orden: controla cuánto peso reciben los taxones abundantes frente a los raros.}
+\end{simbolos}
+
+Evaluemos los casos notables. Con $q=0$, cada $p_i^0 = 1$ y ${}^0D = S$: la riqueza. Con $q=2$, ${}^2D = 1/\sum p_i^2 = 1/D$: el Simpson inverso. Con $q\to\infty$, domina el término mayor y ${}^{\infty}D = 1/\max_i p_i$ (índice de Berger-Parker inverso). El caso $q=1$ requiere un límite. Tomando logaritmos, $\ln {}^qD = \ln\bigl(\sum_i p_i^q\bigr)/(1-q)$, que en $q=1$ es de la forma $0/0$. Por la regla de L'Hôpital, derivando numerador y denominador respecto de $q$,
+\begin{equation}\label{eq:14-hill1}
+\lim_{q\to1}\ln {}^qD = \lim_{q\to1}\frac{\sum_i p_i^q \ln p_i \,/\, \sum_i p_i^q}{-1} = -\sum_i p_i \ln p_i = H,
+\qquad\text{es decir,}\qquad {}^1D = e^{H}.
+\end{equation}
+La exponencial de Shannon es, así, el número de Hill de orden 1.
+
+¿Por qué molestarse en transformar índices que ya conocíamos? \textcite{c14-jost2006} dio el argumento decisivo: la entropía de Shannon y el índice de Gini-Simpson \emph{no son diversidades}, sino funciones de ellas, y tratarlas como tales produce conclusiones absurdas.
+
+\begin{teorema}{Principio de replicación}{replicacion}
+Si se combinan $m$ comunidades igual de grandes, cada una con número de Hill ${}^qD$, y sin ningún taxón en común, la comunidad combinada tiene número de Hill $m\cdot{}^qD$, para todo $q$.
+\end{teorema}
+
+La demostración es directa: en la comunidad combinada cada proporción se divide por $m$ y hay $m$ copias de cada término, de modo que $\sum p_i^q$ se multiplica por $m\cdot m^{-q} = m^{1-q}$ y, al elevar a $1/(1-q)$, ${}^qD$ se multiplica por $m$. En cambio, la entropía de Shannon solo \emph{suma} $\ln m$: dos comunidades de ocho especies equiprobables tienen cada una $H=\ln 8 = 2{,}08$, y su unión, con 16 especies, tiene $H=2{,}77$, apenas un 33\,\% más, aunque intuitivamente es el doble de diversa. Un tratamiento que reduce la entropía de Shannon ``solo un 10\,\%'' puede estar eliminando la mitad del número efectivo de taxones. Los números de Hill se miden en la unidad que la intuición espera: \emph{número de taxones igualmente abundantes que produciría la misma diversidad}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.4cm,
+   xlabel={orden $q$}, ylabel={número efectivo de taxones ${}^qD$},
+   xmin=0, xmax=4, ymin=0, ymax=64, xtick={0,1,2,3,4},
+   legend pos=north east]
+  \addplot[azul] table[x=q, y=A] {figuras/cap14/hill.dat};
+  \addlegendentry{A: 60 taxones, uno con el 40\,\%}
+  \addplot[naranja] table[x=q, y=B] {figuras/cap14/hill.dat};
+  \addlegendentry{B: 20 taxones equitativos}
+  \addplot[aqua] table[x=q, y=C] {figuras/cap14/hill.dat};
+  \addlegendentry{C: 40 taxones, Zipf}
+  \addplot[tinta2, dotted] coordinates {(1,0) (1,64)};
+  \addplot[tinta2, dotted] coordinates {(2,0) (2,64)};
+  \node[etiqueta, anchor=south west] at (axis cs:0.02,1) {riqueza};
+  \node[etiqueta, anchor=south west] at (axis cs:1.02,1) {$e^{H}$};
+  \node[etiqueta, anchor=south west] at (axis cs:2.02,1) {$1/D$};
+\end{axis}
+\end{tikzpicture}
+\caption[Perfiles de diversidad de Hill]{Perfiles de diversidad de Hill para tres comunidades simuladas. El perfil de una comunidad perfectamente equitativa (B) es plano: con 20 taxones igual de abundantes, cualquier orden da 20. Las comunidades desiguales decrecen con $q$, y su ordenamiento cambia: A es la más rica ($q=0$: 60 taxones) y, gracias a sus 59 taxones raros, también la más diversa en $q=1$ ($e^H=22{,}6$), pero en $q=2$ es la menos diversa ($1/D=6{,}0$), porque un solo taxón domina. Las curvas que se cruzan son la razón por la que ``¿cuál es más diversa?'' no tiene respuesta sin especificar el orden.}
+\label{fig:14-hill}
+\end{figure}
+
+Si dos perfiles no se cruzan, una comunidad es inequívocamente más diversa que la otra; si se cruzan, la respuesta depende de si importan más los taxones raros (órdenes bajos) o los dominantes (órdenes altos). En datos de amplicones, los órdenes $q=1$ y $q=2$ son mucho más robustos que la riqueza.
+
+\subsection{Los datos de microbioma son composicionales}
+
+Hasta aquí hemos trabajado con proporciones $p_i$ sin preguntar si representan algo absoluto. No lo hacen. El secuenciador produce un número de lecturas por muestra que depende de la carga del equipo, no de la cantidad de bacterias en el intestino del paciente. Un aumento de $x_{ki}$ puede significar que el taxón $i$ creció, que otros taxones disminuyeron o simplemente que esa muestra recibió más lecturas. \textcite{c14-gloor2017} insistieron en que estos datos son \emph{composicionales}: solo contienen información sobre las razones entre componentes, y los métodos que ignoran esta restricción producen correlaciones espurias y falsos positivos.
+
+Formalmente, un vector de abundancias absolutas $\mathbf{a}$ solo se observa a través de su \emph{cierre} $\mathbf{a}/\sum_i a_i$, un punto del símplex; dos vectores proporcionales, $\mathbf{a}$ y $c\,\mathbf{a}$, tienen la misma composición.
+
+La consecuencia más importante es que las proporciones no son independientes: como suman 1, si una aumenta, alguna otra debe disminuir. La \cref{fig:14-compos} lo muestra con un ejemplo mínimo. La solución de la estadística composicional, iniciada por Aitchison, consiste en trabajar con \emph{logaritmos de razones}, que son invariantes al cierre. La transformación más usada es la razón logarítmica centrada:
+\begin{equation}\label{eq:14-clr}
+\operatorname{clr}(\mathbf{p})_i = \ln\frac{p_i}{g(\mathbf{p})}, \qquad g(\mathbf{p}) = \Bigl(\prod_{j=1}^{D} p_j\Bigr)^{1/D},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\operatorname{clr}(\mathbf{p})_i$}{Coordenada del taxón $i$ tras la transformación de razón logarítmica centrada.}
+\simbolo{$g(\mathbf{p})$}{Media geométrica de las proporciones de la muestra.}
+\simbolo{$D$}{Número de componentes (taxones) de la composición.}
+\end{simbolos}
+
+y la distancia euclidiana entre vectores clr, llamada \emph{distancia de Aitchison}, es la distancia natural entre composiciones. Como $\ln(c\,a_i / g(c\,\mathbf{a})) = \ln(a_i/g(\mathbf{a}))$, la transformación da el mismo resultado con abundancias absolutas o relativas, y la profundidad de secuenciación desaparece. El precio es que el logaritmo de cero no existe: los ceros, omnipresentes en las tablas de microbioma, deben reemplazarse por un pequeño pseudoconteo o tratarse con modelos específicos, y esa decisión influye en los resultados.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.9cm},
+   curso, width=0.45\linewidth, height=5.6cm, ybar stacked, /pgf/bar width=15mm,
+   xtick={1,2}, xticklabels={antes, después}, xmin=0.4, xmax=2.6,
+   grid=none, axis x line*=bottom, enlarge x limits=false]
+\nextgroupplot[title={absoluta (\num{e6} células/g)}, ymin=0, ymax=720,
+   legend style={at={(0.02,0.98)}, anchor=north west}]
+  \addplot[fill=azul, draw=white] coordinates {(1,100) (2,100)};
+  \addplot[fill=naranja, draw=white] coordinates {(1,80) (2,80)};
+  \addplot[fill=aqua, draw=white] coordinates {(1,60) (2,60)};
+  \addplot[fill=violeta, draw=white] coordinates {(1,40) (2,400)};
+  \legend{taxón 1, taxón 2, taxón 3, taxón 4}
+\nextgroupplot[title={relativa (lo secuenciado)}, ymin=0, ymax=1.0,
+   ytick={0,0.2,0.4,0.6,0.8,1}]
+  \addplot[fill=azul, draw=white] coordinates {(1,0.357) (2,0.156)};
+  \addplot[fill=naranja, draw=white] coordinates {(1,0.286) (2,0.125)};
+  \addplot[fill=aqua, draw=white] coordinates {(1,0.214) (2,0.094)};
+  \addplot[fill=violeta, draw=white] coordinates {(1,0.143) (2,0.625)};
+\end{groupplot}
+\end{tikzpicture}
+\caption[El efecto del cierre composicional]{Un único taxón (violeta) se multiplica por diez entre dos momentos; los otros tres no cambian en absoluto (izquierda). Tras el cierre, que es lo que mide la secuenciación (derecha), los taxones 1, 2 y 3 parecen haber disminuido a menos de la mitad: el taxón 1 pasa de $0{,}357$ a $0{,}156$. Un análisis de abundancia diferencial ingenuo declararía que cuatro taxones cambiaron. En cambio, la razón logarítmica entre los taxones 1 y 2, $\ln(p_1/p_2) = 0{,}223$, es idéntica antes y después: las razones entre componentes sobreviven al cierre, las proporciones no.}
+\label{fig:14-compos}
+\end{figure}
+
+
+\begin{ideaclave}
+La secuenciación mide proporciones, no cantidades. Cualquier conclusión del tipo ``el taxón $X$ aumentó'' es, sin información externa (carga bacteriana total, estándares añadidos), una afirmación sobre razones: aumentó \emph{respecto de los demás}.
+\end{ideaclave}
+
+\subsection{Diversidad beta: distancias entre comunidades}
+
+Para comparar muestras necesitamos una disimilitud $d(u,v)$ entre dos vectores de abundancia. No existe una única elección correcta; cada índice responde una pregunta biológica distinta.
+
+\begin{definicion}{Bray-Curtis y Jaccard}{bcj}
+Para dos muestras con abundancias $u_i$ y $v_i$ (conteos o proporciones),
+\begin{align}
+d_{\text{BC}}(u,v) &= \frac{\sum_i |u_i - v_i|}{\sum_i (u_i + v_i)} = 1 - \frac{2\sum_i \min(u_i, v_i)}{\sum_i (u_i+v_i)},\label{eq:14-bc}\\[3pt]
+d_{\text{J}}(u,v) &= 1 - \frac{|A \cap B|}{|A \cup B|},\label{eq:14-jaccard}
+\end{align}
+donde $A=\{i: u_i>0\}$ y $B=\{i: v_i>0\}$ son los conjuntos de taxones presentes.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$u_i,\ v_i$}{Abundancia del taxón $i$ en cada muestra.}
+\simbolo{$A,\ B$}{Conjuntos de taxones presentes en cada muestra.}
+\simbolo{$d_{\text{BC}},\ d_{\text{J}}$}{Disimilitudes entre 0 (idénticas) y 1 (sin nada en común).}
+\end{simbolos}
+
+Bray-Curtis pondera por abundancia: dos muestras dominadas por los mismos taxones son parecidas aunque difieran en muchos raros. Jaccard solo mira presencia y ausencia: es sensible a los raros y, por lo tanto, a la profundidad y a los errores. Con $u=(10,0,5,3,2)$ y $v=(4,6,5,0,5)$, $\sum|u_i-v_i| = 18$ y $\sum(u_i+v_i)=40$, así que $d_{\text{BC}} = 0{,}45$; los taxones presentes son $A=\{1,3,4,5\}$ y $B=\{1,2,3,5\}$, con 3 en común de 5 en total, y $d_{\text{J}} = 1 - 3/5 = 0{,}40$. Bray-Curtis no es una métrica (no siempre cumple la desigualdad triangular), un detalle que tendrá consecuencias en la ordenación.
+
+Ninguno de los dos índices sabe que dos ASVs pueden ser casi idénticas. Para una muestra dominada por \especie{Lactobacillus crispatus} y otra dominada por \especie{L.~iners}, Jaccard y Bray-Curtis dan la máxima distancia, igual que si la segunda estuviera dominada por una arquea metanógena. \textcite{c14-lozupone2005} resolvieron esta ceguera incorporando la filogenia (\cref{cap:05}). Dado un árbol con todas las secuencias de ambas muestras, la distancia UniFrac no ponderada es la fracción de la longitud de ramas del árbol que conduce a secuencias de \emph{una sola} de las dos muestras:
+\begin{equation}\label{eq:14-unifrac}
+d_{\text{U}}(u,v) = \frac{\sum_{r} b_r\, \bigl|\mathbb{1}[r \in u] - \mathbb{1}[r \in v]\bigr|}{\sum_{r} b_r},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$r$}{Una rama del árbol filogenético que contiene todas las secuencias de las dos muestras.}
+\simbolo{$b_r$}{Longitud de la rama $r$.}
+\simbolo{$\mathbb{1}[r \in u]$}{Vale 1 si alguna secuencia de la muestra $u$ desciende de la rama $r$.}
+\end{simbolos}
+
+Si las dos comunidades comparten linajes cercanos, las ramas exclusivas serán cortas y la distancia pequeña, aunque no compartan ni una ASV. La variante \emph{ponderada}, propuesta después por los mismos autores, pondera cada rama por la diferencia de abundancias relativas en lugar de la presencia, y responde a cambios en los linajes dominantes.
+
+\subsection{Ordenación por coordenadas principales (PCoA)}
+
+Con $n$ muestras obtenemos una matriz $n\times n$ de distancias. Para \emph{verla}, buscamos puntos en un plano cuyas distancias euclidianas se parezcan lo más posible a las originales. El análisis de coordenadas principales (PCoA, o escalamiento multidimensional clásico) lo hace mediante una descomposición espectral.
+
+\begin{teorema}{Coordenadas principales}{pcoa}
+Sea $\mathbf{D}$ la matriz de disimilitudes, $\mathbf{A} = -\tfrac12 [d_{kl}^2]$ y $\mathbf{J} = \mathbf{I} - \tfrac1n \mathbf{1}\mathbf{1}^{\top}$ la matriz de centrado. Sea
+\begin{equation}\label{eq:14-gower}
+\mathbf{B} = \mathbf{J}\mathbf{A}\mathbf{J} = \mathbf{V}\boldsymbol{\Lambda}\mathbf{V}^{\top}
+\end{equation}
+su descomposición espectral, con autovalores $\lambda_1 \ge \lambda_2 \ge \cdots$. Si $\mathbf{D}$ es euclidiana, las coordenadas $\mathbf{Y} = \mathbf{V}\boldsymbol{\Lambda}^{1/2}$ reproducen exactamente las distancias, y sus primeras $m$ columnas dan la mejor representación en $m$ dimensiones en el sentido de mínimos cuadrados sobre $\mathbf{B}$. La fracción de variación representada por el eje $k$ es $\lambda_k / \sum_{j:\lambda_j>0}\lambda_j$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$d_{kl}$}{Disimilitud entre las muestras $k$ y $l$.}
+\simbolo{$\mathbf{B}$}{Matriz de productos escalares centrada (``doble centrado'' de Gower).}
+\simbolo{$\mathbf{V},\ \boldsymbol{\Lambda}$}{Autovectores y matriz diagonal de autovalores de $\mathbf{B}$.}
+\simbolo{$\mathbf{Y}$}{Coordenadas de las muestras en los ejes principales.}
+\end{simbolos}
+
+La idea detrás de la \cref{eq:14-gower} es que, si las muestras fueran puntos $\mathbf{y}_k$ centrados en el origen, $d_{kl}^2 = \|\mathbf{y}_k\|^2 + \|\mathbf{y}_l\|^2 - 2\,\mathbf{y}_k^{\top}\mathbf{y}_l$, y el doble centrado elimina los términos de norma y deja solo los productos escalares $\mathbf{y}_k^{\top}\mathbf{y}_l$. De una matriz de productos escalares se recuperan las coordenadas por descomposición espectral, exactamente como en el análisis de componentes principales. Cuando la disimilitud no es euclidiana, como Bray-Curtis, aparecen autovalores negativos: no existe ninguna configuración de puntos que reproduzca las distancias. Si son pequeños, se ignoran; si son grandes, conviene aplicar una corrección o usar otra distancia.
+
+\subsection{PERMANOVA: ¿difieren los grupos?}
+
+Una ordenación sugiere, pero no prueba. Para contrastar si la composición difiere entre grupos (sanos frente a enfermos, dietas, tratamientos) necesitamos un análisis de la varianza que funcione con cualquier disimilitud. \textcite{c14-anderson2001} lo formuló a partir de una identidad clásica: la suma de cuadrados de las distancias de los puntos a su centroide puede calcularse sin conocer el centroide, solo con las distancias entre pares.
+
+\begin{teorema}{Pseudo-$F$ de PERMANOVA}{permanova}
+Sean $N$ muestras repartidas en $a$ grupos de tamaño $n$, y sea $\varepsilon_{kl}=1$ si $k$ y $l$ pertenecen al mismo grupo (0 en otro caso). Con
+\begin{equation}\label{eq:14-ss}
+SS_T = \frac{1}{N}\sum_{k<l} d_{kl}^2, \qquad SS_W = \frac{1}{n}\sum_{k<l} d_{kl}^2\,\varepsilon_{kl}, \qquad SS_A = SS_T - SS_W,
+\end{equation}
+el estadístico
+\begin{equation}\label{eq:14-pseudoF}
+F = \frac{SS_A/(a-1)}{SS_W/(N-a)}
+\end{equation}
+se compara con su distribución bajo la hipótesis nula de ``grupos intercambiables'', obtenida permutando las etiquetas de grupo. El valor $p$ es $(\#\{F^{*} \ge F\} + 1)/(P+1)$ para $P$ permutaciones.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$SS_T,\ SS_W,\ SS_A$}{Sumas de cuadrados total, dentro de los grupos y entre grupos.}
+\simbolo{$\varepsilon_{kl}$}{Indicador de que las muestras $k$ y $l$ pertenecen al mismo grupo.}
+\simbolo{$F^{*}$}{Valor del estadístico en un conjunto de datos con etiquetas permutadas.}
+\simbolo{$P$}{Número de permutaciones (típicamente 999).}
+\end{simbolos}
+
+Con la distancia euclidiana, este $F$ coincide con el del ANOVA clásico; con cualquier otra disimilitud, conserva la lógica pero pierde la distribución $F$ de Fisher, y por eso se recurre a permutaciones. La proporción $R^2 = SS_A/SS_T$ indica qué fracción de la variación total explican los grupos.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap14/pcoa_macros.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.8\linewidth, height=6cm,
+   xlabel={PCo1 (\capcatorceEjeUno\,\% de la variación)}, ylabel={PCo2 (\capcatorceEjeDos\,\%)},
+   legend pos=outer north east, legend style={font=\sffamily\scriptsize},
+   axis equal image=false]
+  \addplot[only marks, mark=*, mark size=2.4pt, azul, fill opacity=.8] table {figuras/cap14/pcoa_sano.dat};
+  \addlegendentry{sano}
+  \addplot[only marks, mark=square*, mark size=2.2pt, aqua, fill opacity=.8] table {figuras/cap14/pcoa_dieta.dat};
+  \addlegendentry{cambio de dieta}
+  \addplot[only marks, mark=triangle*, mark size=3pt, naranja, fill opacity=.8] table {figuras/cap14/pcoa_antibiotico.dat};
+  \addlegendentry{antibiótico}
+\end{axis}
+\end{tikzpicture}
+\caption[PCoA de distancias de Bray-Curtis]{Ordenación PCoA de 45 muestras simuladas (60 taxones, \num{10000} lecturas cada una) a partir de distancias de Bray-Curtis. El grupo ``antibiótico'' perdió sus ocho taxones más abundantes y se separa a lo largo del primer eje; el grupo ``cambio de dieta'' se solapa parcialmente con el grupo sano. PERMANOVA con 999 permutaciones: pseudo-$F=17{,}9$, $R^2 = 0{,}46$, $p=0{,}001$ (el mínimo posible con 999 permutaciones). Los dos ejes representan juntos menos de la mitad de la variación, y la matriz tiene 13 autovalores negativos (Bray-Curtis no es euclidiana): el plano es una sombra de la estructura, no la estructura completa.}
+\label{fig:14-pcoa}
+\end{figure}
+
+\begin{codigo}[diversidad.py]
+import numpy as np
+from scipy.spatial.distance import pdist, squareform
+from skbio import DistanceMatrix
+from skbio.stats.distance import permanova
+from skbio.stats.ordination import pcoa
+
+def hill(p, q):
+    p = p[p > 0] / p.sum()
+    if np.isclose(q, 1):
+        return np.exp(-(p * np.log(p)).sum())
+    return (p ** q).sum() ** (1 / (1 - q))
+
+# X: matriz muestras x taxones (proporciones); grupos: etiquetas
+D = squareform(pdist(X, metric="braycurtis"))
+dm = DistanceMatrix(D, ids=[f"m{k}" for k in range(len(X))])
+ordenacion = pcoa(dm)                   # .samples, .proportion_explained
+print(permanova(dm, grupos, permutations=999))
+\end{codigo}
+
+Una advertencia: PERMANOVA es sensible tanto a diferencias de posición (centroides) como de dispersión; si un grupo es mucho más variable que otro, puede dar significativo aunque los centroides coincidan, sobre todo con grupos de tamaño desigual. Acompáñelo de una prueba de homogeneidad de dispersiones (PERMDISP) y de la inspección visual de la ordenación.
+
+\begin{historia}[El Proyecto del Microbioma Humano]
+El consorcio del \ingles{Human Microbiome Project} secuenció el 16S y los metagenomas de cientos de muestras de 242 adultos sanos, en sitios que iban de la boca a la vagina \parencite{c14-hmp2012}. Usó exactamente las herramientas de esta sección (diversidad alfa, UniFrac, ordenaciones) y encontró que el sitio del cuerpo es, con mucho, el principal determinante de la composición: la diversidad alfa era alta en la cavidad oral y baja en la vagina, y la diversidad beta entre personas era considerable en todos los sitios. El hallazgo más citado fue que, pese a esa variabilidad taxonómica, los perfiles de rutas metabólicas eran notablemente estables entre individuos: distintos elencos de microorganismos parecen desempeñar los mismos papeles.
+\end{historia}
+
+% ---------------------------------------------------------------------
+\section{Metagenómica shotgun}\label{sec:14-shotgun}
+% ---------------------------------------------------------------------
+\enlacerepo{14.3 · Metagenómica shotgun (Kraken2)}
+
+\begin{intuicion}[La biblioteca triturada]
+Suponga que alguien pasa por una trituradora de papel todos los libros de una biblioteca de barrio (novelas, recetarios, manuales de fontanería, algunos volúmenes únicos que no existen en ninguna otra parte) y le entrega a usted una bolsa con millones de tiras de papel. Hay dos cosas que puede hacer. Si tiene acceso al catálogo de una gran biblioteca nacional, puede tomar cada tira, buscar sus palabras en el catálogo y anotar de qué libro proviene; las tiras de los libros que el catálogo no conoce quedarán sin identificar. O bien puede ignorar el catálogo y empezar a pegar tiras que se solapan hasta reconstruir páginas, y luego agrupar las páginas por el tipo de letra y el color del papel hasta recomponer libros enteros, incluidos los que nadie había catalogado. La metagenómica shotgun hace ambas cosas: la primera es la \emph{clasificación de lecturas}; la segunda, el \emph{ensamblaje y binning}.
+\end{intuicion}
+
+\subsection{Del amplicón al metagenoma}
+
+En la metagenómica shotgun se extrae todo el ADN de la muestra, se fragmenta al azar y se secuencia sin ninguna amplificación dirigida. Las ventajas frente al 16S son considerables. Se eliminan los sesgos de los cebadores y del número de copias del operón ribosómico. Se observan todos los dominios de la vida a la vez: bacterias, arqueas, hongos, protistas y virus, que no tienen 16S. La resolución llega a la especie y, a menudo, a la cepa. Y, sobre todo, se secuencian los \emph{genes}: podemos preguntar no solo quién está, sino qué puede hacer la comunidad (qué rutas metabólicas codifica, qué genes de resistencia porta).
+
+Los inconvenientes también lo son. El costo por muestra es mucho mayor, porque hace falta una profundidad de millones a decenas de millones de lecturas. En muestras de tejido, heces de lactantes o hisopos, la mayor parte del ADN puede ser del hospedador, que hay que retirar por mapeo contra su genoma antes de cualquier análisis. Y la teoría de cobertura del \cref{cap:06} impone un límite duro a los organismos raros. Si una muestra se secuencia con $R$ lecturas de longitud $\ell$ y un genoma de tamaño $G$ representa una fracción $\alpha$ del ADN, su cobertura esperada es
+\begin{equation}\label{eq:14-cov}
+c = \frac{R\,\ell\,\alpha}{G}, \qquad \Prob(\text{base no cubierta}) \approx e^{-c}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$c$}{Cobertura media esperada del genoma del organismo.}
+\simbolo{$R,\ \ell$}{Número de lecturas y longitud de cada una.}
+\simbolo{$\alpha$}{Fracción del ADN secuenciado que proviene de ese organismo (abundancia relativa en ADN).}
+\simbolo{$G$}{Tamaño del genoma, en pares de bases.}
+\end{simbolos}
+
+Con $2\times10^7$ pares de lecturas de 150 bases ($R=4\times10^7$) y un genoma bacteriano de \SI{4}{Mb}, un organismo con el 1\,\% del ADN alcanza $c=15$ y prácticamente todo su genoma queda cubierto ($e^{-15}\approx 3\times10^{-7}$). Uno con el 0,1\,\% queda en $c=1{,}5$: el 22\,\% de sus bases no recibe ninguna lectura, y su ensamblaje será imposible. Su presencia, en cambio, sí puede detectarse clasificando lecturas: para eso bastan unas pocas docenas.
+
+\subsection{Clasificar lecturas por $k$-mers exactos}
+
+La forma más directa de identificar una lectura es alinearla contra todos los genomas conocidos con BLAST (\cref{cap:03}). Con decenas de millones de lecturas y cientos de gigabases de referencia, eso es inviable. \textcite{c14-wood2014} propusieron en Kraken sustituir el alineamiento por la búsqueda de $k$-mers exactos (\cref{cap:08}) en una base de datos precalculada, lo que convirtió la clasificación en una sucesión de consultas a una tabla hash, órdenes de magnitud más rápida que los métodos basados en alineamiento.
+
+La primera pregunta es qué longitud de $k$-mer usar. Si las bases fueran independientes y equiprobables, un $k$-mer concreto aparecería por azar en una posición dada con probabilidad $4^{-k}$, y el número esperado de apariciones espurias en una base de referencia de $B$ bases sería
+\begin{equation}\label{eq:14-kespurio}
+\E[\text{coincidencias espurias}] \approx B\cdot 4^{-k}.
+\end{equation}
+Con $B=10^{11}$ bases, un 15-mer aparecería por azar unas 93 veces, un 21-mer $0{,}02$ veces y un 31-mer $2\times10^{-8}$ veces. Un 31-mer compartido entre una lectura y un genoma es, casi con seguridad, evidencia de ascendencia común, no casualidad. Pero los $k$-mers largos tienen un precio: un solo error de secuenciación o una sola diferencia entre la cepa de la muestra y la de referencia destruye los $k$ $k$-mers que la contienen. Kraken usó $k=31$; Kraken 2 usa por defecto $k=35$.
+
+\subsection{El ancestro común más bajo}
+
+Muchos $k$-mers no son exclusivos de un genoma: un 31-mer de un gen ribosómico puede estar en todos los miembros de una familia. Kraken resuelve la ambigüedad al construir la base, no al consultarla.
+
+\begin{definicion}{Ancestro común más bajo (LCA)}{lca}
+Dado un conjunto de taxones $T$ en un árbol taxonómico, su ancestro común más bajo, $\mathrm{LCA}(T)$, es el nodo más profundo del árbol del que descienden todos los elementos de $T$. En la base de Kraken, cada $k$-mer $\kappa$ se asocia a $\tau(\kappa) = \mathrm{LCA}\{\text{taxones cuyos genomas contienen } \kappa\}$.
+\end{definicion}
+
+Un $k$-mer presente solo en \especie{Escherichia coli} apunta a la especie; uno presente en \especie{E.~coli} y en \especie{Shigella flexneri} apunta a la familia \especie{Enterobacteriaceae}; uno presente en toda bacteria apunta al dominio. Así, cada $k$-mer lleva la etiqueta más específica que la base de datos puede justificar. Para clasificar una lectura, Kraken consulta todos sus $k$-mers y construye el \emph{árbol de clasificación}: el subárbol formado por los taxones $\tau(\kappa)$ encontrados y sus ancestros, con un peso $w_t$ igual al número de $k$-mers de la lectura asignados a cada nodo $t$.
+
+\begin{teorema}{Regla de clasificación de Kraken}{rtl}
+Para cada hoja $h$ del árbol de clasificación, sea $\mathrm{camino}(h)$ el conjunto de nodos desde la raíz hasta $h$, y
+\begin{equation}\label{eq:14-rtl}
+\mathrm{RTL}(h) = \sum_{t\,\in\,\mathrm{camino}(h)} w_t .
+\end{equation}
+La lectura se asigna a la hoja de máxima puntuación $\mathrm{RTL}$; si varias empatan, se asigna al LCA de las hojas empatadas. Si ningún $k$-mer se encuentra en la base, la lectura queda sin clasificar.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$w_t$}{Número de $k$-mers de la lectura cuyo LCA en la base es el taxón $t$.}
+\simbolo{$\mathrm{RTL}(h)$}{Puntuación del camino de la raíz a la hoja (\ingles{root-to-leaf}): todos los $k$-mers que son compatibles con que la lectura provenga de $h$.}
+\end{simbolos}
+
+La regla tiene una lógica clara: un $k$-mer asignado a la familia es compatible con cualquier especie de la familia, así que ``vota'' por todos los caminos que pasan por ella; un $k$-mer asignado a una especie solo vota por esa especie. El camino ganador es el que explica más $k$-mers de la lectura.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+   nodo/.style={draw=#1, fill=#1!12, rounded corners=2pt, minimum height=6.5mm, inner sep=2.5pt, align=center},
+   nodo/.default=gris, level distance=12mm]
+  \node[nodo] (R) at (5.2,5.6) {raíz\\$w=2$};
+  \node[nodo] (B) at (5.2,4.4) {Bacteria\\$w=3$};
+  \node[nodo=aqua] (F) at (5.2,3.2) {\emph{Enterobacteriaceae}\\$w=10$};
+  \node[nodo=azul] (G1) at (1.9,1.9) {\emph{Escherichia}\\$w=12$};
+  \node[nodo] (G2) at (5.9,1.9) {\emph{Shigella}\\$w=1$};
+  \node[nodo] (G3) at (9.2,1.9) {\emph{Salmonella}\\$w=0$};
+  \node[nodo=azul, very thick] (s1) at (0.6,0.4) {\emph{E.~coli}\\$w=40$};
+  \node[nodo] (s2) at (3.2,0.4) {\emph{E.~albertii}\\$w=4$};
+  \node[nodo] (s3) at (5.9,0.4) {\emph{S.~flexneri}\\$w=6$};
+  \node[nodo] (s4) at (9.2,0.4) {\emph{S.~enterica}\\$w=2$};
+  \foreach \a/\b in {R/B,B/F,F/G2,F/G3,G1/s2,G2/s3,G3/s4}{\draw[tinta2,thick] (\a) -- (\b);}
+  \draw[azul,line width=2.2pt] (F) -- (G1); \draw[azul,line width=2.2pt] (G1) -- (s1);
+  \draw[azul,line width=2.2pt] (R) -- (B); \draw[azul,line width=2.2pt] (B) -- (F);
+  \node[etiqueta,text=azulprofundo,font=\sffamily\bfseries\scriptsize] at (0.6,-0.45) {RTL = 67};
+  \node[etiqueta] at (3.2,-0.45) {RTL = 31};
+  \node[etiqueta] at (5.9,-0.45) {RTL = 22};
+  \node[etiqueta] at (9.2,-0.45) {RTL = 17};
+  % lectura y k-mers
+  \begin{scope}[shift={(-0.2,6.35)}]
+    \node[etiqueta,anchor=west] at (0,0.45) {lectura de 150 pb: 116 $k$-mers ($k=35$)};
+    \foreach \i in {0,...,57}{
+      \pgfmathsetmacro{\c}{mod(\i*37,29)}
+      \ifdim\c pt<6pt \def\col{gris!40}\else\ifdim\c pt<22pt\def\col{azul}\else\def\col{aqua}\fi\fi
+      \fill[\col] (\i*0.07,0) rectangle (\i*0.07+0.055,0.18);
+    }
+    \node[etiqueta,anchor=west,align=left] at (4.3,0.09) {36 sin coincidencia (gris)};
+  \end{scope}
+  \node[etiqueta,align=left,anchor=north west,text=tinta2] at (7.3,5.3) {confianza de Kraken 2:\\especie: $40/116 = 0{,}34$\\género: $56/116 = 0{,}48$\\familia: $75/116 = 0{,}65$};
+\end{tikzpicture}
+\caption[Clasificación por LCA en Kraken]{Clasificación de una lectura con Kraken. Cada $k$-mer de la lectura se busca en la base y devuelve el LCA de los genomas que lo contienen; $w$ es el número de $k$-mers asignados a cada nodo (80 de 116 tienen coincidencia; la barra superior es solo ilustrativa). La puntuación de cada camino de la raíz a una hoja (RTL) suma los pesos de sus nodos: el camino hasta \emph{E.~coli} ($2+3+10+12+40=67$, en azul) gana con claridad y la lectura se asigna a esa especie. Con el umbral de confianza de Kraken 2 (recuadro), la asignación se mantiene en \emph{E.~coli} si el umbral es $0{,}1$, pero sube hasta \emph{Enterobacteriaceae} si es $0{,}5$.}
+\label{fig:14-lca}
+\end{figure}
+
+\begin{ejemplo}{Leer el árbol de la \cref{fig:14-lca}}{rtl}
+Una lectura de 150 pb tiene $150-35+1 = 116$ $k$-mers. De ellos, 36 no aparecen en la base (quizá la cepa de la muestra difiere de las de referencia) y 80 sí. Las puntuaciones de los cuatro caminos son $\mathrm{RTL}(\text{\emph{E.~coli}}) = 2+3+10+12+40 = 67$, $\mathrm{RTL}(\text{\emph{E.~albertii}}) = 2+3+10+12+4 = 31$, $\mathrm{RTL}(\text{\emph{S.~flexneri}}) = 2+3+10+1+6 = 22$ y $\mathrm{RTL}(\text{\emph{S.~enterica}}) = 2+3+10+0+2 = 17$. La lectura se asigna a \especie{E.~coli}. Observe que los 6 $k$-mers exclusivos de \especie{S.~flexneri} no bastan para cambiar la decisión: en bacterias con mucha transferencia horizontal, que una lectura contenga algunos $k$-mers de otra especie es lo esperable.
+\end{ejemplo}
+
+\subsection{Kraken 2: minimizadores y confianza}
+
+La base original de Kraken almacenaba todos los 31-mers con su LCA, lo que con las bases actuales exigía cientos de gigabytes de memoria. \textcite{c14-wood2019} rediseñaron el sistema en Kraken 2 con dos ideas. La primera es almacenar solo \emph{minimizadores}: de cada $k$-mer se guarda su subcadena de longitud $\ell<k$ ($\ell=31$ por defecto) de menor valor según un orden pseudoaleatorio; como $k$-mers consecutivos suelen compartir minimizador, el número de entradas cae drásticamente. La segunda es una tabla hash compacta y probabilística que guarda solo unos bits del hash junto con el LCA: a cambio de una pequeña tasa de falsas coincidencias, la memoria se reduce a una fracción y la velocidad aumenta. Kraken 2 admite además búsqueda traducida y bases de 16S como SILVA.
+
+Kraken 2 añade un \emph{umbral de confianza}. Para un nodo candidato $t$, la puntuación de confianza es
+\begin{equation}\label{eq:14-conf}
+\mathrm{conf}(t) = \frac{\#\{\kappa \text{ de la lectura}: \tau(\kappa) \in \mathrm{subárbol}(t)\}}{\#\{\kappa \text{ de la lectura sin bases ambiguas}\}}.
+\end{equation}
+Si la confianza del nodo asignado no alcanza el umbral elegido, la asignación sube por el árbol hasta el primer ancestro que sí lo alcanza. En el ejemplo, la especie tiene $40/116=0{,}34$; el género, que acumula sus $k$-mers y los de sus especies, $(12+40+4)/116 = 0{,}48$; la familia, $75/116 = 0{,}65$. El umbral por defecto es 0, que maximiza la sensibilidad a costa de falsos positivos; en aplicaciones clínicas, donde un único falso positivo puede significar un diagnóstico erróneo, se usan umbrales más altos.
+
+\begin{cuidado}[La base de datos es el experimento]
+Un clasificador de $k$-mers solo reconoce lo que su base contiene: las lecturas de una especie ausente se asignan al pariente más cercano o quedan sin clasificar, y una base contaminada produce detecciones fantasma. Informe la versión exacta de la base y el porcentaje de lecturas sin clasificar, y desconfíe de especies detectadas con pocas lecturas en muestras de baja biomasa, donde dominan los contaminantes de los reactivos.
+\end{cuidado}
+
+\subsection{De lecturas clasificadas a abundancias: Bracken}
+
+Kraken asigna cada lectura al nodo más específico que puede justificar, y eso tiene un efecto indeseado sobre las abundancias: las especies con parientes cercanos en la base (muchos $k$-mers compartidos) dejan buena parte de sus lecturas en el género o la familia, mientras que las especies ``solitarias'' retienen casi todas las suyas en la especie. Contar solo las lecturas asignadas a especie subestima de forma sistemática a las primeras. \textcite{c14-lu2017} corrigieron este sesgo con Bracken, que redistribuye las lecturas asignadas a niveles superiores hacia las especies que probablemente las originaron.
+
+Bracken empieza simulando lecturas de cada genoma de la base y clasificándolas con Kraken: así estima, para cada especie $S_i$, la probabilidad $P(G\mid S_i)$ de que una lectura suya quede asignada a un nodo superior $G$. Con la regla de Bayes, la probabilidad de que una lectura asignada a $G$ provenga de $S_i$ es
+\begin{equation}\label{eq:14-bracken}
+P(S_i \mid G) = \frac{P(G \mid S_i)\, P(S_i)}{\sum_k P(G\mid S_k)\, P(S_k)}, \qquad
+\hat{n}_i = K_i + n_G\, P(S_i\mid G),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$P(G\mid S_i)$}{Fracción de las lecturas de la especie $S_i$ que Kraken deja en el nodo superior $G$ (estimada por simulación).}
+\simbolo{$P(S_i)$}{Abundancia relativa previa de $S_i$ dentro de $G$, estimada a partir de las lecturas asignadas a nivel de especie.}
+\simbolo{$K_i$}{Lecturas asignadas directamente a la especie $S_i$.}
+\simbolo{$n_G$}{Lecturas asignadas al nodo $G$ (y no a sus descendientes).}
+\simbolo{$\hat{n}_i$}{Estimación de Bracken del número de lecturas originadas en $S_i$.}
+\end{simbolos}
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap14/bracken.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.86\linewidth, height=5.8cm, ybar, bar width=5.5mm,
+   xtick={0,1,2}, xticklabels={especie 1 ($P_{S\mid S}=0{,}5$), especie 2 ($0{,}8$), especie 3 ($0{,}3$)},
+   ymin=0, ymax=7000, ylabel={lecturas}, enlarge x limits=0.25, grid=major,
+   legend style={at={(0.98,0.98)}, anchor=north east},
+   nodes near coords, nodes near coords style={font=\sffamily\tiny, text=tinta2}]
+  \addplot[fill=gris!55, draw=gris] table[x=i, y=verdad] {figuras/cap14/bracken.dat};
+  \addlegendentry{verdad}
+  \addplot[fill=naranja!80, draw=naranja] table[x=i, y=kraken] {figuras/cap14/bracken.dat};
+  \addlegendentry{Kraken (solo nivel especie)}
+  \addplot[fill=azul!80, draw=azul] table[x=i, y=bracken] {figuras/cap14/bracken.dat};
+  \addlegendentry{Bracken}
+\end{axis}
+\end{tikzpicture}
+\caption[Redistribución de lecturas con Bracken]{Tres especies de un mismo género con \num{6000}, \num{3000} y \num{1000} lecturas verdaderas. Kraken asigna a nivel de especie solo la fracción $P_{S\mid S}$ de las lecturas de cada una; el resto (\num{4300} lecturas) se queda en el género. Contar solo el nivel de especie (naranja) invierte el orden aparente de las especies 1 y 2 y reduce la especie 3 a un 30\,\% de su valor. Bracken (azul) reparte las lecturas del género con la \cref{eq:14-bracken} y recupera el orden y, aproximadamente, las magnitudes (\num{5945}, \num{3342}, \num{712}). El error residual proviene de que la probabilidad previa $P(S_i)$ se estima con los conteos sesgados de Kraken.}
+\label{fig:14-bracken}
+\end{figure}
+
+\begin{ejemplo}{Bracken en números}{bracken}
+En la \cref{fig:14-bracken}, Kraken deja $K=(3000, 2400, 300)$ lecturas a nivel de especie y $n_G = \num{4300}$ en el género. La probabilidad previa se estima con los conteos de especie, $P(S_i) = K_i/\sum K = (0{,}526;\ 0{,}421;\ 0{,}053)$, y $P(G\mid S_i) = 1 - P_{S\mid S} = (0{,}5;\ 0{,}2;\ 0{,}7)$. Los productos son $(0{,}263;\ 0{,}084;\ 0{,}037)$, que normalizados dan $P(S_i\mid G) = (0{,}685;\ 0{,}219;\ 0{,}096)$. Las estimaciones finales son $\hat{n} = (3000 + 2945,\ 2400 + 942,\ 300 + 412) = (\num{5945}, \num{3342}, \num{712})$, frente a los valores verdaderos $(\num{6000}, \num{3000}, \num{1000})$.
+\end{ejemplo}
+
+\subsection{Perfilado con genes marcadores: MetaPhlAn}
+
+Una estrategia alternativa se concentra solo en las lecturas informativas. MetaPhlAn usa \emph{marcadores específicos de clado}: genes presentes en todos los genomas de un clado y en ninguno fuera de él. La abundancia de cada clado se estima con la cobertura media robusta de sus marcadores, normalizada por longitud; como son de copia única, el resultado se aproxima a una abundancia de \emph{células}, no de ADN. La cuarta versión \parencite{c14-blancomiguez2023} construyó sus marcadores a partir de alrededor de un millón de genomas de referencia y MAGs, agrupados en unos \num{27000} \emph{bins} genómicos a nivel de especie (SGBs), miles de ellos sin nombre: especies conocidas solo por su genoma.
+
+\begin{consola}[Clasificación y perfilado de un metagenoma]
+kraken2 --db k2_standard --threads 8 --paired \
+  --confidence 0.1 --report m1.k2report --output m1.kraken2 \
+  m1_R1.fastq.gz m1_R2.fastq.gz
+bracken -d k2_standard -i m1.k2report -o m1.bracken \
+  -r 150 -l S -t 10
+metaphlan m1_R1.fastq.gz,m1_R2.fastq.gz --input_type fastq \
+  --nproc 8 -o m1_metaphlan.txt
+\end{consola}
+
+\subsection{Ensamblaje metagenómico}
+
+Clasificar lecturas contra una referencia solo encuentra lo ya conocido. Para descubrir genomas nuevos hay que ensamblarlos. El ensamblaje metagenómico hereda todas las ideas del ensamblaje de un genoma aislado (grafos de de Bruijn, resolución de repeticiones; \cref{cap:08}), pero rompe dos de sus supuestos. Primero, la cobertura no es uniforme: varía en órdenes de magnitud entre organismos, de modo que no puede usarse un único umbral de cobertura para distinguir errores de secuencia real, ni la cobertura para detectar repeticiones. Segundo, conviven cepas muy parecidas de una misma especie, cuyas pequeñas diferencias aparecen en el grafo como ``burbujas'' que se confunden con errores de secuenciación.
+
+metaSPAdes \parencite{c14-nurk2017} adapta el ensamblador SPAdes a este escenario: usa umbrales de cobertura locales en lugar de globales y, ante variantes de cepa, construye primero un \emph{consenso} de la especie (colapsando las burbujas de variación entre cepas) y luego usa ese esqueleto para resolver repeticiones. MEGAHIT \parencite{c14-li2015} prioriza la eficiencia: representa el grafo de de Bruijn en forma \emph{sucinta} (una estructura de datos comprimida) y recorre iterativamente varios valores de $k$, de pequeños a grandes, lo que le permite ensamblar metagenomas de suelo con cientos de gigabases en un solo servidor. Ninguno resuelve bien las cepas muy cercanas: en la evaluación CAMI, los ensambladores reconstruyeron bien los genomas sin parientes cercanos en la muestra, pero su rendimiento cayó sustancialmente con cepas estrechamente emparentadas \parencite{c14-sczyrba2017}.
+
+\subsection{Binning: agrupar contigs en genomas}
+
+El ensamblaje produce decenas de miles de \ingles{contigs} sin etiqueta de origen. El \emph{binning} los agrupa en conjuntos (\ingles{bins}) que idealmente corresponden cada uno a un genoma. Se basa en dos señales que un contig hereda de su genoma. La \emph{composición}: cada genoma tiene un contenido de GC y, más finamente, una frecuencia de tetranucleótidos (TNF; 136 una vez unidos cada uno y su reverso complementario) característicos y bastante estables a lo largo del genoma, por el sesgo de uso de codones y de la maquinaria de replicación y reparación. Y la \emph{cobertura}: todos los contigs de un genoma tienen aproximadamente la misma profundidad y, si se secuencian varias muestras, su cobertura sube y baja de forma concertada; el perfil de coberturas en $M$ muestras es una firma muy discriminante.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.8cm, ymode=log,
+   xlabel={contenido de GC del contig (\%)}, ylabel={cobertura media (escala log)},
+   xmin=28, xmax=72, ymin=3, ymax=300,
+   ytick={5,10,20,50,100,200}, yticklabels={5,10,20,50,100,200}]
+  \pgfplotsset{capcatorce bin/.style={only marks, mark=*, scatter, point meta=0, fill opacity=.7,
+     visualization depends on={sqrt(\thisrow{len})/3.5 \as \rad},
+     scatter/@pre marker code/.append style={/tikz/mark size=\rad},
+     scatter/use mapped color={draw=white, fill=#1}}}
+  \addplot[capcatorce bin=azul] table[x=gc, y=cov] {figuras/cap14/bin_0.dat};
+  \addplot[capcatorce bin=naranja] table[x=gc, y=cov] {figuras/cap14/bin_1.dat};
+  \addplot[capcatorce bin=aqua] table[x=gc, y=cov] {figuras/cap14/bin_2.dat};
+  \addplot[capcatorce bin=violeta] table[x=gc, y=cov] {figuras/cap14/bin_3.dat};
+  \addplot[capcatorce bin=magenta] table[x=gc, y=cov] {figuras/cap14/bin_4.dat};
+\end{axis}
+\end{tikzpicture}
+\caption[Binning por composición y cobertura]{Principio del \ingles{binning}: 260 contigs simulados de cinco genomas, situados según su contenido de GC y su cobertura; el área de cada punto es proporcional a la longitud del contig. Los contigs de cada genoma forman una nube compacta. Los contigs cortos (puntos pequeños) se dispersan más, porque el GC de una secuencia corta es una estimación ruidosa del de su genoma; por eso los binners descartan contigs por debajo de unos pocos kilobases. Dos genomas con GC parecido (naranja y violeta) solo se separan gracias a la cobertura. Los binners reales, como MetaBAT 2, usan las 136 frecuencias de tetranucleótidos en lugar del GC y el perfil de cobertura en varias muestras, lo que separa genomas que en este plano se solaparían.}
+\label{fig:14-binning}
+\end{figure}
+
+MetaBAT 2 \parencite{c14-kang2019} combina ambas señales en una distancia entre pares de contigs (una probabilidad de que dos contigs procedan de genomas distintos, calculada con la TNF y con la cobertura), construye un grafo con los contigs como nodos y las afinidades como aristas y lo particiona con un algoritmo de propagación de etiquetas. Su versión 2 adapta automáticamente los umbrales al conjunto de datos, lo que elimina la necesidad de ajustar parámetros a mano. El producto final de este proceso son los \emph{genomas ensamblados a partir de metagenomas} (MAGs).
+
+\subsection{¿Es bueno un MAG? CheckM y MIMAG}
+
+Un \ingles{bin} puede estar incompleto (le faltan contigs que quedaron en otro bin o no se ensamblaron) o contaminado (contiene contigs de otro organismo). Sin un genoma de referencia, ¿cómo saberlo? \textcite{c14-parks2015} propusieron en CheckM usar genes marcadores de copia única: genes que, en los genomas completos de un linaje, aparecen exactamente una vez. Si un \ingles{bin} contiene el 90\,\% de esos marcadores, está completo en torno al 90\,\%; si algunos aparecen dos veces, probablemente hay contigs de otro genoma. En su forma más simple, con un conjunto $\mathcal{M}$ de marcadores y $c_g$ copias del marcador $g$ en el bin,
+\begin{equation}\label{eq:14-checkm}
+\text{completitud} = \frac{\#\{g\in\mathcal{M}: c_g \ge 1\}}{|\mathcal{M}|}, \qquad
+\text{contaminación} = \frac{\sum_{g\in\mathcal{M}} \max(c_g - 1,\, 0)}{|\mathcal{M}|}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathcal{M}$}{Conjunto de genes marcadores de copia única del linaje al que pertenece el bin.}
+\simbolo{$c_g$}{Número de copias del marcador $g$ encontradas en el bin.}
+\end{simbolos}
+
+CheckM refina esta idea de dos maneras: primero ubica el bin en un árbol de referencia para elegir marcadores específicos de su linaje (más numerosos y más fiables que los universales), y agrupa los marcadores que suelen estar juntos en el cromosoma en \emph{conjuntos colocalizados}, para no contar varias veces la ausencia de un mismo fragmento. Con estas medidas, \textcite{c14-bowers2017} definieron el estándar MIMAG, que establece la información mínima que debe acompañar a un MAG publicado y sus categorías de calidad (\cref{tab:14-mimag}).
+
+\begin{table}[t]
+\centering
+\small
+\caption[Categorías de calidad MIMAG]{Categorías de calidad de genomas ensamblados a partir de metagenomas según el estándar MIMAG \parencite{c14-bowers2017}.}
+\label{tab:14-mimag}
+\begin{tabular}{@{}lccp{4.6cm}@{}}
+\toprule
+\textbf{Borrador} & \textbf{Completitud} & \textbf{Contaminación} & \textbf{Requisitos adicionales}\\
+\midrule
+Alta calidad & $>90\,\%$ & $<5\,\%$ & ARNr 23S, 16S y 5S, y $\ge 18$ ARNt\\
+Calidad media & $\ge 50\,\%$ & $<10\,\%$ & ---\\
+Baja calidad & $<50\,\%$ & $<10\,\%$ & ---\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{ejemplo}{Clasificar un MAG}{mimag}
+Un bin contiene 95 de los 104 marcadores de copia única de su linaje, y 6 de ellos aparecen dos veces. Su completitud es $95/104 = 91{,}3\,\%$ y su contaminación $6/104 = 5{,}8\,\%$. Aunque supera el 90\,\% de completitud, la contaminación excede el 5\,\%: es un borrador de \emph{calidad media}. Además, los genes de ARNr 16S rara vez se ensamblan bien en metagenomas (las copias casi idénticas del operón colapsan en el grafo), de modo que muchos MAGs con completitud y contaminación excelentes no alcanzan la categoría alta por ese requisito.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, x=0.9cm,
+   paso/.style={draw=#1, fill=#1!10, rounded corners=3pt, minimum height=9mm, text width=1.95cm, align=center, text=tinta},
+   paso/.default=azul]
+  \node[paso=gris] (a) at (0,4.2) {ADN total de la muestra};
+  \node[paso=gris] (b) at (2.85,4.2) {secuenciación shotgun (FASTQ)};
+  \node[paso] (c) at (5.7,4.2) {control de calidad y recorte};
+  \node[paso] (d) at (8.55,4.2) {retirar lecturas del hospedador};
+  % rama de perfilado
+  \node[paso=naranja] (e) at (11.2,5.4) {Kraken 2 + Bracken};
+  \node[paso=naranja] (f) at (11.2,3.9) {MetaPhlAn 4};
+  \node[paso=naranja] (r) at (11.2,2.4) {resistoma (CARD)};
+  % rama de ensamblaje
+  \node[paso=aqua] (g) at (8.55,1.3) {ensamblaje: metaSPAdes / MEGAHIT};
+  \node[paso=aqua] (h) at (5.7,1.3) {mapear lecturas a contigs (cobertura)};
+  \node[paso=aqua] (i) at (2.85,1.3) {binning (MetaBAT 2)};
+  \node[paso=violeta] (j) at (0,1.3) {calidad: CheckM $\to$ MIMAG};
+  \node[paso=violeta] (k) at (0,-0.3) {MAGs: taxonomía, anotación, filogenia};
+  \foreach \u/\v in {a/b,b/c,c/d,h/i,i/j,j/k}{\draw[flecha=tinta2] (\u) -- (\v);}
+  \draw[flecha=tinta2] (g) -- (h);
+  \draw[flecha=naranja] (d.east) -- ++(0.2,0) |- (e.west);
+  \draw[flecha=naranja] (d.east) -- ++(0.2,0) |- (f.west);
+  \draw[flecha=naranja] (d.east) -- ++(0.2,0) |- (r.west);
+  \draw[flecha=aqua] (d.south) -- (g.north);
+  \node[etiqueta, text=naranja!80!black, anchor=south] at (11.2,6.0) {¿quién está y qué genes hay?};
+  \node[etiqueta, text=aqua!70!black, anchor=north west, align=left] at (6.9,0.55) {¿qué genomas nuevos hay?};
+  \node[etiqueta, text=tinta2, align=left, anchor=west] at (1.4,-0.3) {cobertura $c = R\ell\alpha/G$ suficiente solo para\\organismos abundantes (\cref{eq:14-cov})};
+\end{tikzpicture}
+\caption[Flujo de la metagenómica shotgun]{Del ADN total a los MAGs. Tras el control de calidad y la eliminación de lecturas del hospedador, el análisis se bifurca. La rama de perfilado (naranja) clasifica lecturas contra bases de referencia para estimar composición taxonómica y genes de resistencia; es rápida y sensible a organismos raros, pero ciega a lo desconocido. La rama de reconstrucción (aqua) ensambla sin referencia, calcula la cobertura de cada contig mapeando las lecturas de vuelta, agrupa los contigs en bins y evalúa cada bin con marcadores de copia única; solo recupera organismos con cobertura suficiente, pero puede descubrir genomas de especies nunca cultivadas.}
+\label{fig:14-flujo}
+\end{figure}
+
+\begin{consola}[De lecturas a MAGs]
+megahit -1 m1_R1.fq.gz -2 m1_R2.fq.gz -o asm_m1 -t 16
+bowtie2-build asm_m1/final.contigs.fa idx_m1
+bowtie2 -x idx_m1 -1 m1_R1.fq.gz -2 m1_R2.fq.gz -p 16 \
+  | samtools sort -o m1.bam
+jgi_summarize_bam_contig_depths --outputDepth prof.txt m1.bam
+metabat2 -i asm_m1/final.contigs.fa -a prof.txt -o bins/bin
+checkm lineage_wf -x fa -t 16 bins/ checkm_out/
+\end{consola}
+
+\subsection{El resistoma}
+
+Una de las aplicaciones más relevantes de la metagenómica shotgun es la vigilancia de la resistencia a antibióticos. \textcite{c14-wright2007} llamó \emph{resistoma} al conjunto de todos los genes que contribuyen a la resistencia a antibióticos en una comunidad, incluidos los de bacterias no patógenas y los genes ``precursores'' que podrían evolucionar hacia la resistencia. Las bacterias ambientales y comensales son un reservorio del que, por transferencia horizontal, los patógenos pueden adquirir resistencias. Para inventariarlo, las lecturas o los contigs se comparan con bases curadas como CARD, que asocia cada gen a su mecanismo, a la familia de antibióticos afectada y a modelos de detección con umbrales calibrados; su herramienta RGI permite además predecir resistomas a partir de metagenomas \parencite{c14-alcock2023}.
+
+
+\begin{profundizacion}[CAMI: evaluar sin saber la verdad]
+¿Cómo saber qué herramienta funciona mejor si en una muestra real nunca conocemos la composición verdadera? La iniciativa CAMI (\ingles{Critical Assessment of Metagenome Interpretation}) construyó metagenomas sintéticos a partir de cientos de genomas recién secuenciados, que las herramientas no podían conocer, con abundancias y cepas controladas, y pidió a los desarrolladores que los analizaran a ciegas \parencite{c14-sczyrba2017}. Además de la dificultad de ensamblar cepas cercanas, el estudio mostró que el rendimiento de los clasificadores y perfiladores caía mucho en los rangos taxonómicos bajos para organismos sin parientes cercanos en las bases, y que la elección de parámetros cambiaba sustancialmente los resultados. La lección general es que las comparaciones de herramientas publicadas por sus propios autores deben complementarse con evaluaciones independientes y ciegas.
+\end{profundizacion}
+
+\begin{ideaclave}
+El perfilado por referencia responde rápido ``quién está'', pero solo entre lo ya conocido; el ensamblaje y el binning descubren lo desconocido, pero solo entre lo abundante.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\begin{resumen}
+\begin{itemize}
+  \item El gen del ARNr 16S combina regiones conservadas, donde se diseñan los cebadores, con nueve regiones hipervariables que distinguen linajes. Su uso como marcador filogenético permitió a Woese y Fox descubrir las arqueas.
+  \item Las OTUs al 97\,\% agrupan secuencias con un radio arbitrario; las ASVs se infieren con un modelo de error ($\lambda_{ji}$) y una prueba de abundancia de Poisson, tienen resolución de un nucleótido y son comparables entre estudios. Las quimeras se eliminan buscando dos padres más abundantes.
+  \item La asignación taxonómica usa un clasificador bayesiano ingenuo de 8-mers con confianza por remuestreo; su resolución rara vez llega a especie con amplicones cortos.
+  \item Riqueza, Shannon y Simpson son casos particulares de los números de Hill ${}^qD$, que se miden en número efectivo de taxones y cumplen el principio de replicación. Chao1 es una cota inferior de la riqueza basada en \ingles{singletons} y \ingles{doubletons}.
+  \item Rarificar para comparar diversidad es defendible; rarificar para abundancia diferencial desperdicia datos. Los datos de microbioma son composicionales: solo las razones entre taxones son interpretables sin información externa.
+  \item Bray-Curtis, Jaccard y UniFrac responden preguntas distintas sobre la diferencia entre comunidades; PCoA las visualiza y PERMANOVA contrasta diferencias entre grupos mediante permutaciones.
+  \item Kraken asigna cada $k$-mer al LCA de los genomas que lo contienen y clasifica cada lectura por el camino raíz-hoja de mayor peso; Kraken 2 usa minimizadores y un umbral de confianza, y Bracken corrige las abundancias redistribuyendo lecturas de niveles superiores.
+  \item El ensamblaje metagenómico (metaSPAdes, MEGAHIT) y el binning por composición y cobertura (MetaBAT 2) reconstruyen MAGs, cuya calidad se evalúa con marcadores de copia única (CheckM) y se reporta según MIMAG.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Calcule $H$, $1/D$, ${}^0D$, ${}^1D$ y ${}^2D$ para la comunidad con abundancias $(0{,}4;\ 0{,}3;\ 0{,}2;\ 0{,}1)$. Verifique numéricamente que ${}^qD$ es decreciente en $q$.
+\ej{2} Usando la \cref{eq:14-pabund}, calcule la abundancia mínima que DADA2 exigiría a una secuencia a dos nucleótidos de una variante con \num{20000} lecturas, con $L=250$ y $e=0{,}005$. Repita con $\Omega_A = 10^{-5}$ y discuta cuántos falsos positivos esperaría con \num{50000} secuencias únicas.
+\ej{2} Demuestre el principio de replicación (\cref{teo:replicacion}) para $q=1$ directamente a partir de la entropía de Shannon, y muestre con un contraejemplo que el índice de Gini-Simpson no lo cumple.
+\ej{2} Implemente la \cref{eq:14-rare} y el estimador Chao1 en Python. Simule una comunidad con 500 taxones de abundancias log-normales, tome muestras de \num{1000}, \num{10000} y \num{100000} lecturas, y grafique cómo cambian $S_{\text{obs}}$ y $\hat{S}_{\text{Chao1}}$. ¿Converge Chao1 a 500?
+\ej{2} Implemente en Python la regla RTL (\cref{teo:rtl}), construya el árbol de la \cref{fig:14-lca} y compruebe las puntuaciones RTL. Añada la regla de confianza de Kraken 2 (\cref{eq:14-conf}) y encuentre el umbral a partir del cual la lectura deja de asignarse al género.
+\ej{3} Implemente PERMANOVA (\cref{eq:14-ss,eq:14-pseudoF}) desde cero y compárela con \py{skbio.stats.distance.permanova}. Luego simule dos grupos con el mismo centroide pero dispersiones distintas (una el triple de la otra) y tamaños 10 y 40: ¿con qué frecuencia rechaza la hipótesis nula al 5\,\%?
+\ej{3} Un metagenoma de heces tiene $3\times10^7$ pares de lecturas de 150 pb, de las cuales el 40\,\% son humanas. ¿Qué abundancia relativa mínima debe tener una bacteria de \SI{3}{Mb} para alcanzar una cobertura de 10? Si la contaminación esperada de un bin crece cuando dos cepas de la misma especie coexisten, proponga una forma de detectarlo con CheckM.
+\end{ejercicios}
+
+\referenciascapitulo

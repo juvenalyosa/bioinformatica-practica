@@ -1,0 +1,94 @@
+=== 12.1 ===
+[poisson] lambda=0.05: P(vacia)=0.951 P(1)=0.0476 P(>=2|>=1)=0.0248
+[poisson] lambda=0.1: P(vacia)=0.905 P(1)=0.0905 P(>=2|>=1)=0.0492
+[poisson] lambda=0.2: P(vacia)=0.819 P(1)=0.1637 P(>=2|>=1)=0.0967
+[poisson] lambda=0.5: P(vacia)=0.607 P(1)=0.3033 P(>=2|>=1)=0.2293
+[barcode] 4^16=4.295e+09  4^12=1.678e+07  4^10=1.049e+06
+[umi] n=10: colisiones esperadas 12nt=0.0000  10nt=0.0000
+[umi] n=100: colisiones esperadas 12nt=0.0003  10nt=0.0047
+[umi] n=1000: colisiones esperadas 12nt=0.0298  10nt=0.4764
+[sim] codigos con celula: 3360 (ok=3000, baja=150, dobletes=210)
+[sim] genes: 2000; mitocondriales: 13
+[rodilla] inflexion en rango ~3385 con 235 UMI; codigos con >=100 UMI: 3911; total codigos 63360
+[dispersa] forma=(3360, 2000) nnz=3132104 densidad=0.4661 densa=26.9 MB csr=25.1 MB ahorro=1.1x
+[dispersa] 1e6x3e4 densa float32=120 GB; csr al 46.6%=111.9 GB
+[dispersa] ejemplo 4x6 no nulo -> ver texto
+[csr] data=[3, 1, 2, 5, 1, 7] indices=[1, 4, 0, 3, 1, 5] indptr=[0, 2, 2, 4, 6]
+[qc] mediana UMI=2763 genes=933 %mt=3.89; MAD(log UMI)=0.519
+[qc] umbrales: UMI [205,37117] genes [274,3171] %mt<8.52 (mediana+3MAD=8.52)
+[qc] ok: n=3000 descartadas=35 (1.2%)
+[qc] baja: n=150 descartadas=150 (100.0%)
+[qc] dob_hetero: n=171 descartadas=0 (0.0%)
+[qc] dob_homo: n=39 descartadas=0 (0.0%)
+[qc] retenidas 3175 de 3360
+[scrublet] k=28 r=2.0 umbral=0.25: heterotipicos detectados 40.9% homotipicos 12.8% singletes marcados 0.51%
+[scrublet] mediana puntuacion singletes=0.027 dobletes hetero=0.239
+[limpio] tras QC+dobletes: 3085 celulas; quedan dobletes reales=135
+[ambiental] fraccion de celulas B con LYZ>0: 15.2%; UMI medios de LYZ en B=0.23 vs Mono CD14=5.7
+[nb] theta mediano (momentos, T CD4, genes de fondo)=1.83; theta simulado mediano=6.02
+[hvg] 500 HVG; marcadores nombrados entre HVG: 31/32; MT entre HVG: 0
+[hvg] top10: ['NKG7', 'MS4A1', 'CD79A', 'CD14', 'GNLY', 'GZMB', 'S100A8', 'FCER1A', 'G0917', 'G0774']
+[norm] celula0 (Mono CD14): total=6359 LYZ=5 CP10k=7.9 log1p=2.182
+=== 12.2 ===
+[pca] var. explicada PC1..5 = [2.45, 1.3, 0.98, 0.8, 0.56] %; acumulada 10=8.1% 30=15.2%
+[pca] nulo permutado PC1=0.39%; PCs reales sobre el nulo: 7
+[pca] cargas mayores PC1: ['LYZ', 'G0248', 'S100A9', 'S100A8', 'CD14', 'G1088']
+[pca] cargas mayores PC2: ['G0305', 'G0747', 'G1870', 'G0230', 'G1119', 'G1734']
+[distancias] Spearman PCA=0.610, t-SNE=0.444, UMAP=0.424
+[distancias] fraccion kNN(15) conservados PCA=0.043, t-SNE=0.233, UMAP=0.119
+[distancias] centroides t-SNE: Spearman=0.835
+[distancias] centroides UMAP: Spearman=0.801
+[tsne] celula 0: perplejidad 5 -> sigma=0.893, max p_j|i=0.424, vecinos con p>1/N: 13
+[tsne] celula 0: perplejidad 30 -> sigma=1.722, max p_j|i=0.121, vecinos con p>1/N: 85
+[tsne] celula 0: perplejidad 300 -> sigma=2.834, max p_j|i=0.025, vecinos con p>1/N: 331
+=== 12.3 ===
+[knn] aristas=38688 grado medio=25.1
+[louvain] res=0.05: k=2 Q(1)=0.425 ARI=0.276 comunidades desconectadas=0
+[louvain] res=0.1: k=2 Q(1)=0.425 ARI=0.276 comunidades desconectadas=0
+[louvain] res=0.2: k=4 Q(1)=0.584 ARI=0.495 comunidades desconectadas=0
+[louvain] res=0.3: k=5 Q(1)=0.653 ARI=0.644 comunidades desconectadas=0
+[louvain] res=0.5: k=6 Q(1)=0.712 ARI=0.808 comunidades desconectadas=0
+[louvain] res=0.7: k=7 Q(1)=0.724 ARI=0.887 comunidades desconectadas=0
+[louvain] res=1.0: k=7 Q(1)=0.723 ARI=0.892 comunidades desconectadas=0
+[louvain] res=1.3: k=7 Q(1)=0.722 ARI=0.881 comunidades desconectadas=0
+[louvain] res=1.6: k=8 Q(1)=0.705 ARI=0.759 comunidades desconectadas=0
+[louvain] res=2.0: k=9 Q(1)=0.699 ARI=0.735 comunidades desconectadas=0
+[louvain] res=2.5: k=12 Q(1)=0.655 ARI=0.601 comunidades desconectadas=0
+[louvain] res=3.0: k=13 Q(1)=0.637 ARI=0.555 comunidades desconectadas=0
+[clusters] c0: n=824 -> T CD4 (pureza 97.6%)
+[clusters] c1: n=582 -> Mono CD14 (pureza 97.1%)
+[clusters] c2: n=512 -> T CD8 (pureza 88.3%)
+[clusters] c3: n=444 -> B (pureza 98.0%)
+[clusters] c4: n=321 -> NK (pureza 96.0%)
+[clusters] c5: n=242 -> Mono FCGR3A (pureza 93.4%)
+[clusters] c6: n=160 -> DC (pureza 96.2%)
+[knn] aristas entre clusters: 3853 de 38688 (10.0%)
+[wilcoxon] c0 (T CD4): G0305 z=29.4 AUC=0.845 lfc=1.77 q=2.7e-187; G0747 z=29.1 AUC=0.842 lfc=1.86 q=6.7e-184; G0917 z=28.1 AUC=0.817 lfc=2.34 q=1.4e-171; G1813 z=27.7 AUC=0.816 lfc=2.19 q=1.4e-166; G1870 z=27.4 AUC=0.822 lfc=1.78 q=1.1e-162
+[wilcoxon] c0: genes con q<0.05 y lfc>1: 28
+[wilcoxon] c1 (Mono CD14): S100A8 z=39.2 AUC=0.940 lfc=4.10 q=0.0e+00; S100A9 z=39.0 AUC=0.943 lfc=3.69 q=0.0e+00; LYZ z=37.7 AUC=0.939 lfc=3.16 q=2.0e-307; CD14 z=35.9 AUC=0.909 lfc=3.28 q=1.4e-279; VCAN z=33.2 AUC=0.841 lfc=3.13 q=1.8e-238
+[wilcoxon] c1: genes con q<0.05 y lfc>1: 28
+[wilcoxon] c2 (T CD8): CD8A z=28.5 AUC=0.828 lfc=3.23 q=4.8e-175; CD8B z=21.2 AUC=0.710 lfc=2.84 q=3.5e-97; G0464 z=19.2 AUC=0.762 lfc=1.40 q=5.5e-79; GZMK z=18.3 AUC=0.675 lfc=2.46 q=5.8e-72; G1869 z=16.3 AUC=0.727 lfc=0.92 q=7.0e-57
+[wilcoxon] c2: genes con q<0.05 y lfc>1: 11
+[wilcoxon] c3 (B): MS4A1 z=35.1 AUC=0.942 lfc=3.78 q=1.1e-266; CD79A z=32.3 AUC=0.876 lfc=3.80 q=7.4e-226; CD79B z=27.7 AUC=0.845 lfc=2.88 q=1.2e-166; CD19 z=23.1 AUC=0.766 lfc=2.49 q=3.2e-115; BANK1 z=22.2 AUC=0.753 lfc=2.58 q=1.8e-106
+[wilcoxon] c3: genes con q<0.05 y lfc>1: 13
+[wilcoxon] c4 (NK): GNLY z=35.4 AUC=0.949 lfc=4.45 q=4.6e-271; GZMB z=28.2 AUC=0.868 lfc=3.36 q=1.5e-171; KLRD1 z=24.5 AUC=0.770 lfc=3.07 q=1.7e-129; NKG7 z=24.0 AUC=0.849 lfc=3.45 q=1.1e-124; PRF1 z=20.7 AUC=0.742 lfc=2.69 q=1.4e-92
+[wilcoxon] c4: genes con q<0.05 y lfc>1: 12
+[wilcoxon] c5 (Mono FCGR3A): FCGR3A z=27.2 AUC=0.925 lfc=3.36 q=1.1e-159; MS4A7 z=23.1 AUC=0.804 lfc=2.88 q=3.6e-115; CDKN1C z=21.3 AUC=0.776 lfc=2.83 q=3.6e-98; G1407 z=20.9 AUC=0.904 lfc=1.01 q=4.6e-94; LST1 z=19.2 AUC=0.787 lfc=2.40 q=1.1e-79
+[wilcoxon] c5: genes con q<0.05 y lfc>1: 24
+[wilcoxon] c6 (DC): CD1C z=22.3 AUC=0.873 lfc=3.16 q=1.4e-106; CLEC10A z=21.9 AUC=0.900 lfc=3.15 q=1.1e-103; FCER1A z=21.9 AUC=0.863 lfc=3.36 q=1.2e-103; HLA-DQA1 z=19.1 AUC=0.845 lfc=2.53 q=9.6e-79; G1407 z=16.4 AUC=0.885 lfc=0.94 q=6.9e-58
+[wilcoxon] c6: genes con q<0.05 y lfc>1: 10
+[wilcoxon-ej] rangos=[2.5, 7.0, 8.0, 9.0, 2.5, 2.5, 5.0, 6.0, 2.5] R1=26.5 U=16.5 AUC=0.825 scipy=16.5
+--- lotes ---
+[lotes] fraccion de vecinos del otro lote (ideal 0.5): antes=0.001 despues=0.502
+[lotes] ARI tipos antes=0.382 despues=0.816; ARI lote antes=0.360 despues=0.000
+=== 12.4 ===
+[difusion] autovalores=[1.0, 0.9943, 0.9928, 0.9781, 0.9679, 0.9429]
+[dpt] raiz=1433 (t real=0.007) Spearman(DPT,t)=0.978
+[dpt] rama 0: n=530 Spearman=0.891
+[dpt] rama 1: n=780 Spearman=0.983
+[dpt] rama 2: n=690 Spearman=0.987
+[dpt] pesos lambda/(1-lambda) DC1..4 = [173.74, 138.3, 44.74, 30.2]
+[paga] 6 clusters; tamanos=[424, 390, 327, 308, 281, 270]
+[paga] aristas con conectividad>0.05: 6; 0-3:0.13; 1-4:0.24; 2-5:0.24; 3-4:0.08; 3-5:0.18; 4-5:0.40
+[velocidad] alfa=4.0 beta=1.0 gamma=0.4; gamma/beta real=0.400 estimado (extremos)=0.463; signo correcto=86.3%
+[velocidad] estado estacionario u*=4.00 s*=10.00

@@ -1,0 +1,26 @@
+\begin{tabular}{@{}r l l l@{}}
+\toprule
+\textbf{paso} & \textbf{sale de $Q$} & \textbf{grado llega a 0} & \textbf{cola $Q$ tras el paso}\\
+\midrule
+0 & & & \capdieciochochip{gris}{bwa\_index} \capdieciochochip{azul}{fastp\,\textsubscript{A}} \capdieciochochip{azul}{fastp\,\textsubscript{B}} \capdieciochochip{azul}{fastp\,\textsubscript{C}}\\
+1 & \capdieciochochip{gris}{bwa\_index} & --- & \capdieciochochip{azul}{fastp\,\textsubscript{A}} \capdieciochochip{azul}{fastp\,\textsubscript{B}} \capdieciochochip{azul}{fastp\,\textsubscript{C}}\\
+2 & \capdieciochochip{azul}{fastp\,\textsubscript{A}} & \capdieciochochip{aqua}{mapear\,\textsubscript{A}} & \capdieciochochip{azul}{fastp\,\textsubscript{B}} \capdieciochochip{azul}{fastp\,\textsubscript{C}} \capdieciochochip{aqua}{mapear\,\textsubscript{A}}\\
+3 & \capdieciochochip{azul}{fastp\,\textsubscript{B}} & \capdieciochochip{aqua}{mapear\,\textsubscript{B}} & \capdieciochochip{azul}{fastp\,\textsubscript{C}} \capdieciochochip{aqua}{mapear\,\textsubscript{A}} \capdieciochochip{aqua}{mapear\,\textsubscript{B}}\\
+4 & \capdieciochochip{azul}{fastp\,\textsubscript{C}} & \capdieciochochip{aqua}{mapear\,\textsubscript{C}} \capdieciochochip{azulprofundo}{multiqc} & \capdieciochochip{aqua}{mapear\,\textsubscript{A}} \capdieciochochip{aqua}{mapear\,\textsubscript{B}} \capdieciochochip{aqua}{mapear\,\textsubscript{C}} \capdieciochochip{azulprofundo}{multiqc}\\
+5 & \capdieciochochip{aqua}{mapear\,\textsubscript{A}} & \capdieciochochip{verde}{dedup\,\textsubscript{A}} & \capdieciochochip{aqua}{mapear\,\textsubscript{B}} \capdieciochochip{aqua}{mapear\,\textsubscript{C}} \capdieciochochip{azulprofundo}{multiqc} \capdieciochochip{verde}{dedup\,\textsubscript{A}}\\
+6 & \capdieciochochip{aqua}{mapear\,\textsubscript{B}} & \capdieciochochip{verde}{dedup\,\textsubscript{B}} & \capdieciochochip{aqua}{mapear\,\textsubscript{C}} \capdieciochochip{azulprofundo}{multiqc} \capdieciochochip{verde}{dedup\,\textsubscript{A}} \capdieciochochip{verde}{dedup\,\textsubscript{B}}\\
+7 & \capdieciochochip{aqua}{mapear\,\textsubscript{C}} & \capdieciochochip{verde}{dedup\,\textsubscript{C}} & \capdieciochochip{azulprofundo}{multiqc} \capdieciochochip{verde}{dedup\,\textsubscript{A}} \capdieciochochip{verde}{dedup\,\textsubscript{B}} \capdieciochochip{verde}{dedup\,\textsubscript{C}}\\
+8 & \capdieciochochip{azulprofundo}{multiqc} & --- & \capdieciochochip{verde}{dedup\,\textsubscript{A}} \capdieciochochip{verde}{dedup\,\textsubscript{B}} \capdieciochochip{verde}{dedup\,\textsubscript{C}}\\
+9 & \capdieciochochip{verde}{dedup\,\textsubscript{A}} & --- & \capdieciochochip{verde}{dedup\,\textsubscript{B}} \capdieciochochip{verde}{dedup\,\textsubscript{C}}\\
+10 & \capdieciochochip{verde}{dedup\,\textsubscript{B}} & --- & \capdieciochochip{verde}{dedup\,\textsubscript{C}}\\
+11 & \capdieciochochip{verde}{dedup\,\textsubscript{C}} & \capdieciochochip{naranja}{llamar} & \capdieciochochip{naranja}{llamar}\\
+12 & \capdieciochochip{naranja}{llamar} & \capdieciochochip{amarillo}{filtrar} & \capdieciochochip{amarillo}{filtrar}\\
+13 & \capdieciochochip{amarillo}{filtrar} & \capdieciochochip{magenta}{anotar} \capdieciochochip{violeta}{consenso\,\textsubscript{A}} \capdieciochochip{violeta}{consenso\,\textsubscript{B}} \capdieciochochip{violeta}{consenso\,\textsubscript{C}} & \capdieciochochip{magenta}{anotar} \capdieciochochip{violeta}{consenso\,\textsubscript{A}} \capdieciochochip{violeta}{consenso\,\textsubscript{B}} \capdieciochochip{violeta}{consenso\,\textsubscript{C}}\\
+14 & \capdieciochochip{magenta}{anotar} & --- & \capdieciochochip{violeta}{consenso\,\textsubscript{A}} \capdieciochochip{violeta}{consenso\,\textsubscript{B}} \capdieciochochip{violeta}{consenso\,\textsubscript{C}}\\
+15 & \capdieciochochip{violeta}{consenso\,\textsubscript{A}} & --- & \capdieciochochip{violeta}{consenso\,\textsubscript{B}} \capdieciochochip{violeta}{consenso\,\textsubscript{C}}\\
+16 & \capdieciochochip{violeta}{consenso\,\textsubscript{B}} & --- & \capdieciochochip{violeta}{consenso\,\textsubscript{C}}\\
+17 & \capdieciochochip{violeta}{consenso\,\textsubscript{C}} & \capdieciochochip{rojo}{filogenia} & \capdieciochochip{rojo}{filogenia}\\
+18 & \capdieciochochip{rojo}{filogenia} & \capdieciochochip{tinta}{all} & \capdieciochochip{tinta}{all}\\
+19 & \capdieciochochip{tinta}{all} & --- & \emph{vacía}\\
+\bottomrule
+\end{tabular}

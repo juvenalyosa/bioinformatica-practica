@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} instalación: https://github.com/sokrypton/ColabFold}
+colabfold\PYGZus{}batch\PYG{+w}{ }\PYGZhy{}\PYGZhy{}num\PYGZhy{}recycle\PYG{+w}{ }\PYG{l+m}{3}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}amber\PYG{+w}{ }\PYGZhy{}\PYGZhy{}use\PYGZhy{}gpu\PYGZhy{}relax\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }p53\PYGZus{}dbd.fasta\PYG{+w}{ }resultados/
+ls\PYG{+w}{ }resultados/
+\PYG{c+c1}{\PYGZsh{} p53\PYGZus{}dbd\PYGZus{}unrelaxed\PYGZus{}rank\PYGZus{}001\PYGZus{}...\PYGZus{}model\PYGZus{}3\PYGZus{}seed\PYGZus{}000.pdb}
+\PYG{c+c1}{\PYGZsh{} p53\PYGZus{}dbd\PYGZus{}scores\PYGZus{}rank\PYGZus{}001\PYGZus{}...\PYGZus{}model\PYGZus{}3\PYGZus{}seed\PYGZus{}000.json  (pLDDT, PAE)}
+\PYG{c+c1}{\PYGZsh{} p53\PYGZus{}dbd\PYGZus{}coverage.png  p53\PYGZus{}dbd\PYGZus{}pae.png  p53\PYGZus{}dbd\PYGZus{}plddt.png}
+\end{MintedVerbatim}

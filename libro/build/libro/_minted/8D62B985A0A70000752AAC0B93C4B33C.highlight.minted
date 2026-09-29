@@ -1,0 +1,8 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} calcular y guardar las huellas de los datos crudos}
+sha256sum\PYG{+w}{ }datos/*.fastq.gz\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }datos/SHA256SUMS
+\PYG{c+c1}{\PYGZsh{} meses después, u otra persona: ¿son los mismos archivos?}
+sha256sum\PYG{+w}{ }\PYGZhy{}c\PYG{+w}{ }datos/SHA256SUMS
+\PYG{c+c1}{\PYGZsh{} lecturas\PYGZus{}R1.fastq.gz: OK}
+\PYG{c+c1}{\PYGZsh{} lecturas\PYGZus{}R2.fastq.gz: FAILED     \PYGZlt{}\PYGZhy{} el archivo cambió}
+\end{MintedVerbatim}

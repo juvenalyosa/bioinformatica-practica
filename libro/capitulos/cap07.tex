@@ -1,10 +1,928 @@
+% =====================================================================
+%  Capítulo 7 · Mapeo de lecturas
+% =====================================================================
 \chapter{Mapeo de lecturas}\label{cap:07}
-\section{Prueba}
-\begin{figure}[h]\centering\input{figuras/cap07/rotaciones.tex}\caption{a}\end{figure}
-\begin{figure}[h]\centering\input{figuras/cap07/lfmap.tex}\caption{a}\end{figure}
-\begin{figure}[h]\centering\input{figuras/cap07/backward.tex}\caption{a}\end{figure}
-\begin{figure}[h]\centering\input{figuras/cap07/minimizadores.tex}\caption{a}\end{figure}
-\begin{figure}[h]\centering\input{figuras/cap07/mosdepth.tex}\caption{a}\end{figure}
-\begin{figure}[h]\centering\input{figuras/cap07/pileup.tex}\caption{a}\end{figure}
-\nocite{*}
+
+\newcommand{\capsieteT}{\texttt{TACATACAG\$}}
+\newcommand{\capsieteOcc}{\operatorname{Occ}}
+\newcommand{\capsieteLF}{\operatorname{LF}}
+\newcommand{\capsieteSA}{\operatorname{SA}}
+\newcommand{\capsieteMQ}{\operatorname{MAPQ}}
+
+\epigrafe{Ignorar sin más las repeticiones no es una opción: eso crea sus propios problemas y puede hacer que pasen inadvertidos fenómenos biológicos importantes.}{\textcite{c07-treangen2012}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Explicar por qué el alineamiento por programación dinámica no escala al mapeo de cientos de millones de lecturas, y comparar las dos familias de índices que lo resuelven: tablas de \emph{hash} de semillas e índices de sufijos.
+  \item Construir a mano el arreglo de sufijos, la transformada de Burrows-Wheeler y el índice FM de una secuencia corta, y ejecutar paso a paso la búsqueda hacia atrás con el \ingles{LF-mapping}.
+  \item Describir el paradigma semilla-encadenamiento-extensión de BWA-MEM y minimap2, incluidos los minimizadores, la función de encadenamiento y la calidad de mapeo (MAPQ), y leer sin ayuda un registro SAM.
+  \item Construir un flujo reproducible con \cmd{samtools} (ordenar, marcar duplicados, indexar), inspeccionar alineamientos en IGV y usar perfiles de cobertura para detectar deleciones y duplicaciones.
+\end{itemize}
+\end{objetivos}
+
+Al terminar el \cref{cap:06} teníamos en las manos un archivo FASTQ limpio: millones de fragmentos de 150 bases, cada uno con su calidad Phred, y una teoría (la de Lander-Waterman) que nos decía cuántos necesitábamos para cubrir un genoma. Pero una lectura suelta no significa nada; solo adquiere sentido cuando sabemos \emph{de dónde} del genoma procede. Esa es la tarea del \emph{mapeo}: colocar cada lectura en su lugar de origen dentro de una secuencia de referencia. Casi todo el análisis genómico moderno (el llamado de variantes del próximo capítulo, la cuantificación de expresión con RNA-seq, los picos de ChIP-seq, la metilación) empieza con este paso, y hereda sus errores.
+
+El problema parece una aplicación directa del \cref{cap:03}: basta con alinear cada lectura contra el genoma con Smith-Waterman. La dificultad es de escala. Un genoma humano a $30\times$ son unos 620 millones de lecturas de 150 pares de bases, y la referencia mide $3{,}1\times10^{9}$ bases. \textcite{c07-lihomer2010} resumieron la respuesta de la comunidad en una frase que hoy parece obvia pero que en 2008 no lo era: con los algoritmos adecuados, el alineamiento de lecturas cortas ``ha dejado de ser el cuello de botella'' del análisis. Este capítulo cuenta cómo se logró.
+
+Empezaremos por la idea algorítmica más bella del área: una permutación de la secuencia, la transformada de Burrows-Wheeler, que permite buscar cualquier patrón en un genoma humano ocupando menos memoria que el propio genoma (\cref{sec:07-bwt}). Después veremos cómo las herramientas reales (BWA, Bowtie, minimap2) combinan índices, semillas y programación dinámica, cómo expresan su confianza con la calidad de mapeo y cómo escriben el resultado en el formato SAM/BAM que manipularemos con \cmd{samtools} (\cref{sec:07-herramientas}). Terminaremos mirando los alineamientos con los ojos, en IGV, y convirtiéndolos en perfiles de cobertura capaces de revelar deleciones y duplicaciones (\cref{sec:07-cobertura}).
+
+% ---------------------------------------------------------------------
+\section{Transformada de Burrows-Wheeler y FM-index}\label{sec:07-bwt}
+% ---------------------------------------------------------------------
+\enlacerepo{7.1 · Transformada de Burrows-Wheeler y FM-index}
+
+\begin{intuicion}[Un diccionario de todos los finales]
+Imagine un diccionario muy extraño: en lugar de palabras, contiene \emph{todos los finales} de un libro. Cada entrada empieza en una letra distinta del texto y continúa hasta el punto final, y todas están ordenadas alfabéticamente. Si quiere saber dónde aparece la frase ``había una vez'', no necesita leer el libro: abre el diccionario por la mitad, decide si su frase va antes o después, vuelve a partir por la mitad, y en una veintena de saltos llega al bloque de entradas que empiezan con esa frase. Cada entrada, además, recuerda en qué página empezaba. El problema es que el diccionario pesa muchísimo más que el libro. La transformada de Burrows-Wheeler es el truco que permite quedarse con una sola columna de ese diccionario, tan delgada como el propio texto, sin perder la capacidad de buscar.
+\end{intuicion}
+
+\subsection{El problema del mapeo}
+
+Formalicemos lo que pedimos a un mapeador. Sea $R=r_1r_2\cdots r_G$ la secuencia de referencia (un genoma, con sus cromosomas concatenados) y $q=q_1\cdots q_m$ una lectura, con $m\ll G$.
+
+\begin{definicion}{Mapeo de una lectura}{mapeo}
+Dada una función de puntuación de alineamiento local $S(q, R_{u..v})$ (por ejemplo, la de Smith-Waterman con huecos afines del \cref{cap:03}), mapear $q$ consiste en encontrar el intervalo de la referencia
+\begin{equation}\label{eq:07-mapeo}
+(\hat u,\hat v) = \argmax_{1\le u\le v\le G}\; \max\big\{S(q, R_{u..v}),\; S(\bar q, R_{u..v})\big\},
+\end{equation}
+y en cuantificar la probabilidad de que $(\hat u,\hat v)$ sea el origen verdadero de la lectura.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$R,\ G$}{Secuencia de referencia y su longitud en bases.}
+\simbolo{$q,\ m$}{Lectura y su longitud.}
+\simbolo{$\bar q$}{Reverso complementario de la lectura: el fragmento pudo secuenciarse desde cualquiera de las dos hebras.}
+\simbolo{$R_{u..v}$}{Subcadena de la referencia entre las posiciones $u$ y $v$.}
+\simbolo{$S(\cdot,\cdot)$}{Puntuación del mejor alineamiento local entre la lectura y la subcadena.}
+\end{simbolos}
+
+La segunda mitad de la definición es tan importante como la primera, y a menudo se olvida: un mapeador no solo responde \emph{dónde}, sino \emph{con qué seguridad}. Volveremos a ello con la calidad de mapeo en la \cref{sec:07-herramientas}.
+
+Resolver la \cref{eq:07-mapeo} por fuerza bruta es imposible. Con Smith-Waterman, cada lectura exige llenar una matriz de $m\times G = 150\times 3{,}1\times10^9\approx 4{,}7\times10^{11}$ celdas; multiplicado por $6{,}2\times10^8$ lecturas, son unos $2{,}9\times10^{20}$ celdas. Aun a mil millones de celdas por segundo, el cálculo tardaría unos nueve mil años. Necesitamos \emph{filtrar}: descartar en un instante casi todo el genoma y reservar la programación dinámica para unas pocas regiones candidatas.
+
+\subsection{Semillas y tablas de \ingles{hash}}
+
+La primera generación de mapeadores tomó prestada la idea de BLAST: si la lectura procede de la posición $u$, casi seguro comparte con la referencia algún $k$-mero exacto (una \emph{semilla}). Basta con un índice que, para cada $k$-mero, liste las posiciones donde aparece. ¿Qué $k$ elegir? Si el genoma fuera una secuencia aleatoria de bases equiprobables, el número esperado de apariciones \emph{casuales} de un $k$-mero concreto sería
+\begin{equation}\label{eq:07-kmer}
+\E[N_k] = \frac{G-k+1}{4^{k}} \approx \frac{G}{4^{k}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$N_k$}{Número de posiciones de la referencia donde aparece, por azar, un $k$-mero dado.}
+\simbolo{$G-k+1$}{Número de $k$-meros (posiciones de inicio) en la referencia.}
+\simbolo{$4^{k}$}{Número de $k$-meros distintos posibles sobre $\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$.}
+\end{simbolos}
+
+Para el genoma humano, un 12-mero aparece por azar unas 185 veces, un 16-mero $0{,}72$ veces y un 20-mero apenas $0{,}0028$ veces (\cref{fig:07-kmer}). Las semillas deben tener, pues, unas 20 bases para ser \emph{informativas}. Pero una tabla directa indexada por $k$-mero necesita $4^k$ entradas: con enteros de 32 bits, 64~MiB para $k=12$ y 16~GiB para $k=16$, antes de guardar una sola posición. Por eso los mapeadores basados en \ingles{hash}, como MAQ \parencite{c07-li2008maq}, indexaban semillas cortas, a menudo espaciadas, y a veces indexaban las \emph{lecturas} en lugar del genoma. Funcionaban, pero eran lentos cuando había que escalar a cientos de individuos \parencite{c07-li2009bwa}.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=6cm, ymode=log,
+   xmin=6, xmax=32, ymin=1e-12, ymax=1e8, xtick={8,12,16,20,24,28,32},
+   ytick={1e-12,1e-8,1e-4,1,1e4,1e8},
+   xlabel={longitud de la semilla $k$}, ylabel={apariciones esperadas por azar},
+   legend pos=south west]
+  \addplot[azul, domain=6:32, samples=53] {3.1e9/4^x};
+  \addlegendentry{humano, $G=3{,}1\times10^9$}
+  \addplot[naranja, domain=6:32, samples=53] {4.6e6/4^x};
+  \addlegendentry{\emph{E.\,coli}, $G=4{,}6\times10^6$}
+  \addplot[aqua, domain=6:32, samples=53] {3e4/4^x};
+  \addlegendentry{coronavirus, $G=3\times10^4$}
+  \addplot[rojo, dashed, thick, domain=6:32] {1};
+  \addplot[only marks, mark=*, mark size=2pt, azulprofundo] coordinates {(12,184.8)(16,0.722)(20,0.00282)};
+  \node[etiqueta, anchor=south west, text=rojooscuro] at (axis cs:24,1.4) {una aparición casual};
+  \node[etiqueta, anchor=west] at (axis cs:12.4,184.8) {185};
+  \node[etiqueta, anchor=west] at (axis cs:16.4,0.722) {$0{,}72$};
+  \node[etiqueta, anchor=west] at (axis cs:20.4,0.00282) {$0{,}0028$};
+\end{axis}
+\end{tikzpicture}
+\caption[Especificidad de una semilla frente a su longitud]{Número esperado de apariciones casuales de un $k$-mero en genomas aleatorios de distinto tamaño (\cref{eq:07-kmer}). En escala logarítmica cada base adicional divide la cifra por cuatro. En el genoma humano, una semilla necesita unas 20 bases para que una coincidencia exacta sea más probablemente verdadera que casual; en un virus basta con 8 o 9. Los genomas reales no son aleatorios: sus repeticiones hacen que muchos $k$-meros largos aparezcan miles de veces, como veremos en la \cref{sec:07-herramientas}.}
+\label{fig:07-kmer}
+\end{figure}
+
+La alternativa, que acabó por imponerse para lecturas cortas, fue indexar \emph{todos los sufijos} de la referencia. Un índice de sufijos no depende de un $k$ fijo: permite preguntar por un patrón de cualquier longitud y, como veremos, extenderlo carácter a carácter hasta que deje de aparecer.
+
+\subsection{El arreglo de sufijos}
+
+Añadimos al final de la referencia un símbolo centinela \texttt{\$} que no pertenece al alfabeto y que, por convenio, es menor que cualquier base. Así, $T=R\,\texttt{\$}$ tiene longitud $n=G+1$ y ningún sufijo es prefijo de otro.
+
+\begin{definicion}{Arreglo de sufijos}{sa}
+El arreglo de sufijos de $T$ es la permutación $\capsieteSA[0..n-1]$ de $\{0,\dots,n-1\}$ tal que
+\begin{equation}\label{eq:07-sa}
+T[\capsieteSA[0]..] \;<\; T[\capsieteSA[1]..] \;<\;\cdots\;<\; T[\capsieteSA[n-1]..]
+\end{equation}
+en orden lexicográfico, donde $T[i..]$ denota el sufijo que empieza en la posición $i$ (numeramos desde cero).
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$T,\ n$}{Texto indexado (referencia más centinela) y su longitud.}
+\simbolo{$T[i..]$}{Sufijo de $T$ que empieza en la posición $i$.}
+\simbolo{$\capsieteSA[r]$}{Posición en $T$ del sufijo que ocupa el lugar $r$ en el orden alfabético.}
+\end{simbolos}
+
+La propiedad clave es que todos los sufijos que empiezan por un patrón $P$ quedan \emph{contiguos} en el arreglo, porque comparten prefijo. Encontrar las apariciones de $P$ se reduce a encontrar un \emph{intervalo} $[sp, ep)$ de filas, lo que se hace con dos búsquedas binarias en $O(m\log n)$ comparaciones de caracteres. \textcite{c07-manber1993} propusieron esta estructura como alternativa compacta a los árboles de sufijos, que resuelven el mismo problema en tiempo $O(m)$ pero ocupan, en la práctica, más de diez bytes por base \parencite{c07-gusfield1997}. Aun así, el arreglo de sufijos necesita $n\lceil\log_2 n\rceil$ bits: para el genoma humano, 32 bits por posición, unos 12~GB. En 2008, eso era más memoria de la que tenía un servidor típico.
+
+\subsection{La transformada de Burrows-Wheeler}
+
+Escribamos todas las rotaciones cíclicas de $T$, una debajo de otra, y ordenémoslas alfabéticamente. Obtenemos una matriz $M$ de $n\times n$ caracteres (\cref{fig:07-rotaciones}). Como $T$ termina en el centinela único, ordenar las rotaciones equivale a ordenar los sufijos: la fila $r$ de $M$ empieza con el sufijo $T[\capsieteSA[r]..]$.
+
+\begin{definicion}{Transformada de Burrows-Wheeler}{bwt}
+La BWT de $T$ es la última columna $L$ de la matriz de rotaciones ordenadas. Equivalentemente, a partir del arreglo de sufijos,
+\begin{equation}\label{eq:07-bwt}
+L[r] = \begin{cases}
+T[\capsieteSA[r]-1] & \text{si } \capsieteSA[r]>0,\\
+\texttt{\$} & \text{si } \capsieteSA[r]=0.
+\end{cases}
+\end{equation}
+Llamamos $F$ a la primera columna de $M$: son los caracteres de $T$ ordenados.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$M$}{Matriz cuyas filas son las $n$ rotaciones de $T$ en orden lexicográfico.}
+\simbolo{$L$}{Última columna de $M$: la transformada de Burrows-Wheeler, $\mathrm{BWT}(T)$.}
+\simbolo{$F$}{Primera columna de $M$; se deduce de $L$ ordenando sus caracteres.}
+\end{simbolos}
+
+En palabras: $L[r]$ es el carácter que \emph{precede}, en el texto, al sufijo de la fila $r$. Para nuestro ejemplo de juguete, $T=\capsieteT$, el arreglo de sufijos es $(9,5,1,7,3,6,2,8,4,0)$ y la transformada es $L=\texttt{GTTCCAAAA\$}$.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/rotaciones.tex}
+\caption[Rotaciones y transformada de Burrows-Wheeler]{Construcción de la BWT de $T=\capsieteT$. \textbf{Izquierda}: las diez rotaciones cíclicas de $T$, indexadas por su posición de inicio $i$. \textbf{Derecha}: las mismas rotaciones en orden alfabético (\texttt{\$} precede a todas las bases). Junto a cada fila $r$ aparece, entre paréntesis, $\capsieteSA[r]$. La primera columna $F$ (azul) contiene las letras de $T$ ordenadas; la última, $L$ (naranja), es la transformada. Observe cómo las cuatro \texttt{A} de $L$ quedan juntas: los sufijos que empiezan por \texttt{C}, \texttt{G} o \texttt{T} tienden a estar precedidos por la misma letra, y la BWT agrupa esas repeticiones. Generada con \archivo{figuras/cap07/generar.py}.}
+\label{fig:07-rotaciones}
+\end{figure}
+
+\begin{historia}[Un algoritmo de compresión que nadie esperaba]
+Michael Burrows y David Wheeler describieron la transformada en 1994, en un reporte técnico del Centro de Investigación de Sistemas de Digital Equipment Corporation, con un propósito muy distinto al nuestro: comprimir texto. Su observación fue que $L$ tiende a formar rachas largas de un mismo carácter (en inglés, las letras que preceden a ``he'' suelen ser \texttt{t}), lo que la hace muy fácil de comprimir, y que, sorprendentemente, la permutación es \emph{reversible}. El compresor \cmd{bzip2} se basa en ella. \textcite{c07-adjeroh2008} reconstruyen esta historia y su conexión con los arreglos de sufijos. Pasaron seis años hasta que Paolo Ferragina y Giovanni Manzini, en un congreso de 2000, se dieron cuenta de que la BWT comprimida no solo guardaba el texto, sino que permitía \emph{buscar} en él; la versión extendida de su trabajo es \textcite{c07-ferragina2005}. Y pasaron otros nueve años hasta que Bowtie y BWA llevaron la idea a la genómica \parencite{c07-langmead2009,c07-li2009bwa}.
+\end{historia}
+
+\subsection{El \ingles{LF-mapping}: por qué la BWT es reversible}
+
+¿Cómo recuperar $T$ a partir de $L$ sola? La clave es una propiedad que, una vez vista, parece evidente.
+
+\begin{teorema}{Orden de las apariciones}{lf}
+La $j$-ésima aparición de un carácter $c$ en la columna $L$ y la $j$-ésima aparición de $c$ en la columna $F$ corresponden a la \emph{misma} posición del texto $T$.
+\end{teorema}
+
+\noindent\textit{Demostración.} Considere dos filas de $M$ cuya última letra es $c$, digamos $cX$ rotada como $X c$ y $Y c$, con $X<Y$ porque las filas están ordenadas. Si rotamos ambas un carácter a la derecha obtenemos $cX$ y $cY$, que son también filas de $M$ (con $c$ en la columna $F$), y como comparten el primer carácter, su orden relativo lo decide el resto: $cX<cY$. El orden entre las $c$ se conserva al pasar de $L$ a $F$. \hfill$\square$
+
+Esta propiedad permite definir, para cada fila $r$, la fila $\capsieteLF(r)$ en la que aparece como primera letra el mismo carácter que $L[r]$. Necesitamos dos tablas:
+\begin{align}
+C[c] &= \#\{\,i : T[i] < c\,\},\label{eq:07-C}\\
+\capsieteOcc(c, r) &= \#\{\,i < r : L[i] = c\,\},\label{eq:07-occ}
+\end{align}
+y con ellas
+\begin{equation}\label{eq:07-lf}
+\capsieteLF(r) = C\big[L[r]\big] + \capsieteOcc\big(L[r],\, r\big).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$C[c]$}{Número de caracteres de $T$ estrictamente menores que $c$: la fila donde empieza el bloque de $c$ en la columna $F$.}
+\simbolo{$\capsieteOcc(c,r)$}{Número de apariciones de $c$ en las primeras $r$ filas de $L$ (filas $0$ a $r-1$): el \emph{rango} de $L[r]$ entre sus iguales.}
+\simbolo{$\capsieteLF(r)$}{Fila de $M$ cuyo primer carácter es el mismo carácter del texto que $L[r]$; equivale a retroceder una posición en $T$.}
+\end{simbolos}
+
+La \cref{eq:07-lf} es la traducción directa del teorema: el bloque de $c$ en $F$ empieza en la fila $C[c]$, y dentro del bloque las $c$ están en el mismo orden que en $L$, así que la $c$ de rango $j$ ocupa la fila $C[c]+j$. Como la fila $\capsieteLF(r)$ empieza justo con el carácter que precedía al sufijo de la fila $r$, aplicar $\capsieteLF$ equivale a \emph{dar un paso hacia atrás} en el texto.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/lfmap.tex}
+\caption[El \ingles{LF-mapping}]{El \ingles{LF-mapping} para $T=\capsieteT$. Los subíndices numeran las apariciones de cada letra de arriba abajo. Cada flecha une la fila $r$ de $L$ con la fila $\capsieteLF(r)$ de $F$ (repetida a la derecha para mayor claridad): la $j$-ésima \texttt{A} de $L$ va a la $j$-ésima \texttt{A} de $F$, y lo mismo para cada letra. Las flechas del mismo color nunca se cruzan; esa es la propiedad del \cref{teo:lf}. En gris, el centro de cada fila, que el índice \emph{no} almacena.}
+\label{fig:07-lf}
+\end{figure}
+
+\begin{ejemplo}{Reconstruir $T$ desde su BWT}{reconstruir}
+Con $L=\texttt{GTTCCAAAA\$}$ y $F=\texttt{\$AAAACCGTT}$ tenemos $C[\texttt{A}]=1$, $C[\texttt{C}]=5$, $C[\texttt{G}]=7$ y $C[\texttt{T}]=8$. Empezamos en la fila $0$, la que comienza con \texttt{\$}; su última letra, $L[0]=\texttt{G}$, es el último carácter de $R$. Aplicamos la \cref{eq:07-lf} repetidamente:
+\[
+0 \xrightarrow{\texttt{G}} 7 \xrightarrow{\texttt{A}} 3 \xrightarrow{\texttt{C}} 5 \xrightarrow{\texttt{A}} 1 \xrightarrow{\texttt{T}} 8 \xrightarrow{\texttt{A}} 4 \xrightarrow{\texttt{C}} 6 \xrightarrow{\texttt{A}} 2 \xrightarrow{\texttt{T}} 9,
+\]
+donde sobre cada flecha escribimos $L[r]$ en la fila de partida. Por ejemplo, $\capsieteLF(0)=C[\texttt{G}]+\capsieteOcc(\texttt{G},0)=7+0=7$ y $\capsieteLF(7)=C[\texttt{A}]+\capsieteOcc(\texttt{A},7)=1+2=3$. Las letras recogidas, \texttt{GACATACAT}, leídas al revés dan \texttt{TACATACAG}: el texto original. En la fila 9 encontramos $L[9]=\texttt{\$}$ y paramos.
+\end{ejemplo}
+
+\subsection{El índice FM y la búsqueda hacia atrás}
+
+El mismo mecanismo que reconstruye el texto sirve para \emph{buscar} en él. La idea de \textcite{c07-ferragina2005} es procesar el patrón $P=p_1\cdots p_m$ \emph{de derecha a izquierda}, manteniendo el intervalo de filas de $M$ que empiezan con el sufijo de $P$ ya procesado.
+
+\begin{teorema}{Búsqueda hacia atrás}{backward}
+Sea $[sp, ep)$ el intervalo de filas de $M$ que empiezan con la cadena $W$. Entonces las filas que empiezan con $cW$ forman el intervalo
+\begin{equation}\label{eq:07-backward}
+sp' = C[c] + \capsieteOcc(c, sp), \qquad ep' = C[c] + \capsieteOcc(c, ep).
+\end{equation}
+Empezando con $W$ vacío, $[sp,ep)=[0,n)$, y aplicando la regla para $c=p_m, p_{m-1},\dots,p_1$, el patrón aparece en $T$ exactamente $ep-sp$ veces; si en algún paso $sp'\ge ep'$, no aparece.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$W$}{Sufijo del patrón ya procesado (al principio, la cadena vacía).}
+\simbolo{$[sp,ep)$}{Intervalo semiabierto de filas de $M$ (o del arreglo de sufijos) que empiezan con $W$.}
+\simbolo{$c$}{Siguiente carácter del patrón, leído de derecha a izquierda.}
+\simbolo{$[sp',ep')$}{Intervalo de las filas que empiezan con $cW$.}
+\end{simbolos}
+
+\noindent\textit{Por qué funciona.} Las filas que empiezan con $cW$ son exactamente las rotaciones $cW\ldots$; al rotarlas un carácter a la izquierda se convierten en filas $W\ldots c$, es decir, filas del intervalo $[sp,ep)$ cuya última letra es $c$. Por el \cref{teo:lf}, esas $c$ de $L$ se mapean, en el mismo orden, a un bloque contiguo del bloque de $c$ en $F$. Las $c$ de $L$ situadas \emph{antes} de $sp$ son $\capsieteOcc(c,sp)$; por eso el nuevo bloque empieza en $C[c]+\capsieteOcc(c,sp)$ y termina justo antes de $C[c]+\capsieteOcc(c,ep)$. \hfill$\square$
+
+Lo extraordinario es el coste: cada carácter del patrón cuesta dos consultas a $\capsieteOcc$, sin importar el tamaño del genoma. Buscar una lectura de 150 bases en el genoma humano cuesta 300 consultas, lo mismo que buscarla en el genoma de un virus.
+
+\begin{table}[tbp]
+\centering
+\small
+\caption[Tablas $C$ y $\capsieteOcc$ del ejemplo]{Tabla $\capsieteOcc(c,r)$ para $L=\texttt{GTTCCAAAA\$}$: cada fila $r$ cuenta las apariciones de cada base en $L[0..r-1]$. La tabla $C$ es $C[\texttt{A}]=1$, $C[\texttt{C}]=5$, $C[\texttt{G}]=7$, $C[\texttt{T}]=8$.}
+\label{tab:07-occ}
+\begin{tabular}{@{}cccccc@{}}
+\toprule
+$r$ & $L[r]$ & $\capsieteOcc(\texttt{A},r)$ & $\capsieteOcc(\texttt{C},r)$ & $\capsieteOcc(\texttt{G},r)$ & $\capsieteOcc(\texttt{T},r)$\\
+\midrule
+0 & \texttt{G} & 0 & 0 & 0 & 0\\
+1 & \texttt{T} & 0 & 0 & 1 & 0\\
+2 & \texttt{T} & 0 & 0 & 1 & 1\\
+3 & \texttt{C} & 0 & 0 & 1 & 2\\
+4 & \texttt{C} & 0 & 1 & 1 & 2\\
+5 & \texttt{A} & 0 & 2 & 1 & 2\\
+6 & \texttt{A} & 1 & 2 & 1 & 2\\
+7 & \texttt{A} & 2 & 2 & 1 & 2\\
+8 & \texttt{A} & 3 & 2 & 1 & 2\\
+9 & \texttt{\$} & 4 & 2 & 1 & 2\\
+10 & -- & 4 & 2 & 1 & 2\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{ejemplo}{Buscar \texttt{ACA} en \capsieteT}{busqueda}
+Usamos la \cref{tab:07-occ}. Empezamos con $[0,10)$ y leemos el patrón al revés:
+\begin{enumerate}
+  \item $c=\texttt{A}$: $sp'=1+\capsieteOcc(\texttt{A},0)=1+0=1$; $ep'=1+\capsieteOcc(\texttt{A},10)=1+4=5$. Intervalo $[1,5)$: las cuatro filas que empiezan con \texttt{A}.
+  \item $c=\texttt{C}$: $sp'=5+\capsieteOcc(\texttt{C},1)=5$; $ep'=5+\capsieteOcc(\texttt{C},5)=5+2=7$. Intervalo $[5,7)$: filas que empiezan con \texttt{CA}.
+  \item $c=\texttt{A}$: $sp'=1+\capsieteOcc(\texttt{A},5)=1$; $ep'=1+\capsieteOcc(\texttt{A},7)=1+2=3$. Intervalo $[1,3)$.
+\end{enumerate}
+Hay $3-1=2$ apariciones, en las posiciones $\capsieteSA[1]=5$ y $\capsieteSA[2]=1$ del texto: \texttt{T\underline{ACA}T\underline{ACA}G}. Si buscamos \texttt{GAC}, tras procesar \texttt{AC} tenemos $[1,3)$ y el paso con \texttt{G} da $sp'=7+\capsieteOcc(\texttt{G},1)=8$ y $ep'=7+\capsieteOcc(\texttt{G},3)=8$: el intervalo se vacía y sabemos, sin mirar el texto, que \texttt{GAC} no aparece.
+\end{ejemplo}
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/backward.tex}
+\caption[Búsqueda hacia atrás paso a paso]{Búsqueda hacia atrás de $P=\texttt{ACA}$ en la matriz ordenada de $T=\capsieteT$, leída como una secuencia de fotogramas. En cada paso se antepone un carácter del patrón (de derecha a izquierda) y el intervalo amarillo se contrae a las filas que empiezan con el sufijo procesado, resaltado en rojo. El índice nunca almacena estas filas completas: solo necesita $L$, $C$ y $\capsieteOcc$ para calcular los extremos del intervalo con la \cref{eq:07-backward}. El tamaño final del intervalo, dos filas, es el número de apariciones.}
+\label{fig:07-backward}
+\end{figure}
+
+El siguiente programa construye el índice de forma ingenua (ordenando sufijos, lo que cuesta $O(n^2\log n)$ y solo sirve para ejemplos) y busca por el método del \cref{teo:backward}. Los programas reales construyen el arreglo de sufijos en tiempo lineal o casi lineal, con algoritmos especializados que no requieren tener en memoria todos los sufijos \parencite{c07-makinen2015}.
+
+\begin{codigo}[indice\_fm.py]
+def indice_fm(T):
+    """T debe terminar en '$'. Devuelve SA, L, C y Occ."""
+    sa = sorted(range(len(T)), key=lambda i: T[i:])
+    L = "".join(T[i - 1] for i in sa)          # T[-1] es '$'
+    alf = sorted(set(T))
+    C, tot = {}, 0
+    for c in alf:
+        C[c], tot = tot, tot + T.count(c)
+    occ = {c: [0] for c in alf}
+    for ch in L:                               # Occ(c, r) acumulado
+        for c in alf:
+            occ[c].append(occ[c][-1] + (ch == c))
+    return sa, L, C, occ
+
+def buscar(P, sa, C, occ):
+    sp, ep = 0, len(sa)
+    for c in reversed(P):                      # de derecha a izquierda
+        if c not in C:
+            return []
+        sp, ep = C[c] + occ[c][sp], C[c] + occ[c][ep]
+        if sp >= ep:
+            return []
+    return sorted(sa[sp:ep])
+
+sa, L, C, occ = indice_fm("TACATACAG$")
+print(L, buscar("ACA", sa, C, occ))   # GTTCCAAAA$ [1, 5]
+\end{codigo}
+
+\subsection{Muestreo: cómo cabe el genoma humano en un portátil}
+
+El programa anterior guarda $\capsieteOcc$ completa: cuatro enteros por posición. Para el genoma humano, con enteros de 32 bits, eso son $4\times32\times3{,}1\times10^9$ bits, unos 50~GB, peor que el arreglo de sufijos. El índice FM resuelve el problema con dos muestreos \parencite{c07-ferragina2005}.
+
+\paragraph{Puntos de control de $\capsieteOcc$} Se guardan los valores de $\capsieteOcc(c,r)$ solo cuando $r$ es múltiplo de un intervalo $d$ (los \ingles{checkpoints}). Para cualquier otra fila, se toma el punto de control anterior y se cuentan las apariciones de $c$ en el trozo de $L$ que falta, a lo sumo $d-1$ caracteres. Con $L$ codificada a 2 bits por base, ese recuento se hace con operaciones de bits sobre unas pocas palabras de máquina.
+
+\paragraph{Muestreo del arreglo de sufijos} La búsqueda hacia atrás devuelve un intervalo de \emph{filas}, pero necesitamos \emph{posiciones} del genoma, es decir, valores de $\capsieteSA$. Se guarda $\capsieteSA[r]$ solo para las filas cuyo valor es múltiplo de $s$. Para una fila no muestreada, aplicamos $\capsieteLF$ (un paso atrás en el texto) hasta caer en una fila muestreada; si hicieron falta $j$ pasos, $\capsieteSA[r]=\capsieteSA[\capsieteLF^{j}(r)]+j$, con $j<s$.
+
+La memoria total, en bits, es
+\begin{equation}\label{eq:07-memoria}
+\mathcal{M}(d,s) \;=\; \underbrace{2n}_{L} \;+\; \underbrace{\frac{4\,b\,n}{d}}_{\capsieteOcc} \;+\; \underbrace{\frac{b\,n}{s}}_{\capsieteSA},
+\end{equation}
+mientras que el tiempo de localizar cada aparición crece como $O(s)$ pasos de $\capsieteLF$, cada uno de coste $O(d)$.
+
+\begin{simbolos}
+\simbolo{$\mathcal{M}(d,s)$}{Memoria del índice, en bits.}
+\simbolo{$n$}{Longitud del texto indexado.}
+\simbolo{$b$}{Bits por entero almacenado ($b=\lceil\log_2 n\rceil=32$ para el genoma humano).}
+\simbolo{$d$}{Distancia entre puntos de control de $\capsieteOcc$.}
+\simbolo{$s$}{Intervalo de muestreo del arreglo de sufijos.}
+\end{simbolos}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=6cm, xmode=log, log basis x=2, ymode=log,
+   xmin=1, xmax=256, ymin=0.05, ymax=100,
+   xtick={1,2,4,8,16,32,64,128,256}, xticklabels={1,2,4,8,16,32,64,128,256},
+   ytick={0.1,1,10,100}, yticklabels={$0{,}1$,1,10,100},
+   xlabel={intervalo de muestreo ($d$ para $\capsieteOcc$, $s$ para $\capsieteSA$)},
+   ylabel={memoria (GB)}, legend pos=north east]
+  \addplot+[mark=*, mark size=1.5pt] table[x=s, y=occ] {figuras/cap07/memoria.dat};
+  \addlegendentry{puntos de control de $\capsieteOcc$}
+  \addplot+[mark=square*, mark size=1.5pt] table[x=s, y=sa] {figuras/cap07/memoria.dat};
+  \addlegendentry{arreglo de sufijos muestreado}
+  \addplot[aqua, very thick, dashed] table[x=s, y=bwt] {figuras/cap07/memoria.dat};
+  \addlegendentry{BWT a 2 bits por base}
+  \addplot[gris, thin, dotted] coordinates {(1,3.1) (256,3.1)};
+  \node[etiqueta, anchor=south east] at (axis cs:250,3.1) {genoma en texto plano (1 byte por base)};
+  \draw[rojooscuro, thick] (axis cs:128,0.388) circle (3pt);
+  \draw[rojooscuro, thick] (axis cs:32,0.388) circle (3pt);
+  \node[etiqueta, text=rojooscuro, anchor=south west, align=left] at (axis cs:1.15,0.07) {círculos: $d=128$, $s=32$\\total $\approx1{,}55$ GB};
+\end{axis}
+\end{tikzpicture}
+\caption[Memoria del índice FM humano]{Memoria de cada componente del índice FM del genoma humano ($n=3{,}1\times10^9$, enteros de 32 bits) en función del intervalo de muestreo (\cref{eq:07-memoria}). Sin muestreo, $\capsieteOcc$ ocuparía unos 50~GB y el arreglo de sufijos 12~GB. Con un punto de control cada 128 filas y una muestra del arreglo cada 32 posiciones (círculos), el índice completo de una hebra ocupa unos $1{,}55$~GB, la mitad que el genoma escrito como texto. El precio es tiempo: cada posición recuperada exige, en promedio, varios pasos de \ingles{LF-mapping}.}
+\label{fig:07-memoria}
+\end{figure}
+
+Con $d=128$ y $s=32$, la \cref{eq:07-memoria} da $0{,}775$~GB para $L$, $0{,}388$~GB para los puntos de control y otros $0{,}388$~GB para el arreglo muestreado: unos $1{,}55$~GB (\cref{fig:07-memoria}). Estos son, de hecho, los intervalos que describen \textcite{c07-li2009bwa} para BWA, que además indexa el genoma invertido para poder acotar la búsqueda aproximada; Bowtie, con técnicas similares, alineaba más de 25 millones de lecturas por hora de CPU usando unos $1{,}3$~GB de memoria \parencite{c07-langmead2009}.
+
+\begin{profundizacion}[Buscar con errores: \ingles{backtracking} acotado]
+La búsqueda hacia atrás encuentra coincidencias \emph{exactas}, pero una lectura real contiene errores de secuenciación y variantes. Bowtie y la primera versión de BWA exploran variantes del patrón: en cada paso, además de la base leída, prueban las otras tres (una sustitución) o saltan un carácter (un \ingles{indel}), y retroceden cuando el intervalo se vacía. El espacio de búsqueda crece exponencialmente con el número de diferencias permitidas, así que ambas herramientas lo podan. Bowtie prioriza sustituir primero las bases de baja calidad Phred \parencite{c07-langmead2009}. BWA precalcula un arreglo $D(i)$, cota inferior del número de diferencias que necesitará el prefijo $P[0..i]$, y abandona una rama en cuanto las diferencias acumuladas más $D(i)$ superan el máximo permitido \parencite{c07-li2009bwa}. Un detalle elegante: como los sufijos repetidos del genoma comparten intervalo, una repetición con mil copias se explora \emph{una sola vez}.
+\end{profundizacion}
+
+\begin{cuidado}[Detalles que el ejemplo oculta]
+\begin{itemize}
+  \item \emph{Las dos hebras}. Una lectura puede proceder de cualquier hebra: el mapeador busca $q$ y su reverso complementario $\bar q$, o indexa ambas hebras de la referencia.
+  \item \emph{Las \texttt{N}}. Las bases ambiguas de la referencia (huecos del ensamblaje) se sustituyen por bases aleatorias o se excluyen al construir el índice; en la lectura se tratan como diferencias.
+  \item \emph{Varios cromosomas}. Se concatenan en un único texto; una tabla auxiliar traduce la posición global a (cromosoma, posición) y descarta las coincidencias que cruzan una frontera.
+\end{itemize}
+\end{cuidado}
+
+\begin{ideaclave}
+La BWT reordena el genoma de modo que buscar un patrón cuesta dos consultas por carácter, independientemente del tamaño del genoma, y el índice completo cabe en menos memoria que el propio texto.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\section{BWA, minimap2 y samtools}\label{sec:07-herramientas}
+% ---------------------------------------------------------------------
+\enlacerepo{7.2 · BWA, minimap2 y samtools}
+
+\begin{intuicion}[Huellas digitales de un texto copiado]
+Un profesor sospecha que un ensayo fue copiado de alguno de los millones de documentos de internet. No puede compararlo palabra por palabra con todos. En cambio, toma de cada documento unas pocas ``huellas'': por ejemplo, en cada tramo de diez frases, la que tenga el código más pequeño según una regla fija. Dos textos que compartan un párrafo largo compartirán, por fuerza, algunas huellas, porque la regla elige la misma frase en ambos. Con las huellas coincidentes en la mano, el profesor comprueba si aparecen en el mismo orden y a distancias parecidas; si es así, ha encontrado la fuente, y solo entonces lee con atención el pasaje sospechoso. Semilla, encadenamiento y extensión: así trabajan los mapeadores modernos.
+\end{intuicion}
+
+\subsection{El paradigma semilla-encadenamiento-extensión}
+
+La búsqueda exacta con retroceso funciona bien para lecturas de 36 bases con dos o tres diferencias, las de los primeros secuenciadores Illumina. Con lecturas de 100 a 250 bases, y más aún con lecturas largas de nanoporos, la búsqueda con errores se vuelve inviable y, además, innecesaria: una lectura larga contiene, casi con seguridad, varios tramos exactos suficientemente largos para ser únicos. Los mapeadores actuales combinan tres etapas:
+\begin{enumerate}
+  \item \textbf{Semillas}: coincidencias exactas entre la lectura y la referencia, halladas con un índice (FM o \ingles{hash}).
+  \item \textbf{Encadenamiento}: agrupar las semillas que son \emph{colineales} (mismo orden y distancias compatibles en lectura y referencia), porque proceden probablemente de un mismo origen.
+  \item \textbf{Extensión}: alinear con programación dinámica, restringida a una banda, las bases entre semillas y los extremos de la cadena.
+\end{enumerate}
+La programación dinámica, cara, solo se ejecuta en un puñado de regiones candidatas por lectura.
+
+\paragraph{BWA-MEM} La familia BWA pasó por tres algoritmos: BWA-\ingles{backtrack}, para lecturas cortas \parencite{c07-li2009bwa}; BWA-SW, que alineaba lecturas largas recorriendo el índice con programación dinámica \parencite{c07-li2010bwasw}; y BWA-MEM \parencite{c07-li2013}, hoy el estándar para lecturas Illumina. BWA-MEM siembra con \emph{coincidencias exactas supermaximales} (SMEM): para cada posición de la lectura, la coincidencia exacta más larga que la cubre y que no está contenida en otra. El índice FM es ideal para esto, porque extender una coincidencia un carácter cuesta una actualización del intervalo. Si una SMEM es muy larga (más de 28 bases por defecto), BWA-MEM vuelve a sembrar con coincidencias más cortas que aparecen más veces, para no perder el origen verdadero cuando la SMEM cae en una repetición. Después encadena semillas cercanas y colineales, descarta cadenas contenidas en otras mucho mejores, y extiende con programación dinámica de huecos afines en banda. Durante la extensión aplica una variante del criterio \ingles{X-drop} de BLAST que vimos en el \cref{cap:03}, y decide automáticamente entre alineamiento local y de extremo a extremo.
+
+\paragraph{Bowtie~2} \textcite{c07-langmead2012} siguieron un camino paralelo: el índice FM encuentra semillas sin huecos y la extensión se hace con programación dinámica vectorizada con instrucciones SIMD del procesador. Bowtie~2 sigue siendo muy usado en ChIP-seq y ATAC-seq.
+
+\subsection{Minimizadores}
+
+Para lecturas largas y ruidosas, \textcite{c07-li2018} optó en minimap2 por un índice de \ingles{hash}, pero sin guardar todos los $k$-meros del genoma: solo sus \emph{minimizadores}, una idea de \textcite{c07-roberts2004}.
+
+\begin{definicion}{$(w,k)$-minimizador}{minimizador}
+Sea $h$ una función que ordena los $k$-meros (por ejemplo, un \ingles{hash} pseudoaleatorio). Para cada ventana de $w$ $k$-meros consecutivos de una secuencia, el minimizador de la ventana es el $k$-mero de valor $h$ mínimo:
+\begin{equation}\label{eq:07-minimizador}
+\mu_j = \argmin_{j\le i<j+w} h\big(s[i..i+k-1]\big).
+\end{equation}
+El conjunto de minimizadores de la secuencia es $\{\mu_j\}$ para todas las ventanas $j$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$k$}{Longitud de cada $k$-mero.}
+\simbolo{$w$}{Número de $k$-meros consecutivos por ventana; la ventana abarca $w+k-1$ bases.}
+\simbolo{$h$}{Orden total sobre los $k$-meros; el orden alfabético es el más simple, un \ingles{hash} aleatorio el más eficaz.}
+\simbolo{$\mu_j$}{Posición del $k$-mero elegido en la ventana que empieza en $j$.}
+\end{simbolos}
+
+La definición garantiza dos propiedades. La primera es la de \emph{cobertura}: toda ventana de $w+k-1$ bases aporta al menos un minimizador, así que dos secuencias que comparten un tramo exacto de esa longitud comparten al menos un minimizador; es la misma garantía que buscaba el algoritmo de \ingles{winnowing} para detectar plagio en documentos \parencite{c07-schleimer2003}. La segunda es la de \emph{escasez}: ventanas vecinas comparten casi todos sus $k$-meros y suelen elegir el mismo, de modo que el número de minimizadores distintos es mucho menor que el de $k$-meros.
+
+\begin{teorema}{Densidad de los minimizadores}{densidad}
+Si los $k$-meros de una secuencia aleatoria reciben valores $h$ independientes y sin empates, la fracción esperada de posiciones elegidas como minimizador es
+\begin{equation}\label{eq:07-densidad}
+\delta \approx \frac{2}{w+1}.
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\delta$}{Densidad: número de minimizadores dividido por el número de $k$-meros.}
+\end{simbolos}
+
+\noindent\textit{Esbozo.} Compare dos ventanas consecutivas, $j$ y $j+1$. Juntas abarcan $w+1$ $k$-meros, y por simetría cada uno tiene la misma probabilidad, $1/(w+1)$, de ser el menor de todos. Si el menor es el primero (que solo pertenece a la ventana $j$), la ventana $j+1$ tiene que elegir otro $k$-mero: aparece un minimizador nuevo. Si el menor es el último (el que acaba de entrar), la ventana $j+1$ lo elige y también es nuevo. Si está en cualquier posición intermedia, ambas ventanas eligen el mismo y no se añade nada. La probabilidad de estrenar minimizador al avanzar una posición es, por tanto, $2/(w+1)$ \parencite{c07-schleimer2003}. \hfill$\square$
+
+Con $w=10$ se guarda solo un $k$-mero de cada $5{,}5$: el índice se reduce a menos de una quinta parte. En una secuencia aleatoria de \num{200000} bases con $k=15$ y $w=10$, nuestra simulación da una densidad de $0{,}188$ con un \ingles{hash} aleatorio (la teoría predice $0{,}182$) y de $0{,}199$ con orden alfabético, que tiende a elegir $k$-meros ricos en \texttt{A} consecutivos y es menos eficiente.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/minimizadores.tex}
+\caption[Minimizadores de una secuencia]{Minimizadores $(w=4,\,k=3)$ de una secuencia de 24 bases, con orden alfabético para que puedan comprobarse a mano. Cada fila muestra una ventana de cuatro 3-meros consecutivos, cada uno escrito bajo su base inicial, con el menor resaltado en rojo. Las ventanas 2 a 5 eligen el mismo \texttt{ACA}: por eso se guardan muchos menos minimizadores que $k$-meros. La última fila marca los nueve minimizadores de toda la secuencia (de 22 $k$-meros; densidad $0{,}41$, frente a $2/(w+1)=0{,}40$). Una lectura que contenga cualquier tramo de $w+k-1=6$ bases de esta secuencia compartirá con ella al menos uno de estos minimizadores.}
+\label{fig:07-minimizadores}
+\end{figure}
+
+\begin{codigo}[minimizadores.py]
+import zlib
+
+def minimizadores(s, k=15, w=10):
+    """Posiciones de los (w,k)-minimizadores de s."""
+    h = [zlib.crc32(s[i:i + k].encode())         # orden pseudoaleatorio
+         for i in range(len(s) - k + 1)]
+    elegidos = set()
+    for j in range(len(h) - w + 1):
+        v = h[j:j + w]
+        elegidos.add(j + v.index(min(v)))
+    return sorted(elegidos)
+\end{codigo}
+
+\subsection{Encadenamiento}
+
+Cada minimizador de la lectura que también aparece en el índice produce un \emph{ancla}: un par de posiciones $(x,y)$ en referencia y lectura donde termina una coincidencia exacta de longitud $w_i$ (aquí, $w_i=k$). Las anclas verdaderas se alinean a lo largo de una diagonal; las espurias, procedentes de repeticiones, quedan dispersas. \textcite{c07-li2018} define la puntuación $f(i)$ de la mejor cadena que termina en el ancla $i$ mediante programación dinámica:
+\begin{equation}\label{eq:07-cadena}
+f(i) = \max\Big\{\max_{j<i}\big\{f(j) + \alpha(j,i) - \beta(j,i)\big\},\; w_i\Big\},
+\end{equation}
+con
+\begin{equation}\label{eq:07-alfabeta}
+\alpha(j,i) = \min\big\{\min\{y_i-y_j,\; x_i-x_j\},\; w_i\big\},\qquad
+\beta(j,i) = \gamma\big((y_i-y_j)-(x_i-x_j)\big),
+\end{equation}
+\begin{equation}\label{eq:07-gamma}
+\gamma(\ell) = \begin{cases}
+0{,}01\,\bar w\,|\ell| + 0{,}5\log_2|\ell| & \ell\neq 0,\\
+0 & \ell = 0.
+\end{cases}
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$(x_i,y_i,w_i)$}{Ancla $i$: termina en la posición $x_i$ de la referencia y $y_i$ de la lectura, y cubre $w_i$ bases idénticas.}
+\simbolo{$f(i)$}{Puntuación máxima de una cadena de anclas que termina en $i$.}
+\simbolo{$\alpha(j,i)$}{Bases coincidentes que el ancla $i$ añade tras la $j$ (no cuenta dos veces el solapamiento).}
+\simbolo{$\beta(j,i)$}{Penalización por el desfase entre las distancias en lectura y referencia: un \ingles{indel} de longitud $|\ell|$.}
+\simbolo{$\bar w$}{Longitud media de las semillas.}
+\end{simbolos}
+
+$\beta$ vale infinito si el ancla $j$ no precede a la $i$ en la lectura o si están demasiado lejos. La \cref{eq:07-cadena} es una recurrencia de tipo Smith-Waterman (compárela con la del \cref{cap:03}) sobre \emph{anclas} en lugar de bases: el término $w_i$ permite empezar una cadena nueva, igual que el cero permitía empezar un alineamiento local. En la práctica se evalúan solo los 50 predecesores más cercanos, lo que reduce el coste de cuadrático a lineal en el número de anclas sin perder casi nunca la cadena óptima.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=6.4cm, xmin=0, xmax=6000, ymin=-50, ymax=2100,
+   xlabel={posición en la referencia (pb)}, ylabel={posición en la lectura (pb)},
+   xtick={0,1000,2000,3000,4000,5000,6000}, legend pos=south east, grid=none]
+  \fill[amarillo!30] (axis cs:1500,-50) rectangle (axis cs:1900,2100);
+  \fill[amarillo!30] (axis cs:4200,-50) rectangle (axis cs:4600,2100);
+  \addplot[only marks, mark=*, mark size=1.1pt, rojo] table {figuras/cap07/anclas.dat};
+  \addlegendentry{anclas fuera de la cadena}
+  \addplot[azul, thick, mark=*, mark size=0.9pt] table {figuras/cap07/cadena.dat};
+  \addlegendentry{cadena óptima}
+  \node[etiqueta, anchor=south, text=amarillo!40!black] at (axis cs:1700,1780) {repetición};
+  \node[etiqueta, anchor=south, text=amarillo!40!black] at (axis cs:4400,1780) {copia};
+\end{axis}
+\end{tikzpicture}
+\caption[Encadenamiento de anclas]{Encadenamiento de minimizadores ($k=15$, $w=10$) de una lectura simulada de \num{2000} pb, con un \SI{4}{\percent} de errores, contra una referencia de \num{6000} pb que contiene una repetición de 400 pb (bandas amarillas). La \cref{eq:07-cadena} elige 187 de las 236 anclas (azul), alineadas sobre una diagonal casi perfecta: la lectura procede de las posiciones \numrange{1000}{3000}. Las anclas rojas del extremo derecho son minimizadores de la repetición que también aparecen en su copia; no pueden encadenarse con el resto sin pagar un \ingles{indel} de casi \num{2700} bases, y quedan descartadas. Si la lectura cayera \emph{entera} dentro de la repetición, las dos cadenas empatarían: es el origen de la ambigüedad que mide la calidad de mapeo.}
+\label{fig:07-cadena}
+\end{figure}
+
+Tras encadenar, minimap2 rellena con programación dinámica los huecos entre anclas consecutivas y los extremos, con una penalización de huecos ``afín en dos tramos'' que permite \ingles{indels} largos. El mismo programa, con distintos parámetros preestablecidos (\texttt{-x sr} para lecturas cortas, \texttt{map-ont} y \texttt{map-hifi} para lecturas largas, \texttt{splice} para ARN, \texttt{asm5} para ensamblajes), cubre casi todos los casos de uso.
+
+\begin{consola}[Índices y mapeo]
+# BWA-MEM: índice FM (una sola vez) y mapeo de lecturas pareadas
+bwa index ref.fa
+bwa mem -t 8 -R '@RG\tID:m1\tSM:m1' ref.fa r1.fq.gz r2.fq.gz \
+    > m1.sam
+# minimap2: índice de minimizadores al vuelo (o guardado con -d)
+minimap2 -ax sr     ref.fa r1.fq.gz r2.fq.gz > m1_sr.sam
+minimap2 -ax map-ont ref.fa nanoporo.fq.gz   > m1_ont.sam
+\end{consola}
+
+\subsection{Calidad de mapeo}
+
+Supongamos que una lectura tiene dos ubicaciones candidatas. ¿Cuán seguros podemos estar de la mejor? \textcite{c07-li2008maq} introdujeron en MAQ la \emph{calidad de mapeo}, que expresa en escala Phred (la misma del \cref{cap:06}) la probabilidad de que la posición asignada sea errónea.
+
+\begin{definicion}{Calidad de mapeo}{mapq}
+Sean $u_1,\dots,u_K$ las ubicaciones candidatas de una lectura $q$ y $p(q\mid u)$ la probabilidad de observar $q$ si procede de $u$. Suponiendo un origen \emph{a priori} uniforme, la probabilidad \emph{a posteriori} de que la mejor ubicación $\hat u$ sea la verdadera es
+\begin{equation}\label{eq:07-posterior}
+\Prob(\hat u\mid q) = \frac{p(q\mid \hat u)}{\sum_{k=1}^{K} p(q\mid u_k)},
+\end{equation}
+y la calidad de mapeo es
+\begin{equation}\label{eq:07-mapq}
+\capsieteMQ = -10\log_{10}\big(1-\Prob(\hat u\mid q)\big).
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$u_k$}{Posición candidata $k$ (con su hebra).}
+\simbolo{$p(q\mid u)$}{Verosimilitud de la lectura dada la posición; si solo hay sustituciones, aproximadamente el producto de las probabilidades de error $\varepsilon_i=10^{-Q_i/10}$ de las bases discordantes.}
+\simbolo{$\capsieteMQ$}{Calidad de mapeo en escala Phred: 20 significa 1 \% de probabilidad de posición errónea, 30 significa \SI{0,1}{\percent}.}
+\end{simbolos}
+
+\begin{ejemplo}{Dos candidatas y un empate}{mapq}
+Una lectura coincide con la posición $u_1$ salvo por una base de calidad $Q=35$, y con $u_2$ salvo por dos bases de calidades 25 y 30. Aproximando $p(q\mid u)$ por el producto de las probabilidades de error de las discordancias,
+\[
+p(q\mid u_1)=10^{-3{,}5}=3{,}16\times10^{-4},\qquad p(q\mid u_2)=10^{-2{,}5}\cdot10^{-3}=3{,}16\times10^{-6}.
+\]
+La probabilidad de error es $3{,}16\times10^{-6}/(3{,}16\times10^{-4}+3{,}16\times10^{-6})=0{,}0099$, y $\capsieteMQ=-10\log_{10}0{,}0099=20{,}0$. Una sola base discordante de diferencia, pero de buena calidad, basta para preferir $u_1$ con un \SI{99}{\percent} de confianza. Si en cambio $u_1$ y $u_2$ fueran idénticas, la \cref{eq:07-mapq} daría $-10\log_{10}0{,}5=3{,}01$; con tres copias idénticas, $1{,}76$.
+\end{ejemplo}
+
+En la práctica, los programas no enumeran todas las candidatas: estiman el denominador a partir de las dos mejores y de cuántas subóptimas encontraron. BWA supone que la ubicación verdadera siempre está entre las halladas y comprueba por simulación que sus valores son razonables: de \num{1569108} lecturas simuladas con $\capsieteMQ=60$, solo 11 estaban mal colocadas \parencite{c07-li2009bwa}. minimap2 usa una fórmula empírica basada en las puntuaciones de encadenamiento de la cadena primaria ($f_1$) y de la mejor secundaria ($f_2$):
+\begin{equation}\label{eq:07-mapqmm2}
+\capsieteMQ = 40\left(1-\frac{f_2}{f_1}\right)\min\left\{1,\frac{a}{10}\right\}\ln f_1,
+\end{equation}
+donde $a$ es el número de anclas de la cadena primaria \parencite{c07-li2018}; el valor final se trunca en 60. Con $f_1=200$ y 40 anclas, una secundaria con $f_2=150$ da un $\capsieteMQ$ de 53, y una casi empatada con $f_2=195$ lo hunde hasta 5.
+
+\begin{cuidado}[Lo que el MAPQ no es]
+\begin{itemize}
+  \item \emph{No es una calidad del alineamiento.} Una lectura puede alinearse perfectamente, sin una sola discordancia, y tener $\capsieteMQ=0$ porque encaja igual de bien en dos copias de una repetición.
+  \item \emph{No es comparable entre programas.} BWA, Bowtie~2 y minimap2 calculan y truncan el MAPQ de maneras distintas. Un filtro ``$\capsieteMQ\ge 20$'' significa cosas diferentes en cada caso.
+  \item \emph{Depende de la referencia.} Si falta en la referencia la copia verdadera de una repetición, las lecturas se mapean con confianza al lugar equivocado.
+\end{itemize}
+\end{cuidado}
+
+\subsection{Repeticiones y multimapeo}
+
+Casi la mitad del genoma humano está formada por secuencias repetidas: elementos transponibles, satélites, duplicaciones segmentarias \parencite{c07-treangen2012}. Una lectura de 150 bases que cae en el interior de una copia reciente de un elemento Alu o de una duplicación segmentaria no tiene un origen identificable: se \emph{multimapea}. Los formatos distinguen tres tipos de registros: el alineamiento \emph{primario}, uno por lectura, elegido al azar entre los empatados; los \emph{secundarios}, que señalan otras ubicaciones plausibles; y los \emph{suplementarios}, que no son alternativas sino \emph{piezas} de una lectura quimérica, cuyo extremo izquierdo se alinea en un lugar y el derecho en otro, como ocurre en una translocación.
+
+Cuánto de este problema es inevitable depende también de la referencia. GRCh38 dejó, pese a su calidad \parencite{c07-schneider2017}, huecos en centrómeros y brazos cortos acrocéntricos. El genoma T2T-CHM13 completó el 8~\% restante: \num{3055} millones de bases sin huecos, con casi 200 millones de bases nuevas, en buena parte satélites y duplicaciones segmentarias recientes \parencite{c07-nurk2022}. Las lecturas que antes no tenían dónde caer, o que caían en una copia parálogas equivocada, ahora tienen un sitio.
+
+\subsection{Lecturas pareadas y tamaño de inserto}
+
+Cuando se secuencian ambos extremos de un fragmento, las dos lecturas no son independientes: deben mapearse en hebras opuestas, orientadas una hacia la otra, a una distancia compatible con el tamaño de los fragmentos de la biblioteca. Esa información resuelve muchas ambigüedades: si una lectura cae en una repetición pero su pareja cae en secuencia única, la pareja ``ancla'' a la primera. BWA-MEM estima la distribución del tamaño de inserto a partir de los pares mapeados sin ambigüedad y puntúa cada combinación $(i,j)$ de ubicaciones de las dos lecturas con \parencite{c07-li2013}
+\begin{equation}\label{eq:07-pares}
+S_{ij} = S_i + S_j - \min\big\{-a\log_4 P(d_{ij}),\; U\big\},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$S_i,\ S_j$}{Puntuaciones de Smith-Waterman de cada lectura en su ubicación.}
+\simbolo{$d_{ij}$}{Distancia entre las dos ubicaciones (infinita si la orientación es incorrecta).}
+\simbolo{$P(d)$}{Probabilidad de observar un inserto mayor que $d$ según una distribución normal ajustada.}
+\simbolo{$a$}{Puntuación de una coincidencia; convierte probabilidades en unidades de puntuación.}
+\simbolo{$U$}{Penalización máxima: si el par es muy improbable, es preferible tratar las lecturas como no emparejadas.}
+\end{simbolos}
+
+\noindent El logaritmo en base 4 aparece al interpretar la puntuación de Smith-Waterman como una razón de verosimilitudes, como vimos en el \cref{cap:03}. Los pares que el modelo no puede explicar, por estar demasiado separados, demasiado juntos o mal orientados, son \emph{discordantes}, y son precisamente la señal que buscan los detectores de variantes estructurales (\cref{fig:07-inserto}).
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.6cm, xmin=100, xmax=1800, ymin=0, ymax=0.0128,
+   xlabel={tamaño de inserto $d$ (pb)}, ylabel={densidad},
+   yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=3},
+   legend pos=north east, grid=none]
+  \fill[verde!12] (axis cs:190,0) rectangle (axis cs:510,0.0128);
+  \addplot[const plot mark mid, fill=azul!30, draw=azul, thin] table {figuras/cap07/inserto.dat} \closedcycle;
+  \addlegendentry{simulación (\num{20150} pares)}
+  \addplot[naranja, thick, domain=100:700, samples=120] {exp(-(x-350)^2/(2*40^2))/(40*sqrt(2*pi))*20000/20150};
+  \addlegendentry{normal ajustada, $\mu=350$, $\sigma=40$}
+  \node[etiqueta, text=verde!40!black, align=center] at (axis cs:350,0.0117) {pares concordantes, $\mu\pm4\sigma$};
+  \draw[flecha=rojooscuro] (axis cs:1400,0.0022) -- (axis cs:1540,0.0006);
+  \node[etiqueta, text=rojooscuro, anchor=south, align=center] at (axis cs:1300,0.0022) {150 pares discordantes:\\deleción de \SI{1,2}{kb}};
+\end{axis}
+\end{tikzpicture}
+\caption[Distribución del tamaño de inserto]{Tamaño de inserto de \num{20000} pares simulados con $\mu=350$ y $\sigma=40$ pb, más 150 pares que atraviesan una deleción de \num{1200} pb en la muestra. Como la referencia conserva el segmento que la muestra perdió, esos pares parecen \num{1200} pb más largos. Bajo el modelo normal, la probabilidad de un inserto mayor que $\mu+4\sigma=510$ pb es $3\times10^{-5}$: esperaríamos menos de un par así por azar, y observamos 150 agrupados en la misma región. Los detectores de variantes estructurales combinan esta señal con la cobertura (\cref{sec:07-cobertura}) y con las lecturas partidas.}
+\label{fig:07-inserto}
+\end{figure}
+
+\subsection{El formato SAM/BAM}
+
+Todos los mapeadores escriben sus resultados en el formato SAM (\ingles{Sequence Alignment/Map}), creado para el Proyecto 1000 Genomas \parencite{c07-li2009sam} y mantenido hoy como especificación formal \parencite{c07-samspec}. Un archivo SAM es texto tabulado: una cabecera con líneas que empiezan por \texttt{@} (secuencias de referencia \texttt{@SQ}, grupos de lectura \texttt{@RG}, programas \texttt{@PG}) y una línea por alineamiento con once campos obligatorios (\cref{tab:07-sam}), seguidos de etiquetas opcionales \texttt{TAG:TIPO:VALOR}, como \texttt{NM:i:2} (distancia de edición) o \texttt{AS:i:} (puntuación del alineamiento).
+
+\begin{table}[tbp]
+\centering
+\small
+\caption[Campos obligatorios de un registro SAM]{Los once campos obligatorios de un registro SAM, ilustrados con el primer extremo de un par ficticio de 20 bases. Las posiciones son base 1.}
+\label{tab:07-sam}
+\begin{tabularx}{\linewidth}{@{}rllX@{}}
+\toprule
+\# & Campo & Ejemplo & Significado\\
+\midrule
+1 & \texttt{QNAME} & \texttt{r017} & Nombre de la lectura (igual en ambos extremos del par).\\
+2 & \texttt{FLAG} & \texttt{99} & Suma de bits (\cref{tab:07-flag}): $1+2+32+64$.\\
+3 & \texttt{RNAME} & \texttt{chr7} & Secuencia de referencia.\\
+4 & \texttt{POS} & \texttt{1021} & Posición de la primera base \emph{alineada} (no recortada).\\
+5 & \texttt{MAPQ} & \texttt{60} & Calidad de mapeo (\cref{eq:07-mapq}); 255 si no está disponible.\\
+6 & \texttt{CIGAR} & \texttt{3S12M1D5M} & Operaciones del alineamiento: 3 recortadas, 12 alineadas, 1 deleción, 5 alineadas.\\
+7 & \texttt{RNEXT} & \texttt{=} & Referencia de la pareja (\texttt{=}: la misma).\\
+8 & \texttt{PNEXT} & \texttt{1180} & Posición de la pareja.\\
+9 & \texttt{TLEN} & \texttt{179} & Longitud observada del fragmento, de 1021 a 1199.\\
+10 & \texttt{SEQ} & \texttt{GTA}\ldots & Bases de la lectura, en la hebra de la referencia.\\
+11 & \texttt{QUAL} & \texttt{FFF}\ldots & Calidades Phred+33 (\cref{cap:06}).\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{La cadena CIGAR} Describe el alineamiento como una sucesión de longitudes y operaciones: \texttt{M} (alineada, coincida o no; \texttt{=} y \texttt{X} distinguen ambos casos), \texttt{I} (inserción respecto a la referencia), \texttt{D} (deleción), \texttt{N} (salto en la referencia, típico de un intrón en RNA-seq), \texttt{S} (recorte suave: las bases están en \texttt{SEQ} pero no alineadas) y \texttt{H} (recorte duro: las bases ni siquiera se guardan). En el ejemplo, las operaciones que consumen la lectura (\texttt{S}, \texttt{M}, \texttt{I}) suman $3+12+5=20$, su longitud, y las que consumen referencia (\texttt{M}, \texttt{D}, \texttt{N}) suman $12+1+5=18$: el alineamiento cubre las posiciones 1021 a 1038. Si la pareja se alinea como \texttt{20M} a partir de 1180, termina en 1199 y el fragmento mide $1199-1021+1=179$ pb.
+
+\begin{table}[tbp]
+\centering
+\small
+\caption[Bits del campo FLAG]{Bits del campo \texttt{FLAG} de SAM \parencite{c07-samspec}. Un filtro frecuente es \texttt{-F 0x904} (excluir no mapeadas, secundarias y suplementarias), que deja un registro primario por lectura mapeada.}
+\label{tab:07-flag}
+\begin{tabular}{@{}rrl@{\hspace{1.2em}}rrl@{}}
+\toprule
+Bit & Dec. & Significado & Bit & Dec. & Significado\\
+\midrule
+\texttt{0x1} & 1 & lectura pareada & \texttt{0x40} & 64 & primera del par\\
+\texttt{0x2} & 2 & par concordante (\ingles{proper pair}) & \texttt{0x80} & 128 & segunda del par\\
+\texttt{0x4} & 4 & lectura no mapeada & \texttt{0x100} & 256 & alineamiento secundario\\
+\texttt{0x8} & 8 & pareja no mapeada & \texttt{0x200} & 512 & no pasa filtros de calidad\\
+\texttt{0x10} & 16 & lectura en hebra reversa & \texttt{0x400} & 1024 & duplicado de PCR u óptico\\
+\texttt{0x20} & 32 & pareja en hebra reversa & \texttt{0x800} & 2048 & alineamiento suplementario\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+BAM es la versión binaria y comprimida de SAM, en bloques BGZF independientes; eso permite \emph{indexarla} (archivo \archivo{.bai} o \archivo{.csi}) y saltar directamente a una región sin leer el resto del archivo, siempre que esté ordenada por coordenada. CRAM va más allá y guarda solo las diferencias respecto a la referencia, con archivos aún menores.
+
+\subsection{samtools: del SAM crudo al BAM analizable}
+
+El SAM que sale del mapeador está en el orden de las lecturas del FASTQ. Para analizarlo hacen falta varios pasos, que \cmd{samtools} resuelve en un flujo de tuberías \parencite{c07-li2009sam,c07-danecek2021}. El orden importa (\cref{fig:07-flujo}):
+\begin{enumerate}
+  \item \cmd{samtools fixmate -m} rellena, con los dos extremos de cada par a la vista, la información sobre la pareja y añade las etiquetas que necesitará el marcado de duplicados. Requiere los pares contiguos, como los entrega BWA-MEM.
+  \item \cmd{samtools sort} ordena por coordenada.
+  \item \cmd{samtools markdup} marca con el bit \texttt{0x400} los \emph{duplicados}: pares cuyos extremos 5' coinciden en posición y orientación, que probablemente son copias por PCR de un mismo fragmento original o duplicados ópticos del secuenciador (recuerde la complejidad de la biblioteca del \cref{cap:06}). \cmd{samblaster} lo hace en flujo, sin ordenar, y además extrae las lecturas discordantes y partidas \parencite{c07-faust2014}.
+  \item \cmd{samtools index} crea el índice para el acceso aleatorio.
+\end{enumerate}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=4mm and 6.5mm,
+   paso/.style={caja=#1, minimum height=11mm, text width=19mm},
+   dato/.style={draw=gris, fill=papel!60, rounded corners=1pt, font=\sffamily\scriptsize, text=tinta2, align=center, inner sep=3pt}]
+  \node[paso=gris] (fq) {FASTQ\\[-1pt]{\scriptsize R1 + R2}};
+  \node[paso=azul, right=of fq] (map) {mapeo\\[-1pt]{\scriptsize\texttt{bwa mem}}};
+  \node[paso=azul, right=of map] (fix) {parejas\\[-1pt]{\scriptsize\texttt{fixmate -m}}};
+  \node[paso=azul, right=of fix] (sort) {ordenar\\[-1pt]{\scriptsize\texttt{sort}}};
+  \node[paso=naranja, below=10mm of sort] (dup) {duplicados\\[-1pt]{\scriptsize\texttt{markdup}}};
+  \node[paso=naranja, left=of dup] (idx) {índice\\[-1pt]{\scriptsize\texttt{index}}};
+  \node[paso=verde, left=of idx] (bam) {BAM + BAI\\[-1pt]{\scriptsize listo}};
+  \node[paso=aqua, left=of bam] (qc) {control\\[-1pt]{\scriptsize\texttt{flagstat}}};
+  \node[dato, above=3mm of map] (ref) {índice FM de \texttt{ref.fa}};
+  \draw[flecha] (ref) -- (map);
+  \draw[flecha] (fq) -- (map);
+  \draw[flecha] (map) -- node[above, etiqueta, yshift=1pt]{SAM} (fix);
+  \draw[flecha] (fix) -- (sort);
+  \draw[flecha] (sort) -- (dup);
+  \draw[flecha] (dup) -- (idx);
+  \draw[flecha] (idx) -- (bam);
+  \draw[flecha] (bam) -- (qc);
+  \node[dato, below=5mm of bam, text width=58mm] (usos) {IGV (\cref{sec:07-cobertura}) \quad cobertura con \cmd{mosdepth}\\llamado de variantes (\cref{cap:08})};
+  \draw[flecha=verde] (bam) -- (usos);
+\end{tikzpicture}
+\caption[Flujo de trabajo de mapeo]{Flujo de trabajo típico de mapeo de lecturas Illumina pareadas. En azul, los pasos que se encadenan en una sola tubería sin archivos intermedios; en naranja, los que operan sobre el BAM ordenado. \cmd{fixmate} debe ir \emph{antes} de ordenar, cuando los dos extremos de cada par aún están contiguos, y \cmd{markdup}, \emph{después}. El BAM indexado es el punto de partida de la visualización, la cobertura y el llamado de variantes.}
+\label{fig:07-flujo}
+\end{figure}
+
+\begin{consola}[De SAM a BAM analizable]
+bwa mem -t 8 -R '@RG\tID:m1\tSM:m1' ref.fa r1.fq.gz r2.fq.gz \
+  | samtools fixmate -m - - \
+  | samtools sort -@ 4 -o m1.ordenado.bam -
+samtools markdup -@ 4 m1.ordenado.bam m1.bam
+samtools index m1.bam
+samtools flagstat m1.bam              # resumen de FLAG
+samtools view -c -F 0x904 -q 20 m1.bam  # primarias con MAPQ>=20
+samtools view m1.bam chr7:55019017-55211628 | head   # una región
+\end{consola}
+
+\begin{cuidado}[Errores frecuentes en el flujo]
+\begin{itemize}
+  \item Olvidar el grupo de lectura (\texttt{-R}). Muchos programas posteriores lo exigen para distinguir muestras y carriles.
+  \item Marcar duplicados en datos de amplicones o de RNA-seq sin pensarlo: allí los ``duplicados'' son la norma biológica o técnica, no un artefacto.
+  \item Mezclar referencias: el BAM solo es válido junto con la misma versión exacta del FASTA (\texttt{chr7} frente a \texttt{7}, GRCh37 frente a GRCh38). Consulte las líneas \texttt{@SQ} de la cabecera con \texttt{samtools view -H}.
+\end{itemize}
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{Visualización de alineamientos y cobertura}\label{sec:07-cobertura}
+% ---------------------------------------------------------------------
+\enlacerepo{7.3 · Visualización de alineamientos y cobertura}
+
+\begin{intuicion}[Una autopista vista desde un helicóptero]
+Desde un helicóptero se ve el tráfico de una autopista de dos carriles como una densidad de coches más o menos uniforme. Si un tramo tiene un carril cerrado por obras, la densidad cae a la mitad; si el tramo entero está cortado, no pasa ningún coche; si se abre un tercer carril, la densidad sube un cincuenta por ciento. Y hay un tramo en que la autopista corre paralela a otra idéntica: desde el aire es imposible saber por cuál va cada coche, y el contador automático, prudente, no cuenta ninguno. Un perfil de cobertura es esa vista aérea del genoma: las lecturas son los coches, el número de copias son los carriles, y las repeticiones son las autopistas gemelas.
+\end{intuicion}
+
+\subsection{Mirar antes de calcular: IGV}
+
+Así como el \ingles{dot plot} del \cref{cap:03} precedía al alineamiento, mirar los alineamientos precede a cualquier análisis serio. El \ingles{Integrative Genomics Viewer} (IGV) permite navegar un BAM indexado a cualquier escala, desde un cromosoma entero hasta una base \parencite{c07-robinson2011}. Su diseño carga solo la región visible, aprovechando el índice del BAM, y muestra la información en \emph{pistas} apiladas: la anotación de genes, la cobertura, las lecturas individuales \parencite{c07-thorvaldsdottir2013}. Las convenciones visuales codifican casi todos los campos del SAM:
+\begin{itemize}
+  \item las bases que \emph{coinciden} con la referencia no se dibujan; solo se colorean las discordantes, de modo que el ojo va directo a las diferencias;
+  \item una línea negra horizontal indica una deleción, y una marca violeta, una inserción;
+  \item el color de fondo de cada lectura puede indicar su hebra, y las lecturas con $\capsieteMQ=0$ se dibujan transparentes;
+  \item en la pista de cobertura, las posiciones donde una fracción notable de las lecturas difiere de la referencia se colorean con la proporción de cada base.
+\end{itemize}
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/pileup.tex}
+\caption[Pileup de lecturas al estilo IGV]{Apilamiento (\ingles{pileup}) de lecturas sobre 44 bases de referencia, dibujado con las convenciones de IGV. Las lecturas azules se alinean en la hebra directa y las rojas en la reversa (la punta indica el sentido). En la columna recuadrada, 5 de las 9 lecturas llevan una \texttt{G} donde la referencia tiene \texttt{A}: la pista de cobertura se colorea con esa proporción ($0{,}56$), la firma de un SNV heterocigoto. Las letras aisladas en otras columnas (una \texttt{C} y una \texttt{A}) son errores de secuenciación: aparecen en una sola lectura. La línea negra marca una deleción de 2 pb en una lectura, y las letras tenues dentro del recuadro punteado son bases con recorte suave (\texttt{4S}), presentes en la lectura pero no alineadas.}
+\label{fig:07-pileup}
+\end{figure}
+
+La \cref{fig:07-pileup} resume la lectura de un \ingles{pileup}. Distinguir una variante de un error es una cuestión de conteo. Si la tasa de error por base es $\varepsilon=10^{-3}$ (calidad 30), la probabilidad de que 5 o más de 9 lecturas muestren la misma base errónea por azar es del orden de $\binom{9}{5}\varepsilon^{5}\approx 1{,}3\times10^{-13}$; la de que una sola lectura muestre un error, $9\varepsilon\approx 0{,}009$. El siguiente capítulo convertirá este razonamiento en un modelo bayesiano de genotipos.
+
+\begin{cuidado}[Artefactos que se ven en IGV]
+\begin{itemize}
+  \item \emph{Sesgo de hebra}: una ``variante'' presente solo en lecturas de una hebra suele ser un artefacto químico o de alineamiento.
+  \item \emph{Variantes al final de las lecturas}: cerca de un \ingles{indel}, el alineador puede preferir varias sustituciones en el extremo de la lectura a abrir un hueco, lo que produce falsos SNV agrupados.
+  \item \emph{Pilas de lecturas con $\capsieteMQ$ bajo y muchas discordancias}: huella de una repetición o de una región que falta en la referencia; las lecturas de otro lugar ``se refugian'' allí.
+\end{itemize}
+\end{cuidado}
+
+\subsection{La cobertura como señal}
+
+La definición de cobertura del \cref{cap:06} era un promedio; ahora la necesitamos posición a posición.
+
+\begin{definicion}{Profundidad por posición}{profundidad}
+Sea $\mathcal{A}$ el conjunto de alineamientos que superan los filtros (por ejemplo, primarios, no duplicados y con $\capsieteMQ\ge 20$), y sea $B(a)$ el conjunto de bloques de referencia $[s,e)$ que el alineamiento $a$ cubre, es decir, sus operaciones \texttt{M}, \texttt{=} o \texttt{X} de la cadena CIGAR. La profundidad en la posición $x$ es
+\begin{equation}\label{eq:07-profundidad}
+c(x) = \sum_{a\in\mathcal{A}}\;\sum_{[s,e)\in B(a)} \mathbb{1}\big[s\le x<e\big].
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$c(x)$}{Número de lecturas filtradas que cubren la posición $x$ con una base alineada.}
+\simbolo{$\mathcal{A}$}{Alineamientos que se cuentan; los filtros cambian mucho el resultado en repeticiones.}
+\simbolo{$[s,e)$}{Bloque semiabierto de posiciones de referencia cubierto sin interrupción; una deleción o un intrón parten un alineamiento en varios bloques.}
+\end{simbolos}
+
+Calcular la \cref{eq:07-profundidad} de forma directa cuesta $O(\sum_a |a|)$: unos $10^{11}$ incrementos para un genoma a $30\times$. \textcite{c07-pedersen2018} observaron en \cmd{mosdepth} que basta con anotar dónde \emph{empieza} y dónde \emph{termina} cada bloque en un arreglo de diferencias $\delta$ del tamaño del cromosoma,
+\begin{equation}\label{eq:07-mosdepth}
+\delta(s) \mathrel{+}= 1,\quad \delta(e) \mathrel{-}= 1 \quad\text{para cada bloque }[s,e),\qquad
+c(x) = \sum_{y\le x}\delta(y),
+\end{equation}
+y reconstruir la profundidad con una suma acumulada. El coste pasa a ser proporcional al número de bloques más la longitud del cromosoma, y no a la profundidad (\cref{fig:07-mosdepth}). El precio es memoria: un entero de 32 bits por base, cerca de 1~GB para el cromosoma 1 humano. \cmd{mosdepth} evita además contar dos veces la región donde los dos extremos de un par se solapan, que no aporta información independiente. Otras herramientas cubren usos distintos: \cmd{samtools depth}, \cmd{bedtools genomecov} \parencite{c07-quinlan2010} y \cmd{bamCoverage} de deepTools, que produce pistas normalizadas en formato bigWig para comparar muestras en un navegador \parencite{c07-ramirez2016}.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap07/mosdepth.tex}
+\caption[El algoritmo de \cmd{mosdepth}]{El algoritmo de \cmd{mosdepth} (\cref{eq:07-mosdepth}) sobre 14 posiciones. Cada bloque alineado suma 1 en su inicio y resta 1 en su final (posición siguiente a la última cubierta). La lectura 2 contiene una deleción (\texttt{D}) y aporta dos bloques. La suma acumulada del arreglo $\delta$ reproduce la profundidad de cada posición, coloreada de claro a oscuro. Con $N$ bloques y un cromosoma de longitud $G$, el coste es $O(N+G)$, sin importar cuántas lecturas se apilen en cada base.}
+\label{fig:07-mosdepth}
+\end{figure}
+
+\begin{codigo}[profundidad.py]
+import numpy as np
+import pysam
+
+def profundidad(bam, crom, mapq=20):
+    """Profundidad por base con el arreglo de diferencias."""
+    with pysam.AlignmentFile(bam) as f:
+        G = f.get_reference_length(crom)
+        d = np.zeros(G + 1, dtype=np.int32)
+        for a in f.fetch(crom):
+            if (a.is_unmapped or a.is_secondary or a.is_supplementary
+                    or a.is_duplicate or a.mapping_quality < mapq):
+                continue
+            for s, e in a.get_blocks():         # bloques M/=/X
+                d[s] += 1
+                d[e] -= 1
+    return np.cumsum(d[:-1])
+\end{codigo}
+
+\begin{consola}[Cobertura con mosdepth]
+# profundidad media en ventanas de 500 pb, solo MAPQ >= 20
+mosdepth -t 4 -n --by 500 -Q 20 m1 m1.bam
+zcat m1.regions.bed.gz | head -3       # crom inicio fin media
+cat m1.mosdepth.summary.txt            # media por cromosoma
+\end{consola}
+
+\subsection{Cobertura y número de copias}
+
+Si las lecturas se muestrean uniformemente, la profundidad esperada en una región es proporcional a su número de copias. Para un genoma diploide,
+\begin{equation}\label{eq:07-cn}
+\E\big[c(x)\big] = \bar c\,\frac{\mathrm{CN}(x)}{2}\,b(x),
+\end{equation}
+y el estadístico natural para comparar una ventana $W$ con el resto del genoma es el logaritmo del cociente
+\begin{equation}\label{eq:07-log2}
+\ell_W = \log_2\frac{\bar c_W}{\operatorname{mediana}_V\,\bar c_V}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\bar c$}{Cobertura media del genoma (p.\,ej., $30\times$).}
+\simbolo{$\mathrm{CN}(x)$}{Número de copias de la región en la muestra: 2 normal, 1 deleción heterocigota, 0 homocigota, 3 duplicación heterocigota.}
+\simbolo{$b(x)$}{Sesgo local multiplicativo (contenido de GC, mapeabilidad), idealmente 1.}
+\simbolo{$\bar c_W$}{Profundidad media en la ventana $W$.}
+\simbolo{$\ell_W$}{Razón logarítmica: $0$ normal, $-1$ deleción heterocigota, $\log_2 1{,}5=0{,}58$ duplicación, $-\infty$ deleción homocigota.}
+\end{simbolos}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2, vertical sep=9mm, xticklabels at=edge bottom},
+   curso, width=\linewidth, xmin=1, xmax=100, grid=none]
+\nextgroupplot[height=4.6cm, ymin=0, ymax=62, ylabel={profundidad},
+   legend style={at={(0.5,1.02)}, anchor=south}, legend columns=2]
+  \fill[rojo!12] (axis cs:30,0) rectangle (axis cs:34,62);
+  \fill[rojo!22] (axis cs:55,0) rectangle (axis cs:56.5,62);
+  \fill[verde!14] (axis cs:72,0) rectangle (axis cs:78,62);
+  \fill[amarillo!30] (axis cs:88,0) rectangle (axis cs:90,62);
+  \addplot[gris, thin] table[x=x, y=all] {figuras/cap07/perfil.dat};
+  \addlegendentry{todas las lecturas}
+  \addplot[azul, thick] table[x=x, y=q] {figuras/cap07/perfil.dat};
+  \addlegendentry{$\capsieteMQ\ge20$}
+  \node[etiqueta, text=rojooscuro] at (axis cs:32,57) {het.};
+  \node[etiqueta, text=rojooscuro] at (axis cs:55.7,57) {hom.};
+  \node[etiqueta, text=verde!40!black] at (axis cs:75,57) {dup.};
+  \node[etiqueta, text=amarillo!40!black] at (axis cs:89,57) {rep.};
+\nextgroupplot[height=3.8cm, ymin=-4.2, ymax=1.3, ylabel={$\ell_W$ (log$_2$)},
+   xlabel={posición (kb)}, ytick={-4,-3,-2,-1,0,1}]
+  \addplot[gris, dashed, thin, domain=0:100] {0};
+  \addplot[rojo, dashed, thin, domain=0:100] {-1};
+  \addplot[verde, dashed, thin, domain=0:100] {0.585};
+  \addplot[azul, thick, const plot mark mid] table[x=x, y=lr] {figuras/cap07/log2.dat};
+  \node[etiqueta, anchor=west, text=rojooscuro] at (axis cs:92,-1.3) {$-1$};
+  \node[etiqueta, anchor=west, text=verde!40!black] at (axis cs:92,0.95) {$0{,}58$};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Perfil de cobertura con variantes de número de copias]{Perfil de cobertura simulado de 100 kb a $30\times$ con lecturas de 150 pb. \textbf{Arriba}: profundidad media en bloques de 200 pb, con todas las lecturas (gris) y solo con $\capsieteMQ\ge20$ (azul). Se aprecian una deleción heterocigota de 4 kb (la profundidad cae a la mitad), una homocigota de \SI{1,5}{kb} (cae a cero), una duplicación de 6 kb (sube un \SI{50}{\percent}) y una repetición de 2 kb cuya otra copia está en el genoma: las lecturas se mapean pero con $\capsieteMQ=0$, así que la cobertura filtrada se desploma aunque no falte ADN. El sesgo ondulante imita el efecto del contenido de GC. \textbf{Abajo}: razón logarítmica en ventanas de 1 kb (\cref{eq:07-log2}); las ventanas de la deleción heterocigota promedian $-1{,}14$ y las de la duplicación $0{,}69$, cerca de los valores teóricos (líneas discontinuas).}
+\label{fig:07-perfil}
+\end{figure}
+
+La \cref{fig:07-perfil} muestra estos patrones en un perfil simulado. Obsérvese la trampa de la repetición: con todas las lecturas, su cobertura es normal (unos 35); con el filtro de $\capsieteMQ\ge20$, cae a $0{,}6$ y se confundiría con una deleción homocigota. Un análisis de cobertura siempre debe acompañarse de una máscara de \emph{mapeabilidad} que diga qué regiones del genoma pueden recibir lecturas únicas. CNVnator, uno de los métodos clásicos de profundidad de lectura, corrige el sesgo de GC, segmenta el perfil con un algoritmo de \ingles{mean-shift} y alcanza, con cobertura alta, una resolución de los puntos de corte de menos de 200 pb en el \SI{90}{\percent} de los casos \parencite{c07-abyzov2011}. Sus autores subrayan que la profundidad es complementaria a las lecturas discordantes y partidas: cada señal detecta variantes que las otras no ven.
+
+\subsection{¿Qué deleción es detectable?}
+
+Hagamos la cuenta que decide si una deleción se ve o se pierde en el ruido. En una ventana de $W$ bases con cobertura $\bar c$ y lecturas de longitud $L$, el número de lecturas que empiezan en la ventana es aproximadamente de Poisson con media $\lambda=\bar cW/L$, y su desviación típica es $\sqrt\lambda$. Una deleción heterocigota reduce la media a $\lambda/2$; la diferencia, medida en desviaciones típicas de la hipótesis nula, es
+\begin{equation}\label{eq:07-z}
+z_{\text{het}} = \frac{\lambda-\lambda/2}{\sqrt\lambda}=\frac{\sqrt{\lambda}}{2},
+\qquad
+z_{\text{hom}} = \frac{\lambda}{\sqrt\lambda}=\sqrt\lambda .
+\end{equation}
+Exigiendo $z\ge z^\star$ y despejando $W$,
+\begin{equation}\label{eq:07-wmin}
+W_{\min}^{\text{het}} = \frac{4\,z^{\star 2}\,L}{\bar c},\qquad
+W_{\min}^{\text{hom}} = \frac{z^{\star 2}\,L}{\bar c}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\lambda$}{Número esperado de lecturas que empiezan en la ventana: $\bar c\,W/L$.}
+\simbolo{$z^\star$}{Umbral de significación en desviaciones típicas; con millones de ventanas en el genoma, $z^\star\approx5$ controla los falsos positivos.}
+\simbolo{$W_{\min}$}{Tamaño mínimo de una deleción detectable por profundidad.}
+\end{simbolos}
+
+\begin{ejemplo}{Diseño para detectar deleciones}{deteccion}
+Con $\bar c=30$, $L=150$ y $z^\star=5$, la \cref{eq:07-wmin} da $W^{\text{het}}_{\min}=4\cdot25\cdot150/30=500$ pb y $W^{\text{hom}}_{\min}=125$ pb. A $10\times$, los valores se triplican: \num{1500} y 375 pb; a $60\times$, se reducen a la mitad: 250 y 62 pb. Una duplicación heterocigota, que cambia la media de $\lambda$ a $1{,}5\lambda$, produce la misma diferencia absoluta que una deleción heterocigota y requiere, por tanto, ventanas similares. Por debajo de unos cientos de bases, la profundidad no basta y hay que recurrir a lecturas partidas y a pares discordantes (\cref{fig:07-inserto}).
+\end{ejemplo}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.8cm, ymode=log, xmin=5, xmax=80,
+   ymin=20, ymax=5000, xlabel={cobertura media $\bar c$}, ylabel={$W_{\min}$ (pb)},
+   ytick={20,50,100,200,500,1000,2000,5000}, yticklabels={20,50,100,200,500,\num{1000},\num{2000},\num{5000}},
+   legend pos=north east]
+  \addplot table[x=c, y=het] {figuras/cap07/deteccion.dat};
+  \addlegendentry{deleción heterocigota, $z^\star=5$}
+  \addplot table[x=c, y=hom] {figuras/cap07/deteccion.dat};
+  \addlegendentry{deleción homocigota, $z^\star=5$}
+  \addplot[azul, dashed] table[x=c, y=het3] {figuras/cap07/deteccion.dat};
+  \addlegendentry{heterocigota, $z^\star=3$ (región candidata)}
+  \addplot[only marks, mark=*, mark size=2pt, tinta] coordinates {(30,500) (30,125)};
+  \node[etiqueta, anchor=south west] at (axis cs:30.5,500) {500 pb};
+  \node[etiqueta, anchor=south west] at (axis cs:30.5,125) {125 pb};
+\end{axis}
+\end{tikzpicture}
+\caption[Tamaño mínimo detectable de una deleción]{Tamaño mínimo de una deleción detectable solo por profundidad, según la \cref{eq:07-wmin}, para lecturas de 150 pb. Duplicar la cobertura reduce a la mitad el tamaño detectable; pasar de una búsqueda en todo el genoma ($z^\star=5$) a la comprobación de una región candidata ($z^\star=3$) lo reduce casi a un tercio. El modelo es optimista: supone muestreo de Poisson perfecto, y el sesgo residual tras la corrección de GC aumenta la varianza.}
+\label{fig:07-deteccion}
+\end{figure}
+
+\begin{profundizacion}[El techo de la sobredispersión]
+Si el recuento de una ventana no es de Poisson sino binomial negativo, con varianza $\lambda+\lambda^2/r$ como en el \cref{cap:06}, la \cref{eq:07-z} se convierte en
+\[
+z_{\text{het}} = \frac{\lambda/2}{\sqrt{\lambda+\lambda^{2}/r}} \;\xrightarrow{\;\lambda\to\infty\;}\; \frac{\sqrt r}{2}.
+\]
+La señal ya no crece indefinidamente con la ventana ni con la cobertura: tiene un techo fijado por la sobredispersión. Con $r=50$, $z_{\text{het}}$ nunca supera $3{,}5$, por mucho que se secuencie. Esta es la razón matemática por la que los métodos de profundidad dedican tanto esfuerzo a corregir los sesgos de GC y de mapeabilidad: reducir la varianza sistemática rinde más que añadir lecturas.
+\end{profundizacion}
+
+\begin{ideaclave}
+La cobertura es una medida del número de copias, pero solo después de filtrar duplicados, controlar la calidad de mapeo y corregir los sesgos; una caída de cobertura puede ser una deleción o una repetición.
+\end{ideaclave}
+
+\begin{resumen}
+\begin{itemize}
+  \item Mapear es encontrar el origen de cada lectura y cuantificar la confianza en él. La programación dinámica exhaustiva es inviable a escala genómica; los mapeadores filtran con índices y reservan el alineamiento para unas pocas regiones candidatas.
+  \item El arreglo de sufijos agrupa las apariciones de un patrón en un intervalo. La BWT es la columna de caracteres precedentes de ese arreglo; el \ingles{LF-mapping} ($\capsieteLF(r)=C[L_r]+\capsieteOcc(L_r,r)$) la hace reversible y la búsqueda hacia atrás encuentra un patrón con dos consultas por carácter.
+  \item Los puntos de control de $\capsieteOcc$ y el muestreo del arreglo de sufijos reducen el índice FM del genoma humano a 1--2~GB, a cambio de más pasos de \ingles{LF-mapping} por posición localizada.
+  \item BWA-MEM siembra con SMEM sobre el índice FM; minimap2 con minimizadores, cuya densidad es $\approx2/(w+1)$. Ambos encadenan anclas colineales y extienden con programación dinámica en banda.
+  \item El MAPQ es la probabilidad, en escala Phred, de que la posición asignada sea errónea; es bajo en repeticiones aunque el alineamiento sea perfecto, y no es comparable entre programas.
+  \item SAM/BAM guarda cada alineamiento con su FLAG, su CIGAR y la información de la pareja; \cmd{samtools} ordena, marca duplicados e indexa. Los pares discordantes y las lecturas partidas señalan variantes estructurales.
+  \item La profundidad por base se calcula en tiempo lineal con un arreglo de diferencias; su razón logarítmica revela deleciones ($-1$, $-\infty$) y duplicaciones ($0{,}58$), con un tamaño mínimo detectable inversamente proporcional a la cobertura.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Construya a mano el arreglo de sufijos y la BWT de \texttt{GATTACA\$}. Compruebe con \py{indice_fm} su resultado y verifique que las letras iguales de $L$ y $F$ conservan su orden relativo.
+\ej{1} Usando la \cref{tab:07-occ}, ejecute la búsqueda hacia atrás de \texttt{TAC} y de \texttt{CAT} en \capsieteT. Dé los intervalos intermedios y las posiciones finales.
+\ej{1} Decodifique los FLAG 83, 147, 163 y 2064. ¿Cuáles pertenecen a pares concordantes? ¿Cuál es un alineamiento suplementario y qué sugiere sobre la lectura?
+\ej{2} Con la \cref{eq:07-memoria}, calcule la memoria del índice FM para el genoma de trigo ($1{,}6\times10^{10}$ bases) con $d=128$ y $s=32$. ¿Cuántos bits necesita cada entero? Discuta qué intervalo $s$ elegiría para que el índice quepa en 32~GB.
+\ej{2} Implemente la reconstrucción de $T$ a partir de $L$ con el \ingles{LF-mapping} y compruebe que funciona con una secuencia aleatoria de \num{10000} bases.
+\ej{2} Simule secuencias aleatorias y mida la densidad de los minimizadores con orden alfabético y con un \ingles{hash} aleatorio para $w\in\{5,10,20\}$ y $k=15$. Compare con la \cref{eq:07-densidad}. ¿Por qué el orden alfabético es peor en secuencias con muchas \texttt{A}?
+\ej{2} Una lectura tiene tres ubicaciones: una con una discordancia de calidad 30, y dos con dos discordancias de calidades 30 y 30. Calcule el MAPQ con la \cref{eq:07-mapq}. ¿Cómo cambia si la calidad de la única discordancia de la primera es 10?
+\ej{3} Descargue un BAM público de una muestra humana (por ejemplo, del Proyecto 1000 Genomas), calcule con \cmd{mosdepth} la profundidad en ventanas de 1 kb de un cromosoma y busque tramos con $\ell_W<-0{,}7$. Contraste sus candidatos con las lecturas discordantes vistas en IGV.
+\ej{3} Demuestre la aproximación $2/(w+1)$ de la \cref{eq:07-densidad} con detalle, suponiendo que los valores de \ingles{hash} son variables continuas independientes. ¿Qué ocurre con la densidad en una región de baja complejidad como \secuencia{ATATATATAT}?
+\end{ejercicios}
+
 \referenciascapitulo

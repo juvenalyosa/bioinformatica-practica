@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{scipy}\PYG{n+nn}{.}\PYG{n+nn}{integrate}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{solve\PYGZus{}ivp}
+
+\PYG{n}{a1} \PYG{o}{=} \PYG{n}{a2} \PYG{o}{=} \PYG{l+m+mf}{10.0}
+\PYG{n}{n} \PYG{o}{=} \PYG{l+m+mi}{2}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{toggle}\PYG{p}{(}\PYG{n}{t}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{u}\PYG{p}{,} \PYG{n}{v} \PYG{o}{=} \PYG{n}{y}
+    \PYG{k}{return} \PYG{p}{[}\PYG{n}{a1} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{v}\PYG{o}{*}\PYG{o}{*}\PYG{n}{n}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{u}\PYG{p}{,} \PYG{n}{a2} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{u}\PYG{o}{*}\PYG{o}{*}\PYG{n}{n}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{v}\PYG{p}{]}
+
+\PYG{k}{for} \PYG{n}{y0} \PYG{o+ow}{in} \PYG{p}{[}\PYG{p}{(}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{l+m+mf}{2.0}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mf}{2.0}\PYG{p}{,} \PYG{l+m+mf}{0.3}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mf}{4.0}\PYG{p}{,} \PYG{l+m+mf}{3.9}\PYG{p}{)}\PYG{p}{]}\PYG{p}{:}
+    \PYG{n}{s} \PYG{o}{=} \PYG{n}{solve\PYGZus{}ivp}\PYG{p}{(}\PYG{n}{toggle}\PYG{p}{,} \PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{30}\PYG{p}{)}\PYG{p}{,} \PYG{n}{y0}\PYG{p}{,} \PYG{n}{rtol}\PYG{o}{=}\PYG{l+m+mf}{1e\PYGZhy{}8}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{y0}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}\PYGZgt{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{s}\PYG{o}{.}\PYG{n}{y}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} (0.3, 2.0) \PYGZhy{}\PYGZgt{} [0.1 9.9]   (2.0, 0.3) \PYGZhy{}\PYGZgt{} [9.9 0.1]}
+\PYG{c+c1}{\PYGZsh{} (4.0, 3.9) \PYGZhy{}\PYGZgt{} [9.9 0.1]   (empieza bajo la diagonal)}
+\end{MintedVerbatim}

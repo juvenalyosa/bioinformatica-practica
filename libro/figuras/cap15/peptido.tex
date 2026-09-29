@@ -1,0 +1,49 @@
+% Esqueleto peptídico con los ángulos diedros φ, ψ y ω
+\begin{tikzpicture}[font=\sffamily\small,
+  at/.style={circle,draw=#1!70!black,fill=#1!80,minimum size=6.4mm,inner sep=0pt,text=white,font=\sffamily\bfseries\scriptsize},
+  hat/.style={circle,draw=tinta2,fill=white,minimum size=4.6mm,inner sep=0pt,text=tinta,font=\sffamily\scriptsize},
+  enl/.style={line width=1.6pt,tinta2},
+  rot/.style={-{Stealth[length=2mm]},thick,#1}]
+  % planos peptídicos
+  \fill[azulpalido,opacity=.75,rounded corners=4pt] (-0.45,-0.35) -- (1.0,1.35+0.9) -- (2.95,1.35+0.9) -- (4.05,0.95) -- (2.75,-1.55) -- (0.9,-1.55) -- cycle;
+  \fill[amarillo!25,opacity=.9,rounded corners=4pt] (3.25,0.95) -- (4.35,-1.8) -- (6.3,-1.8) -- (7.65,-0.3) -- (6.45,2.3) -- (4.5,2.3) -- cycle;
+  \node[etiqueta,text=azulprofundo,anchor=west] at (-0.4,2.45) {plano peptídico $i-1$};
+  \node[etiqueta,text=amarillo!40!black,anchor=east] at (7.7,2.55) {plano peptídico $i$};
+  % enlaces
+  \draw[enl] (0,0) -- (1.2,0.7) -- (2.4,0) -- (3.6,0.7) -- (4.8,0) -- (6.0,0.7) -- (7.2,0);
+  \draw[enl] (1.2,0.7) -- (1.2,1.85);
+  \draw[enl] (1.32,0.75) -- (1.32,1.8);
+  \draw[enl] (4.8,0) -- (4.8,-1.15);
+  \draw[enl] (4.92,-0.05) -- (4.92,-1.1);
+  \draw[enl] (2.4,0) -- (2.4,-1.0);
+  \draw[enl] (6.0,0.7) -- (6.0,1.7);
+  \draw[enl] (3.6,0.7) -- (3.6,1.9);
+  \draw[enl] (3.6,0.7) -- (2.95,1.45);
+  \draw[enl,dashed,gris] (1.28,0.58) -- (2.36,-0.06);
+  % átomos
+  \node[at=gris] at (0,0) {C$_\alpha$};
+  \node[at=tinta2] at (1.2,0.7) {C};
+  \node[at=rojo] at (1.26,1.95) {O};
+  \node[at=azul] at (2.4,0) {N};
+  \node[hat] at (2.4,-1.05) {H};
+  \node[at=gris] (ca) at (3.6,0.7) {C$_\alpha$};
+  \node[at=violeta] at (3.6,2.0) {R};
+  \node[hat] at (2.9,1.5) {H};
+  \node[at=tinta2] at (4.8,0) {C};
+  \node[at=rojo] at (4.86,-1.25) {O};
+  \node[at=azul] at (6.0,0.7) {N};
+  \node[hat] at (6.0,1.75) {H};
+  \node[at=gris] at (7.2,0) {C$_\alpha$};
+  % rotaciones
+  \draw[rot=naranja] (2.72,0.43) arc[start angle=150,end angle=420,x radius=0.32,y radius=0.16];
+  \node[text=naranja!80!black,font=\sffamily\bfseries] at (2.72,0.85) {$\phi$};
+  \draw[rot=aqua!80!black] (4.48,0.43) arc[start angle=30,end angle=300,x radius=0.32,y radius=0.16];
+  \node[text=aqua!60!black,font=\sffamily\bfseries] at (4.45,0.85) {$\psi$};
+  \draw[rot=rojooscuro] (1.54,0.275) arc[start angle=210,end angle=480,x radius=0.3,y radius=0.15];
+  \node[text=rojooscuro,font=\sffamily\bfseries] at (1.6,-0.15) {$\omega$};
+  % cotas
+  \node[etiqueta,anchor=north] at (1.85,-1.55) {C--N: \SI{1,33}{\angstrom}};
+  \node[etiqueta,anchor=north] at (1.85,-1.85) {(doble enlace parcial)};
+  \node[etiqueta,text=tinta,anchor=west] at (7.6,-0.45) {\ldots};
+  \node[etiqueta,text=tinta,anchor=east] at (-0.45,0) {\ldots};
+\end{tikzpicture}

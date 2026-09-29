@@ -46,9 +46,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 4 · Alineamiento múltiple, motivos y perfiles
 
-- 4.1 MSA: alineamiento progresivo · *próximamente*
-- 4.2 Motivos, PWM, entropía y sequence logos · *próximamente*
-- 4.3 Modelos ocultos de Márkov y perfiles (HMMER) · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 4.1 | Alineamiento múltiple: árbol guía, alineamiento progresivo y conservación del citocromo c en 14 especies | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-04-msa-motivos-hmm/4.1_alineamiento_multiple.ipynb) |
+| 4.2 | Motivos, PWM, entropía y sequence logos: redescubriendo Shine-Dalgarno en *E. coli* | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-04-msa-motivos-hmm/4.2_motivos_pwm_logos.ipynb) |
+| 4.3 | Modelos ocultos de Márkov: Viterbi, Forward-Backward, islas CpG en TP53 y perfiles HMMER | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-04-msa-motivos-hmm/4.3_modelos_ocultos_markov.ipynb) |
 
 ### Módulo 5 · Filogenética y evolución molecular
 
@@ -143,6 +145,7 @@ bioinformatica-practica/
 ├── modulo-01-biologia-molecular/
 ├── modulo-02-formatos-bases-datos/
 ├── modulo-03-alineamiento/
+├── modulo-04-msa-motivos-hmm/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

@@ -1,0 +1,7 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+nextflow\PYG{+w}{ }run\PYG{+w}{ }main.nf\PYG{+w}{ }\PYGZhy{}with\PYGZhy{}conda\PYG{+w}{ }\PYGZhy{}resume
+nextflow\PYG{+w}{ }run\PYG{+w}{ }main.nf\PYG{+w}{ }\PYGZhy{}profile\PYG{+w}{ }docker\PYG{+w}{ }\PYGZhy{}with\PYGZhy{}report\PYG{+w}{ }\PYGZhy{}with\PYGZhy{}dag\PYG{+w}{ }dag.html
+\PYG{c+c1}{\PYGZsh{} Flujo comunitario: fije siempre la version con \PYGZhy{}r}
+nextflow\PYG{+w}{ }run\PYG{+w}{ }nf\PYGZhy{}core/viralrecon\PYG{+w}{ }\PYGZhy{}r\PYG{+w}{ }\PYGZlt{}version\PYGZgt{}\PYG{+w}{ }\PYGZhy{}profile\PYG{+w}{ }test,docker\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}outdir\PYG{+w}{ }resultados\PYGZus{}prueba
+\end{MintedVerbatim}

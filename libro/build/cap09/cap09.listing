@@ -1,0 +1,7 @@
+# VEP con cache local (GRCh38) y salida VCF
+vep -i final.vcf.gz --cache --offline --assembly GRCh38 \
+    --everything --pick --vcf --compress_output bgzip \
+    -o anotado.vcf.gz
+# Alternativa: SnpEff (base de datos preconstruida)
+java -Xmx8g -jar snpEff.jar GRCh38.105 final.vcf.gz \
+    > anotado_snpeff.vcf

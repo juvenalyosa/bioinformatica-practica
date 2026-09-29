@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n+nv}{REF}\PYG{o}{=}GRCh38.fa
+\PYG{c+c1}{\PYGZsh{} 1\PYGZhy{}2. Columnas + verosimilitudes, y llamado multialelico}
+bcftools\PYG{+w}{ }mpileup\PYG{+w}{ }\PYGZhy{}Ob\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }pl.bcf\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}REF}\PYG{+w}{ }\PYGZhy{}q\PYG{+w}{ }\PYG{l+m}{20}\PYG{+w}{ }\PYGZhy{}Q\PYG{+w}{ }\PYG{l+m}{20}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}a\PYG{+w}{ }FORMAT/AD,FORMAT/DP\PYG{+w}{ }muestra.bam
+bcftools\PYG{+w}{ }call\PYG{+w}{ }\PYGZhy{}mv\PYG{+w}{ }\PYGZhy{}Ob\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }crudo.bcf\PYG{+w}{ }pl.bcf
+\PYG{c+c1}{\PYGZsh{} 3. Normalizacion: alinear a la izquierda y separar multialelicos}
+bcftools\PYG{+w}{ }norm\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }\PYG{n+nv}{\PYGZdl{}REF}\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }\PYGZhy{}any\PYG{+w}{ }\PYGZhy{}Ob\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }norm.bcf\PYG{+w}{ }crudo.bcf
+\PYG{c+c1}{\PYGZsh{} 4. Filtro \PYGZdq{}suave\PYGZdq{}: marca en FILTER en lugar de borrar}
+bcftools\PYG{+w}{ }filter\PYG{+w}{ }\PYGZhy{}s\PYG{+w}{ }BajaCal\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}QUAL\PYGZlt{}30 || INFO/DP\PYGZlt{}10\PYGZsq{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}Oz\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }final.vcf.gz\PYG{+w}{ }norm.bcf
+bcftools\PYG{+w}{ }index\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }final.vcf.gz
+\PYG{c+c1}{\PYGZsh{} 5. Estadisticas (incluye ti/tv) de los sitios que pasan}
+bcftools\PYG{+w}{ }stats\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }PASS\PYG{+w}{ }final.vcf.gz\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }final.stats
+grep\PYG{+w}{ }\PYGZca{}TSTV\PYG{+w}{ }final.stats
+\end{MintedVerbatim}

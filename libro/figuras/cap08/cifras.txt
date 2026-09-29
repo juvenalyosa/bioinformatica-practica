@@ -7,7 +7,6 @@
 [esp] k-mers (m>=4) = 31,213,016;  G estimado = 1,000,409  (real 1,000,000)
 [esp] instancias de k-mers de error (m<4) = 3,453,564  (9.96%);  distintos = 3,374,527
 [esp] fracción de k-mers sin error esperada (1-e)^k = 0.9001
-[ej] ejemplo levadura: 1.2e8 bases leídas? ver texto
 [k] k=11: P(rep azar) bacteria=0.908  humano=1  (1-0.01)^k=0.895
 [k] k=15: P(rep azar) bacteria=0.00927  humano=0.997  (1-0.01)^k=0.860
 [k] k=17: P(rep azar) bacteria=0.000582  humano=0.303  (1-0.01)^k=0.843
@@ -52,3 +51,18 @@
 [cod] ORF de ejemplo (22 codones) = ATGAAACGCATTAGCACCACCATTACCACCACCATCACCATTACCACAGGTAACGGTGCGGGCTGA
 [cod]  log-odds por codón: [('ATG', 0.83), ('AAA', 1.09), ('CGC', 0.48), ('ATT', 0.98), ('AGC', 0.03), ('ACC', 0.65), ('ACC', 0.65), ('ATT', 0.98)]
 [cod]  media=0.639
+[multik] c=5 k=21: lambda_k=3.90  ausentes=0.0202  en 5 Mb=101,171
+[multik] c=5 k=33: lambda_k=3.33  ausentes=0.0357  en 5 Mb=178,310
+[multik] c=5 k=55: lambda_k=2.43  ausentes=0.0881  en 5 Mb=440,645
+[multik] c=5 k=77: lambda_k=1.68  ausentes=0.187  en 5 Mb=934,833
+[multik] c=5 k=127: lambda_k=0.42  ausentes=0.655  en 5 Mb=3,274,497
+[multik] c=10 k=21: lambda_k=7.80  ausentes=0.000409  en 5 Mb=2,047
+[multik] c=10 k=33: lambda_k=6.67  ausentes=0.00127  en 5 Mb=6,359
+[multik] c=10 k=55: lambda_k=4.86  ausentes=0.00777  en 5 Mb=38,834
+[multik] c=10 k=77: lambda_k=3.35  ausentes=0.035  en 5 Mb=174,783
+[multik] c=10 k=127: lambda_k=0.85  ausentes=0.429  en 5 Mb=2,144,466
+[multik] c=30 k=21: lambda_k=23.40  ausentes=6.86e-11  en 5 Mb=0
+[multik] c=30 k=33: lambda_k=20.00  ausentes=2.06e-09  en 5 Mb=0
+[multik] c=30 k=55: lambda_k=14.57  ausentes=4.69e-07  en 5 Mb=2
+[multik] c=30 k=77: lambda_k=10.06  ausentes=4.27e-05  en 5 Mb=214
+[multik] c=30 k=127: lambda_k=2.54  ausentes=0.0789  en 5 Mb=394,473

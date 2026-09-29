@@ -1,6 +1,8 @@
-This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  29 SEP 2026 21:58
+This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 00:28
  system commands enabled.
-**\includeonly{capitulos/cap03}\input{main.tex}
+**\includeonly{capitulos/cap00,capitulos/cap01,capitulos/cap02,capitulos/cap03,
+capitulos/cap04,capitulos/cap05,capitulos/cap06,capitulos/cap07}\input{main.tex
+}
 Lua module: luaotfload 2024-12-03 v3.29 Lua based OpenType font support
 Lua module: lualibs 2023-07-13 v2.76 ConTeXt Lua standard libraries.
 Lua module: lualibs-extended 2023-07-13 v2.76 ConTeXt Lua libraries -- extended collection.
@@ -2549,12 +2551,25 @@ Package csquotes Info: ... found 'babel' package.
  (./build/libro/main.aux
 LaTeX Info: Redefining \. on input line 9.
 LaTeX Info: Redefining \% on input line 9.
+ (./build/libro/capitulos/cap00.aux)
+(./build/libro/capitulos/cap01.aux) (./build/libro/capitulos/cap02.aux)
+(./build/libro/capitulos/cap03.aux) (./build/libro/capitulos/cap04.aux)
+(./build/libro/capitulos/cap05.aux) (./build/libro/capitulos/cap06.aux
 
-No file capitulos/cap00.aux.
-No file capitulos/cap01.aux.
-(./build/libro/capitulos/cap03.aux)
-No file capitulos/cap04.aux.
-No file capitulos/cap06.aux.
+LaTeX Warning: Label `def:phred' multiply defined.
+
+
+LaTeX Warning: Label `def:phred@cref' multiply defined.
+
+) (./build/libro/capitulos/cap07.aux)
+No file capitulos/cap08.aux.
+No file capitulos/cap09.aux.
+No file capitulos/cap10.aux.
+No file capitulos/cap11.aux.
+No file capitulos/cap13.aux.
+No file capitulos/cap14.aux.
+No file capitulos/cap15.aux.
+No file capitulos/cap16.aux.
 )
 \openout1 = main.aux
 
@@ -2874,10 +2889,10 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 \pydata@fh@_FAD58DE7366495DB4650CFEFAC2FCD61.data.minted=\write7
 
 \openout7 = _FAD58DE7366495DB4650CFEFAC2FCD61.data.minted
-runsystem(latexminted config  --timestamp 20260929215855 FAD58DE7366495DB4650CFE
+runsystem(latexminted config  --timestamp 20260930002814 FAD58DE7366495DB4650CFE
 FAC2FCD61)...executed.
  (./build/libro/_FAD58DE7366495DB4650CFEFAC2FCD61.config.minted)
-runsystem(latexminted cleanconfig  --timestamp 20260929215855 FAD58DE7366495DB46
+runsystem(latexminted cleanconfig  --timestamp 20260930002814 FAD58DE7366495DB46
 50CFEFAC2FCD61)...executed.
 
 (./build/libro/_minted/friendly.style.minted)
@@ -2900,14 +2915,7 @@ LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
 LaTeX Info: Redefining \. on input line 73.
 LaTeX Info: Redefining \% on input line 73.
 Package cleveref Info: loaded `spanish' language definitions on input line 73.
-[6]
-
-LaTeX Warning: Reference `cap:00' on page i undefined on input line 74.
-
-
-LaTeX Warning: Reference `cap:01' on page i undefined on input line 74.
-
-)
+[6])
 Package biblatex Info: Reference section=0 on input line 31.
 \blx@maxsegment@3=\count612
 \blx@sectionciteorder@3=\count613
@@ -2927,15 +2935,30 @@ LaTeX Info: Redefining \sptext on input line 1.
 LaTeX Info: Redefining \. on input line 1.
 LaTeX Info: Redefining \% on input line 1.
 Package cleveref Info: loaded `spanish' language definitions on input line 1.
-)
+
+
+[9]
+Underfull \vbox (badness 1701) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \sptext on input line 243.
+LaTeX Info: Redefining \. on input line 243.
+LaTeX Info: Redefining \% on input line 243.
+Package cleveref Info: loaded `spanish' language definitions on input line 243.
+
+[10])
 \tf@toc=\write8
 
 \openout8 = main.toc
 
 
-[9]
+LaTeX Info: Redefining \. on input line 33.
+LaTeX Info: Redefining \% on input line 33.
+Package cleveref Info: loaded `spanish' language definitions on input line 33.
+[11]
 
-[10
+[12
 
 ]
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
@@ -2981,29 +3004,1255 @@ language=dflt;letterspace=18;+tlig;"
 [2
 
 ]
+\openout2 = capitulos/cap00.aux
+ (./capitulos/cap00.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@4=\count614
+\blx@sectionciteorder@4=\count615
+Package biblatex Info: Reference section=4 on input line 4.
+Package biblatex Info: Setting label 'refsection:4' on input line 4.
+
+Capítulo 0.
+(./build/libro/_minted/1C4C29C6DED06785C42DFF2B61AC01E8.highlight.minted)
+(./build/libro/_minted/410393DEA1CE63A321821B4FB71933E7.highlight.minted)
 
 [3
+
+
+]
+
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+Package cleveref Info: loaded `spanish' language definitions on input line 29.
+[4]
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
+(Font)              scaled to size 6.71997pt on input line 47.
+
+
+LaTeX Info: Redefining \. on input line 79.
+LaTeX Info: Redefining \% on input line 79.
+Package cleveref Info: loaded `spanish' language definitions on input line 79.
+[5] (./build/libro/_minted/09D206DCA2274E30B7321B532134723C.highlight.minted)
+(./build/libro/_minted/B0235B16BA39A28E1070498885AD4BD8.highlight.minted)
+(./build/libro/_minted/B0235B16BA39A28E1070498885AD4BD8.highlight.minted)
+(./build/libro/_minted/B0235B16BA39A28E1070498885AD4BD8.highlight.minted)
+(./build/libro/_minted/B0235B16BA39A28E1070498885AD4BD8.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 89.
+LaTeX Info: Redefining \% on input line 89.
+Package cleveref Info: loaded `spanish' language definitions on input line 89.
+[6] (./build/libro/_minted/0F7A7129A9AFC0F63302647B4105F3AD.highlight.minted)
+(./build/libro/_minted/8DE920E3C94226F71A2B09701D3EA1AC.highlight.minted)
+(./build/libro/_minted/6BAF64C970B5544AC2CBFBCB92B41955.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 114.
+LaTeX Info: Redefining \% on input line 114.
+Package cleveref Info: loaded `spanish' language definitions on input line 114.
+
+[7] (./build/libro/_minted/FC734051F13B5E0904DB00A592BA4A61.highlight.minted)
+(./build/libro/_minted/8B3E3D396A857C51B8C7A11D1FAF54D7.highlight.minted)
+(./build/libro/_minted/D6AECCBE09B8194A03A913917DDFE631.highlight.minted)
+(./build/libro/_minted/758ED8B1D007F419F13B4CEBE007F2D1.highlight.minted)
+(./build/libro/_minted/9539904E828AC5062BA8FEBABA64BC87.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 130.
+LaTeX Info: Redefining \% on input line 130.
+Package cleveref Info: loaded `spanish' language definitions on input line 130.
+
+[8] (./build/libro/_minted/C69BDEF420965ACC9689D61EC0663F2C.highlight.minted)
+(./build/libro/_minted/0CCA776FDF7DBC699D6DFF2DB0405089.highlight.minted)
+\openout6 = main.listing
+
+(./build/libro/_minted/F27739E0C072F3E8662623B024C04042.highlight.minted)
+Package pgfplots info on input line 162: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 162: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap00/tiempos.dat}
+PGFPlots: reading {figuras/cap00/tiempos.dat}
+PGFPlots: reading {figuras/cap00/tiempos.dat}
+
+(./build/libro/_minted/DFC1FC4FB64A55C840E7630EED9C8062.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 180.
+LaTeX Info: Redefining \% on input line 180.
+Package cleveref Info: loaded `spanish' language definitions on input line 180.
+
+[9] (./build/libro/_minted/8DE920E3C94226F71A2B09701D3EA1AC.highlight.minted)
+(./build/libro/_minted/A09FC902265BDAB6DA83EB8F881B2483.highlight.minted)
+(./build/libro/_minted/6BAF64C970B5544AC2CBFBCB92B41955.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 194.
+LaTeX Info: Redefining \% on input line 194.
+Package cleveref Info: loaded `spanish' language definitions on input line 194.
+
+[10] (./build/libro/_minted/FFC62B07480BB7059DD96216D5B1D331.highlight.minted)
+(./build/libro/_minted/517B0721550CE3F11D8967F5D7C48EB5.highlight.minted)
+(./build/libro/_minted/D05329EEDA2651D6FDE5C803DB93DC54.highlight.minted)
+(./build/libro/_minted/01EE77B102513682133F946E1A4B9227.highlight.minted)
+(./build/libro/_minted/6BAF64C970B5544AC2CBFBCB92B41955.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 212.
+LaTeX Info: Redefining \% on input line 212.
+Package cleveref Info: loaded `spanish' language definitions on input line 212.
+
+[11] (./build/libro/_minted/F166E8E8AF358A54F6BF1C6B1198B387.highlight.minted)
+(./build/libro/_minted/29BF0C863135FBA7ACE5231AB299D576.highlight.minted)
+(./build/libro/_minted/50A9A866E9C5CA7FE0F6218A03EEDEC6.highlight.minted)
+(./build/libro/_minted/C9CCA593C9416D60B4E9CCC6C241F021.highlight.minted)
+(./build/libro/_minted/7A230E23EAA8880356F8343DC9782B13.highlight.minted)
+Underfull \vbox (badness 8151) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 237.
+LaTeX Info: Redefining \% on input line 237.
+Package cleveref Info: loaded `spanish' language definitions on input line 237.
+
+[12]
+
+LaTeX Info: Redefining \. on input line 262.
+LaTeX Info: Redefining \% on input line 262.
+Package cleveref Info: loaded `spanish' language definitions on input line 262.
+
+[13]
+PGFPlots: reading {figuras/cap00/gc_ventana.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/A266E4426DA027436E118B43E8C39A0B.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 304.
+LaTeX Info: Redefining \% on input line 304.
+Package cleveref Info: loaded `spanish' language definitions on input line 304.
+
+[14] (./build/libro/_minted/C399CCC1F80B9C5CE92E5E89CAB567CC.highlight.minted)
+(./build/libro/_minted/A0D6054318D1218156E63FDBD04C2CF3.highlight.minted)
+(./build/libro/_minted/044DF22AE0FBF470BE5A6136404CBAAF.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 358.
+LaTeX Info: Redefining \% on input line 358.
+Package cleveref Info: loaded `spanish' language definitions on input line 358.
+
+[15]
+
+LaTeX Info: Redefining \. on input line 366.
+LaTeX Info: Redefining \% on input line 366.
+Package cleveref Info: loaded `spanish' language definitions on input line 366.
+
+[16]
+PGFPlots: reading {figuras/cap00/luminosidad.dat}
+PGFPlots: reading {figuras/cap00/luminosidad.dat}
+ (./figuras/cap00/franjas.tex)
+
+LaTeX Info: Redefining \. on input line 400.
+LaTeX Info: Redefining \% on input line 400.
+Package cleveref Info: loaded `spanish' language definitions on input line 400.
+
+[17]
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
+(Font)              scaled to size 10.07996pt on input line 404.
+ (./build/libro/_minted/EA848F31BFFD8EE1AE69A7C320AD38EB.highlight.minted)
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
+(Font)              scaled to size 9.19795pt on input line 420.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 421.
+LaTeX Info: Redefining \% on input line 421.
+Package cleveref Info: loaded `spanish' language definitions on input line 421.
+
+[18]
+Underfull \hbox (badness 10000) in paragraph at lines 434--434
+[]|\TU/LibertinusSerif(0)/m/n/10 Ta-bla de tra-duc-ción; Biopython la guar-da 
+en
+ []
+
+(./figuras/cap00/codigo_genetico.tex)
+Underfull \hbox (badness 3088) in paragraph at lines 441--441
+[][][]|\TU/SourceSansPro(0)/m/n/10 El có-di-go ge-né-ti-co es-tán-dar (ta-bla
+ 1 del NC-BI), ge-ne-ra-do a par-tir de
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 452.
+LaTeX Info: Redefining \% on input line 452.
+Package cleveref Info: loaded `spanish' language definitions on input line 452.
+
+[19]
+Underfull \vbox (badness 7203) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 464.
+LaTeX Info: Redefining \% on input line 464.
+Package cleveref Info: loaded `spanish' language definitions on input line 464.
+
+[20] (./figuras/cap00/orfs.tex)
+(./build/libro/_minted/C8DE8B25434A84036F1D5FA69B746CAD.highlight.minted)
+(./build/libro/_minted/377D4935FB17CAD63C2AB004FCB48E33.highlight.minted)
+(./build/libro/_minted/A2AD6D8F475637ABD94FD246D187B3DB.highlight.minted)
+(./build/libro/_minted/D36BCACD6478C1D44642827C8113BD21.highlight.minted)
+(./build/libro/_minted/DDFED49CF9B99A0CD49C564C7858FB44.highlight.minted)
+(./build/libro/_minted/DA081593EF905BD6997CBF2930A2F360.highlight.minted)
+(./build/libro/_minted/307441C450A6BA1D71D725C146F94FBB.highlight.minted)
+(./build/libro/_minted/377D4935FB17CAD63C2AB004FCB48E33.highlight.minted)
+(./build/libro/_minted/D352F6FCB39B46CCF42DB904FA0B0F25.highlight.minted)
+(./build/libro/_minted/659A09B4095ACADB66A34D6D9305A9E5.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 485.
+LaTeX Info: Redefining \% on input line 485.
+Package cleveref Info: loaded `spanish' language definitions on input line 485.
+
+[21] (./build/libro/_minted/9E5D446D4484784CBDECFAAF0399E8C0.highlight.minted)
+(./build/libro/_minted/8891B0A0F7550EF974D575033000915B.highlight.minted)
+(./build/libro/_minted/49300661BF071BF8C01E693F85937AE4.highlight.minted)
+(./build/libro/_minted/4AE697F0ECB5ACC78F58343A479A631C.highlight.minted)
+\openout6 = main.listing
+
+(./build/libro/_minted/05218A11EB6D10E2359B0CFFA94F4B0C.highlight.minted)
+Underfull \vbox (badness 2538) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 501.
+LaTeX Info: Redefining \% on input line 501.
+Package cleveref Info: loaded `spanish' language definitions on input line 501.
+
+[22] (./build/libro/_minted/7FD8B2EA1AF7CC4B62E3EF60CA46C22D.highlight.minted)
+(./build/libro/_minted/7B9F6789BFC9AB955E6ECB4AD22E4154.highlight.minted)
+(./build/libro/_minted/5FDED597161A24D8605DEA3027998537.highlight.minted)
+Underfull \vbox (badness 1490) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 507.
+LaTeX Info: Redefining \% on input line 507.
+Package cleveref Info: loaded `spanish' language definitions on input line 507.
+
+[23] (./build/libro/_minted/659A09B4095ACADB66A34D6D9305A9E5.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 555.
+LaTeX Info: Redefining \% on input line 555.
+Package cleveref Info: loaded `spanish' language definitions on input line 555.
+
+[24] (./build/libro/_minted/CEB7A084B537A243266E7F8567610B59.highlight.minted)
+(./build/libro/_minted/94A6E745EEF26F3549AB14EE312AB6C9.highlight.minted)
+(./build/libro/_minted/410393DEA1CE63A321821B4FB71933E7.highlight.minted)
+Overfull \hbox (1.79884pt too wide) in paragraph at lines 556--557
+[]\TU/LibertinusSerif(0)/m/n/10.95 En Co-lab, BLAST+ se ins-ta-la des-de los re-
+po-si-to-rios del sis-te-ma (\TU/FiraMono(0)/m/n/10.95 apt-get install
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/3B4179D1DA13427B5843E399A27FA269.highlight.minted)
+Underfull \vbox (badness 3375) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 576.
+LaTeX Info: Redefining \% on input line 576.
+Package cleveref Info: loaded `spanish' language definitions on input line 576.
+
+[25]
+
+LaTeX Info: Redefining \. on input line 594.
+LaTeX Info: Redefining \% on input line 594.
+Package cleveref Info: loaded `spanish' language definitions on input line 594.
+
+[26]
+
+LaTeX Info: Redefining \. on input line 610.
+LaTeX Info: Redefining \% on input line 610.
+Package cleveref Info: loaded `spanish' language definitions on input line 610.
+
+[27]
+
+LaTeX Info: Redefining \. on input line 637.
+LaTeX Info: Redefining \% on input line 637.
+Package cleveref Info: loaded `spanish' language definitions on input line 637.
+
+[28]
+
+LaTeX Info: Redefining \. on input line 663.
+LaTeX Info: Redefining \% on input line 663.
+Package cleveref Info: loaded `spanish' language definitions on input line 663.
+
+[29]
+PGFPlots: reading {figuras/cap00/randu.dat}
+PGFPlots: reading {figuras/cap00/pcg.dat}
+ (./build/libro/_minted/0ED2A88E1B45D4FBB8D4786AB1FDDFA1.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 686.
+LaTeX Info: Redefining \% on input line 686.
+Package cleveref Info: loaded `spanish' language definitions on input line 686.
+
+[30] (./build/libro/_minted/A8731D0F06BA3FAF0534DD44600A0625.highlight.minted)
+\openout6 = main.listing
+
+(./build/libro/_minted/62DE714FEDFC0316188C4B2D0781A2F3.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 720.
+LaTeX Info: Redefining \% on input line 720.
+Package cleveref Info: loaded `spanish' language definitions on input line 720.
+
+[31]
+Package pgfplots info on input line 732: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap00/montecarlo.dat}
+PGFPlots: reading {figuras/cap00/montecarlo.dat}
+PGFPlots: reading {figuras/cap00/montecarlo.dat}
+PGFPlots: reading {figuras/cap00/montecarlo.dat}
+Package pgfplots info on input line 743: fill between: activating layered graph
+ics
+\pgf@layerbox@axis background=\box187
+\pgf@layerboxsaved@axis background=\box188
+\pgf@layerbox@axis grid=\box189
+\pgf@layerboxsaved@axis grid=\box190
+\pgf@layerbox@axis ticks=\box191
+\pgf@layerboxsaved@axis ticks=\box192
+\pgf@layerbox@axis lines=\box193
+\pgf@layerboxsaved@axis lines=\box194
+\pgf@layerbox@axis tick labels=\box195
+\pgf@layerboxsaved@axis tick labels=\box196
+\pgf@layerbox@pre main=\box197
+\pgf@layerboxsaved@pre main=\box198
+\pgf@layerbox@axis descriptions=\box199
+\pgf@layerboxsaved@axis descriptions=\box256
+\pgf@layerbox@axis foreground=\box257
+\pgf@layerboxsaved@axis foreground=\box258
+Package pgfplots info on input line 743: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 756.
+LaTeX Info: Redefining \% on input line 756.
+Package cleveref Info: loaded `spanish' language definitions on input line 756.
+
+[32]
+
+LaTeX Info: Redefining \. on input line 769.
+LaTeX Info: Redefining \% on input line 769.
+Package cleveref Info: loaded `spanish' language definitions on input line 769.
+
+[33]
+PGFPlots: reading {figuras/cap00/avalancha.dat}
+PGFPlots: reading {figuras/cap00/avalancha.dat}
+
+
+LaTeX Info: Redefining \. on input line 800.
+LaTeX Info: Redefining \% on input line 800.
+Package cleveref Info: loaded `spanish' language definitions on input line 800.
+
+[34]
+\openout6 = main.listing
+ (./build/libro/_minted/monokai.style.minted)
+(./build/libro/_minted/8D62B985A0A70000752AAC0B93C4B33C.highlight.minted)
+Overfull \hbox (7.61224pt too wide) in paragraph at lines 815--816
+[]\TU/FiraMono(0)/m/n/10.95 analisis_final.py[]\TU/LibertinusSerif(0)/m/n/10.95
+ , []\TU/FiraMono(0)/m/n/10.95 analisis_final_v2.py[] \TU/LibertinusSerif(0)/m/
+n/10.95 y []\TU/FiraMono(0)/m/n/10.95 analisis_final_DEFINITIVO.py[]
+ []
+
+
+Underfull \vbox (badness 3209) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 822.
+LaTeX Info: Redefining \% on input line 822.
+Package cleveref Info: loaded `spanish' language definitions on input line 822.
+
+[35]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 859.
+LaTeX Info: Redefining \% on input line 859.
+Package cleveref Info: loaded `spanish' language definitions on input line 859.
+
+[36] (./build/libro/_minted/020FBF7346A6768A3D327335A264C69D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 897.
+LaTeX Info: Redefining \% on input line 897.
+Package cleveref Info: loaded `spanish' language definitions on input line 897.
+
+[37] (./build/libro/_minted/EA848F31BFFD8EE1AE69A7C320AD38EB.highlight.minted)
+(./build/libro/_minted/C8DE8B25434A84036F1D5FA69B746CAD.highlight.minted)
+(./build/libro/_minted/377D4935FB17CAD63C2AB004FCB48E33.highlight.minted)
+(./build/libro/_minted/E263B0D6B2E6FC9AC746DB38EA194D17.highlight.minted)
+(./build/libro/_minted/CEB7A084B537A243266E7F8567610B59.highlight.minted)
+Overfull \hbox (5.91696pt too wide) in paragraph at lines 909--910
+[]\TU/LibertinusSerif(0)/m/n/10 Biopython re-pre-sen-ta se-cuen-cias (\TU/FiraM
+ono(0)/m/n/10 Seq\TU/LibertinusSerif(0)/m/n/10 ), re-gis-tros (\TU/FiraMono(0)/
+m/n/10 SeqRecord\TU/LibertinusSerif(0)/m/n/10 ) y ar-chi-vos (\TU/FiraMono(0)/m
+/n/10 SeqIO\TU/LibertinusSerif(0)/m/n/10 );
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 913.
+LaTeX Info: Redefining \% on input line 913.
+Package cleveref Info: loaded `spanish' language definitions on input line 913.
+
+[38] (./build/libro/_minted/72527580B59BA506998123FE9B0C4031.highlight.minted)
+(./build/libro/_minted/BA9AA3C4BE8F96B8387779A4C7405787.highlight.minted)
+(./build/libro/_minted/7A230E23EAA8880356F8343DC9782B13.highlight.minted)
+(./build/libro/_minted/4F8FD8A17DD8EA1C04693B018C84BC0B.highlight.minted)
+(./build/libro/_minted/5CE90765678B6E21A1A4114539EB4D1F.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 919.
+LaTeX Info: Redefining \% on input line 919.
+Package cleveref Info: loaded `spanish' language definitions on input line 919.
+
+[39]
+
+LaTeX Info: Redefining \. on input line 925.
+LaTeX Info: Redefining \% on input line 925.
+Package cleveref Info: loaded `spanish' language definitions on input line 925.
+
+[40]
+
+LaTeX Info: Redefining \. on input line 925.
+LaTeX Info: Redefining \% on input line 925.
+Package cleveref Info: loaded `spanish' language definitions on input line 925.
+
+[41])
+
+LaTeX Info: Redefining \. on input line 40.
+LaTeX Info: Redefining \% on input line 40.
+Package cleveref Info: loaded `spanish' language definitions on input line 40.
+[42]
+\openout2 = capitulos/cap01.aux
+ (./capitulos/cap01.tex
+Package biblatex Info: Reference section=0 on input line 5.
+\blx@maxsegment@5=\count616
+\blx@sectionciteorder@5=\count617
+Package biblatex Info: Reference section=5 on input line 5.
+Package biblatex Info: Setting label 'refsection:5' on input line 5.
+
+Capítulo 1.
+
+Underfull \vbox (badness 1742) has occurred while \output is active []
+
+
+
+[43
 
 
 
 
 ]
 
-[4
+LaTeX Info: Redefining \. on input line 30.
+LaTeX Info: Redefining \% on input line 30.
+Package cleveref Info: loaded `spanish' language definitions on input line 30.
+[44]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 55.
+LaTeX Info: Redefining \% on input line 55.
+Package cleveref Info: loaded `spanish' language definitions on input line 55.
+[45]
+
+LaTeX Info: Redefining \. on input line 102.
+LaTeX Info: Redefining \% on input line 102.
+Package cleveref Info: loaded `spanish' language definitions on input line 102.
+
+[46]
+
+LaTeX Info: Redefining \. on input line 105.
+LaTeX Info: Redefining \% on input line 105.
+Package cleveref Info: loaded `spanish' language definitions on input line 105.
+
+[47] (./figuras/cap01/spike_flujo.tex
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
+(Font)              scaled to size 6.71997pt on input line 2.
+)
+Overfull \hbox (8.5459pt too wide) in paragraph at lines 207--112
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/3243198999BEAEC725F97507F757BFA0.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 141.
+LaTeX Info: Redefining \% on input line 141.
+Package cleveref Info: loaded `spanish' language definitions on input line 141.
+
+[48] (./build/libro/_minted/1D26447C0899E978053BE6C9E86544AE.highlight.minted)
+Underfull \vbox (badness 6825) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 160.
+LaTeX Info: Redefining \% on input line 160.
+Package cleveref Info: loaded `spanish' language definitions on input line 160.
+
+[49]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 183.
+LaTeX Info: Redefining \% on input line 183.
+Package cleveref Info: loaded `spanish' language definitions on input line 183.
+
+[50]
+Package pgfplots info on input line 226: Using 'lua backend=false' for axis: x 
+coord trafo unsupported.
+PGFPlots: reading {figuras/cap01/entropia.dat}
+PGFPlots: reading {figuras/cap01/entropia.dat}
+PGFPlots: reading {figuras/cap01/entropia.dat}
+PGFPlots: reading {figuras/cap01/entropia.dat}
+
+
+LaTeX Info: Redefining \. on input line 237.
+LaTeX Info: Redefining \% on input line 237.
+Package cleveref Info: loaded `spanish' language definitions on input line 237.
+
+[51]
+Underfull \vbox (badness 4967) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 243.
+LaTeX Info: Redefining \% on input line 243.
+Package cleveref Info: loaded `spanish' language definitions on input line 243.
+
+[52]
+
+LaTeX Info: Redefining \. on input line 257.
+LaTeX Info: Redefining \% on input line 257.
+Package cleveref Info: loaded `spanish' language definitions on input line 257.
+
+[53] (./figuras/cap01/rueda_codigo.tex)
+(./build/libro/_minted/5DA32CFDDA18F6F844A121EB13233628.highlight.minted)
+Underfull \vbox (badness 3148) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 308.
+LaTeX Info: Redefining \% on input line 308.
+Package cleveref Info: loaded `spanish' language definitions on input line 308.
+
+[54]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 308.
+LaTeX Info: Redefining \% on input line 308.
+Package cleveref Info: loaded `spanish' language definitions on input line 308.
+
+[55]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 327.
+LaTeX Info: Redefining \% on input line 327.
+Package cleveref Info: loaded `spanish' language definitions on input line 327.
+
+[56]
+Package pgfplots info on input line 338: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+PGFPlots: reading {figuras/cap01/mut_pos.dat}
+PGFPlots: reading {figuras/cap01/mut_pos.dat}
+PGFPlots: reading {figuras/cap01/mut_pos.dat}
+PGFPlots: reading {figuras/cap01/costos_hist.dat}
+
+
+LaTeX Info: Redefining \. on input line 360.
+LaTeX Info: Redefining \% on input line 360.
+Package cleveref Info: loaded `spanish' language definitions on input line 360.
+
+[57]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 378.
+LaTeX Info: Redefining \% on input line 378.
+Package cleveref Info: loaded `spanish' language definitions on input line 378.
+
+[58]
+
+LaTeX Info: Redefining \. on input line 465.
+LaTeX Info: Redefining \% on input line 465.
+Package cleveref Info: loaded `spanish' language definitions on input line 465.
+
+[59]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 472.
+LaTeX Info: Redefining \% on input line 472.
+Package cleveref Info: loaded `spanish' language definitions on input line 472.
+
+[60] (./figuras/cap01/seis_marcos.tex)
+Overfull \hbox (3.73195pt too wide) in paragraph at lines 146--477
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 491.
+LaTeX Info: Redefining \% on input line 491.
+Package cleveref Info: loaded `spanish' language definitions on input line 491.
+
+[61]
+\openout6 = main.listing
+ (./build/libro/_minted/FFFEE9059149078482F8D980BEB457F6.highlight.minted)
+(./build/libro/_minted/74A347A597D037EB0E7FB8F8D261324B.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 523.
+LaTeX Info: Redefining \% on input line 523.
+Package cleveref Info: loaded `spanish' language definitions on input line 523.
+
+[62]
+
+LaTeX Info: Redefining \. on input line 550.
+LaTeX Info: Redefining \% on input line 550.
+Package cleveref Info: loaded `spanish' language definitions on input line 550.
+
+[63]
+
+LaTeX Info: Redefining \. on input line 571.
+LaTeX Info: Redefining \% on input line 571.
+Package cleveref Info: loaded `spanish' language definitions on input line 571.
+
+[64]
+Overfull \hbox (14.43657pt too wide) in paragraph at lines 578--579
+[]\TU/LibertinusSerif(0)/m/n/10.95 El de-ta-lle tie-ne con-se-cuen-cias dra-m
+á-ti-cas. Si tra-du-ci-mos las 󰂧󰀙󰂦 CDS de \TU/LibertinusSerif(0)/m/it
+/10.95 M.genitalium
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 591.
+LaTeX Info: Redefining \% on input line 591.
+Package cleveref Info: loaded `spanish' language definitions on input line 591.
+
+[65]
+Package pgfplots info on input line 603: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap01/supervivencia.dat}
+PGFPlots: reading {figuras/cap01/supervivencia.dat}
+PGFPlots: reading {figuras/cap01/supervivencia.dat}
+
+Underfull \hbox (badness 1783) in paragraph at lines 615--615
+[][][]|\TU/SourceSansPro(0)/m/n/10 Lon-gi-tud de los tra-mos sin co-do-nes de pa
+-ra-da en los seis mar-cos de
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 621.
+LaTeX Info: Redefining \% on input line 621.
+Package cleveref Info: loaded `spanish' language definitions on input line 621.
+
+[66]
+
+LaTeX Info: Redefining \. on input line 645.
+LaTeX Info: Redefining \% on input line 645.
+Package cleveref Info: loaded `spanish' language definitions on input line 645.
+
+[67]
+PGFPlots: reading {figuras/cap01/sens_prec.dat}
+PGFPlots: reading {figuras/cap01/sens_prec.dat}
+PGFPlots: reading {figuras/cap01/sens_prec.dat}
+PGFPlots: reading {figuras/cap01/sens_prec.dat}
+
+Underfull \vbox (badness 2418) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 674.
+LaTeX Info: Redefining \% on input line 674.
+Package cleveref Info: loaded `spanish' language definitions on input line 674.
+
+[68]
+
+LaTeX Info: Redefining \. on input line 698.
+LaTeX Info: Redefining \% on input line 698.
+Package cleveref Info: loaded `spanish' language definitions on input line 698.
+
+[69]
+
+LaTeX Info: Redefining \. on input line 755.
+LaTeX Info: Redefining \% on input line 755.
+Package cleveref Info: loaded `spanish' language definitions on input line 755.
+
+[70]
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/it' will be
+(Font)              scaled to size 9.19795pt on input line 759.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 766.
+LaTeX Info: Redefining \% on input line 766.
+Package cleveref Info: loaded `spanish' language definitions on input line 766.
+
+[71]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 790.
+LaTeX Info: Redefining \% on input line 790.
+Package cleveref Info: loaded `spanish' language definitions on input line 790.
+
+[72]
+
+LaTeX Info: Redefining \. on input line 809.
+LaTeX Info: Redefining \% on input line 809.
+Package cleveref Info: loaded `spanish' language definitions on input line 809.
+
+[73]
+\openout6 = main.listing
+ (./build/libro/_minted/061760122CF9A5830FB86D077D77CB93.highlight.minted)
+Overfull \hbox (9.11414pt too wide) in paragraph at lines 836--837
+[]\TU/LibertinusSerif(0)/m/n/10.95 Apli-que-mos el mé-to-do al ge-no-ma de re-f
+e-ren-cia de \TU/LibertinusSerif(0)/m/it/10.95 E.coli \TU/LibertinusSerif(0)/m/
+n/10.95 K-󰀚󰀫 MG󰀚󰂨󰂧󰂧 (NC_󰀙󰀙󰀙󰂫󰀚󰀬.󰀬,
+ []
+
+
+Overfull \hbox (7.47232pt too wide) in paragraph at lines 836--837
+\TU/LibertinusMath-Regular.otf(1)/m/n/10.95 4 641 652$ \TU/LibertinusSerif(0)/m
+/n/10.95 pb). Se-gún su pro-pia ano-ta-ción, el ori-gen de re-pli-ca-ción (\
+TU/LibertinusSerif(0)/m/it/10.95 fea-tu-re \TU/FiraMono(0)/m/n/10.95 rep_origin\TU/LibertinusSerif(0)/m/n/10.95 )
+ []
+
+Package pgfplots info on input line 846: Using 'lua backend=false' for plot 0 (
+type '[tikz@plot@handler: macro:->\global \pgf@plot@startedfalse \global \let \
+pgf@plotstreamend \pgf@plotstreamend@init \global \let \pgf@plotstreampoint \pg
+f@plotstreampoint@init \global \let \pgf@plotstreamjump \pgf@plotstreamjump@ini
+t \global \let \pgf@plotstreamspecial \pgf@plotstreamspecial@init \pgfplotyzero
+levelstreamstart ]'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap01/skew_ventanas.dat}
+Package pgfplots info on input line 847: Using 'lua backend=false' for plot 1 (
+type '[tikz@plot@handler: macro:->\global \pgf@plot@startedfalse \global \let \
+pgf@plotstreamend \pgf@plotstreamend@init \global \let \pgf@plotstreampoint \pg
+f@plotstreampoint@init \global \let \pgf@plotstreamjump \pgf@plotstreamjump@ini
+t \global \let \pgf@plotstreamspecial \pgf@plotstreamspecial@init \pgfplotyzero
+levelstreamstart ]'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap01/skew_ventanas.dat}
+PGFPlots: reading {figuras/cap01/skew_acum.dat}
+
+Overfull \hbox (11.83607pt too wide) in paragraph at lines 861--862
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 867.
+LaTeX Info: Redefining \% on input line 867.
+Package cleveref Info: loaded `spanish' language definitions on input line 867.
+
+[74]
+Underfull \vbox (badness 3000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 874.
+LaTeX Info: Redefining \% on input line 874.
+Package cleveref Info: loaded `spanish' language definitions on input line 874.
+
+[75] (./figuras/cap01/mapa_circular.tex)
+
+LaTeX Info: Redefining \. on input line 898.
+LaTeX Info: Redefining \% on input line 898.
+Package cleveref Info: loaded `spanish' language definitions on input line 898.
+
+[76]
+Package pgfplots info on input line 918: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 918: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap01/ruido_ventana.dat}
+PGFPlots: reading {figuras/cap01/ruido_ventana.dat}
+PGFPlots: reading {figuras/cap01/ruido_ventana.dat}
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 935.
+LaTeX Info: Redefining \% on input line 935.
+Package cleveref Info: loaded `spanish' language definitions on input line 935.
+
+[77]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 947.
+LaTeX Info: Redefining \% on input line 947.
+Package cleveref Info: loaded `spanish' language definitions on input line 947.
+
+[78] (./build/libro/_minted/9952A45044D71049C9E66971E5306B29.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 954.
+LaTeX Info: Redefining \% on input line 954.
+Package cleveref Info: loaded `spanish' language definitions on input line 954.
+
+[79] (./build/libro/_minted/E33B25D2810ADA205FE59F7CF4290204.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 959.
+LaTeX Info: Redefining \% on input line 959.
+Package cleveref Info: loaded `spanish' language definitions on input line 959.
+
+[80]
+
+LaTeX Info: Redefining \. on input line 959.
+LaTeX Info: Redefining \% on input line 959.
+Package cleveref Info: loaded `spanish' language definitions on input line 959.
+
+[81])
+
+LaTeX Info: Redefining \. on input line 41.
+LaTeX Info: Redefining \% on input line 41.
+Package cleveref Info: loaded `spanish' language definitions on input line 41.
+[82]
+\openout2 = capitulos/cap02.aux
+ (./capitulos/cap02.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@6=\count618
+\blx@sectionciteorder@6=\count619
+Package biblatex Info: Reference section=6 on input line 4.
+Package biblatex Info: Setting label 'refsection:6' on input line 4.
+
+Capítulo 2.
+
+Underfull \vbox (badness 1406) has occurred while \output is active []
+
+
+
+[83
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+Package cleveref Info: loaded `spanish' language definitions on input line 29.
+[84]
+
+LaTeX Info: Redefining \. on input line 61.
+LaTeX Info: Redefining \% on input line 61.
+Package cleveref Info: loaded `spanish' language definitions on input line 61.
+[85]
+\openout6 = main.listing
+ (./build/libro/_minted/959248CEFF5A952067CF64534B25BAD0.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 85.
+LaTeX Info: Redefining \% on input line 85.
+Package cleveref Info: loaded `spanish' language definitions on input line 85.
+[86] (./figuras/cap02/fastq_registro.tex)
+Overfull \hbox (4.94872pt too wide) in paragraph at lines 144--94
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 113.
+LaTeX Info: Redefining \% on input line 113.
+Package cleveref Info: loaded `spanish' language definitions on input line 113.
+
+[87]
+
+LaTeX Info: Redefining \. on input line 117.
+LaTeX Info: Redefining \% on input line 117.
+Package cleveref Info: loaded `spanish' language definitions on input line 117.
+
+[88]
+Package pgfplots info on input line 138: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+ (./figuras/cap02/ascii_phred.tex)
+
+LaTeX Info: Redefining \. on input line 166.
+LaTeX Info: Redefining \% on input line 166.
+Package cleveref Info: loaded `spanish' language definitions on input line 166.
+
+[89]
+Underfull \vbox (badness 4168) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 184.
+LaTeX Info: Redefining \% on input line 184.
+Package cleveref Info: loaded `spanish' language definitions on input line 184.
+
+[90]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 194.
+LaTeX Info: Redefining \% on input line 194.
+Package cleveref Info: loaded `spanish' language definitions on input line 194.
+
+[91]
+PGFPlots: reading {figuras/cap02/calidad_ciclo.dat}
+PGFPlots: reading {figuras/cap02/calidad_ciclo.dat}
+PGFPlots: reading {figuras/cap02/calidad_ciclo.dat}
+PGFPlots: reading {figuras/cap02/calidad_ciclo.dat}
+PGFPlots: reading {figuras/cap02/calidad_ciclo.dat}
+Package pgfplots info on input line 220: fill between: activating layered graph
+ics
+Package pgfplots info on input line 220: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+PGFPlots: reading {figuras/cap02/ee_calib.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/20BD633BA4ACA075B3957FCDFD765B7D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 250.
+LaTeX Info: Redefining \% on input line 250.
+Package cleveref Info: loaded `spanish' language definitions on input line 250.
+
+[92]
+\openout6 = main.listing
+ (./build/libro/_minted/43F8053BDF4CC0D52B5638B1A8E9E81F.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 262.
+LaTeX Info: Redefining \% on input line 262.
+Package cleveref Info: loaded `spanish' language definitions on input line 262.
+
+[93] (./build/libro/_minted/5AD826FE4A5C7126D140377EBB7EDE37.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 316.
+LaTeX Info: Redefining \% on input line 316.
+Package cleveref Info: loaded `spanish' language definitions on input line 316.
+
+[94]
+
+LaTeX Info: Redefining \. on input line 327.
+LaTeX Info: Redefining \% on input line 327.
+Package cleveref Info: loaded `spanish' language definitions on input line 327.
+
+[95] (./build/libro/_minted/3A6E647F73E76464FF4D79D8C766E62B.highlight.minted)
+(./build/libro/_minted/363B541169EE503E084A314840C75CE7.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 342.
+LaTeX Info: Redefining \% on input line 342.
+Package cleveref Info: loaded `spanish' language definitions on input line 342.
+
+[96]
+\openout6 = main.listing
+ (./build/libro/_minted/2C991B64EB2F2731E83641CC9A0855F1.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 366.
+LaTeX Info: Redefining \% on input line 366.
+Package cleveref Info: loaded `spanish' language definitions on input line 366.
+
+[97]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 431.
+LaTeX Info: Redefining \% on input line 431.
+Package cleveref Info: loaded `spanish' language definitions on input line 431.
+
+[98]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 432.
+LaTeX Info: Redefining \% on input line 432.
+Package cleveref Info: loaded `spanish' language definitions on input line 432.
+
+[99] (./figuras/cap02/cigar.tex)
+
+LaTeX Info: Redefining \. on input line 447.
+LaTeX Info: Redefining \% on input line 447.
+Package cleveref Info: loaded `spanish' language definitions on input line 447.
+
+[100] (./build/libro/_minted/AC71D9BF278F848A0CB2F601BFB923CC.highlight.minted) (./figuras/cap02/flag.tex)
+
+LaTeX Info: Redefining \. on input line 475.
+LaTeX Info: Redefining \% on input line 475.
+Package cleveref Info: loaded `spanish' language definitions on input line 475.
+
+[101]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 480.
+LaTeX Info: Redefining \% on input line 480.
+Package cleveref Info: loaded `spanish' language definitions on input line 480.
+
+[102]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 507.
+LaTeX Info: Redefining \% on input line 507.
+Package cleveref Info: loaded `spanish' language definitions on input line 507.
+
+[103]
+Overfull \hbox (9.48317pt too wide) in paragraph at lines 548--549
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 555.
+LaTeX Info: Redefining \% on input line 555.
+Package cleveref Info: loaded `spanish' language definitions on input line 555.
+
+[104]
+\openout6 = main.listing
+ (./build/libro/_minted/2425430B5DCBD30C40FA7A1DF8301FFC.highlight.minted)
+Underfull \vbox (badness 3417) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 576.
+LaTeX Info: Redefining \% on input line 576.
+Package cleveref Info: loaded `spanish' language definitions on input line 576.
+
+[105]
+Overfull \hbox (1.20883pt too wide) detected at line 583
+[][][][]\TU/LibertinusMath-Regular.otf(1)/m/n/10.95 ℙ(𝐷 ∣ 𝐺) = [] [] 
+,  [][] = −10 [][] [],
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 603.
+LaTeX Info: Redefining \% on input line 603.
+Package cleveref Info: loaded `spanish' language definitions on input line 603.
+
+[106]
+
+LaTeX Info: Redefining \. on input line 625.
+LaTeX Info: Redefining \% on input line 625.
+Package cleveref Info: loaded `spanish' language definitions on input line 625.
+
+[107]
+
+LaTeX Info: Redefining \. on input line 668.
+LaTeX Info: Redefining \% on input line 668.
+Package cleveref Info: loaded `spanish' language definitions on input line 668.
+
+[108]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 682.
+LaTeX Info: Redefining \% on input line 682.
+Package cleveref Info: loaded `spanish' language definitions on input line 682.
+
+[109]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 720.
+LaTeX Info: Redefining \% on input line 720.
+Package cleveref Info: loaded `spanish' language definitions on input line 720.
+
+[110]
+Underfull \vbox (badness 6493) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 746.
+LaTeX Info: Redefining \% on input line 746.
+Package cleveref Info: loaded `spanish' language definitions on input line 746.
+
+[111] (./build/libro/_minted/AACFBD93C228ADCB647D8F30AF9F784D.highlight.minted)
+\openout6 = main.listing
+ (./build/libro/_minted/5D7E276F3C0F97E005B116AF0AFC26B2.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 774.
+LaTeX Info: Redefining \% on input line 774.
+Package cleveref Info: loaded `spanish' language definitions on input line 774.
+
+[112]
+\openout6 = main.listing
+ (./build/libro/_minted/CCB9FF8BB361B3770698BD8EF070F375.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 812.
+LaTeX Info: Redefining \% on input line 812.
+Package cleveref Info: loaded `spanish' language definitions on input line 812.
+
+[113] (./figuras/cap02/tp53_gen.tex)
+Underfull \vbox (badness 1789) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 827.
+LaTeX Info: Redefining \% on input line 827.
+Package cleveref Info: loaded `spanish' language definitions on input line 827.
+
+[114]
+PGFPlots: reading {figuras/cap02/p53_variantes.dat}
+
+Underfull \vbox (badness 5316) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 866.
+LaTeX Info: Redefining \% on input line 866.
+Package cleveref Info: loaded `spanish' language definitions on input line 866.
+
+[115]
+
+Package siunitx Warning: Unit macro \angstrom has been deprecated in this
+(siunitx)                release.
+(siunitx)                
+(siunitx)                The BIPM have removed this unit from the SI Brochure.
+(siunitx)                You should define it yourself using \DeclareSIUnit in
+(siunitx)                your source. The current definition is
+(siunitx)                
+(siunitx)                \DeclareSIUnit\angstrom{Å}
+
+Package pgfplots info on input line 882: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+PGFPlots: reading {figuras/cap02/pdb_anual.dat}
+PGFPlots: reading {figuras/cap02/pdb_anual.dat}
+PGFPlots: reading {figuras/cap02/pdb_anual.dat}
+PGFPlots: reading {figuras/cap02/pdb_anual.dat}
+
+
+LaTeX Info: Redefining \. on input line 898.
+LaTeX Info: Redefining \% on input line 898.
+Package cleveref Info: loaded `spanish' language definitions on input line 898.
+
+[116]
+Overfull \hbox (1.60913pt too wide) in paragraph at lines 928--929
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 939.
+LaTeX Info: Redefining \% on input line 939.
+Package cleveref Info: loaded `spanish' language definitions on input line 939.
+
+[117]
+Overfull \hbox (1.52997pt too wide) in paragraph at lines 952--953
+\TU/LibertinusMath-Regular.otf(1)/m/n/10 −10 [][] 𝑝$\TU/LibertinusSerif(0)
+/m/n/10 , co-di-fi-ca-da co-mo \TU/FiraMono(0)/m/n/10 chr(Q+33)\TU/LibertinusSe
+rif(0)/m/n/10 . Los erro-res es-pe-ra-dos, $[] \TU/LibertinusMath-Regular.otf(1
+)/m/n/10 = [] 10[]$\TU/LibertinusSerif(0)/m/n/10 ,
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 959.
+LaTeX Info: Redefining \% on input line 959.
+Package cleveref Info: loaded `spanish' language definitions on input line 959.
+
+[118] (./build/libro/_minted/6809C8757E36F3DAAA83C4674F1BBB7A.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 966.
+LaTeX Info: Redefining \% on input line 966.
+Package cleveref Info: loaded `spanish' language definitions on input line 966.
+
+[119] (./build/libro/_minted/6A41CE2D978A2C3FB35062C0E610D9DE.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 971.
+LaTeX Info: Redefining \% on input line 971.
+Package cleveref Info: loaded `spanish' language definitions on input line 971.
+
+[120]
+
+LaTeX Info: Redefining \. on input line 971.
+LaTeX Info: Redefining \% on input line 971.
+Package cleveref Info: loaded `spanish' language definitions on input line 971.
+
+[121])
+
+LaTeX Info: Redefining \. on input line 42.
+LaTeX Info: Redefining \% on input line 42.
+Package cleveref Info: loaded `spanish' language definitions on input line 42.
+[122]
+
+[123
+
+
+
+]
+
+[124
 
 ]
 \openout2 = capitulos/cap03.aux
  (./capitulos/cap03.tex
 Package biblatex Info: Reference section=0 on input line 5.
-\blx@maxsegment@4=\count614
-\blx@sectionciteorder@4=\count615
-Package biblatex Info: Reference section=4 on input line 5.
-Package biblatex Info: Setting label 'refsection:4' on input line 5.
+\blx@maxsegment@7=\count620
+\blx@sectionciteorder@7=\count621
+Package biblatex Info: Reference section=7 on input line 5.
+Package biblatex Info: Setting label 'refsection:7' on input line 5.
 
-Capítulo 0.
+Capítulo 3.
 
 
-[5
+[125
 
 
 ]
@@ -3014,15 +4263,12 @@ Underfull \vbox (badness 4634) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 42.
 LaTeX Info: Redefining \% on input line 42.
 Package cleveref Info: loaded `spanish' language definitions on input line 42.
-[6]
+[126]
 
 LaTeX Info: Redefining \. on input line 63.
 LaTeX Info: Redefining \% on input line 63.
 Package cleveref Info: loaded `spanish' language definitions on input line 63.
-[7]
-LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
-(Font)              scaled to size 9.19795pt on input line 66.
- (./figuras/cap03/dotplot.tex
+[127] (./figuras/cap03/dotplot.tex
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
 (Font)              scaled to size 5.03998pt on input line 62.
 )
@@ -3036,19 +4282,19 @@ Underfull \vbox (badness 3417) has occurred while \output is active []
 LaTeX Info: Redefining \. on input line 93.
 LaTeX Info: Redefining \% on input line 93.
 Package cleveref Info: loaded `spanish' language definitions on input line 93.
-[8]
+[128]
 
 LaTeX Info: Redefining \. on input line 104.
 LaTeX Info: Redefining \% on input line 104.
 Package cleveref Info: loaded `spanish' language definitions on input line 104.
 
-[9]
+[129]
 
 LaTeX Info: Redefining \. on input line 133.
 LaTeX Info: Redefining \% on input line 133.
 Package cleveref Info: loaded `spanish' language definitions on input line 133.
 
-[10] (./figuras/cap03/nw_matriz.tex)
+[130] (./figuras/cap03/nw_matriz.tex)
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 10.07996pt on input line 170.
 
@@ -3060,7 +4306,7 @@ LaTeX Info: Redefining \. on input line 177.
 LaTeX Info: Redefining \% on input line 177.
 Package cleveref Info: loaded `spanish' language definitions on input line 177.
 
-[11]
+[131]
 \openout6 = main.listing
  (./build/libro/_minted/7026E97EDA6FC86905EEC225582B4C11.highlight.minted)
 
@@ -3068,17 +4314,13 @@ LaTeX Info: Redefining \. on input line 192.
 LaTeX Info: Redefining \% on input line 192.
 Package cleveref Info: loaded `spanish' language definitions on input line 192.
 
-[12]
+[132]
 
 LaTeX Info: Redefining \. on input line 214.
 LaTeX Info: Redefining \% on input line 214.
 Package cleveref Info: loaded `spanish' language definitions on input line 214.
 
-[13]
-
-LaTeX Warning: Reference `cap:04' on page 1 undefined on input line 235.
-
-
+[133]
 Underfull \vbox (badness 1112) has occurred while \output is active []
 
 
@@ -3087,7 +4329,7 @@ LaTeX Info: Redefining \. on input line 239.
 LaTeX Info: Redefining \% on input line 239.
 Package cleveref Info: loaded `spanish' language definitions on input line 239.
 
-[14]
+[134]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -3096,16 +4338,13 @@ LaTeX Info: Redefining \. on input line 265.
 LaTeX Info: Redefining \% on input line 265.
 Package cleveref Info: loaded `spanish' language definitions on input line 265.
 
-[15]
+[135]
 
 LaTeX Info: Redefining \. on input line 279.
 LaTeX Info: Redefining \% on input line 279.
 Package cleveref Info: loaded `spanish' language definitions on input line 279.
 
-[16] (./figuras/cap03/blosum62.tex
-LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
-(Font)              scaled to size 6.71997pt on input line 22.
-)
+[136] (./figuras/cap03/blosum62.tex)
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -3114,7 +4353,7 @@ LaTeX Info: Redefining \. on input line 294.
 LaTeX Info: Redefining \% on input line 294.
 Package cleveref Info: loaded `spanish' language definitions on input line 294.
 
-[17]
+[137]
 Underfull \vbox (badness 1281) has occurred while \output is active []
 
 
@@ -3123,10 +4362,7 @@ LaTeX Info: Redefining \. on input line 315.
 LaTeX Info: Redefining \% on input line 315.
 Package cleveref Info: loaded `spanish' language definitions on input line 315.
 
-[18]
-LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
-(Font)              scaled to size 6.71997pt on input line 338.
-
+[138]
 Overfull \hbox (13.97198pt too wide) in paragraph at lines 353--354
  [][] 
  []
@@ -3137,7 +4373,7 @@ LaTeX Info: Redefining \. on input line 376.
 LaTeX Info: Redefining \% on input line 376.
 Package cleveref Info: loaded `spanish' language definitions on input line 376.
 
-[19]
+[139]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
@@ -3146,7 +4382,7 @@ LaTeX Info: Redefining \. on input line 393.
 LaTeX Info: Redefining \% on input line 393.
 Package cleveref Info: loaded `spanish' language definitions on input line 393.
 
-[20]
+[140]
 Package pgfplots info on input line 403: Using 'lua backend=false' for axis: ym
 ode=log unsupported (yet).
 
@@ -3162,7 +4398,7 @@ LaTeX Info: Redefining \. on input line 422.
 LaTeX Info: Redefining \% on input line 422.
 Package cleveref Info: loaded `spanish' language definitions on input line 422.
 
-[21]
+[141]
 \openout6 = main.listing
  (./build/libro/_minted/6386E04F670BC2A6F7B5746F0A7C0B7B.highlight.minted)
 
@@ -3170,7 +4406,7 @@ LaTeX Info: Redefining \. on input line 450.
 LaTeX Info: Redefining \% on input line 450.
 Package cleveref Info: loaded `spanish' language definitions on input line 450.
 
-[22]
+[142]
 Underfull \vbox (badness 6236) has occurred while \output is active []
 
 
@@ -3179,55 +4415,1633 @@ LaTeX Info: Redefining \. on input line 466.
 LaTeX Info: Redefining \% on input line 466.
 Package cleveref Info: loaded `spanish' language definitions on input line 466.
 
-[23] (./build/libro/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted)
-(./build/libro/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted)
+[143] (./build/libro/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted) (./build/libro/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted)
 
 LaTeX Info: Redefining \. on input line 472.
 LaTeX Info: Redefining \% on input line 472.
 Package cleveref Info: loaded `spanish' language definitions on input line 472.
 
-[24]
+[144]
 
 LaTeX Info: Redefining \. on input line 472.
 LaTeX Info: Redefining \% on input line 472.
 Package cleveref Info: loaded `spanish' language definitions on input line 472.
 
-[25])
+[145])
 
 LaTeX Info: Redefining \. on input line 48.
 LaTeX Info: Redefining \% on input line 48.
 Package cleveref Info: loaded `spanish' language definitions on input line 48.
-[26]
+[146]
+\openout2 = capitulos/cap04.aux
+ (./capitulos/cap04.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@8=\count622
+\blx@sectionciteorder@8=\count623
+Package biblatex Info: Reference section=8 on input line 4.
+Package biblatex Info: Setting label 'refsection:8' on input line 4.
 
-[27
+Capítulo 4.
+
+
+[147
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 30.
+LaTeX Info: Redefining \% on input line 30.
+Package cleveref Info: loaded `spanish' language definitions on input line 30.
+[148]
+
+LaTeX Info: Redefining \. on input line 64.
+LaTeX Info: Redefining \% on input line 64.
+Package cleveref Info: loaded `spanish' language definitions on input line 64.
+[149]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 97.
+LaTeX Info: Redefining \% on input line 97.
+Package cleveref Info: loaded `spanish' language definitions on input line 97.
+[150]
+
+LaTeX Font Warning: Font shape `TU/LibertinusMath-Regular.otf(1)/b/n' undefined
+
+(Font)              using `TU/LibertinusMath-Regular.otf(1)/m/n' instead on inp
+ut line 103.
+
+
+LaTeX Font Warning: Font shape `TU/LibertinusMath-Regular.otf(2)/b/n' undefined
+
+(Font)              using `TU/LibertinusMath-Regular.otf(2)/m/n' instead on inp
+ut line 103.
+
+
+LaTeX Font Warning: Font shape `TU/LibertinusMath-Regular.otf(3)/b/n' undefined
+
+(Font)              using `TU/LibertinusMath-Regular.otf(3)/m/n' instead on inp
+ut line 103.
+
+
+
+LaTeX Info: Redefining \. on input line 116.
+LaTeX Info: Redefining \% on input line 116.
+Package cleveref Info: loaded `spanish' language definitions on input line 116.
+
+[151]
+Package pgfplots info on input line 146: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+
+Overfull \hbox (3.70615pt too wide) in paragraph at lines 157--158
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 172.
+LaTeX Info: Redefining \% on input line 172.
+Package cleveref Info: loaded `spanish' language definitions on input line 172.
+
+[152]
+Underfull \vbox (badness 2181) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 194.
+LaTeX Info: Redefining \% on input line 194.
+Package cleveref Info: loaded `spanish' language definitions on input line 194.
+
+[153] (./figuras/cap04/arbol_guia.tex)
+Underfull \vbox (badness 2529) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 225.
+LaTeX Info: Redefining \% on input line 225.
+Package cleveref Info: loaded `spanish' language definitions on input line 225.
+
+[154]
+
+LaTeX Info: Redefining \. on input line 225.
+LaTeX Info: Redefining \% on input line 225.
+Package cleveref Info: loaded `spanish' language definitions on input line 225.
+
+[155] (./figuras/cap04/msa_globinas.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 236.
+LaTeX Info: Redefining \% on input line 236.
+Package cleveref Info: loaded `spanish' language definitions on input line 236.
+
+[156]
+Underfull \vbox (badness 1178) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 251.
+LaTeX Info: Redefining \% on input line 251.
+Package cleveref Info: loaded `spanish' language definitions on input line 251.
+
+[157]
+
+LaTeX Info: Redefining \. on input line 285.
+LaTeX Info: Redefining \% on input line 285.
+Package cleveref Info: loaded `spanish' language definitions on input line 285.
+
+[158]
+\openout6 = main.listing
+ (./build/libro/_minted/F44A68B7DAE38AA9C08C87F83D69B151.highlight.minted) (./build/libro/_minted/ED441311E92E85418FCAC60AB512F6DF.highlight.minted)
+(./build/libro/_minted/765B565C42C39B48EA79E93F289A502B.highlight.minted)
+Underfull \vbox (badness 5939) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 314.
+LaTeX Info: Redefining \% on input line 314.
+Package cleveref Info: loaded `spanish' language definitions on input line 314.
+
+[159]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 331.
+LaTeX Info: Redefining \% on input line 331.
+Package cleveref Info: loaded `spanish' language definitions on input line 331.
+
+[160]
+
+LaTeX Info: Redefining \. on input line 356.
+LaTeX Info: Redefining \% on input line 356.
+Package cleveref Info: loaded `spanish' language definitions on input line 356.
+
+[161] (./figuras/cap04/pwm_tbp.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 385.
+LaTeX Info: Redefining \% on input line 385.
+Package cleveref Info: loaded `spanish' language definitions on input line 385.
+
+[162]
+Underfull \vbox (badness 4266) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 397.
+LaTeX Info: Redefining \% on input line 397.
+Package cleveref Info: loaded `spanish' language definitions on input line 397.
+
+[163] (./figuras/cap04/logo_tbp.tex)
+Overfull \hbox (4.77663pt too wide) in paragraph at lines 431--432
+[]\TU/LibertinusSerif(0)/m/n/10.95 La de-mos-tra-ción es una lí-nea: por li-ne
+a-li-dad de la es-pe-ran-za, $\TU/LibertinusMath-Regular.otf(1)/b/n/10.95 𝔼[
+][𝑆] = [][] [][] 𝑓[]𝑊[]$\TU/LibertinusSerif(0)/m/n/10.95 ,
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 432.
+LaTeX Info: Redefining \% on input line 432.
+Package cleveref Info: loaded `spanish' language definitions on input line 432.
+
+[164]
+PGFPlots: reading {figuras/cap04/tbp_ic.dat}
+Package pgfplots info on input line 448: Using 'lua backend=false' for plot 3 (
+type 'pgfplothandlerdiscard'): point meta choice does not support LUA.
+PGFPlots: reading {figuras/cap04/tbp_ic_etiq.dat}
+PGFPlots: reading {figuras/cap04/hist_pwm.dat}
+PGFPlots: reading {figuras/cap04/hist_pwm.dat}
+PGFPlots: reading {figuras/cap04/barrido.dat}
+
+Overfull \hbox (1.76033pt too wide) in paragraph at lines 485--486
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/69A470CA1BB8DA756D6A93C6F13DF318.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 508.
+LaTeX Info: Redefining \% on input line 508.
+Package cleveref Info: loaded `spanish' language definitions on input line 508.
+
+[165] (./build/libro/_minted/7963F0E7E932F441211E78248ABF0DB1.highlight.minted) (./build/libro/_minted/1E01571EB471D7637D04D0C0CBC7D3BC.highlight.minted)
+(./build/libro/_minted/5FA2EDEDF4A458623691F53EF1FB1D73.highlight.minted)
+Underfull \vbox (badness 5954) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 514.
+LaTeX Info: Redefining \% on input line 514.
+Package cleveref Info: loaded `spanish' language definitions on input line 514.
+
+[166]
+
+LaTeX Info: Redefining \. on input line 514.
+LaTeX Info: Redefining \% on input line 514.
+Package cleveref Info: loaded `spanish' language definitions on input line 514.
+
+[167]
+
+LaTeX Info: Redefining \. on input line 527.
+LaTeX Info: Redefining \% on input line 527.
+Package cleveref Info: loaded `spanish' language definitions on input line 527.
+
+[168]
+
+LaTeX Info: Redefining \. on input line 552.
+LaTeX Info: Redefining \% on input line 552.
+Package cleveref Info: loaded `spanish' language definitions on input line 552.
+
+[169]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 595.
+LaTeX Info: Redefining \% on input line 595.
+Package cleveref Info: loaded `spanish' language definitions on input line 595.
+
+[170]
+
+LaTeX Info: Redefining \. on input line 629.
+LaTeX Info: Redefining \% on input line 629.
+Package cleveref Info: loaded `spanish' language definitions on input line 629.
+
+[171] (./build/libro/_minted/649F1DE59712AA6268B494CDFBD3B099.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 647.
+LaTeX Info: Redefining \% on input line 647.
+Package cleveref Info: loaded `spanish' language definitions on input line 647.
+
+[172] (./figuras/cap04/trellis.tex)
+PGFPlots: reading {figuras/cap04/posterior.dat}
+PGFPlots: reading {figuras/cap04/posterior.dat}
+PGFPlots: reading {figuras/cap04/posterior.dat}
+
+\openout6 = main.listing
+
+(./build/libro/_minted/8D7D39C89BDD58ECC23D4AF01E1ECF73.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 713.
+LaTeX Info: Redefining \% on input line 713.
+Package cleveref Info: loaded `spanish' language definitions on input line 713.
+
+[173]
+
+LaTeX Info: Redefining \. on input line 713.
+LaTeX Info: Redefining \% on input line 713.
+Package cleveref Info: loaded `spanish' language definitions on input line 713.
+
+[174]
+Underfull \vbox (badness 2990) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 729.
+LaTeX Info: Redefining \% on input line 729.
+Package cleveref Info: loaded `spanish' language definitions on input line 729.
+
+[175]
+PGFPlots: reading {figuras/cap04/baumwelch.dat}
+ (./figuras/cap04/baumwelch_ref.tex)
+Package pgfplots info on input line 759: Deactivating LUA version of plot expre
+ssion for plot 1 (type 'pgfplothandlerlineto'): y expression '\capcuatrollverda
+dero ' contains a TeX macro.
+PGFPlots: reading {figuras/cap04/baumwelch.dat}
+PGFPlots: reading {figuras/cap04/baumwelch.dat}
+
+
+LaTeX Info: Redefining \. on input line 778.
+LaTeX Info: Redefining \% on input line 778.
+Package cleveref Info: loaded `spanish' language definitions on input line 778.
+
+[176]
+Underfull \vbox (badness 1817) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 789.
+LaTeX Info: Redefining \% on input line 789.
+Package cleveref Info: loaded `spanish' language definitions on input line 789.
+
+[177]
+
+LaTeX Info: Redefining \. on input line 831.
+LaTeX Info: Redefining \% on input line 831.
+Package cleveref Info: loaded `spanish' language definitions on input line 831.
+
+[178]
+
+LaTeX Info: Redefining \. on input line 878.
+LaTeX Info: Redefining \% on input line 878.
+Package cleveref Info: loaded `spanish' language definitions on input line 878.
+
+[179]
+
+LaTeX Info: Redefining \. on input line 910.
+LaTeX Info: Redefining \% on input line 910.
+Package cleveref Info: loaded `spanish' language definitions on input line 910.
+
+[180]
+\openout6 = main.listing
+ (./build/libro/_minted/D0701D84C1586F48FB89DA0DF324099D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 922.
+LaTeX Info: Redefining \% on input line 922.
+Package cleveref Info: loaded `spanish' language definitions on input line 922.
+
+[181]
+\openout6 = main.listing
+ (./build/libro/_minted/89870089A7B0B372229D1FAAF46E7DDD.highlight.minted)
+Underfull \vbox (badness 2359) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 955.
+LaTeX Info: Redefining \% on input line 955.
+Package cleveref Info: loaded `spanish' language definitions on input line 955.
+
+[182] (./build/libro/_minted/98D3A4C5B56F353B511D3451E13AADCE.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 962.
+LaTeX Info: Redefining \% on input line 962.
+Package cleveref Info: loaded `spanish' language definitions on input line 962.
+
+[183]
+
+LaTeX Info: Redefining \. on input line 968.
+LaTeX Info: Redefining \% on input line 968.
+Package cleveref Info: loaded `spanish' language definitions on input line 968.
+
+[184]
+
+LaTeX Info: Redefining \. on input line 968.
+LaTeX Info: Redefining \% on input line 968.
+Package cleveref Info: loaded `spanish' language definitions on input line 968.
+
+[185])
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 49.
+LaTeX Info: Redefining \% on input line 49.
+Package cleveref Info: loaded `spanish' language definitions on input line 49.
+[186]
+\openout2 = capitulos/cap05.aux
+ (./capitulos/cap05.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@9=\count624
+\blx@sectionciteorder@9=\count625
+Package biblatex Info: Reference section=9 on input line 4.
+Package biblatex Info: Setting label 'refsection:9' on input line 4.
+
+Capítulo 5.
+
+
+[187
+
+
+
+
+]
+Underfull \vbox (badness 6859) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 32.
+LaTeX Info: Redefining \% on input line 32.
+Package cleveref Info: loaded `spanish' language definitions on input line 32.
+[188]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 101.
+LaTeX Info: Redefining \% on input line 101.
+Package cleveref Info: loaded `spanish' language definitions on input line 101.
+
+[189]
+Underfull \vbox (badness 1603) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 109.
+LaTeX Info: Redefining \% on input line 109.
+Package cleveref Info: loaded `spanish' language definitions on input line 109.
+
+[190] (./figuras/cap05/topologias.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 132.
+LaTeX Info: Redefining \% on input line 132.
+Package cleveref Info: loaded `spanish' language definitions on input line 132.
+
+[191]
+
+LaTeX Info: Redefining \. on input line 157.
+LaTeX Info: Redefining \% on input line 157.
+Package cleveref Info: loaded `spanish' language definitions on input line 157.
+
+[192]
+
+LaTeX Info: Redefining \. on input line 187.
+LaTeX Info: Redefining \% on input line 187.
+Package cleveref Info: loaded `spanish' language definitions on input line 187.
+
+[193]
+
+LaTeX Info: Redefining \. on input line 210.
+LaTeX Info: Redefining \% on input line 210.
+Package cleveref Info: loaded `spanish' language definitions on input line 210.
+
+[194]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 245.
+LaTeX Info: Redefining \% on input line 245.
+Package cleveref Info: loaded `spanish' language definitions on input line 245.
+
+[195]
+PGFPlots: reading {figuras/cap05/saturacion.dat}
+PGFPlots: reading {figuras/cap05/saturacion.dat}
+PGFPlots: reading {figuras/cap05/saturacion.dat}
+PGFPlots: reading {figuras/cap05/saturacion.dat}
+PGFPlots: reading {figuras/cap05/saturacion_sim.dat}
+
+
+LaTeX Info: Redefining \. on input line 287.
+LaTeX Info: Redefining \% on input line 287.
+Package cleveref Info: loaded `spanish' language definitions on input line 287.
+
+[196]
+
+LaTeX Info: Redefining \. on input line 297.
+LaTeX Info: Redefining \% on input line 297.
+Package cleveref Info: loaded `spanish' language definitions on input line 297.
+
+[197]
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
+(Font)              scaled to size 12.09593pt on input line 340.
+
+
+LaTeX Info: Redefining \. on input line 377.
+LaTeX Info: Redefining \% on input line 377.
+Package cleveref Info: loaded `spanish' language definitions on input line 377.
+
+[198]
+Underfull \vbox (badness 4242) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 393.
+LaTeX Info: Redefining \% on input line 393.
+Package cleveref Info: loaded `spanish' language definitions on input line 393.
+
+[199]
+PGFPlots: reading {figuras/cap05/gamma.dat}
+PGFPlots: reading {figuras/cap05/gamma.dat}
+PGFPlots: reading {figuras/cap05/gamma.dat}
+PGFPlots: reading {figuras/cap05/gamma.dat}
+Package pgfplots info on input line 418: Using 'lua backend=false' for plot 0 (
+type 'pgfplothandlerybar'): point meta choice does not support LUA.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 442.
+LaTeX Info: Redefining \% on input line 442.
+Package cleveref Info: loaded `spanish' language definitions on input line 442.
+
+[200]
+\openout6 = main.listing
+ (./build/libro/_minted/D3BCF98695CEF0E4C002A8231CE54E70.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 471.
+LaTeX Info: Redefining \% on input line 471.
+Package cleveref Info: loaded `spanish' language definitions on input line 471.
+
+[201]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 481.
+LaTeX Info: Redefining \% on input line 481.
+Package cleveref Info: loaded `spanish' language definitions on input line 481.
+
+[202]
+Underfull \vbox (badness 1688) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 504.
+LaTeX Info: Redefining \% on input line 504.
+Package cleveref Info: loaded `spanish' language definitions on input line 504.
+
+[203]
+
+LaTeX Info: Redefining \. on input line 558.
+LaTeX Info: Redefining \% on input line 558.
+Package cleveref Info: loaded `spanish' language definitions on input line 558.
+
+[204]
+
+LaTeX Info: Redefining \. on input line 603.
+LaTeX Info: Redefining \% on input line 603.
+Package cleveref Info: loaded `spanish' language definitions on input line 603.
+
+[205]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 625.
+LaTeX Info: Redefining \% on input line 625.
+Package cleveref Info: loaded `spanish' language definitions on input line 625.
+
+[206]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 638.
+LaTeX Info: Redefining \% on input line 638.
+Package cleveref Info: loaded `spanish' language definitions on input line 638.
+
+[207] (./figuras/cap05/nj_D.tex) (./figuras/cap05/nj_Q.tex)
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 658.
+See the caption package documentation for explanation.
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 660.
+LaTeX Info: Redefining \% on input line 660.
+Package cleveref Info: loaded `spanish' language definitions on input line 660.
+
+[208] (./build/libro/_minted/FE02A320B959C9AD6D3E06CB772A08D9.highlight.minted)
+\openout6 = main.listing
+ (./build/libro/_minted/44DF1E486D141DA9B006479EC466C5A4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 770.
+LaTeX Info: Redefining \% on input line 770.
+Package cleveref Info: loaded `spanish' language definitions on input line 770.
+
+[209]
+
+LaTeX Info: Redefining \. on input line 778.
+LaTeX Info: Redefining \% on input line 778.
+Package cleveref Info: loaded `spanish' language definitions on input line 778.
+
+[210]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 796.
+LaTeX Info: Redefining \% on input line 796.
+Package cleveref Info: loaded `spanish' language definitions on input line 796.
+
+[211]
+
+LaTeX Info: Redefining \. on input line 829.
+LaTeX Info: Redefining \% on input line 829.
+Package cleveref Info: loaded `spanish' language definitions on input line 829.
+
+[212]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 854.
+LaTeX Info: Redefining \% on input line 854.
+Package cleveref Info: loaded `spanish' language definitions on input line 854.
+
+[213]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 903.
+LaTeX Info: Redefining \% on input line 903.
+Package cleveref Info: loaded `spanish' language definitions on input line 903.
+
+[214]
+\openout6 = main.listing
+ (./build/libro/_minted/16DB4849D0ABF8D90DC653C13139581A.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 931.
+LaTeX Info: Redefining \% on input line 931.
+Package cleveref Info: loaded `spanish' language definitions on input line 931.
+
+[215]
+
+LaTeX Info: Redefining \. on input line 986.
+LaTeX Info: Redefining \% on input line 986.
+Package cleveref Info: loaded `spanish' language definitions on input line 986.
+
+[216]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 995.
+LaTeX Info: Redefining \% on input line 995.
+Package cleveref Info: loaded `spanish' language definitions on input line 995.
+
+[217] (./figuras/cap05/modelos.tex)
+Underfull \vbox (badness 5652) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 1008.
+LaTeX Info: Redefining \% on input line 1008.
+Package cleveref Info: loaded `spanish' language definitions on input line 1008
+.
+[218]
+Package pgfplots info on input line 1033: Using 'lua backend=false' for axis: x
+mode=log unsupported (yet).
+PGFPlots: reading {figuras/cap05/lba.dat}
+PGFPlots: reading {figuras/cap05/lba.dat}
+
+Overfull \hbox (4.09785pt too wide) in paragraph at lines 1042--1043
+ [][] 
+ []
+
+
+Underfull \vbox (badness 2245) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 1053.
+LaTeX Info: Redefining \% on input line 1053.
+Package cleveref Info: loaded `spanish' language definitions on input line 1053
+.
+[219]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 1069.
+LaTeX Info: Redefining \% on input line 1069.
+Package cleveref Info: loaded `spanish' language definitions on input line 1069
+.
+[220] (./figuras/cap05/bootstrap_esquema.tex)
+(./figuras/cap05/arbol_bootstrap.tex)
+
+LaTeX Info: Redefining \. on input line 1100.
+LaTeX Info: Redefining \% on input line 1100.
+Package cleveref Info: loaded `spanish' language definitions on input line 1100
+.
+[221]
+\openout6 = main.listing
+ (./build/libro/_minted/DD0E11FA4ED8B00179412FAA51BB5D5E.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 1112.
+LaTeX Info: Redefining \% on input line 1112.
+Package cleveref Info: loaded `spanish' language definitions on input line 1112
+.
+[222]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 1131.
+LaTeX Info: Redefining \% on input line 1131.
+Package cleveref Info: loaded `spanish' language definitions on input line 1131
+.
+[223] (./build/libro/_minted/FD8B020E0A24B6FC2A237831D31A6554.highlight.minted) (./build/libro/_minted/33E0A2C6763F5B83E08E598F16D6D461.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1142.
+LaTeX Info: Redefining \% on input line 1142.
+Package cleveref Info: loaded `spanish' language definitions on input line 1142
+.
+[224]
+
+LaTeX Info: Redefining \. on input line 1144.
+LaTeX Info: Redefining \% on input line 1144.
+Package cleveref Info: loaded `spanish' language definitions on input line 1144
+.
+[225]
+Overfull \hbox (1.22649pt too wide) in paragraph at lines 1144--1144
+\TU/LibertinusSerif(0)/m/n/10 lar-ge phy-lo-ge-nies. \TU/LibertinusSerif(0)/m/i
+t/10 Bio-in-for-ma-tics\TU/LibertinusSerif(0)/m/n/10 , \TU/LibertinusSerif(0)/m
+/it/10 󰀘󰀖\TU/LibertinusSerif(0)/m/n/10 (󰂫), 󰀚󰀬󰀚󰀫[]󰀚
+󰀬󰀚󰀬. []$https : / / doi . org / 10 . 1093 / bioinformatics /
+ []
+
+)
+
+LaTeX Info: Redefining \. on input line 50.
+LaTeX Info: Redefining \% on input line 50.
+Package cleveref Info: loaded `spanish' language definitions on input line 50.
+[226]
+
+[227
+
+
+
+]
+
+[228
+
+]
+\openout2 = capitulos/cap06.aux
+ (./capitulos/cap06.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@10=\count626
+\blx@sectionciteorder@10=\count627
+Package biblatex Info: Reference section=10 on input line 4.
+Package biblatex Info: Setting label 'refsection:10' on input line 4.
+
+Capítulo 6.
+
+
+[229
+
+
+]
+
+LaTeX Info: Redefining \. on input line 28.
+LaTeX Info: Redefining \% on input line 28.
+Package cleveref Info: loaded `spanish' language definitions on input line 28.
+[230]
+
+LaTeX Info: Redefining \. on input line 48.
+LaTeX Info: Redefining \% on input line 48.
+Package cleveref Info: loaded `spanish' language definitions on input line 48.
+[231]
+
+LaTeX Info: Redefining \. on input line 60.
+LaTeX Info: Redefining \% on input line 60.
+Package cleveref Info: loaded `spanish' language definitions on input line 60.
+[232]
+
+LaTeX Info: Redefining \. on input line 182.
+LaTeX Info: Redefining \% on input line 182.
+Package cleveref Info: loaded `spanish' language definitions on input line 182.
+
+[233]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 200.
+LaTeX Info: Redefining \% on input line 200.
+Package cleveref Info: loaded `spanish' language definitions on input line 200.
+
+[234]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 225.
+LaTeX Info: Redefining \% on input line 225.
+Package cleveref Info: loaded `spanish' language definitions on input line 225.
+
+[235]
+
+LaTeX Info: Redefining \. on input line 234.
+LaTeX Info: Redefining \% on input line 234.
+Package cleveref Info: loaded `spanish' language definitions on input line 234.
+
+[236]
+
+LaTeX Info: Redefining \. on input line 246.
+LaTeX Info: Redefining \% on input line 246.
+Package cleveref Info: loaded `spanish' language definitions on input line 246.
+
+[237]
+Underfull \hbox (badness 10000) in paragraph at lines 266--266
+[]|\TU/LibertinusSerif(0)/m/n/10 sus-ti-tu-cio-nes; peor
+ []
+
+Package pgfplots info on input line 278: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 278: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+
+
+LaTeX Info: Redefining \. on input line 309.
+LaTeX Info: Redefining \% on input line 309.
+Package cleveref Info: loaded `spanish' language definitions on input line 309.
+
+[238]
+Package pgfplots info on input line 320: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap06/costo.dat}
+PGFPlots: reading {figuras/cap06/moore.dat}
+
+Underfull \vbox (badness 3240) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 346.
+LaTeX Info: Redefining \% on input line 346.
+Package cleveref Info: loaded `spanish' language definitions on input line 346.
+
+[239]
+
+LaTeX Info: Redefining \. on input line 351.
+LaTeX Info: Redefining \% on input line 351.
+Package cleveref Info: loaded `spanish' language definitions on input line 351.
+
+[240]
+Underfull \vbox (badness 4416) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 365.
+LaTeX Info: Redefining \% on input line 365.
+Package cleveref Info: loaded `spanish' language definitions on input line 365.
+
+[241] (./figuras/cap06/fastq_anatomia.tex)
+Overfull \hbox (11.89316pt too wide) in paragraph at lines 135--387
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 400.
+LaTeX Info: Redefining \% on input line 400.
+Package cleveref Info: loaded `spanish' language definitions on input line 400.
+
+[242]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 413.
+LaTeX Info: Redefining \% on input line 413.
+Package cleveref Info: loaded `spanish' language definitions on input line 413.
+
+[243]
+Package pgfplots info on input line 435: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+
+Overfull \hbox (8.68974pt too wide) in paragraph at lines 450--451
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 457.
+LaTeX Info: Redefining \% on input line 457.
+Package cleveref Info: loaded `spanish' language definitions on input line 457.
+
+[244]
+
+LaTeX Info: Redefining \. on input line 466.
+LaTeX Info: Redefining \% on input line 466.
+Package cleveref Info: loaded `spanish' language definitions on input line 466.
+
+[245] (./figuras/cap06/fastqc_ticks.tex) (./figuras/cap06/fastqc_cajas.tex
+Package pgfplots info on input line 477: Using 'lua backend=false' for plot 0 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 2: Using 'lua backend=false' for plot 1 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 3: Using 'lua backend=false' for plot 2 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 4: Using 'lua backend=false' for plot 3 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 5: Using 'lua backend=false' for plot 4 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 6: Using 'lua backend=false' for plot 5 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 7: Using 'lua backend=false' for plot 6 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 8: Using 'lua backend=false' for plot 7 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 9: Using 'lua backend=false' for plot 8 (ty
+pe 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 10: Using 'lua backend=false' for plot 9 (t
+ype 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 11: Using 'lua backend=false' for plot 10 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 12: Using 'lua backend=false' for plot 11 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 13: Using 'lua backend=false' for plot 12 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 14: Using 'lua backend=false' for plot 13 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 15: Using 'lua backend=false' for plot 14 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 16: Using 'lua backend=false' for plot 15 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 17: Using 'lua backend=false' for plot 16 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 18: Using 'lua backend=false' for plot 17 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 19: Using 'lua backend=false' for plot 18 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 20: Using 'lua backend=false' for plot 19 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 21: Using 'lua backend=false' for plot 20 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 22: Using 'lua backend=false' for plot 21 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 23: Using 'lua backend=false' for plot 22 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 24: Using 'lua backend=false' for plot 23 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 25: Using 'lua backend=false' for plot 24 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 26: Using 'lua backend=false' for plot 25 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 27: Using 'lua backend=false' for plot 26 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 28: Using 'lua backend=false' for plot 27 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 29: Using 'lua backend=false' for plot 28 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 30: Using 'lua backend=false' for plot 29 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 31: Using 'lua backend=false' for plot 30 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 32: Using 'lua backend=false' for plot 31 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 33: Using 'lua backend=false' for plot 32 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 34: Using 'lua backend=false' for plot 33 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 35: Using 'lua backend=false' for plot 34 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 36: Using 'lua backend=false' for plot 35 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 37: Using 'lua backend=false' for plot 36 (
+type 'boxplot prepared'): plot handler does not support LUA.
+Package pgfplots info on input line 38: Using 'lua backend=false' for plot 37 (
+type 'boxplot prepared'): plot handler does not support LUA.
+)
+PGFPlots: reading {figuras/cap06/fastqc_media.dat}
+
+
+LaTeX Info: Redefining \. on input line 495.
+LaTeX Info: Redefining \% on input line 495.
+Package cleveref Info: loaded `spanish' language definitions on input line 495.
+
+[246]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 518.
+LaTeX Info: Redefining \% on input line 518.
+Package cleveref Info: loaded `spanish' language definitions on input line 518.
+
+[247]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 558.
+LaTeX Info: Redefining \% on input line 558.
+Package cleveref Info: loaded `spanish' language definitions on input line 558.
+
+[248]
+
+LaTeX Info: Redefining \. on input line 579.
+LaTeX Info: Redefining \% on input line 579.
+Package cleveref Info: loaded `spanish' language definitions on input line 579.
+
+[249] (./figuras/cap06/ventana_corte.tex)
+PGFPlots: reading {figuras/cap06/ventana_q.dat}
+PGFPlots: reading {figuras/cap06/ventana_m.dat}
+
+
+LaTeX Info: Redefining \. on input line 610.
+LaTeX Info: Redefining \% on input line 610.
+Package cleveref Info: loaded `spanish' language definitions on input line 610.
+
+[250]
+\openout6 = main.listing
+ (./build/libro/_minted/BDA82FFE3A31ED0BF7C8971C1A151442.highlight.minted)
+\openout6 = main.listing
+ (./build/libro/_minted/EB2FFEF8454F8095C8C4FE182BEA6AC4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 651.
+LaTeX Info: Redefining \% on input line 651.
+Package cleveref Info: loaded `spanish' language definitions on input line 651.
+
+[251]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 669.
+LaTeX Info: Redefining \% on input line 669.
+Package cleveref Info: loaded `spanish' language definitions on input line 669.
+
+[252] (./figuras/cap06/lecturas.tex)
+Overfull \hbox (10.1817pt too wide) in paragraph at lines 42--696
+ [][] 
+ []
+
+
+Underfull \vbox (badness 1102) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 698.
+LaTeX Info: Redefining \% on input line 698.
+Package cleveref Info: loaded `spanish' language definitions on input line 698.
+
+[253]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 711.
+LaTeX Info: Redefining \% on input line 711.
+Package cleveref Info: loaded `spanish' language definitions on input line 711.
+
+[254]
+
+LaTeX Info: Redefining \. on input line 739.
+LaTeX Info: Redefining \% on input line 739.
+Package cleveref Info: loaded `spanish' language definitions on input line 739.
+
+[255]
+Underfull \vbox (badness 1590) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 762.
+LaTeX Info: Redefining \% on input line 762.
+Package cleveref Info: loaded `spanish' language definitions on input line 762.
+
+[256]
+PGFPlots: reading {figuras/cap06/lw_frac.dat}
+PGFPlots: reading {figuras/cap06/lw_sim.dat}
+PGFPlots: reading {figuras/cap06/lw_islas.dat}
+PGFPlots: reading {figuras/cap06/lw_islas.dat}
+PGFPlots: reading {figuras/cap06/lw_islas.dat}
+PGFPlots: reading {figuras/cap06/lw_sim.dat}
+
+Overfull \hbox (11.96657pt too wide) in paragraph at lines 798--799
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 820.
+LaTeX Info: Redefining \% on input line 820.
+Package cleveref Info: loaded `spanish' language definitions on input line 820.
+
+[257]
+Underfull \vbox (badness 1990) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 829.
+LaTeX Info: Redefining \% on input line 829.
+Package cleveref Info: loaded `spanish' language definitions on input line 829.
+
+[258]
+PGFPlots: reading {figuras/cap06/gc_puntos.dat}
+PGFPlots: reading {figuras/cap06/gc_curva.dat}
+
+Overfull \hbox (11.35353pt too wide) in paragraph at lines 858--859
+[]\TU/LibertinusSerif(0)/m/it/10.95 Si, en ca-da po-si-ción, $\TU/LibertinusMa
+th-Regular.otf(1)/b/n/10.95 𝐷 ∣ 𝜆 ∼ [](𝜆)$ \TU/LibertinusSerif(0)/
+m/it/10.95 y la ta-sa lo-cal si-gue $\TU/LibertinusMath-Regular.otf(1)/b/n/10.9
+5 𝜆 ∼ [](𝑟,  𝑐/𝑟)$
+ []
+
+
+Underfull \vbox (badness 1033) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 863.
+LaTeX Info: Redefining \% on input line 863.
+Package cleveref Info: loaded `spanish' language definitions on input line 863.
+
+[259]
+PGFPlots: reading {figuras/cap06/prof.dat}
+PGFPlots: reading {figuras/cap06/prof.dat}
+PGFPlots: reading {figuras/cap06/prof_sim.dat}
+
+
+LaTeX Info: Redefining \. on input line 913.
+LaTeX Info: Redefining \% on input line 913.
+Package cleveref Info: loaded `spanish' language definitions on input line 913.
+
+[260]
+
+LaTeX Info: Redefining \. on input line 922.
+LaTeX Info: Redefining \% on input line 922.
+Package cleveref Info: loaded `spanish' language definitions on input line 922.
+
+[261]
+\openout6 = main.listing
+ (./build/libro/_minted/D80CE30044BC4A1F8A8986B9DC968FFA.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 956.
+LaTeX Info: Redefining \% on input line 956.
+Package cleveref Info: loaded `spanish' language definitions on input line 956.
+
+[262]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 972.
+LaTeX Info: Redefining \% on input line 972.
+Package cleveref Info: loaded `spanish' language definitions on input line 972.
+
+[263]
+
+LaTeX Info: Redefining \. on input line 981.
+LaTeX Info: Redefining \% on input line 981.
+Package cleveref Info: loaded `spanish' language definitions on input line 981.
+
+[264]
+
+LaTeX Info: Redefining \. on input line 983.
+LaTeX Info: Redefining \% on input line 983.
+Package cleveref Info: loaded `spanish' language definitions on input line 983.
+
+[265]
+
+LaTeX Info: Redefining \. on input line 983.
+LaTeX Info: Redefining \% on input line 983.
+Package cleveref Info: loaded `spanish' language definitions on input line 983.
+
+[266])
+
+LaTeX Info: Redefining \. on input line 56.
+LaTeX Info: Redefining \% on input line 56.
+Package cleveref Info: loaded `spanish' language definitions on input line 56.
+[267]
+\openout2 = capitulos/cap07.aux
+ (./capitulos/cap07.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@11=\count628
+\blx@sectionciteorder@11=\count629
+Package biblatex Info: Reference section=11 on input line 4.
+Package biblatex Info: Setting label 'refsection:11' on input line 4.
+
+
+[268
+
+
+
+
+]
+Capítulo 7.
+
+
+[269]
+Underfull \vbox (badness 1308) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 36.
+LaTeX Info: Redefining \% on input line 36.
+Package cleveref Info: loaded `spanish' language definitions on input line 36.
+[270]
+Underfull \vbox (badness 5771) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 60.
+LaTeX Info: Redefining \% on input line 60.
+Package cleveref Info: loaded `spanish' language definitions on input line 60.
+[271]
+Package pgfplots info on input line 84: Using 'lua backend=false' for axis: ymo
+de=log unsupported (yet).
+
+Overfull \hbox (5.92076pt too wide) in paragraph at lines 98--99
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 105.
+LaTeX Info: Redefining \% on input line 105.
+Package cleveref Info: loaded `spanish' language definitions on input line 105.
+
+[272]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 122.
+LaTeX Info: Redefining \% on input line 122.
+Package cleveref Info: loaded `spanish' language definitions on input line 122.
+
+[273] (./figuras/cap07/rotaciones.tex)
+
+LaTeX Info: Redefining \. on input line 153.
+LaTeX Info: Redefining \% on input line 153.
+Package cleveref Info: loaded `spanish' language definitions on input line 153.
+
+[274]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 157.
+LaTeX Info: Redefining \% on input line 157.
+Package cleveref Info: loaded `spanish' language definitions on input line 157.
+
+[275] (./figuras/cap07/lfmap.tex)
+
+LaTeX Info: Redefining \. on input line 192.
+LaTeX Info: Redefining \% on input line 192.
+Package cleveref Info: loaded `spanish' language definitions on input line 192.
+
+[276]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 212.
+LaTeX Info: Redefining \% on input line 212.
+Package cleveref Info: loaded `spanish' language definitions on input line 212.
+
+[277]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 257.
+LaTeX Info: Redefining \% on input line 257.
+Package cleveref Info: loaded `spanish' language definitions on input line 257.
+
+[278] (./figuras/cap07/backward.tex)
+\openout6 = main.listing
+
+(./build/libro/_minted/A5D98D4381573815B117F076AEFCB72C.highlight.minted)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 295.
+LaTeX Info: Redefining \% on input line 295.
+Package cleveref Info: loaded `spanish' language definitions on input line 295.
+
+[279]
+
+LaTeX Info: Redefining \. on input line 295.
+LaTeX Info: Redefining \% on input line 295.
+Package cleveref Info: loaded `spanish' language definitions on input line 295.
+
+[280]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 318.
+LaTeX Info: Redefining \% on input line 318.
+Package cleveref Info: loaded `spanish' language definitions on input line 318.
+
+[281]
+Package pgfplots info on input line 327: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 327: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap07/memoria.dat}
+PGFPlots: reading {figuras/cap07/memoria.dat}
+PGFPlots: reading {figuras/cap07/memoria.dat}
+
+Overfull \hbox (2.75526pt too wide) in paragraph at lines 340--341
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 349.
+LaTeX Info: Redefining \% on input line 349.
+Package cleveref Info: loaded `spanish' language definitions on input line 349.
+
+[282]
+Underfull \vbox (badness 4254) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 367.
+LaTeX Info: Redefining \% on input line 367.
+Package cleveref Info: loaded `spanish' language definitions on input line 367.
+
+[283]
+
+LaTeX Info: Redefining \. on input line 383.
+LaTeX Info: Redefining \% on input line 383.
+Package cleveref Info: loaded `spanish' language definitions on input line 383.
+
+[284]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 404.
+LaTeX Info: Redefining \% on input line 404.
+Package cleveref Info: loaded `spanish' language definitions on input line 404.
+
+[285]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 421.
+LaTeX Info: Redefining \% on input line 421.
+Package cleveref Info: loaded `spanish' language definitions on input line 421.
+
+[286] (./figuras/cap07/minimizadores.tex)
+\openout6 = main.listing
+
+(./build/libro/_minted/D0C23C15099E3EBCCB9AEA11768A4BB9.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 446.
+LaTeX Info: Redefining \% on input line 446.
+Package cleveref Info: loaded `spanish' language definitions on input line 446.
+
+[287]
+PGFPlots: reading {figuras/cap07/anclas.dat}
+PGFPlots: reading {figuras/cap07/cadena.dat}
+
+Overfull \hbox (9.95631pt too wide) in paragraph at lines 486--487
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/20BD4D1793B045CE84C007E0FDC8B597.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 501.
+LaTeX Info: Redefining \% on input line 501.
+Package cleveref Info: loaded `spanish' language definitions on input line 501.
+
+[288]
+
+LaTeX Info: Redefining \. on input line 501.
+LaTeX Info: Redefining \% on input line 501.
+Package cleveref Info: loaded `spanish' language definitions on input line 501.
+
+[289]
+Underfull \vbox (badness 5260) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 530.
+LaTeX Info: Redefining \% on input line 530.
+Package cleveref Info: loaded `spanish' language definitions on input line 530.
+
+[290]
+Underfull \vbox (badness 1596) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 544.
+LaTeX Info: Redefining \% on input line 544.
+Package cleveref Info: loaded `spanish' language definitions on input line 544.
+
+[291]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 566.
+LaTeX Info: Redefining \% on input line 566.
+Package cleveref Info: loaded `spanish' language definitions on input line 566.
+
+[292]
+PGFPlots: reading {figuras/cap07/inserto.dat}
+
+Overfull \hbox (7.7671pt too wide) in paragraph at lines 585--586
+ [][] 
+ []
+
+
+Underfull \vbox (badness 2189) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 593.
+LaTeX Info: Redefining \% on input line 593.
+Package cleveref Info: loaded `spanish' language definitions on input line 593.
+
+[293]
+Overfull \hbox (12.46483pt too wide) in paragraph at lines 625--637
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 640.
+LaTeX Info: Redefining \% on input line 640.
+Package cleveref Info: loaded `spanish' language definitions on input line 640.
+
+[294]
+
+LaTeX Warning: Reference `cap:08' on page 1 undefined on input line 673.
+
+
+\openout6 = main.listing
+(./build/libro/_minted/2ABA94E7D1D1409429BCDD8F93C32D2D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 689.
+LaTeX Info: Redefining \% on input line 689.
+Package cleveref Info: loaded `spanish' language definitions on input line 689.
+
+[295]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 697.
+LaTeX Info: Redefining \% on input line 697.
+Package cleveref Info: loaded `spanish' language definitions on input line 697.
+
+[296]
+
+LaTeX Info: Redefining \. on input line 715.
+LaTeX Info: Redefining \% on input line 715.
+Package cleveref Info: loaded `spanish' language definitions on input line 715.
+
+[297] (./figuras/cap07/pileup.tex)
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 733.
+LaTeX Info: Redefining \% on input line 733.
+Package cleveref Info: loaded `spanish' language definitions on input line 733.
+
+[298]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 756.
+LaTeX Info: Redefining \% on input line 756.
+Package cleveref Info: loaded `spanish' language definitions on input line 756.
+
+[299] (./figuras/cap07/mosdepth.tex)
+\openout6 = main.listing
+
+(./build/libro/_minted/A9686E091A41FC7C2D53271D9DA20109.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 783.
+LaTeX Info: Redefining \% on input line 783.
+Package cleveref Info: loaded `spanish' language definitions on input line 783.
+
+[300]
+\openout6 = main.listing
+ (./build/libro/_minted/1F7EB39F87B29DAC0B7D1C5C65E03CEF.highlight.minted)
+PGFPlots: reading {figuras/cap07/perfil.dat}
+PGFPlots: reading {figuras/cap07/perfil.dat}
+PGFPlots: reading {figuras/cap07/log2.dat}
+
+
+LaTeX Info: Redefining \. on input line 845.
+LaTeX Info: Redefining \% on input line 845.
+Package cleveref Info: loaded `spanish' language definitions on input line 845.
+
+[301]
+
+LaTeX Info: Redefining \. on input line 845.
+LaTeX Info: Redefining \% on input line 845.
+Package cleveref Info: loaded `spanish' language definitions on input line 845.
+
+[302]
+
+LaTeX Info: Redefining \. on input line 868.
+LaTeX Info: Redefining \% on input line 868.
+Package cleveref Info: loaded `spanish' language definitions on input line 868.
+
+[303]
+Package pgfplots info on input line 876: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap07/deteccion.dat}
+PGFPlots: reading {figuras/cap07/deteccion.dat}
+PGFPlots: reading {figuras/cap07/deteccion.dat}
+
+Overfull \hbox (3.80809pt too wide) in paragraph at lines 887--888
+ [][] 
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Info: Redefining \. on input line 902.
+LaTeX Info: Redefining \% on input line 902.
+Package cleveref Info: loaded `spanish' language definitions on input line 902.
+
+[304] (./build/libro/_minted/B9BD084B2E1159859F9A7F9F88FBA390.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 918.
+LaTeX Info: Redefining \% on input line 918.
+Package cleveref Info: loaded `spanish' language definitions on input line 918.
+
+[305]
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[306]
+Overfull \hbox (0.95782pt too wide) in paragraph at lines 928--928
+\TU/LibertinusSerif(0)/m/it/10 tatio-nal Bio-logy\TU/LibertinusSerif(0)/m/n/10 
+. Cam-brid-ge Uni-ver-sity Press. []$https : / / doi . org / 10 . 1017 / CBO9780
+511574931$[] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[307]
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[308])
+
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
+Package cleveref Info: loaded `spanish' language definitions on input line 57.
+[309]
+
+[310
+
 
 
 
 
 ]
 
-[28
+[311]
+
+[312
 
 ]
 
-[29
+[313
 
 
-]
 
-[30
 
-]
-
-[31
 
 ]
 
-[32
+[314
 
 ] (./preliminares/colofon.tex)
 
-[33
+[315
+
+
 
 
 ] (./build/libro/main.aux
@@ -3235,13 +6049,19 @@ LaTeX Info: Redefining \sptext on input line 9.
 LaTeX Info: Redefining \. on input line 9.
 LaTeX Info: Redefining \% on input line 9.
 Package cleveref Info: loaded `spanish' language definitions on input line 9.
-
-No file capitulos/cap00.aux.
-No file capitulos/cap01.aux.
-No file capitulos/cap02.aux.
-(./build/libro/capitulos/cap03.aux)
-No file capitulos/cap04.aux.
-No file capitulos/cap06.aux.
+ (./build/libro/capitulos/cap00.aux)
+(./build/libro/capitulos/cap01.aux) (./build/libro/capitulos/cap02.aux)
+(./build/libro/capitulos/cap03.aux) (./build/libro/capitulos/cap04.aux)
+(./build/libro/capitulos/cap05.aux) (./build/libro/capitulos/cap06.aux)
+(./build/libro/capitulos/cap07.aux)
+No file capitulos/cap08.aux.
+No file capitulos/cap09.aux.
+No file capitulos/cap10.aux.
+No file capitulos/cap11.aux.
+No file capitulos/cap13.aux.
+No file capitulos/cap14.aux.
+No file capitulos/cap15.aux.
+No file capitulos/cap16.aux.
 )
  ***********
 LaTeX2e <2024-11-01> patch level 2
@@ -3249,7 +6069,13 @@ L3 programming layer <2025-01-18>
  ***********
 
 
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
 LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: There were multiply-defined labels.
 
 Package logreq Info: Writing requests to 'main.run.xml'.
 
@@ -3257,46 +6083,48 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 82919 strings out of 475506
- 1164419,4101490 words of node,token memory allocated
- 2098 words of node memory still in use:
+ 95111 strings out of 475506
+ 1455560,5906145 words of node,token memory allocated
+ 5632 words of node memory still in use:
    32 hlist, 2 vlist, 14 rule, 1 local_par, 5 glue, 4 kern, 1 penalty, 3 glyph, 
-259 attribute, 81 glue_spec, 167 attribute_list, 2 write, 24 pdf_literal, 14 pdf
-_action, 24 pdf_colorstack nodes
-   avail lists: 1:46,2:139693,3:48168,4:6431,5:562,6:63,7:45827,8:69,9:22541,10:
-25,11:937
- 103902 multiletter control sequences out of 65536+600000
- 210 fonts using 70014903 bytes
- 125i,19n,126p,1233b,2811s stack positions out of 10000i,1000n,20000p,200000b,200000s
+1291 attribute, 81 glue_spec, 683 attribute_list, 2 write, 24 pdf_literal, 87 pd
+f_action, 24 pdf_colorstack nodes
+   avail lists: 1:45,2:139696,3:80749,4:15609,5:1149,6:176,7:45828,8:86,9:22549,
+10:49,11:1106,12:5
+ 113189 multiletter control sequences out of 65536+600000
+ 247 fonts using 81161647 bytes
+ 125i,20n,126p,3712b,3908s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liber
-tinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public
-/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist
-/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/t
-exlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-ExtraLig
-ht.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-font
-s/LibertinusSerif-Semibold.otf></usr/local/texlive/2025/texmf-dist/fonts/opentyp
-e/public/fontawesome5/FontAwesome5Brands-Regular-400.otf></usr/local/texlive/202
-5/texmf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Free-Solid-900.otf><
-/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Medium.ot
-f></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Obliqu
-e.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/Sou
-rceSansPro-SemiboldIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/pub
-lic/libertinus-fonts/LibertinusSerif-Italic.otf></usr/local/texlive/2025/texmf-d
+tinusSerif-Semibold.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/publi
+c/libertinus-fonts/LibertinusSerif-Semibold.otf></usr/local/texlive/2025/texmf-d
 ist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/loca
 l/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSerif
--Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/Fira
-Mono-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/source
-sanspro/SourceSansPro-RegularIt.otf></usr/local/texlive/2025/texmf-dist/fonts/op
-entype/adobe/sourcesanspro/SourceSansPro-Regular.otf></usr/local/texlive/2025/te
-xmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-LightIt.otf></usr/loca
-l/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Black
-.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/Sour
-ceSansPro-Light.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sou
-rcesanspro/SourceSansPro-Semibold.otf>
-Output written on main.pdf (43 pages, 470849 bytes).
+-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinu
+s-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/ope
+ntype/adobe/sourcesanspro/SourceSansPro-ExtraLight.otf></usr/local/texlive/2025/
+texmf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Brands-Regular-400.otf
+></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAwes
+ome5Free-Solid-900.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public
+/fira/FiraMono-Medium.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/pub
+lic/fira/FiraMono-Oblique.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype
+/adobe/sourcesanspro/SourceSansPro-SemiboldIt.otf></usr/local/texlive/2025/texmf
+-dist/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Italic.otf></usr/lo
+cal/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMat
+h-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertin
+us-fonts/LibertinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/o
+pentype/public/fira/FiraMono-Regular.otf></usr/local/texlive/2025/texmf-dist/fon
+ts/opentype/adobe/sourcesanspro/SourceSansPro-RegularIt.otf></usr/local/texlive/
+2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Regular.otf></u
+sr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPr
+o-LightIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesan
+spro/SourceSansPro-Black.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/
+adobe/sourcesanspro/SourceSansPro-Light.otf></usr/local/texlive/2025/texmf-dist/
+fonts/opentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf></usr/local/texliv
+e/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb>
+Output written on main.pdf (327 pages, 2692706 bytes).
 
-PDF statistics: 652 PDF objects out of 1000 (max. 8388607)
- 500 compressed objects within 5 object streams
- 138 named destinations out of 1000 (max. 131072)
- 388 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 4297 PDF objects out of 5155 (max. 8388607)
+ 3681 compressed objects within 37 object streams
+ 1280 named destinations out of 1440 (max. 131072)
+ 766 words of extra memory for PDF output out of 10000 (max. 100000000)
 

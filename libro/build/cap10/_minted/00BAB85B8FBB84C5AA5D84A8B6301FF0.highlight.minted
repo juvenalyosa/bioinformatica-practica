@@ -1,0 +1,24 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{hwe\PYGZus{}exact}\PYG{p}{(}\PYG{n}{n\PYGZus{}het}\PYG{p}{,} \PYG{n}{n\PYGZus{}hom1}\PYG{p}{,} \PYG{n}{n\PYGZus{}hom2}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Valor p exacto de HWE (Wigginton et al., 2005).\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{n} \PYG{o}{=} \PYG{n}{n\PYGZus{}het} \PYG{o}{+} \PYG{n}{n\PYGZus{}hom1} \PYG{o}{+} \PYG{n}{n\PYGZus{}hom2}
+    \PYG{n}{n\PYGZus{}rare} \PYG{o}{=} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n+nb}{min}\PYG{p}{(}\PYG{n}{n\PYGZus{}hom1}\PYG{p}{,} \PYG{n}{n\PYGZus{}hom2}\PYG{p}{)} \PYG{o}{+} \PYG{n}{n\PYGZus{}het}
+    \PYG{n}{P} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{n\PYGZus{}rare} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}
+    \PYG{n}{h} \PYG{o}{=} \PYG{n}{n\PYGZus{}rare} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{n} \PYG{o}{\PYGZhy{}} \PYG{n}{n\PYGZus{}rare}\PYG{p}{)} \PYG{o}{/}\PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{n}\PYG{p}{)}      \PYG{c+c1}{\PYGZsh{} moda aproximada}
+    \PYG{n}{h} \PYG{o}{+}\PYG{o}{=} \PYG{p}{(}\PYG{n}{h} \PYG{o}{\PYGZpc{}} \PYG{l+m+mi}{2}\PYG{p}{)} \PYG{o}{!=} \PYG{p}{(}\PYG{n}{n\PYGZus{}rare} \PYG{o}{\PYGZpc{}} \PYG{l+m+mi}{2}\PYG{p}{)}                  \PYG{c+c1}{\PYGZsh{} misma paridad}
+    \PYG{n}{P}\PYG{p}{[}\PYG{n}{h}\PYG{p}{]} \PYG{o}{=} \PYG{l+m+mf}{1.0}
+    \PYG{n}{r} \PYG{o}{=} \PYG{p}{(}\PYG{n}{n\PYGZus{}rare} \PYG{o}{\PYGZhy{}} \PYG{n}{h}\PYG{p}{)} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{;} \PYG{n}{c} \PYG{o}{=} \PYG{n}{n} \PYG{o}{\PYGZhy{}} \PYG{n}{h} \PYG{o}{\PYGZhy{}} \PYG{n}{r}
+    \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{h}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}                     \PYG{c+c1}{\PYGZsh{} hacia menos het.}
+        \PYG{n}{P}\PYG{p}{[}\PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{n}{P}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]} \PYG{o}{*} \PYG{n}{k} \PYG{o}{*} \PYG{p}{(}\PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{4} \PYG{o}{*} \PYG{p}{(}\PYG{n}{r} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{*} \PYG{p}{(}\PYG{n}{c} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{r} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;} \PYG{n}{c} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{n}{r} \PYG{o}{=} \PYG{p}{(}\PYG{n}{n\PYGZus{}rare} \PYG{o}{\PYGZhy{}} \PYG{n}{h}\PYG{p}{)} \PYG{o}{/}\PYG{o}{/} \PYG{l+m+mi}{2}\PYG{p}{;} \PYG{n}{c} \PYG{o}{=} \PYG{n}{n} \PYG{o}{\PYGZhy{}} \PYG{n}{h} \PYG{o}{\PYGZhy{}} \PYG{n}{r}
+    \PYG{k}{for} \PYG{n}{k} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{h}\PYG{p}{,} \PYG{n}{n\PYGZus{}rare} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{:}             \PYG{c+c1}{\PYGZsh{} hacia más het.}
+        \PYG{n}{P}\PYG{p}{[}\PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{p}{]} \PYG{o}{=} \PYG{n}{P}\PYG{p}{[}\PYG{n}{k}\PYG{p}{]} \PYG{o}{*} \PYG{l+m+mi}{4} \PYG{o}{*} \PYG{n}{r} \PYG{o}{*} \PYG{n}{c} \PYG{o}{/} \PYG{p}{(}\PYG{p}{(}\PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{2}\PYG{p}{)} \PYG{o}{*} \PYG{p}{(}\PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+        \PYG{n}{r} \PYG{o}{\PYGZhy{}}\PYG{o}{=} \PYG{l+m+mi}{1}\PYG{p}{;} \PYG{n}{c} \PYG{o}{\PYGZhy{}}\PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{n}{P} \PYG{o}{/}\PYG{o}{=} \PYG{n}{P}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{P}\PYG{p}{[}\PYG{n}{P} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{P}\PYG{p}{[}\PYG{n}{n\PYGZus{}het}\PYG{p}{]} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{l+m+mf}{1e\PYGZhy{}9}\PYG{p}{)}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{hwe\PYGZus{}exact}\PYG{p}{(}\PYG{l+m+mi}{7}\PYG{p}{,} \PYG{l+m+mi}{91}\PYG{p}{,} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{p}{)}                        \PYG{c+c1}{\PYGZsh{} 0.0235}
+\end{MintedVerbatim}

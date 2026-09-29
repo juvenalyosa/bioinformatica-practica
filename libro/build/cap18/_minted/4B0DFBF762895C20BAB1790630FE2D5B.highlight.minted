@@ -1,0 +1,37 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{re}
+
+\PYG{n}{REGLAS} \PYG{o}{=} \PYG{p}{[}  \PYG{c+c1}{\PYGZsh{} (nombre, salidas, entradas)}
+    \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{fastp}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{limpio/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R1.fq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{limpio/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R2.fq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+              \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datos/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R1.fastq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{datos/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R2.fastq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mapear}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mapeo/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{.ordenado.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,}
+               \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{limpio/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R1.fq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{limpio/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{\PYGZus{}R2.fq.gz}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,}
+    \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{dedup}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mapeo/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{.dedup.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mapeo/}\PYG{l+s+si}{\PYGZob{}m\PYGZcb{}}\PYG{l+s+s2}{.ordenado.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{)}\PYG{p}{,}
+\PYG{p}{]}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{a\PYGZus{}regex}\PYG{p}{(}\PYG{n}{patron}\PYG{p}{)}\PYG{p}{:}
+    \PYG{c+c1}{\PYGZsh{} \PYGZsq{}mapeo/\PYGZob{}m\PYGZcb{}.bam\PYGZsq{}  \PYGZhy{}\PYGZgt{}  \PYGZsq{}mapeo/(?P\PYGZlt{}m\PYGZgt{}.+)\PYGZbs{}.bam\PYGZdl{}\PYGZsq{}}
+    \PYG{n}{partes} \PYG{o}{=} \PYG{n}{re}\PYG{o}{.}\PYG{n}{split}\PYG{p}{(}\PYG{l+s+sa}{r}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZbs{}}\PYG{l+s+s2}{\PYGZob{}}\PYG{l+s+s2}{(}\PYG{l+s+s2}{\PYGZbs{}}\PYG{l+s+s2}{w+)}\PYG{l+s+s2}{\PYGZbs{}}\PYG{l+s+s2}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{patron}\PYG{p}{)}
+    \PYG{n}{rx} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{re}\PYG{o}{.}\PYG{n}{escape}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)} \PYG{k}{if} \PYG{n}{i} \PYG{o}{\PYGZpc{}} \PYG{l+m+mi}{2} \PYG{o}{==} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{(?P\PYGZlt{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{p}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZgt{}.+)}\PYG{l+s+s2}{\PYGZdq{}}
+                 \PYG{k}{for} \PYG{n}{i}\PYG{p}{,} \PYG{n}{p} \PYG{o+ow}{in} \PYG{n+nb}{enumerate}\PYG{p}{(}\PYG{n}{partes}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{re}\PYG{o}{.}\PYG{n}{compile}\PYG{p}{(}\PYG{n}{rx} \PYG{o}{+} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdl{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{inferir}\PYG{p}{(}\PYG{n}{objetivo}\PYG{p}{,} \PYG{n}{dag}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{for} \PYG{n}{nombre}\PYG{p}{,} \PYG{n}{salidas}\PYG{p}{,} \PYG{n}{entradas} \PYG{o+ow}{in} \PYG{n}{REGLAS}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{s} \PYG{o+ow}{in} \PYG{n}{salidas}\PYG{p}{:}
+            \PYG{n}{hallado} \PYG{o}{=} \PYG{n}{a\PYGZus{}regex}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)}\PYG{o}{.}\PYG{n}{match}\PYG{p}{(}\PYG{n}{objetivo}\PYG{p}{)}
+            \PYG{k}{if} \PYG{n}{hallado}\PYG{p}{:}
+                \PYG{n}{comodines} \PYG{o}{=} \PYG{n}{hallado}\PYG{o}{.}\PYG{n}{groupdict}\PYG{p}{(}\PYG{p}{)}
+                \PYG{n}{ins} \PYG{o}{=} \PYG{p}{[}\PYG{n}{e}\PYG{o}{.}\PYG{n}{format}\PYG{p}{(}\PYG{o}{*}\PYG{o}{*}\PYG{n}{comodines}\PYG{p}{)} \PYG{k}{for} \PYG{n}{e} \PYG{o+ow}{in} \PYG{n}{entradas}\PYG{p}{]}
+                \PYG{n}{dag}\PYG{p}{[}\PYG{n}{objetivo}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{n}{nombre}\PYG{p}{,} \PYG{n}{comodines}\PYG{p}{,} \PYG{n}{ins}\PYG{p}{)}
+                \PYG{k}{for} \PYG{n}{f} \PYG{o+ow}{in} \PYG{n}{ins}\PYG{p}{:}
+                    \PYG{k}{if} \PYG{n}{f} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{dag}\PYG{p}{:}
+                        \PYG{n}{inferir}\PYG{p}{(}\PYG{n}{f}\PYG{p}{,} \PYG{n}{dag}\PYG{p}{)}
+                \PYG{k}{return}
+    \PYG{n}{dag}\PYG{p}{[}\PYG{n}{objetivo}\PYG{p}{]} \PYG{o}{=} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{(archivo fuente)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{dag} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{n}{inferir}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{mapeo/A.dedup.bam}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{n}{dag}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{f}\PYG{p}{,} \PYG{p}{(}\PYG{n}{regla}\PYG{p}{,} \PYG{n}{w}\PYG{p}{,} \PYG{n}{ins}\PYG{p}{)} \PYG{o+ow}{in} \PYG{n}{dag}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{f}\PYG{l+s+si}{:}\PYG{l+s+s2}{24s}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ \PYGZlt{}\PYGZhy{} }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{regla}\PYG{l+s+si}{:}\PYG{l+s+s2}{16s}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{w}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

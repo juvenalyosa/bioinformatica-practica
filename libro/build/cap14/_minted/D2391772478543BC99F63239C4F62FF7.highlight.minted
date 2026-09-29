@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+megahit\PYG{+w}{ }\PYGZhy{}1\PYG{+w}{ }m1\PYGZus{}R1.fq.gz\PYG{+w}{ }\PYGZhy{}2\PYG{+w}{ }m1\PYGZus{}R2.fq.gz\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }asm\PYGZus{}m1\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{16}
+bowtie2\PYGZhy{}build\PYG{+w}{ }asm\PYGZus{}m1/final.contigs.fa\PYG{+w}{ }idx\PYGZus{}m1
+bowtie2\PYG{+w}{ }\PYGZhy{}x\PYG{+w}{ }idx\PYGZus{}m1\PYG{+w}{ }\PYGZhy{}1\PYG{+w}{ }m1\PYGZus{}R1.fq.gz\PYG{+w}{ }\PYGZhy{}2\PYG{+w}{ }m1\PYGZus{}R2.fq.gz\PYG{+w}{ }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{  }\PYG{err}{|}\PYG{+w}{ }samtools\PYG{+w}{ }sort\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }m1.bam
+jgi\PYGZus{}summarize\PYGZus{}bam\PYGZus{}contig\PYGZus{}depths\PYG{+w}{ }\PYGZhy{}\PYGZhy{}outputDepth\PYG{+w}{ }prof.txt\PYG{+w}{ }m1.bam
+metabat2\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }asm\PYGZus{}m1/final.contigs.fa\PYG{+w}{ }\PYGZhy{}a\PYG{+w}{ }prof.txt\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }bins/bin
+checkm\PYG{+w}{ }lineage\PYGZus{}wf\PYG{+w}{ }\PYGZhy{}x\PYG{+w}{ }fa\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }bins/\PYG{+w}{ }checkm\PYGZus{}out/
+\end{MintedVerbatim}

@@ -1,0 +1,18 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{n}{profiles} \PYG{p}{\PYGZob{}}
+    \PYG{n}{laptop} \PYG{p}{\PYGZob{}}
+        \PYG{n}{process}\PYG{o}{.}\PYG{n}{executor} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{local}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{n}{conda}\PYG{o}{.}\PYG{n}{enabled} \PYG{o}{=} \PYG{n}{true}
+    \PYG{p}{\PYGZcb{}}
+    \PYG{n}{cluster} \PYG{p}{\PYGZob{}}
+        \PYG{n}{process}\PYG{o}{.}\PYG{n}{executor} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{slurm}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{n}{process}\PYG{o}{.}\PYG{n}{queue} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{normal}\PYG{l+s+s1}{\PYGZsq{}}
+        \PYG{n}{singularity}\PYG{o}{.}\PYG{n}{enabled} \PYG{o}{=} \PYG{n}{true}
+        \PYG{n}{process} \PYG{p}{\PYGZob{}}
+            \PYG{n}{withName}\PYG{p}{:} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{MAPEAR}\PYG{l+s+s1}{\PYGZsq{}} \PYG{p}{\PYGZob{}} \PYG{n}{cpus} \PYG{o}{=} \PYG{l+m+mi}{8}\PYG{p}{;} \PYG{n}{memory} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{16 GB}\PYG{l+s+s1}{\PYGZsq{}} \PYG{p}{\PYGZcb{}}
+            \PYG{n}{errorStrategy} \PYG{o}{=} \PYG{l+s+s1}{\PYGZsq{}}\PYG{l+s+s1}{retry}\PYG{l+s+s1}{\PYGZsq{}}
+            \PYG{n}{maxRetries} \PYG{o}{=} \PYG{l+m+mi}{2}
+        \PYG{p}{\PYGZcb{}}
+    \PYG{p}{\PYGZcb{}}
+\PYG{p}{\PYGZcb{}}
+\end{MintedVerbatim}

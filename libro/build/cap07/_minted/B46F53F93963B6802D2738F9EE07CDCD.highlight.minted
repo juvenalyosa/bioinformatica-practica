@@ -1,0 +1,18 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{pysam}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{profundidad}\PYG{p}{(}\PYG{n}{bam}\PYG{p}{,} \PYG{n}{crom}\PYG{p}{,} \PYG{n}{mapq}\PYG{o}{=}\PYG{l+m+mi}{20}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Profundidad por base con el arreglo de diferencias.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{k}{with} \PYG{n}{pysam}\PYG{o}{.}\PYG{n}{AlignmentFile}\PYG{p}{(}\PYG{n}{bam}\PYG{p}{)} \PYG{k}{as} \PYG{n}{f}\PYG{p}{:}
+        \PYG{n}{G} \PYG{o}{=} \PYG{n}{f}\PYG{o}{.}\PYG{n}{get\PYGZus{}reference\PYGZus{}length}\PYG{p}{(}\PYG{n}{crom}\PYG{p}{)}
+        \PYG{n}{d} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{G} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{int32}\PYG{p}{)}
+        \PYG{k}{for} \PYG{n}{a} \PYG{o+ow}{in} \PYG{n}{f}\PYG{o}{.}\PYG{n}{fetch}\PYG{p}{(}\PYG{n}{crom}\PYG{p}{)}\PYG{p}{:}
+            \PYG{k}{if} \PYG{p}{(}\PYG{n}{a}\PYG{o}{.}\PYG{n}{is\PYGZus{}unmapped} \PYG{o+ow}{or} \PYG{n}{a}\PYG{o}{.}\PYG{n}{is\PYGZus{}secondary} \PYG{o+ow}{or} \PYG{n}{a}\PYG{o}{.}\PYG{n}{is\PYGZus{}supplementary}
+                    \PYG{o+ow}{or} \PYG{n}{a}\PYG{o}{.}\PYG{n}{is\PYGZus{}duplicate} \PYG{o+ow}{or} \PYG{n}{a}\PYG{o}{.}\PYG{n}{mapping\PYGZus{}quality} \PYG{o}{\PYGZlt{}} \PYG{n}{mapq}\PYG{p}{)}\PYG{p}{:}
+                \PYG{k}{continue}
+            \PYG{k}{for} \PYG{n}{s}\PYG{p}{,} \PYG{n}{e} \PYG{o+ow}{in} \PYG{n}{a}\PYG{o}{.}\PYG{n}{get\PYGZus{}blocks}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}         \PYG{c+c1}{\PYGZsh{} bloques M/=/X}
+                \PYG{n}{d}\PYG{p}{[}\PYG{n}{s}\PYG{p}{]} \PYG{o}{+}\PYG{o}{=} \PYG{l+m+mi}{1}
+                \PYG{n}{d}\PYG{p}{[}\PYG{n}{e}\PYG{p}{]} \PYG{o}{\PYGZhy{}}\PYG{o}{=} \PYG{l+m+mi}{1}
+    \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{cumsum}\PYG{p}{(}\PYG{n}{d}\PYG{p}{[}\PYG{p}{:}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{)}
+\end{MintedVerbatim}

@@ -1,0 +1,13 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} 1. Índice del transcriptoma (con el genoma como señuelo)}
+grep\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZca{}\PYGZgt{}\PYGZsq{}}\PYG{+w}{ }genoma.fa\PYG{+w}{ }\PYG{err}{|}\PYG{+w}{ }cut\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{} \PYGZsq{}}\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }\PYG{err}{|}\PYG{+w}{ }sed\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/\PYGZgt{}//\PYGZsq{}}\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }decoys.txt
+cat\PYG{+w}{ }transcritos.fa\PYG{+w}{ }genoma.fa\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }gentrome.fa
+salmon\PYG{+w}{ }index\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }gentrome.fa\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }decoys.txt\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }idx\PYGZus{}salmon\PYG{+w}{ }\PYGZhy{}k\PYG{+w}{ }\PYG{l+m}{31}
+
+\PYG{c+c1}{\PYGZsh{} 2. Cuantificación de una muestra pareada con corrección de sesgos}
+salmon\PYG{+w}{ }quant\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }idx\PYGZus{}salmon\PYG{+w}{ }\PYGZhy{}l\PYG{+w}{ }A\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}1\PYG{+w}{ }ctrl1\PYGZus{}R1.fastq.gz\PYG{+w}{ }\PYGZhy{}2\PYG{+w}{ }ctrl1\PYGZus{}R2.fastq.gz\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}\PYGZhy{}validateMappings\PYG{+w}{ }\PYGZhy{}\PYGZhy{}gcBias\PYG{+w}{ }\PYGZhy{}\PYGZhy{}seqBias\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }quant/ctrl1
+\PYG{c+c1}{\PYGZsh{} quant/ctrl1/quant.sf: Name Length EffectiveLength TPM NumReads}
+\end{MintedVerbatim}

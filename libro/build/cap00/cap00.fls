@@ -561,7 +561,9 @@ INPUT ./build/cap00/_minted/517B0721550CE3F11D8967F5D7C48EB5.highlight.minted
 INPUT ./build/cap00/_minted/D05329EEDA2651D6FDE5C803DB93DC54.highlight.minted
 INPUT ./build/cap00/_minted/01EE77B102513682133F946E1A4B9227.highlight.minted
 INPUT ./build/cap00/_minted/6BAF64C970B5544AC2CBFBCB92B41955.highlight.minted
-INPUT ./build/cap00/_minted/62B802147F83A485716DFC2F70DEF256.highlight.minted
+INPUT ./build/cap00/_minted/F166E8E8AF358A54F6BF1C6B1198B387.highlight.minted
+INPUT ./build/cap00/_minted/29BF0C863135FBA7ACE5231AB299D576.highlight.minted
+INPUT ./build/cap00/_minted/50A9A866E9C5CA7FE0F6218A03EEDEC6.highlight.minted
 INPUT ./build/cap00/_minted/C9CCA593C9416D60B4E9CCC6C241F021.highlight.minted
 INPUT ./build/cap00/_minted/7A230E23EAA8880356F8343DC9782B13.highlight.minted
 INPUT ./figuras/cap00/gc_ventana.dat
@@ -592,7 +594,8 @@ INPUT ./build/cap00/_minted/49300661BF071BF8C01E693F85937AE4.highlight.minted
 INPUT ./build/cap00/_minted/4AE697F0ECB5ACC78F58343A479A631C.highlight.minted
 OUTPUT build/cap00/cap00.listing
 INPUT ./build/cap00/_minted/ED8E2EE1DCA16AE6F1AB4A312D80DA86.highlight.minted
-INPUT ./build/cap00/_minted/901DEE3A343AE8E785FEFD7B7D1DE0D5.highlight.minted
+INPUT ./build/cap00/_minted/7FD8B2EA1AF7CC4B62E3EF60CA46C22D.highlight.minted
+INPUT ./build/cap00/_minted/7B9F6789BFC9AB955E6ECB4AD22E4154.highlight.minted
 INPUT ./build/cap00/_minted/5FDED597161A24D8605DEA3027998537.highlight.minted
 INPUT ./build/cap00/_minted/659A09B4095ACADB66A34D6D9305A9E5.highlight.minted
 INPUT ./build/cap00/_minted/CEB7A084B537A243266E7F8567610B59.highlight.minted

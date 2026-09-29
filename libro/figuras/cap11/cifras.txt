@@ -1,0 +1,58 @@
+[em] N=1200 Leff=[1301.  801. 1801.]
+[em] iter 0: alpha=0.3333, 0.3333, 0.3333
+[em] iter 1: alpha=0.3640, 0.3359, 0.3000
+[em] iter 2: alpha=0.3829, 0.3316, 0.2855
+[em] iter 3: alpha=0.3951, 0.3259, 0.2790
+[em] final: alpha=0.4260, 0.3014, 0.2725
+[em] final tau (TPM/1e6)=0.3830, 0.4401, 0.1770
+[em] lecturas asignadas final=511.3, 361.7, 327.0
+[em] iter1 reparto clase {1,2,3}: 134.5, 218.4, 97.1
+[em] iter1 reparto clase {1,2}: 95.3, 154.7
+[em] iter1 reparto clase {1,3}: 87.1, 62.9
+[em] iteraciones hasta cambio < 1e-4: 20
+[em] logL iter0=-9107.57 iter1=-9101.94 final=-9098.99
+[tpm] lecturas A= [1333333 2666667 5333333  666667]  B= [1111111 2222222 4444444 2222222]
+[tpm] RPKM A= [133333.3 133333.3 133333.3 133333.3]  suma 533333.3
+[tpm] RPKM B= [111111.1 111111.1 111111.1 444444.4]  suma 777777.8
+[tpm] TPM A= [250000. 250000. 250000. 250000.]  suma 1000000.0
+[tpm] TPM B= [142857. 142857. 142857. 571429.]  suma 1000000.0
+[pmf] mu=20 alpha=0.2: Var NB=100.0, P(K=0) NB=0.0003, P(K>=40) Pois=5.32e-05 NB=0.044
+[mv] genes con media>1000: mediana Var/media Poisson=0.84, NB=332.9
+[comp] N_A=482229 N_B=482264 fracción de lecturas de B en genes 'up'=0.327 (en A: 0.057)
+[comp] mediana M de genes sin cambio (CPM)=-0.485
+[comp] TMM log2 f=-0.461 (f=0.726);  mediana de razones log2=-0.460; s_A=1.173 s_B=0.853
+[comp] log2 factor teórico de dilución = -0.486
+[mor] medias geométricas= [ 727.48  116.86 1691.07   43.2 ]
+[mor] razones=
+ [[0.687 1.512 0.962]
+ [0.685 1.626 0.898]
+ [0.71  1.537 0.917]
+ [0.694 1.481 0.972]]
+[mor] factores de tamaño= [0.691 1.525 0.939]
+[sim] genes con alguna lectura=9992; DE verdaderos=946; lecturas por muestra= [ 675778 1027991  853182  832330 1216167 1022638]
+[sim] factores de tamaño estimados= [0.784 1.175 0.98  0.888 1.283 1.088]  verdaderos (reescalados)= [0.772 1.158 0.965 0.869 1.255 1.062]
+[disp] tendencia ajustada: a0=0.0480 a1=1.757 (verdad: 0,05 y 1)
+[disp] sd robusta residuos log=0.950; var muestreo=0.645; var previa=0.257
+[disp] genes con dispersión atípica (>2 sd sobre la tendencia)=406
+[disp] gen ej. media=20.0: gen a gen=0.351, tendencia=0.136, MAP=0.183, verdad=0.162
+[disp] error cuadrático medio log: gen a gen=6.602  MAP=0.172
+[wald] correlación log10 p Wald vs LRT=0.9903
+[de] p<0,05 sin corregir: 915 (falsos: 373)
+[de] BH q<0,1: 404 genes; falsos=33 FDP=0.082; potencia=0.392
+[de] Bonferroni FWER 0,1: 185 genes; falsos=2
+[pi0] pi0 estimado (lambda=0,5)=0.989; verdad=0.905; m=9992
+[pi0] tras filtrar media>=5: pi0=0.971; verdad=0.907; m=8900
+[pi0] fracción de p>0,95 entre genes con media<2: 0.223
+[pi0] q-value<0,1: 404 genes
+[pi0] altura nula esperada por barra=494.0
+[bh] k* (último p_(i) <= i*0,1/m) = 404; p_(k*)=4.008e-03; umbral=4.043e-03
+[filtro] sin filtro=404; máximo=418 al cuantil 0.125 (umbral media=5.64); FDP allí=0.089
+[shr] sigma prior=0.650; ECM LFC MLE=1.240 contraído=0.117 (genes con media>1)
+[shr] gen ruidoso: media=3.15 LFC MLE=4.20 SE=1.76 contraído=0.51 p=0.017
+[vol] up (q<0,1, LFC>1)=224 down=141; -log10 p umbral BH=2.39
+[pwf] proporción DE bin corto=0.020 bin largo=0.090; pendiente logit por log-longitud=0.40
+[hiper] N=9992 K=150 n=404 k=12 esperado=6.06 p(hipergeom)=1.84e-02  DE verdaderos en término=14 (esperado 14.2)
+[hiper] tabla=[[12, 138], [392, 9450]] Fisher p unilateral=1.84e-02 OR=2.10
+[goseq] media nula ponderada=8.79; p remuestreo=0.168
+[gsea] tamaño=80, ES=0.668 en posición 1087 de 9992; NES=2.41; p (perm. de genes)=0.0016; genes líderes=30
+[gsea] ES no ponderado (p=0, KS)=0.295

@@ -35,11 +35,6 @@
   "msg": "ok crossref (título 1.00)"
  },
  {
-  "key": "c00-knuth1976",
-  "ok": true,
-  "msg": "ok crossref (título 1.00)"
- },
- {
   "key": "c00-cleveland1984",
   "ok": true,
   "msg": "ok crossref (título 1.00)"

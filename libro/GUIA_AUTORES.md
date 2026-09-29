@@ -133,3 +133,6 @@ y cualquier problema pendiente. No pegue el contenido del capítulo.
   estilo con `\pgfplotsset{capNN estilo/.style={...}}` y úselo.
 - Escape `<` y `>` dentro de nodos TikZ (use `$<$`, `$>$`).
 - Si mata una compilación colgada, borre `build/capNN/*.aux` y `*.bcf` antes de recompilar.
+- `\py{}` (minted inline) dentro de `simbolos`, tablas tabularx o `\caption` rompe la caché de minted:
+  use `\texttt{}` en esos lugares.
+- Un `\input` dentro de `tabular` rompe `\bottomrule` en LuaLaTeX: escriba las filas directamente.

@@ -1,0 +1,21 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{Bio}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Phylo}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{Bio}\PYG{n+nn}{.}\PYG{n+nn}{Phylo}\PYG{n+nn}{.}\PYG{n+nn}{TreeConstruction}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{p}{(}\PYG{n}{DistanceMatrix}\PYG{p}{,}
+                                        \PYG{n}{DistanceTreeConstructor}\PYG{p}{)}
+
+\PYG{n}{nombres} \PYG{o}{=} \PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{B}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{D}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{E}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}
+\PYG{n}{tri} \PYG{o}{=} \PYG{p}{[}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+       \PYG{p}{[}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+       \PYG{p}{[}\PYG{l+m+mf}{0.4}\PYG{p}{,} \PYG{l+m+mf}{0.7}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+       \PYG{p}{[}\PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{l+m+mf}{0.9}\PYG{p}{,} \PYG{l+m+mf}{0.6}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{,}
+       \PYG{p}{[}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mf}{0.8}\PYG{p}{,} \PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{]}           \PYG{c+c1}{\PYGZsh{} triangular inferior}
+\PYG{n}{dm} \PYG{o}{=} \PYG{n}{DistanceMatrix}\PYG{p}{(}\PYG{n}{nombres}\PYG{p}{,} \PYG{n}{tri}\PYG{p}{)}
+\PYG{n}{cons} \PYG{o}{=} \PYG{n}{DistanceTreeConstructor}\PYG{p}{(}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{metodo} \PYG{o+ow}{in} \PYG{p}{(}\PYG{n}{cons}\PYG{o}{.}\PYG{n}{upgma}\PYG{p}{,} \PYG{n}{cons}\PYG{o}{.}\PYG{n}{nj}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{arbol} \PYG{o}{=} \PYG{n}{metodo}\PYG{p}{(}\PYG{n}{dm}\PYG{p}{)}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{metodo}\PYG{o}{.}\PYG{n+nv+vm}{\PYGZus{}\PYGZus{}name\PYGZus{}\PYGZus{}}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{clado} \PYG{o+ow}{in} \PYG{n}{arbol}\PYG{o}{.}\PYG{n}{find\PYGZus{}clades}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}
+        \PYG{k}{if} \PYG{n}{clado}\PYG{o}{.}\PYG{n}{branch\PYGZus{}length}\PYG{p}{:}
+            \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{  }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{clado}\PYG{o}{.}\PYG{n}{name}\PYG{l+s+si}{:}\PYG{l+s+s2}{8s}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{clado}\PYG{o}{.}\PYG{n}{branch\PYGZus{}length}\PYG{l+s+si}{:}\PYG{l+s+s2}{.3f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+    \PYG{n}{Phylo}\PYG{o}{.}\PYG{n}{draw\PYGZus{}ascii}\PYG{p}{(}\PYG{n}{arbol}\PYG{p}{)}
+\end{MintedVerbatim}

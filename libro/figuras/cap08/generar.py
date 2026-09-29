@@ -393,4 +393,22 @@ say("[cod]  log-odds por codón:",
     [(ej_orf[i:i+3], round(llr[ej_orf[i:i+3]], 2)) for i in range(0, 24, 3)])
 say(f"[cod]  media={score(ej_orf[:-3]):.3f}")
 
+
+# =====================================================================
+# 8.3  Fracción de k-mers del genoma no observados (motivo del multi-k)
+# =====================================================================
+lines = ["k c5 c10 c30"]
+for k in range(15, 128, 2):
+    fila = [k]
+    for c in (5, 10, 30):
+        lam_k = c * (150 - k + 1) / 150 * (1 - 0.005) ** k
+        fila.append(math.exp(-lam_k))
+    lines.append(" ".join(f"{v:.6g}" for v in fila))
+w("ausentes.dat", "\n".join(lines))
+for c in (5, 10, 30):
+    for k in (21, 33, 55, 77, 127):
+        lam_k = c * (150 - k + 1) / 150 * (1 - 0.005) ** k
+        say(f"[multik] c={c} k={k}: lambda_k={lam_k:.2f}"
+            f"  ausentes={math.exp(-lam_k):.3g}  en 5 Mb={5e6*math.exp(-lam_k):,.0f}")
+
 (OUT / "cifras.txt").write_text("\n".join(LOG) + "\n")

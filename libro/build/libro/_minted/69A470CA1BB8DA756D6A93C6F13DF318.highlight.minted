@@ -1,0 +1,17 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{Bio}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{motifs}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{Bio}\PYG{n+nn}{.}\PYG{n+nn}{Seq}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Seq}
+
+\PYG{k}{with} \PYG{n+nb}{open}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{MA0108.2.jaspar}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)} \PYG{k}{as} \PYG{n}{fh}\PYG{p}{:}            \PYG{c+c1}{\PYGZsh{} descargado de JASPAR}
+    \PYG{n}{m} \PYG{o}{=} \PYG{n}{motifs}\PYG{o}{.}\PYG{n}{read}\PYG{p}{(}\PYG{n}{fh}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{jaspar}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{pwm} \PYG{o}{=} \PYG{n}{m}\PYG{o}{.}\PYG{n}{counts}\PYG{o}{.}\PYG{n}{normalize}\PYG{p}{(}\PYG{n}{pseudocounts}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{)}     \PYG{c+c1}{\PYGZsh{} f con pseudoconteos}
+\PYG{n}{pssm} \PYG{o}{=} \PYG{n}{pwm}\PYG{o}{.}\PYG{n}{log\PYGZus{}odds}\PYG{p}{(}\PYG{p}{)}                          \PYG{c+c1}{\PYGZsh{} W = log2(f / q)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{m}\PYG{o}{.}\PYG{n}{name}\PYG{p}{,} \PYG{n}{m}\PYG{o}{.}\PYG{n}{consensus}\PYG{p}{)}                     \PYG{c+c1}{\PYGZsh{} TBP GTATAAAAGGCGGGG}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{máx=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{pssm}\PYG{o}{.}\PYG{n}{max}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{  mín=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{pssm}\PYG{o}{.}\PYG{n}{min}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{  }\PYG{l+s+s2}{\PYGZdq{}}
+      \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{media en sitios=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{pssm}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}     \PYG{c+c1}{\PYGZsh{} 16.21 \PYGZhy{}49.13 9.93}
+
+\PYG{n}{prom} \PYG{o}{=} \PYG{n}{Seq}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{GGCCGCTATAAAAGGGCGCGGCATGCGCCGCCATG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{pos}\PYG{p}{,} \PYG{n}{score} \PYG{o+ow}{in} \PYG{n}{pssm}\PYG{o}{.}\PYG{n}{search}\PYG{p}{(}\PYG{n}{prom}\PYG{p}{,} \PYG{n}{threshold}\PYG{o}{=}\PYG{l+m+mf}{6.0}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{hebra} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{+}\PYG{l+s+s2}{\PYGZdq{}} \PYG{k}{if} \PYG{n}{pos} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{l+m+mi}{0} \PYG{k}{else} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}}\PYG{l+s+s2}{\PYGZdq{}}           \PYG{c+c1}{\PYGZsh{} pos \PYGZlt{} 0: hebra reversa}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{pos}\PYG{p}{,} \PYG{n}{hebra}\PYG{p}{,} \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{score}\PYG{l+s+si}{:}\PYG{l+s+s2}{.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}          \PYG{c+c1}{\PYGZsh{} 5 + 15.55}
+\end{MintedVerbatim}

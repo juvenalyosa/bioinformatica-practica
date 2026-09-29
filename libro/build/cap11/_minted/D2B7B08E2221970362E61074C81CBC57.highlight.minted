@@ -1,0 +1,20 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{scipy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{stats}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{ora}\PYG{p}{(}\PYG{n}{k}\PYG{p}{,} \PYG{n}{N}\PYG{p}{,} \PYG{n}{K}\PYG{p}{,} \PYG{n}{n}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}p de sobrerrepresentación: P(X \PYGZgt{}= k), X hipergeométrica.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{k}{return} \PYG{n}{stats}\PYG{o}{.}\PYG{n}{hypergeom}\PYG{o}{.}\PYG{n}{sf}\PYG{p}{(}\PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{N}\PYG{p}{,} \PYG{n}{K}\PYG{p}{,} \PYG{n}{n}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{paseo\PYGZus{}gsea}\PYG{p}{(}\PYG{n}{r}\PYG{p}{,} \PYG{n}{en\PYGZus{}conjunto}\PYG{p}{,} \PYG{n}{p}\PYG{o}{=}\PYG{l+m+mf}{1.0}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}r: estadísticos; en\PYGZus{}conjunto: booleanos. Devuelve paseo y ES.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{o} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{argsort}\PYG{p}{(}\PYG{o}{\PYGZhy{}}\PYG{n}{r}\PYG{p}{)}
+    \PYG{n}{hit} \PYG{o}{=} \PYG{n}{en\PYGZus{}conjunto}\PYG{p}{[}\PYG{n}{o}\PYG{p}{]}
+    \PYG{n}{w} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{r}\PYG{p}{[}\PYG{n}{o}\PYG{p}{]}\PYG{p}{)} \PYG{o}{*}\PYG{o}{*} \PYG{n}{p}
+    \PYG{n}{phit} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{cumsum}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{where}\PYG{p}{(}\PYG{n}{hit}\PYG{p}{,} \PYG{n}{w}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{)}\PYG{p}{)} \PYG{o}{/} \PYG{n}{w}\PYG{p}{[}\PYG{n}{hit}\PYG{p}{]}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{pmiss} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{cumsum}\PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{n}{hit}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{o}{\PYGZti{}}\PYG{n}{hit}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)}
+    \PYG{n}{paseo} \PYG{o}{=} \PYG{n}{phit} \PYG{o}{\PYGZhy{}} \PYG{n}{pmiss}
+    \PYG{k}{return} \PYG{n}{paseo}\PYG{p}{,} \PYG{n}{paseo}\PYG{p}{[}\PYG{n}{np}\PYG{o}{.}\PYG{n}{argmax}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{paseo}\PYG{p}{)}\PYG{p}{)}\PYG{p}{]}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{ora}\PYG{p}{(}\PYG{l+m+mi}{12}\PYG{p}{,} \PYG{l+m+mi}{9992}\PYG{p}{,} \PYG{l+m+mi}{150}\PYG{p}{,} \PYG{l+m+mi}{404}\PYG{p}{)}\PYG{p}{)}      \PYG{c+c1}{\PYGZsh{} 0.0184}
+\end{MintedVerbatim}

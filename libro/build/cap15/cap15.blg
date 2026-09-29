@@ -1,0 +1,19 @@
+[0] Config.pm:308> INFO - This is Biber 2.20
+[0] Config.pm:311> INFO - Logfile is 'build/cap15/cap15.blg'
+[25] biber-darwin:340> INFO - === Wed Sep 30, 2026, 00:18:36
+[33] Biber.pm:420> INFO - Reading 'build/cap15/cap15.bcf'
+[149] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[150] Biber.pm:994> INFO - Found 30 citekeys in bib section 1
+[150] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[216] Biber.pm:4463> INFO - Processing section 1
+[220] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap15.bib' for section 1
+[221] bibtex.pm:1713> INFO - LaTeX decoding ...
+[244] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap15.bib'
+[744] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[744] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[744] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[863] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[864] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[864] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[903] bbl.pm:676> INFO - Writing 'build/cap15/cap15.bbl' with encoding 'UTF-8'
+[978] bbl.pm:779> INFO - Output to build/cap15/cap15.bbl

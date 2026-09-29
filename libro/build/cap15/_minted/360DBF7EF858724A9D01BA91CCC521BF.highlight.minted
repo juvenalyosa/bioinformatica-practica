@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{requests}
+
+\PYG{n}{acc} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{P04637}\PYG{l+s+s2}{\PYGZdq{}}                                   \PYG{c+c1}{\PYGZsh{} p53 humana}
+\PYG{n}{api} \PYG{o}{=} \PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{https://alphafold.ebi.ac.uk/api/prediction/}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{acc}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}
+\PYG{n}{meta} \PYG{o}{=} \PYG{n}{requests}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{api}\PYG{p}{,} \PYG{n}{timeout}\PYG{o}{=}\PYG{l+m+mi}{30}\PYG{p}{)}\PYG{o}{.}\PYG{n}{json}\PYG{p}{(}\PYG{p}{)}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}
+\PYG{n}{pdb} \PYG{o}{=} \PYG{n}{requests}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{meta}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pdbUrl}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{timeout}\PYG{o}{=}\PYG{l+m+mi}{60}\PYG{p}{)}\PYG{o}{.}\PYG{n}{text}
+\PYG{n}{plddt} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{\PYGZcb{}}
+\PYG{k}{for} \PYG{n}{linea} \PYG{o+ow}{in} \PYG{n}{pdb}\PYG{o}{.}\PYG{n}{splitlines}\PYG{p}{(}\PYG{p}{)}\PYG{p}{:}                   \PYG{c+c1}{\PYGZsh{} pLDDT = columna B}
+    \PYG{k}{if} \PYG{n}{linea}\PYG{o}{.}\PYG{n}{startswith}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ATOM}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)} \PYG{o+ow}{and} \PYG{n}{linea}\PYG{p}{[}\PYG{l+m+mi}{12}\PYG{p}{:}\PYG{l+m+mi}{16}\PYG{p}{]} \PYG{o}{==} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ CA }\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{:}
+        \PYG{n}{plddt}\PYG{p}{[}\PYG{n+nb}{int}\PYG{p}{(}\PYG{n}{linea}\PYG{p}{[}\PYG{l+m+mi}{22}\PYG{p}{:}\PYG{l+m+mi}{26}\PYG{p}{]}\PYG{p}{)}\PYG{p}{]} \PYG{o}{=} \PYG{n+nb}{float}\PYG{p}{(}\PYG{n}{linea}\PYG{p}{[}\PYG{l+m+mi}{60}\PYG{p}{:}\PYG{l+m+mi}{66}\PYG{p}{]}\PYG{p}{)}
+\PYG{n}{bajos} \PYG{o}{=} \PYG{p}{[}\PYG{n}{r} \PYG{k}{for} \PYG{n}{r}\PYG{p}{,} \PYG{n}{v} \PYG{o+ow}{in} \PYG{n}{plddt}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)} \PYG{k}{if} \PYG{n}{v} \PYG{o}{\PYGZlt{}} \PYG{l+m+mi}{50}\PYG{p}{]}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{plddt}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ residuos; }\PYG{l+s+si}{\PYGZob{}}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{bajos}\PYG{p}{)}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ con pLDDT \PYGZlt{} 50}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

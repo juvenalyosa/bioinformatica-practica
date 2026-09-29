@@ -3074,6 +3074,18 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
   </bcf:section>
@@ -3086,6 +3098,18 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="1">
   </bcf:section>
@@ -3101,6 +3125,18 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="2">
   </bcf:section>
@@ -3116,6 +3152,18 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="3">
   </bcf:section>
@@ -3131,8 +3179,286 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
     <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="4">
+    <bcf:citekey order="1" intorder="1">c00-buckheit1995</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c00-buckheit1995</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c00-kluyver2016</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c00-kluyver2016</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c00-harris2020</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c00-goldberg1991</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c00-mckinney2010</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c00-wickham2014</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c00-wickham2014</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c00-ziemann2016</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c00-ziemann2016</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c00-cleveland1984</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c00-cleveland1984</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c00-tufte2001</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c00-tufte2001</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c00-crameri2020</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c00-crameri2020</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c00-hunter2007</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c00-cock2009</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c00-sayers2022</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c00-wu2020</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c00-wu2020</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c00-ritchie1974</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c00-ritchie1974</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c00-camacho2009</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c00-baker2016</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c00-ioannidis2009</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c00-ioannidis2009</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c00-knuth1997</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c00-knuth1997</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c00-marsaglia1968</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c00-marsaglia1968</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c00-matsumoto1998</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c00-matsumoto1998</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c00-numpypcg</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c00-nist2015</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c00-perezriverol2016</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c00-perezriverol2016</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c00-gruning2018</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c00-gruning2018</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c00-wilson2014</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c00-wilson2014</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c00-wilson2017</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c00-wilson2017</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c00-sandve2013</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c00-wilkinson2016</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c00-wilkinson2016</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 5 -->
+  <bcf:bibdata section="5">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="5">
+    <bcf:citekey order="1" intorder="1">c01-watson1953</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c01-watson1953</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c01-watson1953</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c01-watson1953</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c01-temin1970</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c01-temin1970</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c01-crick1970</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c01-alberts2022</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c01-shannon1948</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c01-shannon1948</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c01-shannon1948</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c01-shannon1948</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c01-shannon1948</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c01-nirenberg1961</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c01-crick1961</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c01-crick1961</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c01-nirenberg1964</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c01-nirenberg1964</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c01-crick1966</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c01-crick1966</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c01-yamao1985</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c01-kyte1982</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c01-kyte1982</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c01-freeland1998</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c01-freeland1998</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c01-haig1991</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c01-freeland1998</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c01-freeland1998</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c01-crick1968</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c01-crick1968</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c01-koonin2009</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c01-koonin2009</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c01-shine1974</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c01-shine1974</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c01-berget1977</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">c01-berget1977</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">c01-gilbert1978</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">c01-gilbert1978</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">c01-hyatt2010</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">c01-fraser1995</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">c01-fraser1995</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">c01-glass2006</bcf:citekey>
+    <bcf:citekey order="60" intorder="1">c01-glass2006</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">c01-hutchison2016</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">c01-hutchison2016</bcf:citekey>
+    <bcf:citekey order="63" intorder="1">c01-yamao1985</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">c01-yamao1985</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">c01-fickett1982</bcf:citekey>
+    <bcf:citekey order="66" intorder="1">c01-fickett1982</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">c01-hyatt2010</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">c01-blattner1997</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">c01-blattner1997</bcf:citekey>
+    <bcf:citekey order="70" intorder="1">c01-okazaki1968</bcf:citekey>
+    <bcf:citekey order="71" intorder="1">c01-okazaki1968</bcf:citekey>
+    <bcf:citekey order="72" intorder="1">c01-frederico1990</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">c01-frederico1990</bcf:citekey>
+    <bcf:citekey order="74" intorder="1">c01-lobry1996</bcf:citekey>
+    <bcf:citekey order="75" intorder="1">c01-lobry1996</bcf:citekey>
+    <bcf:citekey order="76" intorder="1">c01-frank1999</bcf:citekey>
+    <bcf:citekey order="77" intorder="1">c01-frank1999</bcf:citekey>
+    <bcf:citekey order="78" intorder="1">c01-grigoriev1998</bcf:citekey>
+    <bcf:citekey order="79" intorder="1">c01-grigoriev1998</bcf:citekey>
+    <bcf:citekey order="80" intorder="1">c01-rocha2004</bcf:citekey>
+    <bcf:citekey order="81" intorder="1">c01-rocha2004</bcf:citekey>
+    <bcf:citekey order="82" intorder="1">c01-frank1999</bcf:citekey>
+    <bcf:citekey order="83" intorder="1">c01-crick1970</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 6 -->
+  <bcf:bibdata section="6">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="6">
+    <bcf:citekey order="1" intorder="1">c02-wilkinson2016</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c02-wilkinson2016</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c02-leinonen2011</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c02-buffalo2015</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c02-buffalo2015</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c02-bonfield2021</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c02-lipman1985</bcf:citekey>
+    <bcf:citekey order="7" intorder="2">c02-pearson1988</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c02-cock2010</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c02-cock2010</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c02-ewing1998a</bcf:citekey>
+    <bcf:citekey order="10" intorder="2">c02-ewing1998b</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c02-ewing1998b</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c02-ewing1998b</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c02-cock2010</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c02-cock2010</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c02-cock2010</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c02-cock2009</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c02-sayers2025genbank</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c02-arita2021</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c02-quinlan2010</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c02-eilbeck2005</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c02-kent2002</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c02-li2009</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c02-li2009</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c02-li2009</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c02-kent2002</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c02-li2011</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c02-hsiyangfritz2011</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c02-bonfield2021</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c02-danecek2021</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c02-danecek2011</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c02-tan2015</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c02-tan2015</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c02-arita2021</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c02-leinonen2011</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c02-oleary2016</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c02-uniprot2025</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c02-dyer2025</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c02-sayers2025ncbi</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c02-berman2000</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c02-berman2003</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c02-yates2015</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c02-yates2015</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c02-sayers2025ncbi</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c02-cock2009</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c02-dyer2025</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c02-yates2015</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c02-uniprot2025</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c02-berman2000</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c02-burley2025</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c02-cho1994</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c02-wilkinson2016</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c02-wilkinson2016</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 7 -->
+  <bcf:bibdata section="7">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="7">
     <bcf:citekey order="1" intorder="1">c03-dobzhansky1973</bcf:citekey>
     <bcf:citekey order="2" intorder="1">c03-dobzhansky1973</bcf:citekey>
     <bcf:citekey order="3" intorder="1">c03-gibbs1970</bcf:citekey>
@@ -3175,6 +3501,394 @@
     <bcf:citekey order="40" intorder="1">c03-karlin1990</bcf:citekey>
     <bcf:citekey order="41" intorder="1">c03-karlin1990b</bcf:citekey>
     <bcf:citekey order="41" intorder="2">c03-altschul1997</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 8 -->
+  <bcf:bibdata section="8">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="8">
+    <bcf:citekey order="1" intorder="1">c04-eddy1998</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c04-eddy1998</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c04-henikoff1994</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c04-henikoff1994</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c04-wang1994</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c04-wang1994</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c04-wang1994</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c04-carrillo1988</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c04-carrillo1988</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c04-higgins1988</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c04-higgins1988</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c04-thompson1994</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c04-edgar2004</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c04-notredame2000</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c04-katoh2002</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c04-sievers2011</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c04-feng1987</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c04-edgar2006</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c04-edgar2006</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c04-castromondragon2022</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c04-sjolander1996</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c04-stormo1982</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c04-stormo1982</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c04-stormo2000</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c04-stormo2000</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c04-shannon1948</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c04-schneider1990</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c04-schneider1990</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c04-crooks2004</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c04-cock2009</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c04-lawrence1993</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c04-lawrence1993</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c04-dempster1977</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c04-eddy2004</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c04-eddy2004</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c04-viterbi1967</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c04-viterbi1967</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c04-baum1970</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">c04-baum1970</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">c04-dempster1977</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">c04-dempster1977</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">c04-baum1970</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">c04-durbin1998</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">c04-durbin1998</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">c04-krogh1994</bcf:citekey>
+    <bcf:citekey order="60" intorder="1">c04-krogh1994</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">c04-eddy1998</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">c04-eddy1998</bcf:citekey>
+    <bcf:citekey order="63" intorder="1">c04-sjolander1996</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="66" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">c04-eddy2011</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">c04-mistry2021</bcf:citekey>
+    <bcf:citekey order="70" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="71" intorder="1">c04-rabiner1989</bcf:citekey>
+    <bcf:citekey order="72" intorder="1">c04-krogh1994</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">c04-krogh1994</bcf:citekey>
+    <bcf:citekey order="74" intorder="1">c04-durbin1998</bcf:citekey>
+    <bcf:citekey order="75" intorder="1">c04-durbin1998</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 9 -->
+  <bcf:bibdata section="9">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="9">
+    <bcf:citekey order="1" intorder="1">c05-darwin2009</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c05-darwin2009</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c05-zuckerkandl1965</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c05-jukes1969</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c05-jukes1969</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c05-kimura1980</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c05-kimura1980</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c05-hasegawa1985</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c05-hasegawa1985</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c05-rodriguez1990</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c05-rodriguez1990</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c05-jukes1969</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c05-jukes1969</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c05-kimura1980</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c05-kimura1980</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c05-hasegawa1985</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c05-hasegawa1985</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c05-rodriguez1990</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c05-rodriguez1990</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c05-yang1994</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c05-yang1994</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c05-yang1994</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c05-yang1994</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c05-buneman1974</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c05-saitou1987</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c05-saitou1987</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c05-studier1988</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c05-studier1988</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c05-gascuel2006</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c05-gascuel2006</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c05-yang2014</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c05-yang2014</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c05-felsenstein1981</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c05-guindon2003</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c05-stamatakis2014</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c05-nguyen2015</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c05-minh2020</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c05-akaike1974</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c05-akaike1974</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c05-schwarz1978</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">c05-schwarz1978</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">c05-kalyaanamoorthy2017</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">c05-fitch1971</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">c05-fitch1971</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">c05-felsenstein1978</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">c05-felsenstein1978</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">c05-efron1979</bcf:citekey>
+    <bcf:citekey order="60" intorder="1">c05-efron1979</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">c05-felsenstein1985</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">c05-felsenstein1985</bcf:citekey>
+    <bcf:citekey order="63" intorder="1">c05-felsenstein2004</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">c05-hoang2018</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 10 -->
+  <bcf:bibdata section="10">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="10">
+    <bcf:citekey order="1" intorder="1">c06-shendure2017</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c06-shendure2017</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c06-nhgri2022</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c06-sanger1977</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c06-sanger1977</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c06-bentley2008</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c06-sanger1977</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c06-ewing1998a</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c06-shendure2017</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c06-shendure2017</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c06-ronaghi1998</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c06-ronaghi1998</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c06-margulies2005</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c06-margulies2005</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c06-metzker2010</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c06-bentley2008</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c06-fedurco2006</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c06-bentley2008</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c06-bentley2008</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c06-chen2018</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c06-eid2009</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c06-eid2009</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c06-eid2009</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c06-eid2009</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c06-wenger2019</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c06-wenger2019</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c06-jain2016</bcf:citekey>
+    <bcf:citekey order="29" intorder="2">c06-rang2018</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c06-jain2018</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c06-jain2018</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c06-rang2018</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c06-rang2018</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c06-sereika2022</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c06-metzker2010</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c06-metzker2010</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c06-goodwin2016</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c06-goodwin2016</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c06-goodwin2016</bcf:citekey>
+    <bcf:citekey order="39" intorder="2">c06-rang2018</bcf:citekey>
+    <bcf:citekey order="39" intorder="3">c06-wenger2019</bcf:citekey>
+    <bcf:citekey order="39" intorder="4">c06-jain2018</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c06-goodwin2016</bcf:citekey>
+    <bcf:citekey order="40" intorder="2">c06-rang2018</bcf:citekey>
+    <bcf:citekey order="40" intorder="3">c06-wenger2019</bcf:citekey>
+    <bcf:citekey order="40" intorder="4">c06-jain2018</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c06-nhgri2022</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c06-nhgri2022</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c06-nhgri2022</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c06-ewing1998a</bcf:citekey>
+    <bcf:citekey order="44" intorder="2">c06-ewing1998b</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c06-cock2010</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c06-cock2010</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c06-cock2010</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c06-andrews2010</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c06-ewels2016</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c06-martin2011</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c06-bolger2014</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c06-chen2018</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">c06-bolger2014</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">c06-schirmer2015</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">c06-schirmer2015</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="58" intorder="1">c06-waterman1995</bcf:citekey>
+    <bcf:citekey order="59" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="60" intorder="1">c06-lander1988</bcf:citekey>
+    <bcf:citekey order="61" intorder="1">c06-jain2018</bcf:citekey>
+    <bcf:citekey order="62" intorder="1">c06-wenger2019</bcf:citekey>
+    <bcf:citekey order="63" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="64" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="65" intorder="1">c06-ross2013</bcf:citekey>
+    <bcf:citekey order="66" intorder="1">c06-ross2013</bcf:citekey>
+    <bcf:citekey order="67" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="68" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="69" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="70" intorder="1">c06-benjamini2012</bcf:citekey>
+    <bcf:citekey order="71" intorder="1">c06-bentley2008</bcf:citekey>
+    <bcf:citekey order="71" intorder="2">c06-sims2014</bcf:citekey>
+    <bcf:citekey order="72" intorder="1">c06-sims2014</bcf:citekey>
+    <bcf:citekey order="73" intorder="1">c06-sims2014</bcf:citekey>
+  </bcf:section>
+  <!-- SECTION 0 (cont.) -->
+  <bcf:section number="0">
+  </bcf:section>
+  <!-- SECTION 11 -->
+  <bcf:bibdata section="11">
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap00.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap01.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap02.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap03.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap04.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap05.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap06.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap07.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap08.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap09.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap10.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap11.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap12.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap13.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap14.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap15.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap16.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap17.bib</bcf:datasource>
+    <bcf:datasource type="file" datatype="bibtex" glob="false">bib/cap18.bib</bcf:datasource>
+  </bcf:bibdata>
+  <bcf:section number="11">
+    <bcf:citekey order="1" intorder="1">c07-treangen2012</bcf:citekey>
+    <bcf:citekey order="2" intorder="1">c07-treangen2012</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">c07-lihomer2010</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">c07-lihomer2010</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">c07-li2008maq</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">c07-manber1993</bcf:citekey>
+    <bcf:citekey order="8" intorder="1">c07-manber1993</bcf:citekey>
+    <bcf:citekey order="9" intorder="1">c07-gusfield1997</bcf:citekey>
+    <bcf:citekey order="10" intorder="1">c07-adjeroh2008</bcf:citekey>
+    <bcf:citekey order="11" intorder="1">c07-adjeroh2008</bcf:citekey>
+    <bcf:citekey order="12" intorder="1">c07-ferragina2005</bcf:citekey>
+    <bcf:citekey order="13" intorder="1">c07-ferragina2005</bcf:citekey>
+    <bcf:citekey order="14" intorder="1">c07-langmead2009</bcf:citekey>
+    <bcf:citekey order="14" intorder="2">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="15" intorder="1">c07-ferragina2005</bcf:citekey>
+    <bcf:citekey order="16" intorder="1">c07-ferragina2005</bcf:citekey>
+    <bcf:citekey order="17" intorder="1">c07-makinen2015</bcf:citekey>
+    <bcf:citekey order="18" intorder="1">c07-ferragina2005</bcf:citekey>
+    <bcf:citekey order="19" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="20" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="21" intorder="1">c07-langmead2009</bcf:citekey>
+    <bcf:citekey order="22" intorder="1">c07-langmead2009</bcf:citekey>
+    <bcf:citekey order="23" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="24" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="25" intorder="1">c07-li2010bwasw</bcf:citekey>
+    <bcf:citekey order="26" intorder="1">c07-li2013</bcf:citekey>
+    <bcf:citekey order="27" intorder="1">c07-langmead2012</bcf:citekey>
+    <bcf:citekey order="28" intorder="1">c07-langmead2012</bcf:citekey>
+    <bcf:citekey order="29" intorder="1">c07-li2018</bcf:citekey>
+    <bcf:citekey order="30" intorder="1">c07-li2018</bcf:citekey>
+    <bcf:citekey order="31" intorder="1">c07-roberts2004</bcf:citekey>
+    <bcf:citekey order="32" intorder="1">c07-roberts2004</bcf:citekey>
+    <bcf:citekey order="33" intorder="1">c07-schleimer2003</bcf:citekey>
+    <bcf:citekey order="34" intorder="1">c07-schleimer2003</bcf:citekey>
+    <bcf:citekey order="35" intorder="1">c07-li2018</bcf:citekey>
+    <bcf:citekey order="36" intorder="1">c07-li2018</bcf:citekey>
+    <bcf:citekey order="37" intorder="1">c07-li2008maq</bcf:citekey>
+    <bcf:citekey order="38" intorder="1">c07-li2008maq</bcf:citekey>
+    <bcf:citekey order="39" intorder="1">c07-li2009bwa</bcf:citekey>
+    <bcf:citekey order="40" intorder="1">c07-li2018</bcf:citekey>
+    <bcf:citekey order="41" intorder="1">c07-treangen2012</bcf:citekey>
+    <bcf:citekey order="42" intorder="1">c07-schneider2017</bcf:citekey>
+    <bcf:citekey order="43" intorder="1">c07-nurk2022</bcf:citekey>
+    <bcf:citekey order="44" intorder="1">c07-li2013</bcf:citekey>
+    <bcf:citekey order="45" intorder="1">c07-li2009sam</bcf:citekey>
+    <bcf:citekey order="46" intorder="1">c07-samspec</bcf:citekey>
+    <bcf:citekey order="47" intorder="1">c07-samspec</bcf:citekey>
+    <bcf:citekey order="48" intorder="1">c07-samspec</bcf:citekey>
+    <bcf:citekey order="49" intorder="1">c07-li2009sam</bcf:citekey>
+    <bcf:citekey order="49" intorder="2">c07-danecek2021</bcf:citekey>
+    <bcf:citekey order="50" intorder="1">c07-faust2014</bcf:citekey>
+    <bcf:citekey order="51" intorder="1">c07-robinson2011</bcf:citekey>
+    <bcf:citekey order="52" intorder="1">c07-thorvaldsdottir2013</bcf:citekey>
+    <bcf:citekey order="53" intorder="1">c07-pedersen2018</bcf:citekey>
+    <bcf:citekey order="54" intorder="1">c07-pedersen2018</bcf:citekey>
+    <bcf:citekey order="55" intorder="1">c07-quinlan2010</bcf:citekey>
+    <bcf:citekey order="56" intorder="1">c07-ramirez2016</bcf:citekey>
+    <bcf:citekey order="57" intorder="1">c07-abyzov2011</bcf:citekey>
   </bcf:section>
   <!-- SECTION 0 (cont.) -->
   <bcf:section number="0">
@@ -3271,6 +3985,146 @@
                 namehashtemplatename="global">
   </bcf:datalist>
   <bcf:datalist section="4"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="5"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="5"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="6"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="6"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="7"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="7"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="8"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="8"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="9"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="9"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="10"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="10"
+                name="apa/global//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="global"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="11"
+                name="apa/apasortcite//global/global/global"
+                type="entry"
+                sortingtemplatename="apa"
+                sortingnamekeytemplatename="apasortcite"
+                labelprefix=""
+                uniquenametemplatename="global"
+                labelalphanametemplatename="global"
+                namehashtemplatename="global">
+  </bcf:datalist>
+  <bcf:datalist section="11"
                 name="apa/global//global/global/global"
                 type="entry"
                 sortingtemplatename="apa"

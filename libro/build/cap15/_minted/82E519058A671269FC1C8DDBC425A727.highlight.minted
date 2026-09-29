@@ -1,0 +1,12 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{rdkit}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{Chem}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{rdkit}\PYG{n+nn}{.}\PYG{n+nn}{Chem}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{rdMolAlign}
+
+\PYG{n}{ref} \PYG{o}{=} \PYG{n}{Chem}\PYG{o}{.}\PYG{n}{MolFromMolFile}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ligando\PYGZus{}cristal.sdf}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{poses} \PYG{o}{=} \PYG{n}{Chem}\PYG{o}{.}\PYG{n}{SDMolSupplier}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{poses\PYGZus{}vina.sdf}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{k}{for} \PYG{n}{i}\PYG{p}{,} \PYG{n}{pose} \PYG{o+ow}{in} \PYG{n+nb}{enumerate}\PYG{p}{(}\PYG{n}{poses}\PYG{p}{,} \PYG{n}{start}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+    \PYG{c+c1}{\PYGZsh{} CalcRMS no superpone y considera la simetría del ligando}
+    \PYG{n}{r} \PYG{o}{=} \PYG{n}{rdMolAlign}\PYG{o}{.}\PYG{n}{CalcRMS}\PYG{p}{(}\PYG{n}{pose}\PYG{p}{,} \PYG{n}{ref}\PYG{p}{)}
+    \PYG{n}{ok} \PYG{o}{=} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{correcta}\PYG{l+s+s2}{\PYGZdq{}} \PYG{k}{if} \PYG{n}{r} \PYG{o}{\PYGZlt{}} \PYG{l+m+mf}{2.0} \PYG{k}{else} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{incorrecta}\PYG{l+s+s2}{\PYGZdq{}}
+    \PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{pose }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{i}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{: RMSD = }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{r}\PYG{l+s+si}{:}\PYG{l+s+s2}{5.2f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{ A  (}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{ok}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{)}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

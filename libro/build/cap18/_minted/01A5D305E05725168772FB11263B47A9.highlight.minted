@@ -1,0 +1,8 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+mapeo/A.dedup.bam\PYG{+w}{        }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }dedup\PYG{+w}{            }\PYG{o}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}m\PYGZsq{}}:\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}A\PYGZsq{}}\PYG{o}{\PYGZcb{}}
+mapeo/A.ordenado.bam\PYG{+w}{     }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }mapear\PYG{+w}{           }\PYG{o}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}m\PYGZsq{}}:\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}A\PYGZsq{}}\PYG{o}{\PYGZcb{}}
+limpio/A\PYGZus{}R1.fq.gz\PYG{+w}{        }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }fastp\PYG{+w}{            }\PYG{o}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}m\PYGZsq{}}:\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}A\PYGZsq{}}\PYG{o}{\PYGZcb{}}
+datos/A\PYGZus{}R1.fastq.gz\PYG{+w}{      }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }\PYG{o}{(}archivo\PYG{+w}{ }fuente\PYG{o}{)}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{o}{\PYGZcb{}}
+datos/A\PYGZus{}R2.fastq.gz\PYG{+w}{      }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }\PYG{o}{(}archivo\PYG{+w}{ }fuente\PYG{o}{)}\PYG{+w}{ }\PYG{o}{\PYGZob{}}\PYG{o}{\PYGZcb{}}
+limpio/A\PYGZus{}R2.fq.gz\PYG{+w}{        }\PYGZlt{}\PYGZhy{}\PYG{+w}{ }fastp\PYG{+w}{            }\PYG{o}{\PYGZob{}}\PYG{l+s+s1}{\PYGZsq{}m\PYGZsq{}}:\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}A\PYGZsq{}}\PYG{o}{\PYGZcb{}}
+\end{MintedVerbatim}

@@ -1,0 +1,61 @@
+[hebras] moda +: -100  moda -: 99  distancia: 199  mediana long. fragmento: 200
+[xcor] bueno: frag=176  cc_frag=0.0622  cc_read=0.0453  cc_min=0.0231  NSC=2.70  RSC=1.76
+[xcor] pobre: frag=104  cc_frag=0.0371  cc_read=0.0522  cc_min=0.0286  NSC=1.30  RSC=0.36
+[poisson] lam_BG=2.963 l1k=3.200 l5k=2.880 l10k=3.040 lam_local=3.200
+[poisson] k=17: p_local=5.379e-08 (-log10=7.27)  p_BG=1.814e-08
+[poisson] region amplificada: l10k=12.80; k=14: p_BG=2.96e-06  p_local=0.405
+[poisson] umbral 1e-5 con lam_local: k>=14
+[idr] Spearman global=0.70; en top1000 de ambas: 857 picos, verdaderos=857
+[frip] 3.1e6/20e6 = 0.155
+[atac] fragmentos: 1694646; <100pb=0.380; 180-247=0.210
+[atac] TSS enrichment (max del perfil normalizado): 8.35
+[beta] fracción beta<0.2: 0.325; >0.8: 0.431
+[hetero] beta=0.05: sd(beta)=0.0030 sd(M)=0.0927
+[hetero] beta=0.5: sd(beta)=0.0075 sd(M)=0.0426
+[hetero] beta=0.95: sd(beta)=0.0055 sd(M)=0.0948
+[ej-meth] beta=0.850  M(offset1)=2.170  M(sin offset)=2.503
+[ej-meth] EE binomial=0.0798  IC95 Wald=(0.694,1.006)
+[ej-meth] IC95 Jeffreys=(0.651,0.956)
+[ej-meth] var betabinom n=20 phi=0.0: 2.550  sd=1.597
+[ej-meth] var betabinom n=20 phi=0.05: 4.973  sd=2.230
+[ej-meth] var betabinom n=20 phi=0.1: 7.395  sd=2.719
+[wald] muA=0.841 muB=0.312 varA=0.00428 varB=0.00680 z=5.02 p=5.05e-07
+[wald] sin dispersión (binomial): z=7.10 p=1.25e-12
+[wald] phi=0.02: z=6.00 p=1.94e-09
+[wald] phi=0.1: z=4.10 p=4.07e-05
+[wald] phi=0.2: z=3.18 p=1.48e-03
+[cpg] isla: L=100 C=37 G=32 CG=12 GC=0.690 O/E=1.014
+[cpg] mar: L=100 C=22 G=17 CG=1 GC=0.390 O/E=0.267
+[cpg] isla seq: ACGACTAATGCGGCCGGGGGTCGCCGCGGACCATCCGCTCACCCTGCACTCGAAGGCCACAGCAGCAGTAGCAATGCGCCCTTCCCGAACCGGGGGGTCG
+[cpg] mar seq: TTGAACCAATGACTTTCCAAGATAGTATTATAGCACTCAGCTACTGGAATATCTCTGATGGCAGAGGCTACTCTGTTTTATTCGCTCCATGTTCTATACA
+[dmr] CpG totales=55 en DMR real=14 significativos p<0.01=15 (dentro=14)
+[dmr] DMR llamada: CpG 21..34 pos 1159-1835 (14 CpG)
+[em] corrida 0: semilla=GGGGGAGC LLR0=-1.8 LLRfin=56.5 IC=7.03 consenso=GAGTCATC
+[em] corrida 1: semilla=TGGAATAT LLR0=-3.7 LLRfin=83.4 IC=7.96 consenso=TGAGTCAT
+[em] corrida 2: semilla=TTCCCTTA LLR0=-0.3 LLRfin=96.4 IC=8.75 consenso=ATGAGTCA
+[em] corrida 3: semilla=AAGCCAGC LLR0=-1.2 LLRfin=56.5 IC=7.03 consenso=GAGTCATC
+[em] corrida 4: semilla=TCCTAGTA LLR0=-1.0 LLRfin=77.5 IC=7.99 consenso=CATGACTC
+[em] corrida 5: semilla=ATCAGTCA LLR0=10.5 LLRfin=96.4 IC=8.75 consenso=ATGAGTCA
+[em] mejor corrida=2; sitios recuperados exactos: 26/30
+[em] IC semilla=1.66 it6=3.19 it8=6.39 final=8.75 verdadero=8.11
+[estep] seq18 sitio real=18 kmer=ATGACTCA LLR=12.87 bits  Z=0.9976  segundo mayor Z=1.56e-03  suma otros=2.39e-03
+[estep] mediana LLR sitios reales=8.65
+[gibbs] cadena 1: LLRfin=36.2 exactos=0/30 desfase +-1..2=0 consenso=AGTAATAG primer sweep >= 0.95*max: 38
+[gibbs] cadena 2: LLRfin=50.3 exactos=0/30 desfase +-1..2=16 consenso=ACATGAGT primer sweep >= 0.95*max: 19
+[gibbs] cadena 3: LLRfin=50.5 exactos=0/30 desfase +-1..2=19 consenso=CCATGAGT primer sweep >= 0.95*max: 8
+[gibbs] cadena 4: LLRfin=89.8 exactos=22/30 desfase +-1..2=22 consenso=ATGACTCA primer sweep >= 0.95*max: 6
+[true] LLR con matriz verdadera: 76.1; IC verdadero=8.11
+[centrimo] directo: n=1649 en +-50=1609 (0.976) esperado=0.210 p=0.00e+00
+[centrimo] cofactor: n=1050 en +-50=396 (0.377) esperado=0.210 p=2.92e-35
+[centrimo] fondo: n=750 en +-50=161 (0.215) esperado=0.210 p=3.90e-01
+[homer] objetivo 640/2000=0.320 fondo 1200/20000=0.060 p_hiper=6.82e-234 ln p=-536.9 enriquecimiento=5.33
+[homer] binomial p=2.03e-276
+[pwm] score ATGACTCA=12.87 bits  ATGACTTA=8.78  max=12.87
+[pwm] col 1: A=+1.26 C=-0.74 G=-0.74 T=-1.32
+[pwm] col 2: A=-2.32 C=-2.32 G=-2.32 T=+1.77
+[pwm] col 3: A=-2.32 C=-2.32 G=+1.77 T=-2.32
+[pwm] col 4: A=+1.82 C=-2.64 G=-2.64 T=-2.64
+[pwm] col 5: A=-2.32 C=+0.91 G=+0.78 T=-2.32
+[pwm] col 6: A=-2.32 C=-2.32 G=-2.32 T=+1.77
+[pwm] col 7: A=-2.32 C=+1.77 G=-2.32 T=-2.32
+[pwm] col 8: A=+1.82 C=-2.64 G=-2.64 T=-2.64

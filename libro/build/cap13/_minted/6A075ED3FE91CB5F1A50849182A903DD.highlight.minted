@@ -1,0 +1,11 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} 100 pb alrededor de la cumbre de cada pico}
+awk\PYG{+w}{ }\PYGZhy{}v\PYG{+w}{ }\PYG{n+nv}{OFS}\PYG{o}{=}\PYG{l+s+s1}{\PYGZsq{}\PYGZbs{}t\PYGZsq{}}\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZob{}s=\PYGZdl{}2+\PYGZdl{}10\PYGZhy{}50; print \PYGZdl{}1,s,s+100\PYGZcb{}\PYGZsq{}}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }ctcf\PYGZus{}idr.narrowPeak\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }cumbres.bed
+bedtools\PYG{+w}{ }getfasta\PYG{+w}{ }\PYGZhy{}fi\PYG{+w}{ }hg38.fa\PYG{+w}{ }\PYGZhy{}bed\PYG{+w}{ }cumbres.bed\PYG{+w}{ }\PYGZhy{}fo\PYG{+w}{ }cumbres.fa
+\PYG{c+c1}{\PYGZsh{} MEME Suite: de novo + enriquecimiento + centralidad}
+meme\PYGZhy{}chip\PYG{+w}{ }\PYGZhy{}oc\PYG{+w}{ }memechip\PYG{+w}{ }\PYGZhy{}meme\PYGZhy{}nmotifs\PYG{+w}{ }\PYG{l+m}{5}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZhy{}db\PYG{+w}{ }JASPAR2022\PYGZus{}CORE\PYGZus{}vertebrates.meme\PYG{+w}{ }cumbres.fa
+\PYG{c+c1}{\PYGZsh{} HOMER: fondo emparejado por GC}
+findMotifsGenome.pl\PYG{+w}{ }cumbres.bed\PYG{+w}{ }hg38\PYG{+w}{ }homer\PYGZus{}out\PYG{+w}{ }\PYGZhy{}size\PYG{+w}{ }given
+\end{MintedVerbatim}

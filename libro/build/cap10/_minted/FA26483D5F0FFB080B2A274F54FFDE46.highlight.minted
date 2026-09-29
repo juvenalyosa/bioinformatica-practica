@@ -1,0 +1,29 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{scipy}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{stats}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{gwas\PYGZus{}lineal}\PYG{p}{(}\PYG{n}{y}\PYG{p}{,} \PYG{n}{G}\PYG{p}{,} \PYG{n}{C}\PYG{o}{=}\PYG{k+kc}{None}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Regresión marginal por SNP; C = covariables (n x k).\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{n} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{y}\PYG{p}{)}
+    \PYG{n}{Q} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ones}\PYG{p}{(}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+    \PYG{k}{if} \PYG{n}{C} \PYG{o+ow}{is} \PYG{o+ow}{not} \PYG{k+kc}{None}\PYG{p}{:}
+        \PYG{n}{Q} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{column\PYGZus{}stack}\PYG{p}{(}\PYG{p}{[}\PYG{n}{Q}\PYG{p}{,} \PYG{n}{C}\PYG{p}{]}\PYG{p}{)}
+    \PYG{n}{Q}\PYG{p}{,} \PYG{n}{\PYGZus{}} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{linalg}\PYG{o}{.}\PYG{n}{qr}\PYG{p}{(}\PYG{n}{Q}\PYG{p}{)}
+    \PYG{n}{yr} \PYG{o}{=} \PYG{n}{y} \PYG{o}{\PYGZhy{}} \PYG{n}{Q} \PYG{o}{@} \PYG{p}{(}\PYG{n}{Q}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{y}\PYG{p}{)}                       \PYG{c+c1}{\PYGZsh{} residualizar (FWL)}
+    \PYG{n}{Gr} \PYG{o}{=} \PYG{n}{G} \PYG{o}{\PYGZhy{}} \PYG{n}{Q} \PYG{o}{@} \PYG{p}{(}\PYG{n}{Q}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{G}\PYG{p}{)}
+    \PYG{n}{sxx} \PYG{o}{=} \PYG{p}{(}\PYG{n}{Gr} \PYG{o}{*}\PYG{o}{*} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{0}\PYG{p}{)}
+    \PYG{n}{b} \PYG{o}{=} \PYG{n}{Gr}\PYG{o}{.}\PYG{n}{T} \PYG{o}{@} \PYG{n}{yr} \PYG{o}{/} \PYG{n}{sxx}
+    \PYG{n}{df} \PYG{o}{=} \PYG{n}{n} \PYG{o}{\PYGZhy{}} \PYG{n}{Q}\PYG{o}{.}\PYG{n}{shape}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}
+    \PYG{n}{se} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{p}{(}\PYG{p}{(}\PYG{n}{yr} \PYG{o}{*}\PYG{o}{*} \PYG{l+m+mi}{2}\PYG{p}{)}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{b} \PYG{o}{*}\PYG{o}{*} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{sxx}\PYG{p}{)} \PYG{o}{/} \PYG{n}{df} \PYG{o}{/} \PYG{n}{sxx}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{b}\PYG{p}{,} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{stats}\PYG{o}{.}\PYG{n}{t}\PYG{o}{.}\PYG{n}{sf}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{abs}\PYG{p}{(}\PYG{n}{b} \PYG{o}{/} \PYG{n}{se}\PYG{p}{)}\PYG{p}{,} \PYG{n}{df}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{lambda\PYGZus{}gc}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n}{np}\PYG{o}{.}\PYG{n}{median}\PYG{p}{(}\PYG{n}{stats}\PYG{o}{.}\PYG{n}{chi2}\PYG{o}{.}\PYG{n}{isf}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)} \PYG{o}{/} \PYG{n}{stats}\PYG{o}{.}\PYG{n}{chi2}\PYG{o}{.}\PYG{n}{ppf}\PYG{p}{(}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{benjamini\PYGZus{}hochberg}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{n}{alpha}\PYG{o}{=}\PYG{l+m+mf}{0.05}\PYG{p}{)}\PYG{p}{:}
+    \PYG{n}{o} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{argsort}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}\PYG{p}{;} \PYG{n}{M} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{p}\PYG{p}{)}
+    \PYG{n}{ok} \PYG{o}{=} \PYG{n}{p}\PYG{p}{[}\PYG{n}{o}\PYG{p}{]} \PYG{o}{\PYGZlt{}}\PYG{o}{=} \PYG{n}{alpha} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{M} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)} \PYG{o}{/} \PYG{n}{M}
+    \PYG{n}{k} \PYG{o}{=} \PYG{n}{ok}\PYG{o}{.}\PYG{n}{nonzero}\PYG{p}{(}\PYG{p}{)}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{o}{.}\PYG{n}{max}\PYG{p}{(}\PYG{p}{)} \PYG{o}{+} \PYG{l+m+mi}{1} \PYG{k}{if} \PYG{n}{ok}\PYG{o}{.}\PYG{n}{any}\PYG{p}{(}\PYG{p}{)} \PYG{k}{else} \PYG{l+m+mi}{0}
+    \PYG{n}{rechazo} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{zeros}\PYG{p}{(}\PYG{n}{M}\PYG{p}{,} \PYG{n+nb}{bool}\PYG{p}{)}\PYG{p}{;} \PYG{n}{rechazo}\PYG{p}{[}\PYG{n}{o}\PYG{p}{[}\PYG{p}{:}\PYG{n}{k}\PYG{p}{]}\PYG{p}{]} \PYG{o}{=} \PYG{k+kc}{True}
+    \PYG{k}{return} \PYG{n}{rechazo}
+\end{MintedVerbatim}

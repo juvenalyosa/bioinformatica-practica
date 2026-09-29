@@ -1,34 +1,137 @@
 [0] Config.pm:308> INFO - This is Biber 2.20
 [0] Config.pm:311> INFO - Logfile is 'build/libro/main.blg'
-[47] biber-darwin:340> INFO - === Tue Sep 29, 2026, 21:57:19
-[56] Biber.pm:420> INFO - Reading 'build/libro/main.bcf'
-[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 1
-[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 2
-[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 3
-[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[132] Biber.pm:994> INFO - Found 24 citekeys in bib section 4
-[132] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
-[189] Biber.pm:4463> INFO - Processing section 4
-[197] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 4
-[199] bibtex.pm:1713> INFO - LaTeX decoding ...
-[232] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap00.bib'
-[235] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 4
-[238] bibtex.pm:1713> INFO - LaTeX decoding ...
-[271] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap01.bib'
-[274] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 4
-[275] bibtex.pm:1713> INFO - LaTeX decoding ...
-[299] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap02.bib'
-[300] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 4
-[301] bibtex.pm:1713> INFO - LaTeX decoding ...
-[331] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap03.bib'
-[577] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[577] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
-[577] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
-[632] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[633] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
-[633] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
-[665] bbl.pm:676> INFO - Writing 'build/libro/main.bbl' with encoding 'UTF-8'
-[693] bbl.pm:779> INFO - Output to build/libro/main.bbl
+[36] biber-darwin:340> INFO - === Wed Sep 30, 2026, 00:28:12
+[47] Biber.pm:420> INFO - Reading 'build/libro/main.bcf'
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 1
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 2
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 3
+[116] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[117] Biber.pm:994> INFO - Found 29 citekeys in bib section 4
+[117] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[119] Biber.pm:994> INFO - Found 30 citekeys in bib section 5
+[119] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[121] Biber.pm:994> INFO - Found 30 citekeys in bib section 6
+[121] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[121] Biber.pm:994> INFO - Found 24 citekeys in bib section 7
+[121] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[122] Biber.pm:994> INFO - Found 30 citekeys in bib section 8
+[123] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[123] Biber.pm:994> INFO - Found 26 citekeys in bib section 9
+[124] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[125] Biber.pm:994> INFO - Found 29 citekeys in bib section 10
+[125] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[126] Biber.pm:994> INFO - Found 28 citekeys in bib section 11
+[126] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[193] Biber.pm:4463> INFO - Processing section 4
+[198] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 4
+[200] bibtex.pm:1713> INFO - LaTeX decoding ...
+[213] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap00.bib'
+[402] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[402] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[402] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[440] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[440] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[440] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[467] Biber.pm:4463> INFO - Processing section 5
+[467] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 5
+[467] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 5
+[469] bibtex.pm:1713> INFO - LaTeX decoding ...
+[480] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap01.bib'
+[590] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[590] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[590] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[619] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[619] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[619] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[632] Biber.pm:4463> INFO - Processing section 6
+[632] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 6
+[632] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 6
+[632] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 6
+[634] bibtex.pm:1713> INFO - LaTeX decoding ...
+[645] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap02.bib'
+[803] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[803] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[803] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[847] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[847] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[847] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[870] Biber.pm:4463> INFO - Processing section 7
+[870] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 7
+[871] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 7
+[871] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 7
+[872] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 7
+[873] bibtex.pm:1713> INFO - LaTeX decoding ...
+[887] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap03.bib'
+[968] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[968] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[968] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[994] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[994] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[994] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1007] Biber.pm:4463> INFO - Processing section 8
+[1007] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 8
+[1008] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 8
+[1008] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 8
+[1008] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 8
+[1008] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap04.bib' for section 8
+[1010] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1025] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap04.bib'
+[1159] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1159] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1159] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1204] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1204] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1204] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1222] Biber.pm:4463> INFO - Processing section 9
+[1222] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 9
+[1223] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 9
+[1223] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 9
+[1223] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 9
+[1224] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap04.bib' for section 9
+[1224] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap05.bib' for section 9
+[1225] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1235] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap05.bib'
+[1318] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1318] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1318] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1348] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1348] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1348] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1365] Biber.pm:4463> INFO - Processing section 10
+[1365] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 10
+[1366] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 10
+[1367] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 10
+[1369] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 10
+[1370] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap04.bib' for section 10
+[1370] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap05.bib' for section 10
+[1372] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap06.bib' for section 10
+[1374] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1389] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap06.bib'
+[1516] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1516] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1516] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1551] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1551] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1551] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1574] Biber.pm:4463> INFO - Processing section 11
+[1574] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 11
+[1574] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 11
+[1575] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 11
+[1575] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 11
+[1575] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap04.bib' for section 11
+[1575] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap05.bib' for section 11
+[1576] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap06.bib' for section 11
+[1576] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap07.bib' for section 11
+[1577] bibtex.pm:1713> INFO - LaTeX decoding ...
+[1592] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap07.bib'
+[1723] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1723] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1723] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1756] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1756] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1756] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[1772] bbl.pm:676> INFO - Writing 'build/libro/main.bbl' with encoding 'UTF-8'
+[2033] bbl.pm:779> INFO - Output to build/libro/main.bbl

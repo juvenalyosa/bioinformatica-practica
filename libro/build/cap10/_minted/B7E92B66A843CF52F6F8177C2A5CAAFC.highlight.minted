@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{wright\PYGZus{}fisher}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,} \PYG{n}{p0}\PYG{p}{,} \PYG{n}{T}\PYG{p}{,} \PYG{n}{reps}\PYG{p}{,} \PYG{n}{s}\PYG{o}{=}\PYG{l+m+mf}{0.0}\PYG{p}{,} \PYG{n}{seed}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Frecuencias alélicas (T+1 x reps) bajo Wright\PYGZhy{}Fisher.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{rng} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{random}\PYG{o}{.}\PYG{n}{default\PYGZus{}rng}\PYG{p}{(}\PYG{n}{seed}\PYG{p}{)}
+    \PYG{n}{X} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{empty}\PYG{p}{(}\PYG{p}{(}\PYG{n}{T} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{reps}\PYG{p}{)}\PYG{p}{)}\PYG{p}{;} \PYG{n}{X}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{=} \PYG{n}{p0}
+    \PYG{k}{for} \PYG{n}{t} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n}{T}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{p} \PYG{o}{=} \PYG{n}{X}\PYG{p}{[}\PYG{n}{t}\PYG{p}{]} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{s}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{+} \PYG{n}{s} \PYG{o}{*} \PYG{n}{X}\PYG{p}{[}\PYG{n}{t}\PYG{p}{]}\PYG{p}{)}       \PYG{c+c1}{\PYGZsh{} selección}
+        \PYG{n}{X}\PYG{p}{[}\PYG{n}{t} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{]} \PYG{o}{=} \PYG{n}{rng}\PYG{o}{.}\PYG{n}{binomial}\PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{N}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)} \PYG{o}{/} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{N}\PYG{p}{)}  \PYG{c+c1}{\PYGZsh{} deriva}
+    \PYG{k}{return} \PYG{n}{X}
+
+\PYG{n}{X} \PYG{o}{=} \PYG{n}{wright\PYGZus{}fisher}\PYG{p}{(}\PYG{n}{N}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{p0}\PYG{o}{=}\PYG{l+m+mf}{0.5}\PYG{p}{,} \PYG{n}{T}\PYG{o}{=}\PYG{l+m+mi}{100}\PYG{p}{,} \PYG{n}{reps}\PYG{o}{=}\PYG{l+m+mi}{4000}\PYG{p}{)}
+\PYG{n}{H} \PYG{o}{=} \PYG{p}{(}\PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{X} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{X}\PYG{p}{)}\PYG{p}{)}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{axis}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{H}\PYG{p}{[}\PYG{l+m+mi}{100}\PYG{p}{]}\PYG{p}{,} \PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1} \PYG{o}{/} \PYG{l+m+mi}{100}\PYG{p}{)} \PYG{o}{*}\PYG{o}{*} \PYG{l+m+mi}{100}\PYG{p}{)}        \PYG{c+c1}{\PYGZsh{} \PYGZti{}0.18 frente a 0.183}
+\end{MintedVerbatim}

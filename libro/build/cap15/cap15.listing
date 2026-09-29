@@ -1,0 +1,10 @@
+from rdkit import Chem
+from rdkit.Chem import rdMolAlign
+
+ref = Chem.MolFromMolFile("ligando_cristal.sdf")
+poses = Chem.SDMolSupplier("poses_vina.sdf")
+for i, pose in enumerate(poses, start=1):
+    # CalcRMS no superpone y considera la simetría del ligando
+    r = rdMolAlign.CalcRMS(pose, ref)
+    ok = "correcta" if r < 2.0 else "incorrecta"
+    print(f"pose {i}: RMSD = {r:5.2f} A  ({ok})")

@@ -1,0 +1,62 @@
+[hwe-equilibrio] obs=(298, 489, 213) pA=0.5425 esperados=294.3,496.4,209.3 chi2=0.221 p=0.638 F=0.015
+[hwe-deficit] obs=(350, 380, 270) pA=0.5400 esperados=291.6,496.8,211.6 chi2=55.274 p=1.05e-13 F=0.235
+[hwe-exacta] n=100 AA=91 Aa=7 aa=2: q=0.055 esperados=89.30,10.40,0.30 chi2=10.667 p_chi2=0.00109 p_exacta=0.0235
+[hwe-exacta] P(nAB) = 1:0.0000, 3:0.0000, 5:0.0009, 7:0.0226, 9:0.2285, 11:0.7480
+[genealogia] semilla=48 p_t=0.500,0.500,0.375,0.625,0.625,0.875,0.875,0.875,1.000,1.000 linajes=1,1,1,2,2,3,5,5,5,8
+[wf] N=10: fracción de réplicas absorbidas a t=200: 1.000
+[wf] N=50: fracción de réplicas absorbidas a t=200: 0.794
+[wf] N=250: fracción de réplicas absorbidas a t=200: 0.081
+[het] N=10: H_50 sim=0.0378 teoria=0.0385
+[het] N=25: H_50 sim=0.1818 teoria=0.1821
+[het] N=100: H_50 sim=0.3886 teoria=0.3892
+[het] ejemplo N=50, t=100: H/H0=0.3660, H=0.1830; vida media t1/2=69.3 (exacta 69.0)
+[fijacion] N=50 p0=0.5: E[T] teoría=138.6, sim=135.9; nueva mutación fijada: 4N=200
+[difusion] N=50 t=5: P(perdido)=0.000 P(fijado)=0.000 Var=0.0122 teoria Var=0.0123
+[difusion] N=50 t=20: P(perdido)=0.003 P(fijado)=0.003 Var=0.0455 teoria Var=0.0455
+[difusion] N=50 t=50: P(perdido)=0.072 P(fijado)=0.074 Var=0.0990 teoria Var=0.0987
+[difusion] N=50 t=100: P(perdido)=0.230 P(fijado)=0.232 Var=0.1581 teoria Var=0.1585
+[fijacion-sel] N=50 p0=0.1 (4Ns, u_sim): -3.00 0.0190; -2.00 0.0367; -1.00 0.0603; -0.50 0.0770; 0.00 0.1020; 0.50 0.1227; 1.00 0.1503; 2.00 0.2070; 3.00 0.2590; 4.00 0.3363; 6.00 0.4660; 8.00 0.5393
+[fijacion-sel] teoria 4Ns=0: u=0.1000
+[fijacion-sel] teoria 4Ns=2: u=0.2096
+[fijacion-sel] teoria 4Ns=8: u=0.5509
+[kimura] N=1e4 s=0.01 p=1/2N: u=0.01980 (aprox 2s=0.02); neutral 1/2N=5.0e-05
+[coalescente] n=2: E[T_MRCA]=4N(1-1/n) = 2.000 N; E[L]=4N*sum 1/i = 4.000 N
+[coalescente] n=10: E[T_MRCA]=4N(1-1/n) = 3.600 N; E[L]=4N*sum 1/i = 11.316 N
+[coalescente] n=100: E[T_MRCA]=4N(1-1/n) = 3.960 N; E[L]=4N*sum 1/i = 20.710 N
+[ld-ejemplo] pA=0.60 pB=0.55 D=0.1700 Dmax=0.2200 D'=0.7727 r2=0.4865 check=0.1700
+[ld-decay] c=0.5 t=5: (1-c)^t=0.0312
+[ld-decay] c=0.01 t=50: (1-c)^t=0.6050
+[ld-decay] c=0.001 t=100: (1-c)^t=0.9048
+[ld-sved] Ne=1e+03 d=1e+04: E[r2]=0.7143
+[ld-sved] Ne=1e+03 d=1e+05: E[r2]=0.2000
+[ld-sved] Ne=1e+04 d=1e+04: E[r2]=0.2000
+[ld-sved] Ne=1e+04 d=1e+05: E[r2]=0.0244
+[ld-sim] SNPs=41 haplotipos=600 r2 medio=0.097 D' medio=0.401
+[pca] n=450 M=5998 autovalores top5=13.56,6.51,1.59,1.58,1.57 var.expl PC1=0.0296 PC2=0.0142
+[pca] correlación entre fracción de ancestría A y PC2 en mezclados: 0.980
+[fst] WC84: A-B=0.0198 A-C=0.0401 B-C=0.0398
+[estrat] n=2000 M=10000: lambda ingenuo=1.862 lambda con 2 PCs=0.983; chi2 mediana teórica=0.4549
+[estrat] significativos p<5e-8: ingenuo=3 (causales 3), PCs=2 (causales 2); p<1e-3 ingenuo=148 PCs=18 (esperado 10)
+[estrat] corr(PC1, población)=0.997
+[manhattan] M=89999 lambda=1.009 p<5e-8: 35 SNPs en 6 loci-cromosomas; p<1e-5: 57; min p=1.42e-32; Bonferroni(M)=5.56e-07
+[manhattan] cromosomas con señal significativa: [2, 3, 6, 9, 11, 16]
+[manhattan] chr2: min p=6.05e-22 mu=8.8
+[manhattan] chr3: min p=2.71e-08 mu=4.8
+[manhattan] chr6: min p=1.42e-32 mu=12.5
+[manhattan] chr9: min p=1.26e-12 mu=7.1
+[manhattan] chr11: min p=1.32e-12 mu=6.2
+[manhattan] chr12: min p=1.35e-06 mu=5.1
+[manhattan] chr16: min p=2.91e-15 mu=7.8
+[manhattan] chr19: min p=9.84e-07 mu=5.5
+[bh] m=200 verdaderos=20: Bonferroni=5 (falsos 0); BH=8 (falsos 0); p<0.05 sin corregir=25 (falsos 7)
+[bh-ejemplo] umbrales: 0.005, 0.010, 0.015, 0.020, 0.025, 0.030, 0.035, 0.040, 0.045, 0.050; kmax=6; bonferroni=4
+[bonferroni] 0.05/1e6=5.0e-08; P(ningún FP) 1e6 tests a 0.05: esperados FP=50000
+[potencia] umbral chi2(5e-8)=29.72
+[potencia] n=10000 q2=0.001: ncp=10.0 potencia=0.011
+[potencia] n=50000 q2=0.001: ncp=50.1 potencia=0.948
+[potencia] n=100000 q2=0.0005: ncp=50.0 potencia=0.948
+[potencia] n=500000 q2=0.0005: ncp=250.1 potencia=1.000
+[potencia] n para 80% con q2=0.0005: 79,162
+[potencia] n para 80% con q2=0.001: 39,561
+[q2] p=0.3 beta=0.05 DE: q2=2p(1-p)b^2=0.00105
+[q2] p=0.1 beta=0.1 DE: q2=2p(1-p)b^2=0.00180

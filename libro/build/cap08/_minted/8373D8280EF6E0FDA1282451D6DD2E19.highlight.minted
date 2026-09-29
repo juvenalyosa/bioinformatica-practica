@@ -1,0 +1,19 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{nx}\PYG{p}{(}\PYG{n}{longitudes}\PYG{p}{,} \PYG{n}{x}\PYG{o}{=}\PYG{l+m+mi}{50}\PYG{p}{,} \PYG{n}{G}\PYG{o}{=}\PYG{k+kc}{None}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Devuelve (Nx, Lx); con G, (NGx, LGx).\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{ls} \PYG{o}{=} \PYG{n+nb}{sorted}\PYG{p}{(}\PYG{n}{longitudes}\PYG{p}{,} \PYG{n}{reverse}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
+    \PYG{n}{meta} \PYG{o}{=} \PYG{n}{x} \PYG{o}{/} \PYG{l+m+mi}{100} \PYG{o}{*} \PYG{p}{(}\PYG{n}{G} \PYG{k}{if} \PYG{n}{G} \PYG{k}{else} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{ls}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{acum} \PYG{o}{=} \PYG{l+m+mi}{0}
+    \PYG{k}{for} \PYG{n}{i}\PYG{p}{,} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n+nb}{enumerate}\PYG{p}{(}\PYG{n}{ls}\PYG{p}{,} \PYG{n}{start}\PYG{o}{=}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+        \PYG{n}{acum} \PYG{o}{+}\PYG{o}{=} \PYG{n}{l}
+        \PYG{k}{if} \PYG{n}{acum} \PYG{o}{\PYGZgt{}}\PYG{o}{=} \PYG{n}{meta}\PYG{p}{:}
+            \PYG{k}{return} \PYG{n}{l}\PYG{p}{,} \PYG{n}{i}
+    \PYG{k}{return} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{k+kc}{None}           \PYG{c+c1}{\PYGZsh{} el ensamblaje no alcanza x\PYGZpc{} de G}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{auN}\PYG{p}{(}\PYG{n}{longitudes}\PYG{p}{)}\PYG{p}{:}
+    \PYG{k}{return} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{l} \PYG{o}{*} \PYG{n}{l} \PYG{k}{for} \PYG{n}{l} \PYG{o+ow}{in} \PYG{n}{longitudes}\PYG{p}{)} \PYG{o}{/} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{longitudes}\PYG{p}{)}
+
+\PYG{n}{contigs} \PYG{o}{=} \PYG{p}{[}\PYG{l+m+mi}{320}\PYG{p}{,} \PYG{l+m+mi}{250}\PYG{p}{,} \PYG{l+m+mi}{180}\PYG{p}{,} \PYG{l+m+mi}{120}\PYG{p}{,} \PYG{l+m+mi}{90}\PYG{p}{,} \PYG{l+m+mi}{60}\PYG{p}{,} \PYG{l+m+mi}{40}\PYG{p}{,} \PYG{l+m+mi}{25}\PYG{p}{,} \PYG{l+m+mi}{10}\PYG{p}{,} \PYG{l+m+mi}{5}\PYG{p}{]}   \PYG{c+c1}{\PYGZsh{} kb}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{nx}\PYG{p}{(}\PYG{n}{contigs}\PYG{p}{)}\PYG{p}{,} \PYG{n}{nx}\PYG{p}{(}\PYG{n}{contigs}\PYG{p}{,} \PYG{n}{G}\PYG{o}{=}\PYG{l+m+mi}{1300}\PYG{p}{)}\PYG{p}{,} \PYG{n+nb}{round}\PYG{p}{(}\PYG{n}{auN}\PYG{p}{(}\PYG{n}{contigs}\PYG{p}{)}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{} (250, 2) (180, 3) 205.2}
+\end{MintedVerbatim}

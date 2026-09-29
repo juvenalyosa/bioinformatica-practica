@@ -1,0 +1,9 @@
+# 1. Control de calidad de variantes e individuos
+plink2 --bfile crudo --geno 0.02 --mind 0.02 --maf 0.01 \
+       --hwe 1e-6 --make-bed --out qc
+# 2. Podar por LD y calcular 10 componentes principales
+plink2 --bfile qc --indep-pairwise 200 50 0.2 --out podado
+plink2 --bfile qc --extract podado.prune.in --pca 10 --out pcs
+# 3. Asociación con las PCs como covariables
+plink2 --bfile qc --pheno fenotipo.txt --covar pcs.eigenvec \
+       --glm hide-covar --out gwas

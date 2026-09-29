@@ -1,0 +1,29 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{collections}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{defaultdict}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{de\PYGZus{}bruijn}\PYG{p}{(}\PYG{n}{lecturas}\PYG{p}{,} \PYG{n}{k}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Nodos: (k\PYGZhy{}1)\PYGZhy{}mers; una arista u\PYGZhy{}\PYGZgt{}v por cada k\PYGZhy{}mer.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{g} \PYG{o}{=} \PYG{n}{defaultdict}\PYG{p}{(}\PYG{n+nb}{list}\PYG{p}{)}
+    \PYG{k}{for} \PYG{n}{s} \PYG{o+ow}{in} \PYG{n}{lecturas}\PYG{p}{:}
+        \PYG{k}{for} \PYG{n}{i} \PYG{o+ow}{in} \PYG{n+nb}{range}\PYG{p}{(}\PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{s}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{n}{k} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{:}
+            \PYG{n}{g}\PYG{p}{[}\PYG{n}{s}\PYG{p}{[}\PYG{n}{i}\PYG{p}{:}\PYG{n}{i} \PYG{o}{+} \PYG{n}{k} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{]}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{s}\PYG{p}{[}\PYG{n}{i} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{:}\PYG{n}{i} \PYG{o}{+} \PYG{n}{k}\PYG{p}{]}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{g}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{camino\PYGZus{}euleriano}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,} \PYG{n}{inicio}\PYG{p}{)}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Algoritmo de Hierholzer, O(|E|).\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{g} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{n}{u}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{(}\PYG{n}{v}\PYG{p}{)} \PYG{k}{for} \PYG{n}{u}\PYG{p}{,} \PYG{n}{v} \PYG{o+ow}{in} \PYG{n}{g}\PYG{o}{.}\PYG{n}{items}\PYG{p}{(}\PYG{p}{)}\PYG{p}{\PYGZcb{}}   \PYG{c+c1}{\PYGZsh{} copia consumible}
+    \PYG{n}{pila}\PYG{p}{,} \PYG{n}{camino} \PYG{o}{=} \PYG{p}{[}\PYG{n}{inicio}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{p}{]}
+    \PYG{k}{while} \PYG{n}{pila}\PYG{p}{:}
+        \PYG{n}{u} \PYG{o}{=} \PYG{n}{pila}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]}
+        \PYG{k}{if} \PYG{n}{g}\PYG{o}{.}\PYG{n}{get}\PYG{p}{(}\PYG{n}{u}\PYG{p}{)}\PYG{p}{:}                  \PYG{c+c1}{\PYGZsh{} quedan aristas sin usar}
+            \PYG{n}{pila}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{g}\PYG{p}{[}\PYG{n}{u}\PYG{p}{]}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+        \PYG{k}{else}\PYG{p}{:}                         \PYG{c+c1}{\PYGZsh{} callejón: fijar el nodo}
+            \PYG{n}{camino}\PYG{o}{.}\PYG{n}{append}\PYG{p}{(}\PYG{n}{pila}\PYG{o}{.}\PYG{n}{pop}\PYG{p}{(}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{camino}\PYG{o}{.}\PYG{n}{reverse}\PYG{p}{(}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n}{camino}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]} \PYG{o}{+} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{v}\PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1}\PYG{p}{]} \PYG{k}{for} \PYG{n}{v} \PYG{o+ow}{in} \PYG{n}{camino}\PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{:}\PYG{p}{]}\PYG{p}{)}
+
+\PYG{n}{g} \PYG{o}{=} \PYG{n}{de\PYGZus{}bruijn}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAGGTTGCAGAAGGA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{4}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{camino\PYGZus{}euleriano}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}    \PYG{c+c1}{\PYGZsh{} CAGAAGGTTGCAGGA  (quimera)}
+\PYG{n}{g} \PYG{o}{=} \PYG{n}{de\PYGZus{}bruijn}\PYG{p}{(}\PYG{p}{[}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAGGTTGCAGAAGGA}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{]}\PYG{p}{,} \PYG{n}{k}\PYG{o}{=}\PYG{l+m+mi}{5}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{camino\PYGZus{}euleriano}\PYG{p}{(}\PYG{n}{g}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{CAGG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}   \PYG{c+c1}{\PYGZsh{} CAGGTTGCAGAAGGA  (correcto)}
+\end{MintedVerbatim}

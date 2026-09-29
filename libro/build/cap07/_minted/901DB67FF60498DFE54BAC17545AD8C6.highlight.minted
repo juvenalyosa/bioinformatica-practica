@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} BWA\PYGZhy{}MEM: índice FM (una sola vez) y mapeo de lecturas pareadas}
+bwa\PYG{+w}{ }index\PYG{+w}{ }ref.fa
+bwa\PYG{+w}{ }mem\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }\PYGZhy{}R\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}@RG\PYGZbs{}tID:m1\PYGZbs{}tSM:m1\PYGZsq{}}\PYG{+w}{ }ref.fa\PYG{+w}{ }r1.fq.gz\PYG{+w}{ }r2.fq.gz\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{    }\PYGZgt{}\PYG{+w}{ }m1.sam
+\PYG{c+c1}{\PYGZsh{} minimap2: índice de minimizadores al vuelo (o guardado con \PYGZhy{}d)}
+minimap2\PYG{+w}{ }\PYGZhy{}ax\PYG{+w}{ }sr\PYG{+w}{     }ref.fa\PYG{+w}{ }r1.fq.gz\PYG{+w}{ }r2.fq.gz\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }m1\PYGZus{}sr.sam
+minimap2\PYG{+w}{ }\PYGZhy{}ax\PYG{+w}{ }map\PYGZhy{}ont\PYG{+w}{ }ref.fa\PYG{+w}{ }nanoporo.fq.gz\PYG{+w}{   }\PYGZgt{}\PYG{+w}{ }m1\PYGZus{}ont.sam
+\end{MintedVerbatim}

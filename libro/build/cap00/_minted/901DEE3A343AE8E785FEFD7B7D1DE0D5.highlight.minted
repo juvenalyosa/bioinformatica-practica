@@ -1,3 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{n}{seq}\PYG{p}{[}\PYG{n}{start}\PYG{p}{:}\PYG{n}{end}\PYG{p}{]}\PYG{o}{.}\PYG{n}{translate}\PYG{p}{(}\PYG{n}{to\PYGZus{}stop}\PYG{o}{=}\PYG{k+kc}{True}\PYG{p}{)}
-\end{MintedVerbatim}
