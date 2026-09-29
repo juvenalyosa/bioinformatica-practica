@@ -1,6 +1,10 @@
 # 🧬 Bioinformática Práctica
 
-Curso de **bioinformática práctica para maestría**, en español. Cada lección es un notebook de Google Colab que funciona como una **clase completa**: primero una analogía sencilla, luego la teoría formal (ecuaciones explicadas término a término) y los **experimentos computacionales ahí mismo**, con figuras y animaciones de calidad de publicación.
+[![Copiloto: Claude](https://img.shields.io/badge/Copiloto-Claude-D97757?logo=claude&logoColor=white)](https://claude.ai) [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-2a78d6.svg)](LICENSE)
+
+👤 **Juvenal Yosa, PhD** · ✉️ [juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com) · 🤖 Copiloto: **Claude** (Anthropic)
+
+Curso de **bioinformática práctica para maestría**, en español. Cada lección es un notebook de Google Colab que funciona como una **clase completa**: primero una explicación intuitiva con ejemplos cotidianos, luego la teoría formal (ecuaciones explicadas término a término) y los **experimentos computacionales ahí mismo**, con figuras, animaciones y gráficos interactivos de calidad de publicación.
 
 * **Idioma:** explicaciones en español; código y términos técnicos en inglés (como en la literatura).
 * **Requisitos:** un navegador y una cuenta de Google. Todo corre en Colab gratuito.
@@ -138,3 +142,8 @@ bioinformatica-practica/
 ## 🎨 Estilo gráfico
 
 Todas las figuras usan `utils/estilo_curso.py`: paleta categórica en orden fijo validada para daltonismo, colores de nucleótidos convencionales (siempre acompañados de su letra), títulos que enuncian la conclusión y animaciones HTML que se reproducen dentro del notebook.
+
+## 📄 Licencia y autoría
+
+© 2026 **Juvenal Yosa, PhD** ([juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com)). Código bajo [licencia MIT](LICENSE).
+Material desarrollado con **Claude** (Anthropic) como copiloto.

@@ -1,6 +1,9 @@
 """
 estilo_curso.py — Estilo gráfico común del curso *Bioinformática Práctica*.
 
+Autor: Juvenal Yosa, PhD (juvenal.yosa@gmail.com) · Copiloto: Claude (Anthropic)
+Licencia: MIT
+
 Uso en cualquier notebook:
 
     import estilo_curso as ec
@@ -201,14 +204,23 @@ def nuc_colors(seq: str) -> list[str]:
     return [NUC_COLORS.get(b.upper(), MUTED) for b in seq]
 
 
-def animate(fig, update, frames, interval: int = 120, **kwargs):
+def animate(fig, update, frames, interval: int = 120, name: str | None = None, **kwargs):
     """
     Crea una animación que se reproduce dentro del notebook (HTML + JavaScript,
     no requiere ffmpeg). Mantenga frames <= ~60 para que el notebook no pese mucho.
+
+    Si se da `name` y existe la variable de entorno COURSE_ASSETS, además se guarda
+    un GIF (vista previa que se muestra en GitHub y en las celdas de texto).
     """
+    import os
     from IPython.display import HTML
     anim = animation.FuncAnimation(fig, update, frames=frames,
                                    interval=interval, **kwargs)
+    assets = os.environ.get("COURSE_ASSETS")
+    if name and assets:
+        os.makedirs(assets, exist_ok=True)
+        anim.save(os.path.join(assets, f"{name}.gif"),
+                  writer=animation.PillowWriter(fps=max(1, round(1000 / interval))), dpi=72)
     with mpl.rc_context({"savefig.dpi": 96}):      # cuadros livianos: el notebook no se vuelve pesado
         html = HTML(anim.to_jshtml(default_mode="once"))
     plt.close(fig)
