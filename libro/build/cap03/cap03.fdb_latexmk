@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber build/cap03/cap03"] 1790710695.72587 "build/cap03/cap03.bcf" "build/cap03/cap03.bbl" "build/cap03/cap03" 1790711474.57169 0
+["biber build/cap03/cap03"] 1790710695.72587 "build/cap03/cap03.bcf" "build/cap03/cap03.bbl" "build/cap03/cap03" 1790723871.77658 0
   "bib/cap03.bib" 1790710612.52211 7851 69ce1e471254e4525ae01234e55c861f ""
-  "build/cap03/cap03.bcf" 1790711473.68123 137392 dc43fee60434c28a624893f5422aa905 "lualatex"
+  "build/cap03/cap03.bcf" 1790723871.44157 137392 dc43fee60434c28a624893f5422aa905 "lualatex"
   (generated)
   "build/cap03/cap03.bbl"
   "build/cap03/cap03.blg"
   (rewritten before read)
-["lualatex"] 1790711453.6431 "build/cap03/cap03.tex" "build/cap03/cap03.pdf" "cap03" 1790711474.57205 0
+["lualatex"] 1790723865.23628 "build/cap03/cap03.tex" "build/cap03/cap03.pdf" "cap03" 1790723871.77684 0
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-medium.luc" 1790710272.77064 182725 27224749d640afb9be6cc6ad0752cf03 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-oblique.luc" 1790710272.83123 183636 3ed5ba597b0bed3ded643a35a1bc14a4 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-regular.luc" 1790710272.6472 182438 f241801388deb6dbd1843a704584a568 ""
@@ -38,7 +38,6 @@
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Medium.otf" 1559682857 135288 569225d42ea3ab6cece7bf97bcb45f21 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Oblique.otf" 1591477838 201440 696f1425a0d3f4d719f48824dd5ae2d3 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Regular.otf" 1559682857 134144 0dbe9b0c7c283d9ade3352c00f2fc3db ""
-  "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Brands-Regular-400.otf" 1651520503 183524 4e4e091c8163681db1b0891d5ece3926 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Free-Solid-900.otf" 1651520503 303808 739de9ca58fff4c828629df35cb81f89 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf" 1727726590 588848 85516be07e4691c1817fa657a3ec9349 ""
   "/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Italic.otf" 1727726590 332312 036b70a3bcfd7a85baed51353d06f3f3 ""
@@ -459,18 +458,18 @@
   "/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1751052191 5467155 19efa205003f9ecad95fbbaa6ff24da1 ""
   "/usr/local/texlive/2025/texmf-var/tex/generic/config/language.dat" 1741450487 6800 9c9ef492eea78dd7e00ee60aa47828ff ""
   "/usr/local/texlive/2025/texmf-var/web2c/luahbtex/lualatex.fmt" 1751052158 5582764 444635198e0194695a11d59da2d0e7ad ""
-  "build/cap03/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted" 1790710355.99682 153 a112911d35f3ff5f7b1af5d21e9a53f7 ""
-  "build/cap03/_minted/39B77A8D2597EEE0D6C9C0CCFA829BF2.highlight.minted" 1790710355.99547 3407 69dd9d57d1c10d3d69f8dfe28d2e172d ""
-  "build/cap03/_minted/8BBC87ECF22D703148B0F260BE4B9C3B.highlight.minted" 1790710355.99121 2919 e9b57e6afc10b337604b867308955aa1 ""
-  "build/cap03/_minted/D8E7F5BEC28183C6CCBE7890AA68A0CD.highlight.minted" 1790710355.98656 2276 0b519043f64094feddfeb4c318f9c972 ""
-  "build/cap03/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted" 1790710355.99854 186 a7c7dc4ba9f70f5d310820dd54e44439 ""
+  "build/cap03/_minted/5AA0E90BF64EBE40CCE53D50F7A9114C.highlight.minted" 1790723864.47275 132 b505c888f35293ea41af183dec937f0f ""
+  "build/cap03/_minted/5AB595FA0408732FF710911B70390FEA.highlight.minted" 1790723861.90252 2865 613f1863e4c4e97d7eb6ed6635454932 ""
+  "build/cap03/_minted/6F8A1EDE7BEEE0542641B6EDCBFEB009.highlight.minted" 1790723863.84291 3353 725c6664076d6c4f4434097b9576651f ""
+  "build/cap03/_minted/C4C8EF0263EC356020EF189BB2D8DA4F.highlight.minted" 1790723860.96951 2222 d065d99661411e366976f2439fa1605b ""
+  "build/cap03/_minted/FCD0E571D71E11828D61237DB0F44534.highlight.minted" 1790723864.21919 99 63d5fafa8b9e013c0b21b6aa71f862a5 ""
   "build/cap03/_minted/friendly.style.minted" 1790710355.94591 6511 10ee1c54a45212a1fd1d9825a4cd8b6a ""
-  "build/cap03/cap03.aux" 1790711473.62952 20009 318c8ae91ef6e09da3c3b9003e73bf5b "lualatex"
+  "build/cap03/cap03.aux" 1790723871.42505 20051 4d5f92715940ea42d517972cd4130491 "lualatex"
   "build/cap03/cap03.bbl" 1790710698.01088 89320 0617df187dc0c3fe278ce9de3538dab4 "biber build/cap03/cap03"
-  "build/cap03/cap03.run.xml" 1790711473.68211 2400 84ab1c5d152a82b1e3b81ba510b4f923 "lualatex"
-  "build/cap03/cap03.tex" 1790711430.81494 182 9509e8fe45d17c29c36085e098211f7a ""
-  "capitulos/cap03.tex" 1790710612.52224 39196 6eefc73867a9d4fe6af7fe6d9a619fdb ""
-  "estilo/bioinfo.sty" 1790711415.29854 22641 9b6347383786285b5a0caa5e3be6a64b ""
+  "build/cap03/cap03.run.xml" 1790723871.44214 2400 84ab1c5d152a82b1e3b81ba510b4f923 "lualatex"
+  "build/cap03/cap03.tex" 1790723856.98314 182 9509e8fe45d17c29c36085e098211f7a ""
+  "capitulos/cap03.tex" 1790723124.73595 39428 7b81455b591273e9a5b65e8de1312b1e ""
+  "estilo/bioinfo.sty" 1790723856.97235 22690 098328e6ee660453c114a758102ccdcf ""
   "figuras/cap03/blosum62.tex" 1790710314.87257 51091 53eb5a5684bb3353bf206ea405f36036 ""
   "figuras/cap03/dotplot.tex" 1790710314.87078 6233 2ce1a086aa19edf0a0656b3744da824a ""
   "figuras/cap03/nw_matriz.tex" 1790710314.86966 9548 524dfb16e3fafc351465fffda6de3577 ""

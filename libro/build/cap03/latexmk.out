@@ -4,8 +4,10 @@ Latexmk: This is Latexmk, John Collins, 27 Dec. 2024. Version 4.86a.
 Latexmk: applying rule 'lualatex'...
 Rule 'lualatex':  Reasons for rerun
 Changed files or newly in use/created:
+  capitulos/cap03.tex
   estilo/bioinfo.sty
 Category 'changed_user':
+  capitulos/cap03.tex
   estilo/bioinfo.sty
 
 ------------
@@ -561,49 +563,40 @@ Capítulo 3.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-msb.cfg)
 [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-TU-empty.cfg)
-Underfull \vbox (badness 4634) has occurred while \output is active
 [2]
 [3] (./figuras/cap03/dotplot.tex)
 (./build/cap03/_BAA5337E9FBA6CCFD3B2B60EDB4FB472.config.minted)
 (./build/cap03/_minted/friendly.style.minted)
-(./build/cap03/_minted/D8E7F5BEC28183C6CCBE7890AA68A0CD.highlight.minted)
-Underfull \vbox (badness 3417) has occurred while \output is active
+(./build/cap03/_minted/C4C8EF0263EC356020EF189BB2D8DA4F.highlight.minted)
 [4]
 [5]
 [6] (./figuras/cap03/nw_matriz.tex)
-Underfull \vbox (badness 1755) has occurred while \output is active
-[7] (./build/cap03/_minted/8BBC87ECF22D703148B0F260BE4B9C3B.highlight.minted)
+[7] (./build/cap03/_minted/5AB595FA0408732FF710911B70390FEA.highlight.minted)
 [8]
 [9]
 
 LaTeX Warning: Reference `cap:04' on page 1 undefined on input line 235.
 
 
-Underfull \vbox (badness 1112) has occurred while \output is active
 [10]
-Underfull \vbox (badness 10000) has occurred while \output is active
 [11]
 [12] (./figuras/cap03/blosum62.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active
 [13]
-Underfull \vbox (badness 1281) has occurred while \output is active
 [14]
 Overfull \hbox (13.97198pt too wide) in paragraph at lines 353--354
  [][] 
 
 [15]
-Underfull \vbox (badness 10000) has occurred while \output is active
 [16]
 Underfull \hbox (badness 1688) in paragraph at lines 412--412
 [][][]|\TU/SourceSansPro(0)/m/n/10 El va-lor $\TU/LibertinusMath-Regular.otf(1)
 /m/n/10 𝐸$ \TU/SourceSansPro(0)/m/n/10 de-cre-ce ex-po-nen-cial-men-te con l
 a pun-tua-ción en bits ([]ecua-
 
-[17] (./build/cap03/_minted/39B77A8D2597EEE0D6C9C0CCFA829BF2.highlight.minted)
+[17] (./build/cap03/_minted/6F8A1EDE7BEEE0542641B6EDCBFEB009.highlight.minted)
 [18]
-Underfull \vbox (badness 6236) has occurred while \output is active
-[19] (./build/cap03/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted)
-(./build/cap03/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted)
+[19] (./build/cap03/_minted/FCD0E571D71E11828D61237DB0F44534.highlight.minted)
+(./build/cap03/_minted/5AA0E90BF64EBE40CCE53D50F7A9114C.highlight.minted)
 [20]
 [21])
 [22] (./build/cap03/cap03.aux)
@@ -619,7 +612,7 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
    31 hlist, 2 vlist, 14 rule, 2 glue, 4 kern, 1 glyph, 253 attribute, 81 glue_
 spec, 164 attribute_list, 2 write, 24 pdf_literal, 13 pdf_action, 24 pdf_colors
 tack nodes
-   avail lists: 1:36,2:36230,3:13168,4:1710,5:534,6:64,7:14947,8:69,9:6470,10:2
+   avail lists: 1:37,2:36230,3:13168,4:1710,5:534,6:64,7:14949,8:69,9:6470,10:2
 5,11:937
 </usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSa
 nsPro-SemiboldIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/
@@ -631,21 +624,20 @@ mf-dist/fonts/opentype/public/fira/FiraMono-Medium.otf></usr/local/texlive/2025
 rtinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/publi
 c/fira/FiraMono-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/
 public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/tex
-mf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Brands-Regular-400.otf><
-/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAweso
-me5Free-Solid-900.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/
-sourcesanspro/SourceSansPro-Black.otf></usr/local/texlive/2025/texmf-dist/fonts
-/opentype/public/libertinus-fonts/LibertinusSerif-Regular.otf></usr/local/texli
-ve/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regula
-r.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/So
-urceSansPro-RegularIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/ad
-obe/sourcesanspro/SourceSansPro-Regular.otf></usr/local/texlive/2025/texmf-dist
-/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Italic.otf></usr/local/
-texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Light.
-otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/Sour
-ceSansPro-Semibold.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe
-/sourcesanspro/SourceSansPro-ExtraLight.otf>
-Output written on cap03.pdf (22 pages, 228577 bytes).
+mf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Free-Solid-900.otf></usr
+/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro
+-Black.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus
+-fonts/LibertinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/op
+entype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2
+025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-RegularIt.otf><
+/usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSan
+sPro-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libe
+rtinus-fonts/LibertinusSerif-Italic.otf></usr/local/texlive/2025/texmf-dist/fon
+ts/opentype/adobe/sourcesanspro/SourceSansPro-Light.otf></usr/local/texlive/202
+5/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf></us
+r/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPr
+o-ExtraLight.otf>
+Output written on cap03.pdf (22 pages, 227384 bytes).
 Transcript written on cap03.log.
 Latexmk: Getting log file 'build/cap03/cap03.log'
 Latexmk: Examining 'build/cap03/cap03.fls'
@@ -1214,49 +1206,40 @@ Capítulo 3.
 (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-msb.cfg)
 [1{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
 (/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/mt-TU-empty.cfg)
-Underfull \vbox (badness 4634) has occurred while \output is active
 [2]
 [3] (./figuras/cap03/dotplot.tex)
 (./build/cap03/_BAA5337E9FBA6CCFD3B2B60EDB4FB472.config.minted)
 (./build/cap03/_minted/friendly.style.minted)
-(./build/cap03/_minted/D8E7F5BEC28183C6CCBE7890AA68A0CD.highlight.minted)
-Underfull \vbox (badness 3417) has occurred while \output is active
+(./build/cap03/_minted/C4C8EF0263EC356020EF189BB2D8DA4F.highlight.minted)
 [4]
 [5]
 [6] (./figuras/cap03/nw_matriz.tex)
-Underfull \vbox (badness 1755) has occurred while \output is active
-[7] (./build/cap03/_minted/8BBC87ECF22D703148B0F260BE4B9C3B.highlight.minted)
+[7] (./build/cap03/_minted/5AB595FA0408732FF710911B70390FEA.highlight.minted)
 [8]
 [9]
 
 LaTeX Warning: Reference `cap:04' on page 1 undefined on input line 235.
 
 
-Underfull \vbox (badness 1112) has occurred while \output is active
 [10]
-Underfull \vbox (badness 10000) has occurred while \output is active
 [11]
 [12] (./figuras/cap03/blosum62.tex)
-Underfull \vbox (badness 10000) has occurred while \output is active
 [13]
-Underfull \vbox (badness 1281) has occurred while \output is active
 [14]
 Overfull \hbox (13.97198pt too wide) in paragraph at lines 353--354
  [][] 
 
 [15]
-Underfull \vbox (badness 10000) has occurred while \output is active
 [16]
 Underfull \hbox (badness 1688) in paragraph at lines 412--412
 [][][]|\TU/SourceSansPro(0)/m/n/10 El va-lor $\TU/LibertinusMath-Regular.otf(1)
 /m/n/10 𝐸$ \TU/SourceSansPro(0)/m/n/10 de-cre-ce ex-po-nen-cial-men-te con l
 a pun-tua-ción en bits ([]ecua-
 
-[17] (./build/cap03/_minted/39B77A8D2597EEE0D6C9C0CCFA829BF2.highlight.minted)
+[17] (./build/cap03/_minted/6F8A1EDE7BEEE0542641B6EDCBFEB009.highlight.minted)
 [18]
-Underfull \vbox (badness 6236) has occurred while \output is active
-[19] (./build/cap03/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted)
-(./build/cap03/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted)
+[19] (./build/cap03/_minted/FCD0E571D71E11828D61237DB0F44534.highlight.minted)
+(./build/cap03/_minted/5AA0E90BF64EBE40CCE53D50F7A9114C.highlight.minted)
 [20]
 [21])
 [22] (./build/cap03/cap03.aux)
@@ -1269,7 +1252,7 @@ LaTeX Warning: There were undefined references.
    31 hlist, 2 vlist, 14 rule, 2 glue, 4 kern, 1 glyph, 253 attribute, 81 glue_
 spec, 164 attribute_list, 2 write, 24 pdf_literal, 13 pdf_action, 24 pdf_colors
 tack nodes
-   avail lists: 1:36,2:36230,3:13168,4:1710,5:534,6:64,7:14947,8:69,9:6470,10:2
+   avail lists: 1:37,2:36230,3:13168,4:1710,5:534,6:64,7:14949,8:69,9:6470,10:2
 5,11:937
 </usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSa
 nsPro-SemiboldIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/
@@ -1281,21 +1264,20 @@ mf-dist/fonts/opentype/public/fira/FiraMono-Medium.otf></usr/local/texlive/2025
 rtinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/publi
 c/fira/FiraMono-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/
 public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/tex
-mf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Brands-Regular-400.otf><
-/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAweso
-me5Free-Solid-900.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/
-sourcesanspro/SourceSansPro-Black.otf></usr/local/texlive/2025/texmf-dist/fonts
-/opentype/public/libertinus-fonts/LibertinusSerif-Regular.otf></usr/local/texli
-ve/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regula
-r.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/So
-urceSansPro-RegularIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/ad
-obe/sourcesanspro/SourceSansPro-Regular.otf></usr/local/texlive/2025/texmf-dist
-/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Italic.otf></usr/local/
-texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Light.
-otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/Sour
-ceSansPro-Semibold.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe
-/sourcesanspro/SourceSansPro-ExtraLight.otf>
-Output written on cap03.pdf (22 pages, 228577 bytes).
+mf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Free-Solid-900.otf></usr
+/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro
+-Black.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus
+-fonts/LibertinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/op
+entype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2
+025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-RegularIt.otf><
+/usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSan
+sPro-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libe
+rtinus-fonts/LibertinusSerif-Italic.otf></usr/local/texlive/2025/texmf-dist/fon
+ts/opentype/adobe/sourcesanspro/SourceSansPro-Light.otf></usr/local/texlive/202
+5/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf></us
+r/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPr
+o-ExtraLight.otf>
+Output written on cap03.pdf (22 pages, 227384 bytes).
 Transcript written on cap03.log.
 Latexmk: Getting log file 'build/cap03/cap03.log'
 Latexmk: Examining 'build/cap03/cap03.fls'

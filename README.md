@@ -62,9 +62,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 6 · Secuenciación de nueva generación (NGS)
 
-- 6.1 Tecnologías de secuenciación · *próximamente*
-- 6.2 Calidad Phred, control de calidad y trimming · *próximamente*
-- 6.3 Cobertura y la teoría de Lander-Waterman · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 6.1 | Tecnologías de secuenciación: Sanger, Illumina (SBS animada), Nanopore (squiggle) y PacBio HiFi | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-06-ngs/6.1_tecnologias_secuenciacion.ipynb) |
+| 6.2 | Control de calidad y limpieza de lecturas reales de *E. coli*: módulos FastQC desde cero, trimming y fastp | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-06-ngs/6.2_control_calidad_trimming.ipynb) |
+| 6.3 | Cobertura y la teoría de Lander-Waterman: Poisson, sesgo GC y planificación de experimentos | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-06-ngs/6.3_cobertura_lander_waterman.ipynb) |
 
 ### Módulo 7 · Mapeo de lecturas
 
@@ -149,6 +151,7 @@ bioinformatica-practica/
 ├── modulo-03-alineamiento/
 ├── modulo-04-msa-motivos-hmm/
 ├── modulo-05-filogenetica/
+├── modulo-06-ngs/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 01:09
+This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 01:29
  system commands enabled.
 **main.tex
 (./main.tex
@@ -2798,10 +2798,10 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (84.31575pt too wide) in paragraph at lines 14--16
+Overfull \hbox (10.22807pt too wide) in paragraph at lines 14--16
 []\TU/SourceSansPro(0)/b/n/10 La-bo-ra-to-rios: \TU/SourceSansPro(0)/m/n/10 ca-d
 a ca-pí-tu-lo tie-ne no-te-books de Goo-gle Co-lab en []\TU/FiraMono(0)/m/n/10
- github.com/juvenalyosa/bioinformatica-
+ github.com/juvenalyosa/
  []
 
 Package microtype Info: Loading generic protrusion settings for font family
@@ -2879,10 +2879,10 @@ Package cleveref Info: loaded `spanish' language definitions on input line 1.
 \pydata@fh@_FAD58DE7366495DB4650CFEFAC2FCD61.data.minted=\write7
 
 \openout7 = _FAD58DE7366495DB4650CFEFAC2FCD61.data.minted
-runsystem(latexminted config  --timestamp 20260930010954 FAD58DE7366495DB4650CFE
+runsystem(latexminted config  --timestamp 20260930012957 FAD58DE7366495DB4650CFE
 FAC2FCD61)...executed.
  (./build/libro/_FAD58DE7366495DB4650CFEFAC2FCD61.config.minted)
-runsystem(latexminted cleanconfig  --timestamp 20260930010954 FAD58DE7366495DB46
+runsystem(latexminted cleanconfig  --timestamp 20260930012957 FAD58DE7366495DB46
 50CFEFAC2FCD61)...executed.
 
 (./build/libro/_minted/friendly.style.minted)
@@ -5544,4 +5544,4564 @@ Package cleveref Info: loaded `spanish' language definitions on input line 868.
 Package pgfplots info on input line 876: Using 'lua backend=false' for axis: ym
 ode=log unsupported (yet).
 PGFPlots: reading {figuras/cap07/deteccion.dat}
-PGFPlots: reading {figuras/cap07/deteccion.d
+PGFPlots: reading {figuras/cap07/deteccion.dat}
+PGFPlots: reading {figuras/cap07/deteccion.dat}
+
+Overfull \hbox (3.80809pt too wide) in paragraph at lines 887--888
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 902.
+LaTeX Info: Redefining \% on input line 902.
+Package cleveref Info: loaded `spanish' language definitions on input line 902.
+
+[304] (./build/libro/_minted/ADACC188EFB25A2069D3C5E631230CCF.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 918.
+LaTeX Info: Redefining \% on input line 918.
+Package cleveref Info: loaded `spanish' language definitions on input line 918.
+
+[305]
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[306]
+Overfull \hbox (0.95782pt too wide) in paragraph at lines 928--928
+\TU/LibertinusSerif(0)/m/it/10 tatio-nal Bio-logy\TU/LibertinusSerif(0)/m/n/10 
+. Cam-brid-ge Uni-ver-sity Press. []$https : / / doi . org / 10 . 1017 / CBO9780
+511574931$[] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[307]
+
+LaTeX Info: Redefining \. on input line 928.
+LaTeX Info: Redefining \% on input line 928.
+Package cleveref Info: loaded `spanish' language definitions on input line 928.
+
+[308])
+
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
+Package cleveref Info: loaded `spanish' language definitions on input line 57.
+[309]
+\openout2 = capitulos/cap08.aux
+ (./capitulos/cap08.tex
+Package biblatex Info: Reference section=0 on input line 5.
+\blx@maxsegment@12=\count630
+\blx@sectionciteorder@12=\count631
+Package biblatex Info: Reference section=12 on input line 5.
+Package biblatex Info: Setting label 'refsection:12' on input line 5.
+
+
+[310
+
+
+
+
+]
+Capítulo 8.
+
+
+[311]
+LaTeX Font Info:    Calculating math sizes for size <17> on input line 25.
+
+
+LaTeX Info: Redefining \. on input line 31.
+LaTeX Info: Redefining \% on input line 31.
+Package cleveref Info: loaded `spanish' language definitions on input line 31.
+[312]
+
+LaTeX Info: Redefining \. on input line 51.
+LaTeX Info: Redefining \% on input line 51.
+Package cleveref Info: loaded `spanish' language definitions on input line 51.
+[313]
+
+LaTeX Info: Redefining \. on input line 110.
+LaTeX Info: Redefining \% on input line 110.
+Package cleveref Info: loaded `spanish' language definitions on input line 110.
+
+[314]
+
+LaTeX Info: Redefining \. on input line 120.
+LaTeX Info: Redefining \% on input line 120.
+Package cleveref Info: loaded `spanish' language definitions on input line 120.
+
+[315]
+
+LaTeX Info: Redefining \. on input line 143.
+LaTeX Info: Redefining \% on input line 143.
+Package cleveref Info: loaded `spanish' language definitions on input line 143.
+
+[316]
+
+LaTeX Info: Redefining \. on input line 170.
+LaTeX Info: Redefining \% on input line 170.
+Package cleveref Info: loaded `spanish' language definitions on input line 170.
+
+[317]
+
+LaTeX Info: Redefining \. on input line 193.
+LaTeX Info: Redefining \% on input line 193.
+Package cleveref Info: loaded `spanish' language definitions on input line 193.
+
+[318] (./figuras/cap08/espectro_param.tex)
+PGFPlots: reading {figuras/cap08/espectro.dat}
+PGFPlots: reading {figuras/cap08/espectro.dat}
+PGFPlots: reading {figuras/cap08/espectro.dat}
+PGFPlots: reading {figuras/cap08/espectro.dat}
+PGFPlots: reading {figuras/cap08/espectro.dat}
+
+Overfull \hbox (0.56628pt too wide) in paragraph at lines 230--232
+[]\TU/LibertinusSerif(0)/m/n/10.95 To-ma-mos el con-jun-to si-mu-la-do de la []
+fi-gu-ra 󰂿.󰀫[]. El con-teo pro-du-ce $\TU/LibertinusMath-Regular.otf(1)/b
+/n/10.95 34 666 580$
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 242.
+LaTeX Info: Redefining \% on input line 242.
+Package cleveref Info: loaded `spanish' language definitions on input line 242.
+
+[319]
+
+LaTeX Info: Redefining \. on input line 251.
+LaTeX Info: Redefining \% on input line 251.
+Package cleveref Info: loaded `spanish' language definitions on input line 251.
+
+[320]
+\openout6 = main.listing
+ (./build/libro/_minted/E80722780AFA8343DFC13576FA118EAA.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 279.
+LaTeX Info: Redefining \% on input line 279.
+Package cleveref Info: loaded `spanish' language definitions on input line 279.
+
+[321]
+\openout6 = main.listing
+ (./build/libro/_minted/3D0A785A4322C4F074FF2CCA763EEA58.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 313.
+LaTeX Info: Redefining \% on input line 313.
+Package cleveref Info: loaded `spanish' language definitions on input line 313.
+
+[322]
+PGFPlots: reading {figuras/cap08/kelec.dat}
+PGFPlots: reading {figuras/cap08/kelec.dat}
+PGFPlots: reading {figuras/cap08/kelec.dat}
+PGFPlots: reading {figuras/cap08/kelec.dat}
+PGFPlots: reading {figuras/cap08/kelec.dat}
+
+
+LaTeX Info: Redefining \. on input line 347.
+LaTeX Info: Redefining \% on input line 347.
+Package cleveref Info: loaded `spanish' language definitions on input line 347.
+
+[323]
+
+LaTeX Info: Redefining \. on input line 366.
+LaTeX Info: Redefining \% on input line 366.
+Package cleveref Info: loaded `spanish' language definitions on input line 366.
+
+[324]
+
+LaTeX Info: Redefining \. on input line 416.
+LaTeX Info: Redefining \% on input line 416.
+Package cleveref Info: loaded `spanish' language definitions on input line 416.
+
+[325]
+
+LaTeX Info: Redefining \. on input line 432.
+LaTeX Info: Redefining \% on input line 432.
+Package cleveref Info: loaded `spanish' language definitions on input line 432.
+
+[326]
+
+LaTeX Info: Redefining \. on input line 500.
+LaTeX Info: Redefining \% on input line 500.
+Package cleveref Info: loaded `spanish' language definitions on input line 500.
+
+[327]
+\openout6 = main.listing
+ (./build/libro/_minted/726A49105D7BC1E49AA28BDF42685C81.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 533.
+LaTeX Info: Redefining \% on input line 533.
+Package cleveref Info: loaded `spanish' language definitions on input line 533.
+
+[328]
+
+LaTeX Info: Redefining \. on input line 545.
+LaTeX Info: Redefining \% on input line 545.
+Package cleveref Info: loaded `spanish' language definitions on input line 545.
+
+[329]
+
+LaTeX Info: Redefining \. on input line 606.
+LaTeX Info: Redefining \% on input line 606.
+Package cleveref Info: loaded `spanish' language definitions on input line 606.
+
+[330]
+
+LaTeX Info: Redefining \. on input line 620.
+LaTeX Info: Redefining \% on input line 620.
+Package cleveref Info: loaded `spanish' language definitions on input line 620.
+
+[331]
+
+LaTeX Info: Redefining \. on input line 637.
+LaTeX Info: Redefining \% on input line 637.
+Package cleveref Info: loaded `spanish' language definitions on input line 637.
+
+[332]
+Package pgfplots info on input line 666: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap08/ausentes.dat}
+PGFPlots: reading {figuras/cap08/ausentes.dat}
+PGFPlots: reading {figuras/cap08/ausentes.dat}
+
+
+LaTeX Info: Redefining \. on input line 685.
+LaTeX Info: Redefining \% on input line 685.
+Package cleveref Info: loaded `spanish' language definitions on input line 685.
+
+[333]
+\openout6 = main.listing
+ (./build/libro/_minted/4613659ED13E745852AF62854ED788B9.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 726.
+LaTeX Info: Redefining \% on input line 726.
+Package cleveref Info: loaded `spanish' language definitions on input line 726.
+
+[334]
+
+LaTeX Info: Redefining \. on input line 733.
+LaTeX Info: Redefining \% on input line 733.
+Package cleveref Info: loaded `spanish' language definitions on input line 733.
+
+[335]
+
+LaTeX Info: Redefining \. on input line 753.
+LaTeX Info: Redefining \% on input line 753.
+Package cleveref Info: loaded `spanish' language definitions on input line 753.
+
+[336]
+
+LaTeX Info: Redefining \. on input line 782.
+LaTeX Info: Redefining \% on input line 782.
+Package cleveref Info: loaded `spanish' language definitions on input line 782.
+
+[337]
+\openout6 = main.listing
+ (./build/libro/_minted/A0B717148397379692B567B8C9236788.highlight.minted)
+Package pgfplots info on input line 811: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap08/nx.dat}
+PGFPlots: reading {figuras/cap08/nx.dat}
+PGFPlots: reading {figuras/cap08/nx.dat}
+NOTE: coordinate (97,0.00) has been dropped because it is unbounded (in y). (se
+e also unbounded coords=jump). 
+NOTE: coordinate (98,0.00) has been dropped because it is unbounded (in y). (se
+e also unbounded coords=jump). 
+NOTE: coordinate (99,0.00) has been dropped because it is unbounded (in y). (se
+e also unbounded coords=jump). 
+NOTE: coordinate (100,0.00) has been dropped because it is unbounded (in y). (s
+ee also unbounded coords=jump). 
+
+
+LaTeX Info: Redefining \. on input line 829.
+LaTeX Info: Redefining \% on input line 829.
+Package cleveref Info: loaded `spanish' language definitions on input line 829.
+
+[338]
+
+LaTeX Info: Redefining \. on input line 836.
+LaTeX Info: Redefining \% on input line 836.
+Package cleveref Info: loaded `spanish' language definitions on input line 836.
+
+[339]
+\openout6 = main.listing
+ (./build/libro/_minted/B8913E291FE4A81567005DEB1A71CC0D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 905.
+LaTeX Info: Redefining \% on input line 905.
+Package cleveref Info: loaded `spanish' language definitions on input line 905.
+
+[340]
+
+LaTeX Info: Redefining \. on input line 914.
+LaTeX Info: Redefining \% on input line 914.
+Package cleveref Info: loaded `spanish' language definitions on input line 914.
+
+[341]
+
+LaTeX Info: Redefining \. on input line 942.
+LaTeX Info: Redefining \% on input line 942.
+Package cleveref Info: loaded `spanish' language definitions on input line 942.
+
+[342]
+
+LaTeX Info: Redefining \. on input line 983.
+LaTeX Info: Redefining \% on input line 983.
+Package cleveref Info: loaded `spanish' language definitions on input line 983.
+
+[343]
+
+LaTeX Info: Redefining \. on input line 996.
+LaTeX Info: Redefining \% on input line 996.
+Package cleveref Info: loaded `spanish' language definitions on input line 996.
+
+[344]
+Package pgfplots info on input line 1003: Using 'lua backend=false' for axis: y
+mode=log unsupported (yet).
+PGFPlots: reading {figuras/cap08/orf_hist.dat}
+PGFPlots: reading {figuras/cap08/orf_hist.dat}
+PGFPlots: reading {figuras/cap08/orf_teo.dat}
+
+
+LaTeX Info: Redefining \. on input line 1028.
+LaTeX Info: Redefining \% on input line 1028.
+Package cleveref Info: loaded `spanish' language definitions on input line 1028
+.
+[345]
+PGFPlots: reading {figuras/cap08/orf_score.dat}
+PGFPlots: reading {figuras/cap08/orf_score.dat}
+
+
+LaTeX Info: Redefining \. on input line 1068.
+LaTeX Info: Redefining \% on input line 1068.
+Package cleveref Info: loaded `spanish' language definitions on input line 1068
+.
+[346]
+
+LaTeX Info: Redefining \. on input line 1076.
+LaTeX Info: Redefining \% on input line 1076.
+Package cleveref Info: loaded `spanish' language definitions on input line 1076
+.
+[347]
+
+LaTeX Info: Redefining \. on input line 1127.
+LaTeX Info: Redefining \% on input line 1127.
+Package cleveref Info: loaded `spanish' language definitions on input line 1127
+.
+[348]
+
+LaTeX Info: Redefining \. on input line 1131.
+LaTeX Info: Redefining \% on input line 1131.
+Package cleveref Info: loaded `spanish' language definitions on input line 1131
+.
+[349]
+\openout6 = main.listing
+ (./build/libro/_minted/80518FBD28417F3762DFBED07C4399ED.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1152.
+LaTeX Info: Redefining \% on input line 1152.
+Package cleveref Info: loaded `spanish' language definitions on input line 1152
+.
+[350]
+\openout6 = main.listing
+ (./build/libro/_minted/8A2CC8015E403CF7613C0AD7F6E45EF5.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1172.
+LaTeX Info: Redefining \% on input line 1172.
+Package cleveref Info: loaded `spanish' language definitions on input line 1172
+.
+[351]
+Overfull \hbox (0.11537pt too wide) in paragraph at lines 1175--1176
+ \TU/SourceSansPro(0)/m/n/12 HMM. En eu-ca-rio-tas, en-mas-ca-rar re-pe-ti-cio-n
+es y aña-dir evi-den- 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 1189.
+LaTeX Info: Redefining \% on input line 1189.
+Package cleveref Info: loaded `spanish' language definitions on input line 1189
+.
+[352]
+
+LaTeX Info: Redefining \. on input line 1199.
+LaTeX Info: Redefining \% on input line 1199.
+Package cleveref Info: loaded `spanish' language definitions on input line 1199
+.
+[353]
+
+LaTeX Info: Redefining \. on input line 1204.
+LaTeX Info: Redefining \% on input line 1204.
+Package cleveref Info: loaded `spanish' language definitions on input line 1204
+.
+[354]
+
+LaTeX Info: Redefining \. on input line 1204.
+LaTeX Info: Redefining \% on input line 1204.
+Package cleveref Info: loaded `spanish' language definitions on input line 1204
+.
+[355])
+
+LaTeX Info: Redefining \. on input line 58.
+LaTeX Info: Redefining \% on input line 58.
+Package cleveref Info: loaded `spanish' language definitions on input line 58.
+[356]
+\openout2 = capitulos/cap09.aux
+ (./capitulos/cap09.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@13=\count632
+\blx@sectionciteorder@13=\count633
+Package biblatex Info: Reference section=13 on input line 4.
+Package biblatex Info: Setting label 'refsection:13' on input line 4.
+
+Capítulo 9.
+
+
+[357
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 30.
+LaTeX Info: Redefining \% on input line 30.
+Package cleveref Info: loaded `spanish' language definitions on input line 30.
+[358]
+
+LaTeX Info: Redefining \. on input line 42.
+LaTeX Info: Redefining \% on input line 42.
+Package cleveref Info: loaded `spanish' language definitions on input line 42.
+[359]
+
+LaTeX Info: Redefining \. on input line 136.
+LaTeX Info: Redefining \% on input line 136.
+Package cleveref Info: loaded `spanish' language definitions on input line 136.
+
+[360]
+
+LaTeX Info: Redefining \. on input line 147.
+LaTeX Info: Redefining \% on input line 147.
+Package cleveref Info: loaded `spanish' language definitions on input line 147.
+
+[361]
+
+LaTeX Info: Redefining \. on input line 186.
+LaTeX Info: Redefining \% on input line 186.
+Package cleveref Info: loaded `spanish' language definitions on input line 186.
+
+[362]
+
+LaTeX Info: Redefining \. on input line 208.
+LaTeX Info: Redefining \% on input line 208.
+Package cleveref Info: loaded `spanish' language definitions on input line 208.
+
+[363]
+
+LaTeX Info: Redefining \. on input line 242.
+LaTeX Info: Redefining \% on input line 242.
+Package cleveref Info: loaded `spanish' language definitions on input line 242.
+
+[364]
+PGFPlots: reading {figuras/cap09/lik_acum.dat}
+PGFPlots: reading {figuras/cap09/lik_acum.dat}
+PGFPlots: reading {figuras/cap09/lik_acum.dat}
+PGFPlots: reading {figuras/cap09/p_het.dat}
+PGFPlots: reading {figuras/cap09/p_het.dat}
+PGFPlots: reading {figuras/cap09/p_het.dat}
+
+Overfull \hbox (2.84769pt too wide) in paragraph at lines 266--267
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 278.
+LaTeX Info: Redefining \% on input line 278.
+Package cleveref Info: loaded `spanish' language definitions on input line 278.
+
+[365]
+
+LaTeX Info: Redefining \. on input line 287.
+LaTeX Info: Redefining \% on input line 287.
+Package cleveref Info: loaded `spanish' language definitions on input line 287.
+
+[366]
+
+LaTeX Info: Redefining \. on input line 319.
+LaTeX Info: Redefining \% on input line 319.
+Package cleveref Info: loaded `spanish' language definitions on input line 319.
+
+[367]
+
+LaTeX Info: Redefining \. on input line 340.
+LaTeX Info: Redefining \% on input line 340.
+Package cleveref Info: loaded `spanish' language definitions on input line 340.
+
+[368]
+PGFPlots: reading {figuras/cap09/post_k.dat}
+PGFPlots: reading {figuras/cap09/post_k.dat}
+PGFPlots: reading {figuras/cap09/post_k.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/AEBF4A53AF2EB3A1E5E387834C2F6EAF.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 388.
+LaTeX Info: Redefining \% on input line 388.
+Package cleveref Info: loaded `spanish' language definitions on input line 388.
+
+[369]
+
+LaTeX Info: Redefining \. on input line 407.
+LaTeX Info: Redefining \% on input line 407.
+Package cleveref Info: loaded `spanish' language definitions on input line 407.
+
+[370]
+
+LaTeX Info: Redefining \. on input line 429.
+LaTeX Info: Redefining \% on input line 429.
+Package cleveref Info: loaded `spanish' language definitions on input line 429.
+
+[371]
+
+LaTeX Info: Redefining \. on input line 440.
+LaTeX Info: Redefining \% on input line 440.
+Package cleveref Info: loaded `spanish' language definitions on input line 440.
+
+[372]
+
+LaTeX Info: Redefining \. on input line 458.
+LaTeX Info: Redefining \% on input line 458.
+Package cleveref Info: loaded `spanish' language definitions on input line 458.
+
+[373]
+Overfull \hbox (16.28209pt too wide) in paragraph at lines 494--495
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 503.
+LaTeX Info: Redefining \% on input line 503.
+Package cleveref Info: loaded `spanish' language definitions on input line 503.
+
+[374]
+\openout6 = main.listing
+ (./build/libro/_minted/0E855C9525601CC4EC9F0EEBA9106BF3.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 555.
+LaTeX Info: Redefining \% on input line 555.
+Package cleveref Info: loaded `spanish' language definitions on input line 555.
+
+[375]
+
+LaTeX Info: Redefining \. on input line 575.
+LaTeX Info: Redefining \% on input line 575.
+Package cleveref Info: loaded `spanish' language definitions on input line 575.
+
+[376]
+Overfull \hbox (2.67026pt too wide) in paragraph at lines 612--613
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/64B47FFBCF14821EAAA79E3F21D41B95.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 641.
+LaTeX Info: Redefining \% on input line 641.
+Package cleveref Info: loaded `spanish' language definitions on input line 641.
+
+[377]
+
+LaTeX Info: Redefining \. on input line 644.
+LaTeX Info: Redefining \% on input line 644.
+Package cleveref Info: loaded `spanish' language definitions on input line 644.
+
+[378]
+
+LaTeX Info: Redefining \. on input line 660.
+LaTeX Info: Redefining \% on input line 660.
+Package cleveref Info: loaded `spanish' language definitions on input line 660.
+
+[379]
+
+LaTeX Info: Redefining \. on input line 683.
+LaTeX Info: Redefining \% on input line 683.
+Package cleveref Info: loaded `spanish' language definitions on input line 683.
+
+[380]
+Overfull \hbox (6.72603pt too wide) detected at line 692
+[][][][][] \TU/LibertinusMath-Regular.otf(1)/b/n/10.95 = [],  [] = [],  𝐹[] 
+= [].
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 701.
+LaTeX Info: Redefining \% on input line 701.
+Package cleveref Info: loaded `spanish' language definitions on input line 701.
+
+[381]
+PGFPlots: reading {figuras/cap09/pr_qual.dat}
+PGFPlots: reading {figuras/cap09/pr_qual.dat}
+PGFPlots: reading {figuras/cap09/pr_qual.dat}
+PGFPlots: reading {figuras/cap09/pr_qual.dat}
+
+
+LaTeX Info: Redefining \. on input line 742.
+LaTeX Info: Redefining \% on input line 742.
+Package cleveref Info: loaded `spanish' language definitions on input line 742.
+
+[382]
+
+LaTeX Info: Redefining \. on input line 750.
+LaTeX Info: Redefining \% on input line 750.
+Package cleveref Info: loaded `spanish' language definitions on input line 750.
+
+[383]
+Overfull \hbox (11.16785pt too wide) in paragraph at lines 788--789
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 794.
+LaTeX Info: Redefining \% on input line 794.
+Package cleveref Info: loaded `spanish' language definitions on input line 794.
+
+[384]
+Overfull \hbox (3.06534pt too wide) in paragraph at lines 826--827
+ [][] 
+ []
+
+
+Underfull \hbox (badness 1515) in paragraph at lines 827--827
+[][][]|\TU/SourceSansPro(0)/m/n/10 Efec-to de cin-co va-rian-tes so-bre la se-cu
+en-cia co-di-fi-can-te \TU/FiraMono(0)/m/n/10 ATG GCT TGG
+ []
+
+
+Underfull \hbox (badness 1590) in paragraph at lines 827--827
+\TU/SourceSansPro(0)/m/n/10 sul-tan-te. Una sus-ti-tu-ción en la ter-ce-ra po-s
+i-ción de \TU/FiraMono(0)/m/n/10 GCT \TU/SourceSansPro(0)/m/n/10 no cam-bia la
+ []
+
+
+Underfull \hbox (badness 1253) in paragraph at lines 827--827
+\TU/SourceSansPro(0)/m/n/10 ala-ni-na (\TU/FiraMono(0)/m/n/10 synonymous_variant
+\TU/SourceSansPro(0)/m/n/10 ); \TU/FiraMono(0)/m/n/10 CAA$\TU/LibertinusMath-Re
+gular.otf(1)/b/n/10 →$\TU/FiraMono(0)/m/n/10 CGA \TU/SourceSansPro(0)/m/n/10 
+cam-bia glu-ta-mi-na por ar-gi-ni-
+ []
+
+Package pgfplots info on input line 839: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+PGFPlots: reading {figuras/cap09/snv_codon.dat}
+PGFPlots: reading {figuras/cap09/snv_codon.dat}
+PGFPlots: reading {figuras/cap09/snv_codon.dat}
+PGFPlots: reading {figuras/cap09/snv_codon.dat}
+
+Overfull \hbox (7.65211pt too wide) in paragraph at lines 848--849
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 851.
+LaTeX Info: Redefining \% on input line 851.
+Package cleveref Info: loaded `spanish' language definitions on input line 851.
+
+[385]
+\openout6 = main.listing
+ (./build/libro/_minted/3D363E23CF4A5EB28344F9412FF563C4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 865.
+LaTeX Info: Redefining \% on input line 865.
+Package cleveref Info: loaded `spanish' language definitions on input line 865.
+
+[386]
+
+LaTeX Info: Redefining \. on input line 885.
+LaTeX Info: Redefining \% on input line 885.
+Package cleveref Info: loaded `spanish' language definitions on input line 885.
+
+[387]
+
+LaTeX Info: Redefining \. on input line 905.
+LaTeX Info: Redefining \% on input line 905.
+Package cleveref Info: loaded `spanish' language definitions on input line 905.
+
+[388]
+
+LaTeX Info: Redefining \. on input line 927.
+LaTeX Info: Redefining \% on input line 927.
+Package cleveref Info: loaded `spanish' language definitions on input line 927.
+
+[389]
+
+LaTeX Info: Redefining \. on input line 939.
+LaTeX Info: Redefining \% on input line 939.
+Package cleveref Info: loaded `spanish' language definitions on input line 939.
+
+[390]
+
+LaTeX Info: Redefining \. on input line 964.
+LaTeX Info: Redefining \% on input line 964.
+Package cleveref Info: loaded `spanish' language definitions on input line 964.
+
+[391]
+
+LaTeX Info: Redefining \. on input line 997.
+LaTeX Info: Redefining \% on input line 997.
+Package cleveref Info: loaded `spanish' language definitions on input line 997.
+
+[392]
+
+LaTeX Info: Redefining \. on input line 1002.
+LaTeX Info: Redefining \% on input line 1002.
+Package cleveref Info: loaded `spanish' language definitions on input line 1002
+.
+[393] (./build/libro/_minted/1C29C9A3F770589E694BE8E77ACF931C.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1010.
+LaTeX Info: Redefining \% on input line 1010.
+Package cleveref Info: loaded `spanish' language definitions on input line 1010
+.
+[394]
+
+LaTeX Info: Redefining \. on input line 1010.
+LaTeX Info: Redefining \% on input line 1010.
+Package cleveref Info: loaded `spanish' language definitions on input line 1010
+.
+[395])
+
+LaTeX Info: Redefining \. on input line 59.
+LaTeX Info: Redefining \% on input line 59.
+Package cleveref Info: loaded `spanish' language definitions on input line 59.
+[396]
+
+[397
+
+
+
+]
+
+[398
+
+]
+\openout2 = capitulos/cap10.aux
+ (./capitulos/cap10.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@14=\count634
+\blx@sectionciteorder@14=\count635
+Package biblatex Info: Reference section=14 on input line 4.
+Package biblatex Info: Setting label 'refsection:14' on input line 4.
+
+Capítulo 10.
+
+Overfull \hbox (7.58508pt too wide) in paragraph at lines 10--11
+[]\TU/SourceSansPro(0)/m/n/10 Cal-cu-lar fre-cuen-cias alé-li-cas y ge-no-tí-p
+i-cas, de-ri-var el equi-li-brio de Hardy-Weinberg
+ []
+
+
+
+[399
+
+
+]
+
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+Package cleveref Info: loaded `spanish' language definitions on input line 29.
+[400]
+
+LaTeX Info: Redefining \. on input line 51.
+LaTeX Info: Redefining \% on input line 51.
+Package cleveref Info: loaded `spanish' language definitions on input line 51.
+[401]
+
+LaTeX Info: Redefining \. on input line 73.
+LaTeX Info: Redefining \% on input line 73.
+Package cleveref Info: loaded `spanish' language definitions on input line 73.
+[402]
+PGFPlots: reading {figuras/cap10/hwe_curvas.dat}
+PGFPlots: reading {figuras/cap10/hwe_curvas.dat}
+PGFPlots: reading {figuras/cap10/hwe_curvas.dat}
+ (./figuras/cap10/definetti.tex)
+
+LaTeX Info: Redefining \. on input line 113.
+LaTeX Info: Redefining \% on input line 113.
+Package cleveref Info: loaded `spanish' language definitions on input line 113.
+
+[403]
+
+LaTeX Info: Redefining \. on input line 139.
+LaTeX Info: Redefining \% on input line 139.
+Package cleveref Info: loaded `spanish' language definitions on input line 139.
+
+[404]
+PGFPlots: reading {figuras/cap10/hwe_exacta.dat}
+
+
+LaTeX Info: Redefining \. on input line 172.
+LaTeX Info: Redefining \% on input line 172.
+Package cleveref Info: loaded `spanish' language definitions on input line 172.
+
+[405]
+\openout6 = main.listing
+ (./build/libro/_minted/AD3AC2F2CF2E3FDCAC1E51BC9E3F89AA.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 197.
+LaTeX Info: Redefining \% on input line 197.
+Package cleveref Info: loaded `spanish' language definitions on input line 197.
+
+[406]
+
+LaTeX Info: Redefining \. on input line 219.
+LaTeX Info: Redefining \% on input line 219.
+Package cleveref Info: loaded `spanish' language definitions on input line 219.
+
+[407] (./figuras/cap10/genealogia.tex)
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N10.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N50.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+PGFPlots: reading {figuras/cap10/wf_N250.dat}
+
+
+LaTeX Info: Redefining \. on input line 274.
+LaTeX Info: Redefining \% on input line 274.
+Package cleveref Info: loaded `spanish' language definitions on input line 274.
+
+[408]
+
+LaTeX Info: Redefining \. on input line 280.
+LaTeX Info: Redefining \% on input line 280.
+Package cleveref Info: loaded `spanish' language definitions on input line 280.
+
+[409]
+PGFPlots: reading {figuras/cap10/het.dat}
+PGFPlots: reading {figuras/cap10/het.dat}
+PGFPlots: reading {figuras/cap10/het.dat}
+
+
+LaTeX Info: Redefining \. on input line 315.
+LaTeX Info: Redefining \% on input line 315.
+Package cleveref Info: loaded `spanish' language definitions on input line 315.
+
+[410]
+
+LaTeX Info: Redefining \. on input line 324.
+LaTeX Info: Redefining \% on input line 324.
+Package cleveref Info: loaded `spanish' language definitions on input line 324.
+
+[411]
+
+LaTeX Info: Redefining \. on input line 346.
+LaTeX Info: Redefining \% on input line 346.
+Package cleveref Info: loaded `spanish' language definitions on input line 346.
+
+[412]
+
+LaTeX Info: Redefining \. on input line 366.
+LaTeX Info: Redefining \% on input line 366.
+Package cleveref Info: loaded `spanish' language definitions on input line 366.
+
+[413]
+PGFPlots: reading {figuras/cap10/difusion.dat}
+PGFPlots: reading {figuras/cap10/difusion.dat}
+PGFPlots: reading {figuras/cap10/difusion.dat}
+PGFPlots: reading {figuras/cap10/difusion.dat}
+PGFPlots: reading {figuras/cap10/fijacion_sim.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/D6DBE903B05D00CE0F7EE58893CA75CC.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 419.
+LaTeX Info: Redefining \% on input line 419.
+Package cleveref Info: loaded `spanish' language definitions on input line 419.
+
+[414]
+
+LaTeX Info: Redefining \. on input line 432.
+LaTeX Info: Redefining \% on input line 432.
+Package cleveref Info: loaded `spanish' language definitions on input line 432.
+
+[415]
+Overfull \hbox (6.506pt too wide) detected at line 458
+[][][][]\TU/LibertinusMath-Regular.otf(1)/b/n/10.95 𝐷[] = [],  𝐷[] = []  
+ 𝑟[] = [].
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 460.
+LaTeX Info: Redefining \% on input line 460.
+Package cleveref Info: loaded `spanish' language definitions on input line 460.
+
+[416]
+
+LaTeX Info: Redefining \. on input line 514.
+LaTeX Info: Redefining \% on input line 514.
+Package cleveref Info: loaded `spanish' language definitions on input line 514.
+
+[417]
+
+LaTeX Info: Redefining \. on input line 519.
+LaTeX Info: Redefining \% on input line 519.
+Package cleveref Info: loaded `spanish' language definitions on input line 519.
+
+[418]
+PGFPlots: reading {figuras/cap10/ld_decay_t.dat}
+PGFPlots: reading {figuras/cap10/ld_decay_t.dat}
+PGFPlots: reading {figuras/cap10/ld_decay_t.dat}
+PGFPlots: reading {figuras/cap10/ld_decay_t.dat}
+Package pgfplots info on input line 549: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap10/ld_decay_d.dat}
+PGFPlots: reading {figuras/cap10/ld_decay_d.dat}
+PGFPlots: reading {figuras/cap10/ld_decay_d.dat}
+
+
+LaTeX Info: Redefining \. on input line 562.
+LaTeX Info: Redefining \% on input line 562.
+Package cleveref Info: loaded `spanish' language definitions on input line 562.
+
+[419]
+<figuras/cap10/ld_heatmap.pdf, id=5368, 246.87758pt x 263.70871pt>
+File: figuras/cap10/ld_heatmap.pdf Graphic file (type pdf)
+<use figuras/cap10/ld_heatmap.pdf>
+Package luatex.def Info: figuras/cap10/ld_heatmap.pdf  used on input line 565.
+(luatex.def)             Requested size: 284.07161pt x 303.4397pt.
+
+
+LaTeX Info: Redefining \. on input line 571.
+LaTeX Info: Redefining \% on input line 571.
+Package cleveref Info: loaded `spanish' language definitions on input line 571.
+
+[420]
+
+LaTeX Info: Redefining \. on input line 571.
+LaTeX Info: Redefining \% on input line 571.
+Package cleveref Info: loaded `spanish' language definitions on input line 571.
+
+[421<./figuras/cap10/ld_heatmap.pdf>]
+\openout6 = main.listing
+
+(./build/libro/_minted/60A79BEC96F839EF637FB3CB2A4B3638.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 606.
+LaTeX Info: Redefining \% on input line 606.
+Package cleveref Info: loaded `spanish' language definitions on input line 606.
+
+[422]
+
+LaTeX Info: Redefining \. on input line 628.
+LaTeX Info: Redefining \% on input line 628.
+Package cleveref Info: loaded `spanish' language definitions on input line 628.
+
+[423]
+PGFPlots: reading {figuras/cap10/pca_A.dat}
+PGFPlots: reading {figuras/cap10/pca_B.dat}
+PGFPlots: reading {figuras/cap10/pca_C.dat}
+PGFPlots: reading {figuras/cap10/pca_M.dat}
+PGFPlots: reading {figuras/cap10/pca_ev.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/999511B8878CC6FEA440524CE6D6AC9A.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
+
+[424]
+
+LaTeX Info: Redefining \. on input line 679.
+LaTeX Info: Redefining \% on input line 679.
+Package cleveref Info: loaded `spanish' language definitions on input line 679.
+
+[425]
+
+LaTeX Info: Redefining \. on input line 708.
+LaTeX Info: Redefining \% on input line 708.
+Package cleveref Info: loaded `spanish' language definitions on input line 708.
+
+[426]
+
+LaTeX Info: Redefining \. on input line 729.
+LaTeX Info: Redefining \% on input line 729.
+Package cleveref Info: loaded `spanish' language definitions on input line 729.
+
+[427]
+
+LaTeX Info: Redefining \. on input line 746.
+LaTeX Info: Redefining \% on input line 746.
+Package cleveref Info: loaded `spanish' language definitions on input line 746.
+
+[428]
+
+LaTeX Info: Redefining \. on input line 757.
+LaTeX Info: Redefining \% on input line 757.
+Package cleveref Info: loaded `spanish' language definitions on input line 757.
+
+[429]
+PGFPlots: reading {figuras/cap10/qq_banda90k.dat}
+PGFPlots: reading {figuras/cap10/qq_banda90k.dat}
+PGFPlots: reading {figuras/cap10/qq_manhattan.dat}
+Package pgfplots info on input line 788: fill between: activating layered graph
+ics
+Package pgfplots info on input line 788: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+PGFPlots: reading {figuras/cap10/qq_banda10k.dat}
+PGFPlots: reading {figuras/cap10/qq_banda10k.dat}
+PGFPlots: reading {figuras/cap10/qq_naive.dat}
+PGFPlots: reading {figuras/cap10/qq_pc.dat}
+Package pgfplots info on input line 797: fill between: activating layered graph
+ics
+Package pgfplots info on input line 797: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+
+
+LaTeX Info: Redefining \. on input line 812.
+LaTeX Info: Redefining \% on input line 812.
+Package cleveref Info: loaded `spanish' language definitions on input line 812.
+
+[430]
+
+LaTeX Info: Redefining \. on input line 822.
+LaTeX Info: Redefining \% on input line 822.
+Package cleveref Info: loaded `spanish' language definitions on input line 822.
+
+[431]
+Package pgfplots info on input line 841: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap10/bh.dat}
+
+NOTE: coordinate (12,7.104e-03) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (15,1.246e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (20,3.073e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (21,3.703e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (22,4.105e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (24,4.864e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (25,4.919e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (26,5.022e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (27,5.109e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (28,5.500e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (29,5.567e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (30,6.109e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (31,6.287e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (32,7.416e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (33,7.995e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (35,9.001e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (36,9.217e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (37,9.887e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (38,1.064e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (39,1.136e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (41,1.246e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (42,1.446e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (43,1.489e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (44,1.509e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (45,1.520e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (46,1.553e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (47,1.688e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (48,1.702e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (49,1.821e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (50,1.837e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (51,1.897e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (52,1.940e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (53,1.954e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (54,1.977e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (55,2.020e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (56,2.054e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (57,2.065e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (58,2.191e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (59,2.212e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (60,2.342e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+PGFPlots: reading {figuras/cap10/bh.dat}
+NOTE: coordinate (1,2.735e-05) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (2,7.036e-05) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (3,1.119e-04) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (4,1.165e-04) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (5,2.118e-04) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (6,3.476e-04) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (7,9.002e-04) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (8,1.803e-03) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (9,2.431e-03) has been dropped because it is unbounded (in x).
+ (see also unbounded coords=jump). 
+NOTE: coordinate (10,3.667e-03) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (11,4.193e-03) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (13,7.259e-03) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (14,1.210e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (16,1.362e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (17,1.544e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (18,1.691e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (19,2.580e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (23,4.697e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (34,8.350e-02) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+NOTE: coordinate (40,1.218e-01) has been dropped because it is unbounded (in x)
+. (see also unbounded coords=jump). 
+Package pgfplots info on input line 854: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap10/potencia.dat}
+PGFPlots: reading {figuras/cap10/potencia.dat}
+PGFPlots: reading {figuras/cap10/potencia.dat}
+PGFPlots: reading {figuras/cap10/potencia.dat}
+
+Overfull \hbox (3.73218pt too wide) in paragraph at lines 861--862
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/3252EEF301ADB85DBAC35D26E4D09C40.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 894.
+LaTeX Info: Redefining \% on input line 894.
+Package cleveref Info: loaded `spanish' language definitions on input line 894.
+
+[432] (./build/libro/_minted/ABE6E9E4BCDB32BFBBCDD478A765A836.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 897.
+LaTeX Info: Redefining \% on input line 897.
+Package cleveref Info: loaded `spanish' language definitions on input line 897.
+
+[433]
+<figuras/cap10/manhattan.pdf, id=5560, 339.16461pt x 156.05954pt>
+File: figuras/cap10/manhattan.pdf Graphic file (type pdf)
+<use figuras/cap10/manhattan.pdf>
+Package luatex.def Info: figuras/cap10/manhattan.pdf  used on input line 904.
+(luatex.def)             Requested size: 364.19495pt x 167.57974pt.
+
+
+LaTeX Info: Redefining \. on input line 910.
+LaTeX Info: Redefining \% on input line 910.
+Package cleveref Info: loaded `spanish' language definitions on input line 910.
+
+[434<./figuras/cap10/manhattan.pdf>]
+\openout6 = main.listing
+
+(./build/libro/_minted/D0998AF64E722DFD55FC0E4F775593E8.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
+
+[435]
+Overfull \hbox (0.12468pt too wide) in paragraph at lines 936--937
+ \TU/SourceSansPro(0)/m/n/12 sis-te-má-ti-co, la es-truc-tu-ra po-bla-cio-nal, y un so-lo enemi-go alea- 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 948.
+LaTeX Info: Redefining \% on input line 948.
+Package cleveref Info: loaded `spanish' language definitions on input line 948.
+
+[436] (./build/libro/_minted/7653676DFC07692585D56A03168A55E1.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 956.
+LaTeX Info: Redefining \% on input line 956.
+Package cleveref Info: loaded `spanish' language definitions on input line 956.
+
+[437] (./build/libro/_minted/ABCE3A467DB4EE5CEDB302D563497CF5.highlight.minted) (./build/libro/_minted/7653676DFC07692585D56A03168A55E1.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 963.
+LaTeX Info: Redefining \% on input line 963.
+Package cleveref Info: loaded `spanish' language definitions on input line 963.
+
+[438]
+
+LaTeX Info: Redefining \. on input line 963.
+LaTeX Info: Redefining \% on input line 963.
+Package cleveref Info: loaded `spanish' language definitions on input line 963.
+
+[439])
+
+LaTeX Info: Redefining \. on input line 65.
+LaTeX Info: Redefining \% on input line 65.
+Package cleveref Info: loaded `spanish' language definitions on input line 65.
+[440]
+\openout2 = capitulos/cap11.aux
+ (./capitulos/cap11.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@15=\count636
+\blx@sectionciteorder@15=\count637
+Package biblatex Info: Reference section=15 on input line 4.
+Package biblatex Info: Setting label 'refsection:15' on input line 4.
+
+Capítulo 11.
+
+
+[441
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 27.
+LaTeX Info: Redefining \% on input line 27.
+Package cleveref Info: loaded `spanish' language definitions on input line 27.
+[442]
+
+LaTeX Info: Redefining \. on input line 39.
+LaTeX Info: Redefining \% on input line 39.
+Package cleveref Info: loaded `spanish' language definitions on input line 39.
+[443]
+Overfull \hbox (4.96034pt too wide) in paragraph at lines 78--79
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 88.
+LaTeX Info: Redefining \% on input line 88.
+Package cleveref Info: loaded `spanish' language definitions on input line 88.
+[444]
+
+LaTeX Info: Redefining \. on input line 94.
+LaTeX Info: Redefining \% on input line 94.
+Package cleveref Info: loaded `spanish' language definitions on input line 94.
+[445]
+Overfull \hbox (5.5193pt too wide) in paragraph at lines 132--133
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 148.
+LaTeX Info: Redefining \% on input line 148.
+Package cleveref Info: loaded `spanish' language definitions on input line 148.
+
+[446]
+
+LaTeX Info: Redefining \. on input line 179.
+LaTeX Info: Redefining \% on input line 179.
+Package cleveref Info: loaded `spanish' language definitions on input line 179.
+
+[447]
+
+LaTeX Info: Redefining \. on input line 200.
+LaTeX Info: Redefining \% on input line 200.
+Package cleveref Info: loaded `spanish' language definitions on input line 200.
+
+[448]
+
+LaTeX Info: Redefining \. on input line 226.
+LaTeX Info: Redefining \% on input line 226.
+Package cleveref Info: loaded `spanish' language definitions on input line 226.
+
+[449]
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em.dat}
+PGFPlots: reading {figuras/cap11/em_ll.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/C4D0F9F5D6AC523EE7EE2A5B731CEC46.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 270.
+LaTeX Info: Redefining \% on input line 270.
+Package cleveref Info: loaded `spanish' language definitions on input line 270.
+
+[450]
+
+LaTeX Info: Redefining \. on input line 281.
+LaTeX Info: Redefining \% on input line 281.
+Package cleveref Info: loaded `spanish' language definitions on input line 281.
+
+[451]
+\openout6 = main.listing
+ (./build/libro/_minted/C454A06CF6D50BBF38B0DD61B26B17C4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 302.
+LaTeX Info: Redefining \% on input line 302.
+Package cleveref Info: loaded `spanish' language definitions on input line 302.
+
+[452]
+PGFPlots: reading {figuras/cap11/rpkm.dat}
+PGFPlots: reading {figuras/cap11/rpkm.dat}
+PGFPlots: reading {figuras/cap11/tpm.dat}
+PGFPlots: reading {figuras/cap11/tpm.dat}
+
+
+LaTeX Info: Redefining \. on input line 340.
+LaTeX Info: Redefining \% on input line 340.
+Package cleveref Info: loaded `spanish' language definitions on input line 340.
+
+[453]
+
+LaTeX Info: Redefining \. on input line 346.
+LaTeX Info: Redefining \% on input line 346.
+Package cleveref Info: loaded `spanish' language definitions on input line 346.
+
+[454]
+
+LaTeX Info: Redefining \. on input line 371.
+LaTeX Info: Redefining \% on input line 371.
+Package cleveref Info: loaded `spanish' language definitions on input line 371.
+
+[455] (./figuras/cap11/comp_lineas.tex)
+PGFPlots: reading {figuras/cap11/comp_ns.dat}
+PGFPlots: reading {figuras/cap11/comp_up.dat}
+Package pgfplots info on input line 386: Deactivating LUA version of plot expre
+ssion for plot 3 (type 'pgfplothandlerlineto'): y expression '\caponcetmm ' con
+tains a TeX macro.
+Package pgfplots info on input line 388: Deactivating LUA version of plot expre
+ssion for plot 4 (type 'pgfplothandlerlineto'): y expression '\caponcemor ' con
+tains a TeX macro.
+
+
+LaTeX Info: Redefining \. on input line 407.
+LaTeX Info: Redefining \% on input line 407.
+Package cleveref Info: loaded `spanish' language definitions on input line 407.
+
+[456]
+
+LaTeX Info: Redefining \. on input line 449.
+LaTeX Info: Redefining \% on input line 449.
+Package cleveref Info: loaded `spanish' language definitions on input line 449.
+
+[457]
+\openout6 = main.listing
+ (./build/libro/_minted/160D252FCD9FC3DCAFF10F11C555853D.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 469.
+LaTeX Info: Redefining \% on input line 469.
+Package cleveref Info: loaded `spanish' language definitions on input line 469.
+
+[458]
+
+LaTeX Info: Redefining \. on input line 493.
+LaTeX Info: Redefining \% on input line 493.
+Package cleveref Info: loaded `spanish' language definitions on input line 493.
+
+[459]
+PGFPlots: reading {figuras/cap11/pmf.dat}
+PGFPlots: reading {figuras/cap11/pmf.dat}
+Package pgfplots info on input line 518: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 518: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap11/mv_pois.dat}
+PGFPlots: reading {figuras/cap11/mv_nb.dat}
+
+
+LaTeX Info: Redefining \. on input line 549.
+LaTeX Info: Redefining \% on input line 549.
+Package cleveref Info: loaded `spanish' language definitions on input line 549.
+
+[460]
+
+LaTeX Info: Redefining \. on input line 554.
+LaTeX Info: Redefining \% on input line 554.
+Package cleveref Info: loaded `spanish' language definitions on input line 554.
+
+[461]
+
+LaTeX Info: Redefining \. on input line 584.
+LaTeX Info: Redefining \% on input line 584.
+Package cleveref Info: loaded `spanish' language definitions on input line 584.
+
+[462]
+Package pgfplots info on input line 595: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 595: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap11/disp_gw.dat}
+PGFPlots: reading {figuras/cap11/disp_map.dat}
+PGFPlots: reading {figuras/cap11/disp_fit.dat}
+PGFPlots: reading {figuras/cap11/disp_true.dat}
+
+
+LaTeX Info: Redefining \. on input line 616.
+LaTeX Info: Redefining \% on input line 616.
+Package cleveref Info: loaded `spanish' language definitions on input line 616.
+
+[463]
+
+LaTeX Info: Redefining \. on input line 625.
+LaTeX Info: Redefining \% on input line 625.
+Package cleveref Info: loaded `spanish' language definitions on input line 625.
+
+[464]
+
+LaTeX Info: Redefining \. on input line 650.
+LaTeX Info: Redefining \% on input line 650.
+Package cleveref Info: loaded `spanish' language definitions on input line 650.
+
+[465]
+
+LaTeX Info: Redefining \. on input line 672.
+LaTeX Info: Redefining \% on input line 672.
+Package cleveref Info: loaded `spanish' language definitions on input line 672.
+
+[466]
+Package pgfplots info on input line 684: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap11/ma_mle_ns.dat}
+PGFPlots: reading {figuras/cap11/ma_mle_sig.dat}
+Package pgfplots info on input line 688: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap11/ma_shr_ns.dat}
+PGFPlots: reading {figuras/cap11/ma_shr_sig.dat}
+PGFPlots: reading {figuras/cap11/vol_ns.dat}
+PGFPlots: reading {figuras/cap11/vol_up.dat}
+PGFPlots: reading {figuras/cap11/vol_dn.dat}
+
+
+LaTeX Info: Redefining \. on input line 743.
+LaTeX Info: Redefining \% on input line 743.
+Package cleveref Info: loaded `spanish' language definitions on input line 743.
+
+[467]
+
+LaTeX Info: Redefining \. on input line 758.
+LaTeX Info: Redefining \% on input line 758.
+Package cleveref Info: loaded `spanish' language definitions on input line 758.
+
+[468]
+
+LaTeX Info: Redefining \. on input line 767.
+LaTeX Info: Redefining \% on input line 767.
+Package cleveref Info: loaded `spanish' language definitions on input line 767.
+
+[469]
+PGFPlots: reading {figuras/cap11/bh_de.dat}
+PGFPlots: reading {figuras/cap11/bh_null.dat}
+PGFPlots: reading {figuras/cap11/filtro.dat}
+
+
+LaTeX Info: Redefining \. on input line 804.
+LaTeX Info: Redefining \% on input line 804.
+Package cleveref Info: loaded `spanish' language definitions on input line 804.
+
+[470]
+\openout6 = main.listing
+ (./build/libro/_minted/0EB7C00ACBD5635AB1225BA33FF36FCB.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 832.
+LaTeX Info: Redefining \% on input line 832.
+Package cleveref Info: loaded `spanish' language definitions on input line 832.
+
+[471] (./figuras/cap11/phist.tex)
+Package pgfplots info on input line 845: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+PGFPlots: reading {figuras/cap11/phist.dat}
+PGFPlots: reading {figuras/cap11/phist.dat}
+Package pgfplots info on input line 853: Deactivating LUA version of plot expre
+ssion for plot 0 (type 'pgfplothandlerlineto'): y expression '\caponcepinivel '
+ contains a TeX macro.
+
+
+LaTeX Info: Redefining \. on input line 864.
+LaTeX Info: Redefining \% on input line 864.
+Package cleveref Info: loaded `spanish' language definitions on input line 864.
+
+[472]
+\openout6 = main.listing
+ (./build/libro/_minted/257DF18676E16691B917FC67E5112701.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 893.
+LaTeX Info: Redefining \% on input line 893.
+Package cleveref Info: loaded `spanish' language definitions on input line 893.
+
+[473]
+
+LaTeX Info: Redefining \. on input line 939.
+LaTeX Info: Redefining \% on input line 939.
+Package cleveref Info: loaded `spanish' language definitions on input line 939.
+
+[474]
+
+LaTeX Info: Redefining \. on input line 943.
+LaTeX Info: Redefining \% on input line 943.
+Package cleveref Info: loaded `spanish' language definitions on input line 943.
+
+[475]
+
+LaTeX Info: Redefining \. on input line 963.
+LaTeX Info: Redefining \% on input line 963.
+Package cleveref Info: loaded `spanish' language definitions on input line 963.
+
+[476]
+Package pgfplots info on input line 971: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap11/pwf.dat}
+PGFPlots: reading {figuras/cap11/pwf_fit.dat}
+
+
+LaTeX Info: Redefining \. on input line 995.
+LaTeX Info: Redefining \% on input line 995.
+Package cleveref Info: loaded `spanish' language definitions on input line 995.
+
+[477] (./figuras/cap11/hiper.tex)
+PGFPlots: reading {figuras/cap11/hiper.dat}
+PGFPlots: reading {figuras/cap11/hiper_w.dat}
+
+
+LaTeX Info: Redefining \. on input line 1032.
+LaTeX Info: Redefining \% on input line 1032.
+Package cleveref Info: loaded `spanish' language definitions on input line 1032
+.
+[478] (./figuras/cap11/gsea.tex)
+PGFPlots: reading {figuras/cap11/gsea_rs.dat}
+Package pgfplots info on input line 1059: Using 'lua backend=false' for plot 0 
+(type '[tikz@plot@handler: macro:->\global \pgf@plot@startedfalse \global \let 
+\pgf@plotstreamend \pgf@plotstreamend@init \global \let \pgf@plotstreampoint \p
+gf@plotstreampoint@init \global \let \pgf@plotstreamjump \pgf@plotstreamjump@in
+it \global \let \pgf@plotstreamspecial \pgf@plotstreamspecial@init \pgfplotyzer
+olevelstreamstart ]'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap11/gsea_hits.dat}
+PGFPlots: reading {figuras/cap11/gsea_metric.dat}
+
+
+LaTeX Info: Redefining \. on input line 1068.
+LaTeX Info: Redefining \% on input line 1068.
+Package cleveref Info: loaded `spanish' language definitions on input line 1068
+.
+[479]
+\openout6 = main.listing
+ (./build/libro/_minted/5BD9960530C9AC3975F2FF2E1C9E10D7.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1093.
+LaTeX Info: Redefining \% on input line 1093.
+Package cleveref Info: loaded `spanish' language definitions on input line 1093
+.
+[480]
+
+LaTeX Info: Redefining \. on input line 1110.
+LaTeX Info: Redefining \% on input line 1110.
+Package cleveref Info: loaded `spanish' language definitions on input line 1110
+.
+[481]
+
+LaTeX Info: Redefining \. on input line 1115.
+LaTeX Info: Redefining \% on input line 1115.
+Package cleveref Info: loaded `spanish' language definitions on input line 1115
+.
+[482] (./build/libro/_minted/BE552799E5A1F30CE57AC5A1AAC19EE5.highlight.minted) (./build/libro/_minted/66ADACB53F42BF0E3188B052E0EF0989.highlight.minted)
+(./build/libro/_minted/6D05458ACA69E3EDDC369384352578AF.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1124.
+LaTeX Info: Redefining \% on input line 1124.
+Package cleveref Info: loaded `spanish' language definitions on input line 1124
+.
+[483]
+
+LaTeX Info: Redefining \. on input line 1124.
+LaTeX Info: Redefining \% on input line 1124.
+Package cleveref Info: loaded `spanish' language definitions on input line 1124
+.
+[484]
+
+LaTeX Info: Redefining \. on input line 1124.
+LaTeX Info: Redefining \% on input line 1124.
+Package cleveref Info: loaded `spanish' language definitions on input line 1124
+.
+[485])
+
+LaTeX Info: Redefining \. on input line 66.
+LaTeX Info: Redefining \% on input line 66.
+Package cleveref Info: loaded `spanish' language definitions on input line 66.
+[486]
+\openout2 = capitulos/cap12.aux
+ (./capitulos/cap12.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@16=\count638
+\blx@sectionciteorder@16=\count639
+Package biblatex Info: Reference section=16 on input line 4.
+Package biblatex Info: Setting label 'refsection:16' on input line 4.
+
+Capítulo 12.
+
+
+[487
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 28.
+LaTeX Info: Redefining \% on input line 28.
+Package cleveref Info: loaded `spanish' language definitions on input line 28.
+[488]
+
+LaTeX Info: Redefining \. on input line 48.
+LaTeX Info: Redefining \% on input line 48.
+Package cleveref Info: loaded `spanish' language definitions on input line 48.
+[489]
+Overfull \hbox (7.19469pt too wide) in paragraph at lines 132--133
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 143.
+LaTeX Info: Redefining \% on input line 143.
+Package cleveref Info: loaded `spanish' language definitions on input line 143.
+
+[490]
+
+LaTeX Info: Redefining \. on input line 149.
+LaTeX Info: Redefining \% on input line 149.
+Package cleveref Info: loaded `spanish' language definitions on input line 149.
+
+[491]
+
+LaTeX Info: Redefining \. on input line 161.
+LaTeX Info: Redefining \% on input line 161.
+Package cleveref Info: loaded `spanish' language definitions on input line 161.
+
+[492]
+Package pgfplots info on input line 191: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 191: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap12/rodilla.dat}
+
+
+LaTeX Info: Redefining \. on input line 202.
+LaTeX Info: Redefining \% on input line 202.
+Package cleveref Info: loaded `spanish' language definitions on input line 202.
+
+[493]
+
+LaTeX Info: Redefining \. on input line 215.
+LaTeX Info: Redefining \% on input line 215.
+Package cleveref Info: loaded `spanish' language definitions on input line 215.
+
+[494]
+<figuras/cap12/qc_violines.pdf, id=6274, 354.12207pt x 138.11357pt>
+File: figuras/cap12/qc_violines.pdf Graphic file (type pdf)
+<use figuras/cap12/qc_violines.pdf>
+Package luatex.def Info: figuras/cap12/qc_violines.pdf  used on input line 243.
+
+(luatex.def)             Requested size: 364.19495pt x 142.05202pt.
+
+
+LaTeX Info: Redefining \. on input line 250.
+LaTeX Info: Redefining \% on input line 250.
+Package cleveref Info: loaded `spanish' language definitions on input line 250.
+
+[495]
+
+LaTeX Info: Redefining \. on input line 254.
+LaTeX Info: Redefining \% on input line 254.
+Package cleveref Info: loaded `spanish' language definitions on input line 254.
+
+[496<./figuras/cap12/qc_violines.pdf>]
+Package pgfplots info on input line 276: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap12/dobletes.dat}
+
+NOTE: coordinate (1Y1.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.045e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.295e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.545e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.795e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+PGFPlots: reading {figuras/cap12/dobletes.dat}
+NOTE: coordinate (1Y2.05e-2],3Y0.0e0]) has been dropped because it is unbounded
+ (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y1.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.205e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.455e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.705e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.955e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+PGFPlots: reading {figuras/cap12/dobletes.dat}
+NOTE: coordinate (1Y1.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y2.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y3.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y4.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y5.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y6.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y7.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y8.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.115e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.365e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.615e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+NOTE: coordinate (1Y9.865e-1],3Y0.0e0]) has been dropped because it is unbounde
+d (in y). (see also unbounded coords=jump). 
+
+
+LaTeX Info: Redefining \. on input line 297.
+LaTeX Info: Redefining \% on input line 297.
+Package cleveref Info: loaded `spanish' language definitions on input line 297.
+
+[497]
+
+LaTeX Info: Redefining \. on input line 310.
+LaTeX Info: Redefining \% on input line 310.
+Package cleveref Info: loaded `spanish' language definitions on input line 310.
+
+[498]
+
+LaTeX Info: Redefining \. on input line 330.
+LaTeX Info: Redefining \% on input line 330.
+Package cleveref Info: loaded `spanish' language definitions on input line 330.
+
+[499]
+<figuras/cap12/media_varianza.pdf, id=6382, 354.34778pt x 142.80286pt>
+File: figuras/cap12/media_varianza.pdf Graphic file (type pdf)
+<use figuras/cap12/media_varianza.pdf>
+Package luatex.def Info: figuras/cap12/media_varianza.pdf  used on input line 3
+52.
+(luatex.def)             Requested size: 364.19495pt x 146.77045pt.
+
+
+LaTeX Info: Redefining \. on input line 358.
+LaTeX Info: Redefining \% on input line 358.
+Package cleveref Info: loaded `spanish' language definitions on input line 358.
+
+[500]
+\openout6 = main.listing
+ (./build/libro/_minted/D8B1EAF982E99EDD496E48DD9208E9A4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 381.
+LaTeX Info: Redefining \% on input line 381.
+Package cleveref Info: loaded `spanish' language definitions on input line 381.
+
+[501<./figuras/cap12/media_varianza.pdf>]
+
+LaTeX Info: Redefining \. on input line 397.
+LaTeX Info: Redefining \% on input line 397.
+Package cleveref Info: loaded `spanish' language definitions on input line 397.
+
+[502]
+
+LaTeX Info: Redefining \. on input line 419.
+LaTeX Info: Redefining \% on input line 419.
+Package cleveref Info: loaded `spanish' language definitions on input line 419.
+
+[503]
+PGFPlots: reading {figuras/cap12/pca_var.dat}
+PGFPlots: reading {figuras/cap12/pca_nulo.dat}
+
+
+LaTeX Info: Redefining \. on input line 453.
+LaTeX Info: Redefining \% on input line 453.
+Package cleveref Info: loaded `spanish' language definitions on input line 453.
+
+[504]
+
+LaTeX Info: Redefining \. on input line 464.
+LaTeX Info: Redefining \% on input line 464.
+Package cleveref Info: loaded `spanish' language definitions on input line 464.
+
+[505]
+<figuras/cap12/embeddings.pdf, id=6515, 354.34778pt x 137.18153pt>
+File: figuras/cap12/embeddings.pdf Graphic file (type pdf)
+<use figuras/cap12/embeddings.pdf>
+Package luatex.def Info: figuras/cap12/embeddings.pdf  used on input line 486.
+(luatex.def)             Requested size: 364.19495pt x 140.99292pt.
+
+
+LaTeX Info: Redefining \. on input line 489.
+LaTeX Info: Redefining \% on input line 489.
+Package cleveref Info: loaded `spanish' language definitions on input line 489.
+
+[506]
+<figuras/cap12/perplejidad.pdf, id=6532, 354.84799pt x 115.2501pt>
+File: figuras/cap12/perplejidad.pdf Graphic file (type pdf)
+<use figuras/cap12/perplejidad.pdf>
+Package luatex.def Info: figuras/cap12/perplejidad.pdf  used on input line 495.
+
+(luatex.def)             Requested size: 364.19495pt x 118.28685pt.
+
+
+LaTeX Info: Redefining \. on input line 508.
+LaTeX Info: Redefining \% on input line 508.
+Package cleveref Info: loaded `spanish' language definitions on input line 508.
+
+[507<./figuras/cap12/embeddings.pdf>]
+
+LaTeX Info: Redefining \. on input line 520.
+LaTeX Info: Redefining \% on input line 520.
+Package cleveref Info: loaded `spanish' language definitions on input line 520.
+
+[508<./figuras/cap12/perplejidad.pdf>]
+<figuras/cap12/distancias.pdf, id=6637, 354.34778pt x 114.35606pt>
+File: figuras/cap12/distancias.pdf Graphic file (type pdf)
+<use figuras/cap12/distancias.pdf>
+Package luatex.def Info: figuras/cap12/distancias.pdf  used on input line 527.
+(luatex.def)             Requested size: 364.19495pt x 117.53328pt.
+
+
+LaTeX Info: Redefining \. on input line 536.
+LaTeX Info: Redefining \% on input line 536.
+Package cleveref Info: loaded `spanish' language definitions on input line 536.
+
+[509<./figuras/cap12/distancias.pdf>]
+\openout6 = main.listing
+
+(./build/libro/_minted/57487E0961C8CFD509AD58D00F838056.highlight.minted)
+Overfull \hbox (18.12274pt too wide) in paragraph at lines 555--556
+[]\TU/LibertinusSerif(0)/m/n/10.95 En Scanpy, \TU/FiraMono(0)/m/n/10.95 sc.tl.um
+ap \TU/LibertinusSerif(0)/m/n/10.95 no re-cal-cu-la ve-ci-nos: usa el gra-fo de \TU/FiraMono(0)/m/n/10.95 sc.pp.neighbors\TU/LibertinusSerif(0)/m/n/10.95 .
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 565.
+LaTeX Info: Redefining \% on input line 565.
+Package cleveref Info: loaded `spanish' language definitions on input line 565.
+
+[510]
+<figuras/cap12/grafo_knn.pdf, id=6719, 190.32333pt x 160.63287pt>
+File: figuras/cap12/grafo_knn.pdf Graphic file (type pdf)
+<use figuras/cap12/grafo_knn.pdf>
+Package luatex.def Info: figuras/cap12/grafo_knn.pdf  used on input line 583.
+(luatex.def)             Requested size: 254.93535pt x 215.17583pt.
+
+
+LaTeX Info: Redefining \. on input line 588.
+LaTeX Info: Redefining \% on input line 588.
+Package cleveref Info: loaded `spanish' language definitions on input line 588.
+
+[511]
+
+LaTeX Info: Redefining \. on input line 604.
+LaTeX Info: Redefining \% on input line 604.
+Package cleveref Info: loaded `spanish' language definitions on input line 604.
+
+[512<./figuras/cap12/grafo_knn.pdf>]
+
+LaTeX Info: Redefining \. on input line 625.
+LaTeX Info: Redefining \% on input line 625.
+Package cleveref Info: loaded `spanish' language definitions on input line 625.
+
+[513]
+Package pgfplots info on input line 638: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap12/resolucion.dat}
+Package pgfplots info on input line 642: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap12/resolucion.dat}
+PGFPlots: reading {figuras/cap12/resolucion.dat}
+
+
+LaTeX Info: Redefining \. on input line 662.
+LaTeX Info: Redefining \% on input line 662.
+Package cleveref Info: loaded `spanish' language definitions on input line 662.
+
+[514]
+
+LaTeX Info: Redefining \. on input line 678.
+LaTeX Info: Redefining \% on input line 678.
+Package cleveref Info: loaded `spanish' language definitions on input line 678.
+
+[515] (./build/libro/_minted/E8AE735292BF60EAA5B68690AFB5D82B.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 687.
+LaTeX Info: Redefining \% on input line 687.
+Package cleveref Info: loaded `spanish' language definitions on input line 687.
+
+[516]
+<figuras/cap12/dotplot.pdf, id=6797, 390.09425pt x 164.80649pt>
+File: figuras/cap12/dotplot.pdf Graphic file (type pdf)
+<use figuras/cap12/dotplot.pdf>
+Package luatex.def Info: figuras/cap12/dotplot.pdf  used on input line 698.
+(luatex.def)             Requested size: 364.19495pt x 153.87448pt.
+
+
+LaTeX Info: Redefining \. on input line 708.
+LaTeX Info: Redefining \% on input line 708.
+Package cleveref Info: loaded `spanish' language definitions on input line 708.
+
+[517]
+
+LaTeX Info: Redefining \. on input line 717.
+LaTeX Info: Redefining \% on input line 717.
+Package cleveref Info: loaded `spanish' language definitions on input line 717.
+
+[518<./figuras/cap12/dotplot.pdf>]
+<figuras/cap12/lotes.pdf, id=6897, 298.56242pt x 276.77705pt>
+File: figuras/cap12/lotes.pdf Graphic file (type pdf)
+<use figuras/cap12/lotes.pdf>
+Package luatex.def Info: figuras/cap12/lotes.pdf  used on input line 729.
+(luatex.def)             Requested size: 269.50626pt x 249.86566pt.
+
+\openout6 = main.listing
+
+(./build/libro/_minted/18D67594D0642BAF4D8DA494470C17F8.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 751.
+LaTeX Info: Redefining \% on input line 751.
+Package cleveref Info: loaded `spanish' language definitions on input line 751.
+
+[519]
+
+LaTeX Info: Redefining \. on input line 751.
+LaTeX Info: Redefining \% on input line 751.
+Package cleveref Info: loaded `spanish' language definitions on input line 751.
+
+[520<./figuras/cap12/lotes.pdf>]
+
+LaTeX Info: Redefining \. on input line 769.
+LaTeX Info: Redefining \% on input line 769.
+Package cleveref Info: loaded `spanish' language definitions on input line 769.
+
+[521]
+
+LaTeX Info: Redefining \. on input line 788.
+LaTeX Info: Redefining \% on input line 788.
+Package cleveref Info: loaded `spanish' language definitions on input line 788.
+
+[522]
+
+LaTeX Info: Redefining \. on input line 802.
+LaTeX Info: Redefining \% on input line 802.
+Package cleveref Info: loaded `spanish' language definitions on input line 802.
+
+[523]
+<figuras/cap12/trayectoria.pdf, id=6991, 354.34778pt x 115.53854pt>
+File: figuras/cap12/trayectoria.pdf Graphic file (type pdf)
+<use figuras/cap12/trayectoria.pdf>
+Package luatex.def Info: figuras/cap12/trayectoria.pdf  used on input line 806.
+
+(luatex.def)             Requested size: 364.19495pt x 118.74863pt.
+
+
+LaTeX Info: Redefining \. on input line 814.
+LaTeX Info: Redefining \% on input line 814.
+Package cleveref Info: loaded `spanish' language definitions on input line 814.
+
+[524<./figuras/cap12/trayectoria.pdf>]
+<figuras/cap12/paga_genes.pdf, id=7079, 354.34778pt x 137.23273pt>
+File: figuras/cap12/paga_genes.pdf Graphic file (type pdf)
+<use figuras/cap12/paga_genes.pdf>
+Package luatex.def Info: figuras/cap12/paga_genes.pdf  used on input line 826.
+(luatex.def)             Requested size: 364.19495pt x 141.04555pt.
+
+
+LaTeX Info: Redefining \. on input line 856.
+LaTeX Info: Redefining \% on input line 856.
+Package cleveref Info: loaded `spanish' language definitions on input line 856.
+
+[525]
+
+LaTeX Info: Redefining \. on input line 857.
+LaTeX Info: Redefining \% on input line 857.
+Package cleveref Info: loaded `spanish' language definitions on input line 857.
+
+[526<./figuras/cap12/paga_genes.pdf>]
+Package pgfplots info on input line 881: Using 'lua backend=false' for plot 0 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap12/fase.dat}
+Package pgfplots info on input line 884: Using 'lua backend=false' for plot 1 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap12/fase.dat}
+PGFPlots: reading {figuras/cap12/fase_curva.dat}
+
+
+LaTeX Info: Redefining \. on input line 905.
+LaTeX Info: Redefining \% on input line 905.
+Package cleveref Info: loaded `spanish' language definitions on input line 905.
+
+[527]
+
+LaTeX Info: Redefining \. on input line 905.
+LaTeX Info: Redefining \% on input line 905.
+Package cleveref Info: loaded `spanish' language definitions on input line 905.
+
+[528]
+\openout6 = main.listing
+ (./build/libro/_minted/429216192A6869AF1893FDDA86F27BB7.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 944.
+LaTeX Info: Redefining \% on input line 944.
+Package cleveref Info: loaded `spanish' language definitions on input line 944.
+
+[529]
+
+LaTeX Info: Redefining \. on input line 949.
+LaTeX Info: Redefining \% on input line 949.
+Package cleveref Info: loaded `spanish' language definitions on input line 949.
+
+[530] (./build/libro/_minted/545CDC2941F05B821B07917B665A726A.highlight.minted)
+Overfull \hbox (1.21921pt too wide) in paragraph at lines 952--953
+\TU/LibertinusSerif(0)/m/n/10.95 una per-ple-ji-dad da-da. Ve-ri-fi-que con los da-tos de []\TU/FiraMono(0)/m/n/10.95 figuras/cap12/generar.py[]
+ []
+
+(./build/libro/_minted/E8AE735292BF60EAA5B68690AFB5D82B.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 957.
+LaTeX Info: Redefining \% on input line 957.
+Package cleveref Info: loaded `spanish' language definitions on input line 957.
+
+[531]
+
+LaTeX Info: Redefining \. on input line 959.
+LaTeX Info: Redefining \% on input line 959.
+Package cleveref Info: loaded `spanish' language definitions on input line 959.
+
+[532]
+
+LaTeX Info: Redefining \. on input line 959.
+LaTeX Info: Redefining \% on input line 959.
+Package cleveref Info: loaded `spanish' language definitions on input line 959.
+
+[533])
+
+LaTeX Info: Redefining \. on input line 67.
+LaTeX Info: Redefining \% on input line 67.
+Package cleveref Info: loaded `spanish' language definitions on input line 67.
+[534]
+\openout2 = capitulos/cap13.aux
+ (./capitulos/cap13.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@17=\count640
+\blx@sectionciteorder@17=\count641
+Package biblatex Info: Reference section=17 on input line 4.
+Package biblatex Info: Setting label 'refsection:17' on input line 4.
+
+Capítulo 13.
+
+
+[535
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+Package cleveref Info: loaded `spanish' language definitions on input line 29.
+[536]
+
+LaTeX Info: Redefining \. on input line 56.
+LaTeX Info: Redefining \% on input line 56.
+Package cleveref Info: loaded `spanish' language definitions on input line 56.
+[537]
+
+LaTeX Info: Redefining \. on input line 65.
+LaTeX Info: Redefining \% on input line 65.
+Package cleveref Info: loaded `spanish' language definitions on input line 65.
+[538]
+Overfull \hbox (4.0988pt too wide) in paragraph at lines 116--117
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 132.
+LaTeX Info: Redefining \% on input line 132.
+Package cleveref Info: loaded `spanish' language definitions on input line 132.
+
+[539]
+
+LaTeX Info: Redefining \. on input line 144.
+LaTeX Info: Redefining \% on input line 144.
+Package cleveref Info: loaded `spanish' language definitions on input line 144.
+
+[540]
+
+LaTeX Info: Redefining \. on input line 174.
+LaTeX Info: Redefining \% on input line 174.
+Package cleveref Info: loaded `spanish' language definitions on input line 174.
+
+[541]
+PGFPlots: reading {figuras/cap13/hebras.dat}
+PGFPlots: reading {figuras/cap13/hebras.dat}
+PGFPlots: reading {figuras/cap13/hebras.dat}
+PGFPlots: reading {figuras/cap13/xcor.dat}
+PGFPlots: reading {figuras/cap13/xcor.dat}
+
+
+LaTeX Info: Redefining \. on input line 206.
+LaTeX Info: Redefining \% on input line 206.
+Package cleveref Info: loaded `spanish' language definitions on input line 206.
+
+[542]
+
+LaTeX Info: Redefining \. on input line 236.
+LaTeX Info: Redefining \% on input line 236.
+Package cleveref Info: loaded `spanish' language definitions on input line 236.
+
+[543]
+
+LaTeX Info: Redefining \. on input line 267.
+LaTeX Info: Redefining \% on input line 267.
+Package cleveref Info: loaded `spanish' language definitions on input line 267.
+
+[544]
+PGFPlots: reading {figuras/cap13/pileup.dat}
+PGFPlots: reading {figuras/cap13/pileup.dat}
+PGFPlots: reading {figuras/cap13/pileup.dat}
+Package pgfplots info on input line 292: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap13/pmf.dat}
+PGFPlots: reading {figuras/cap13/pmf.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/373FC832D168CA671F1ECC205A8E3D99.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 315.
+LaTeX Info: Redefining \% on input line 315.
+Package cleveref Info: loaded `spanish' language definitions on input line 315.
+
+[545]
+
+LaTeX Info: Redefining \. on input line 319.
+LaTeX Info: Redefining \% on input line 319.
+Package cleveref Info: loaded `spanish' language definitions on input line 319.
+
+[546]
+
+LaTeX Info: Redefining \. on input line 339.
+LaTeX Info: Redefining \% on input line 339.
+Package cleveref Info: loaded `spanish' language definitions on input line 339.
+
+[547]
+Overfull \hbox (3.09962pt too wide) in paragraph at lines 361--362
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 377.
+LaTeX Info: Redefining \% on input line 377.
+Package cleveref Info: loaded `spanish' language definitions on input line 377.
+
+[548]
+
+LaTeX Info: Redefining \. on input line 394.
+LaTeX Info: Redefining \% on input line 394.
+Package cleveref Info: loaded `spanish' language definitions on input line 394.
+
+[549]
+Package pgfplots info on input line 403: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap13/atac_frag.dat}
+PGFPlots: reading {figuras/cap13/tss.dat}
+
+Overfull \hbox (4.99437pt too wide) in paragraph at lines 419--420
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 429.
+LaTeX Info: Redefining \% on input line 429.
+Package cleveref Info: loaded `spanish' language definitions on input line 429.
+
+[550]
+
+LaTeX Info: Redefining \. on input line 445.
+LaTeX Info: Redefining \% on input line 445.
+Package cleveref Info: loaded `spanish' language definitions on input line 445.
+
+[551]
+
+LaTeX Info: Redefining \. on input line 470.
+LaTeX Info: Redefining \% on input line 470.
+Package cleveref Info: loaded `spanish' language definitions on input line 470.
+
+[552]
+Overfull \hbox (2.26767pt too wide) in paragraph at lines 501--502
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 511.
+LaTeX Info: Redefining \% on input line 511.
+Package cleveref Info: loaded `spanish' language definitions on input line 511.
+
+[553]
+Overfull \hbox (2.26456pt too wide) in paragraph at lines 530--531
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/17EB3D01E8EF4202DE1073DD82828FAB.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 542.
+LaTeX Info: Redefining \% on input line 542.
+Package cleveref Info: loaded `spanish' language definitions on input line 542.
+
+[554]
+
+LaTeX Info: Redefining \. on input line 567.
+LaTeX Info: Redefining \% on input line 567.
+Package cleveref Info: loaded `spanish' language definitions on input line 567.
+
+[555]
+PGFPlots: reading {figuras/cap13/beta_hist.dat}
+PGFPlots: reading {figuras/cap13/m_hist.dat}
+
+Overfull \hbox (9.56952pt too wide) in paragraph at lines 594--595
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 599.
+LaTeX Info: Redefining \% on input line 599.
+Package cleveref Info: loaded `spanish' language definitions on input line 599.
+
+[556]
+
+LaTeX Info: Redefining \. on input line 623.
+LaTeX Info: Redefining \% on input line 623.
+Package cleveref Info: loaded `spanish' language definitions on input line 623.
+
+[557]
+
+LaTeX Info: Redefining \. on input line 643.
+LaTeX Info: Redefining \% on input line 643.
+Package cleveref Info: loaded `spanish' language definitions on input line 643.
+
+[558] (./figuras/cap13/dmr_lim.tex)
+PGFPlots: reading {figuras/cap13/dmr_a.dat}
+PGFPlots: reading {figuras/cap13/dmr_b.dat}
+PGFPlots: reading {figuras/cap13/dmr_curva.dat}
+PGFPlots: reading {figuras/cap13/dmr_curva.dat}
+Package pgfplots info on input line 664: Using 'lua backend=false' for plot 0 (
+type '[tikz@plot@handler: macro:->\global \pgf@plot@startedfalse \global \let \
+pgf@plotstreamend \pgf@plotstreamend@init \global \let \pgf@plotstreampoint \pg
+f@plotstreampoint@init \global \let \pgf@plotstreamjump \pgf@plotstreamjump@ini
+t \global \let \pgf@plotstreamspecial \pgf@plotstreamspecial@init \pgfplotyzero
+levelstreamstart ]'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap13/dmr_p.dat}
+
+
+LaTeX Info: Redefining \. on input line 676.
+LaTeX Info: Redefining \% on input line 676.
+Package cleveref Info: loaded `spanish' language definitions on input line 676.
+
+[559]
+
+LaTeX Info: Redefining \. on input line 694.
+LaTeX Info: Redefining \% on input line 694.
+Package cleveref Info: loaded `spanish' language definitions on input line 694.
+
+[560]
+
+LaTeX Info: Redefining \. on input line 713.
+LaTeX Info: Redefining \% on input line 713.
+Package cleveref Info: loaded `spanish' language definitions on input line 713.
+
+[561]
+
+LaTeX Info: Redefining \. on input line 736.
+LaTeX Info: Redefining \% on input line 736.
+Package cleveref Info: loaded `spanish' language definitions on input line 736.
+
+[562]
+
+LaTeX Info: Redefining \. on input line 751.
+LaTeX Info: Redefining \% on input line 751.
+Package cleveref Info: loaded `spanish' language definitions on input line 751.
+
+[563]
+\openout6 = main.listing
+ (./build/libro/_minted/572243E1776B4707CBF92F39B9B960C9.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 774.
+LaTeX Info: Redefining \% on input line 774.
+Package cleveref Info: loaded `spanish' language definitions on input line 774.
+
+[564]
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/em_ll.dat}
+PGFPlots: reading {figuras/cap13/gibbs_ll.dat}
+PGFPlots: reading {figuras/cap13/gibbs_ll.dat}
+PGFPlots: reading {figuras/cap13/gibbs_ll.dat}
+PGFPlots: reading {figuras/cap13/gibbs_ll.dat}
+ (./figuras/cap13/logo_real.tex) (./figuras/cap13/logo_it0.tex)
+(./figuras/cap13/logo_it1.tex) (./figuras/cap13/logo_it3.tex)
+(./figuras/cap13/logo_em.tex) (./figuras/cap13/logo_gibbs.tex)
+
+LaTeX Info: Redefining \. on input line 820.
+LaTeX Info: Redefining \% on input line 820.
+Package cleveref Info: loaded `spanish' language definitions on input line 820.
+
+[565]
+
+LaTeX Info: Redefining \. on input line 838.
+LaTeX Info: Redefining \% on input line 838.
+Package cleveref Info: loaded `spanish' language definitions on input line 838.
+
+[566]
+
+LaTeX Info: Redefining \. on input line 853.
+LaTeX Info: Redefining \% on input line 853.
+Package cleveref Info: loaded `spanish' language definitions on input line 853.
+
+[567]
+PGFPlots: reading {figuras/cap13/centrimo.dat}
+PGFPlots: reading {figuras/cap13/centrimo.dat}
+PGFPlots: reading {figuras/cap13/centrimo.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/F6316C3AAF0C047304CD9B5C4545D808.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 895.
+LaTeX Info: Redefining \% on input line 895.
+Package cleveref Info: loaded `spanish' language definitions on input line 895.
+
+[568]
+
+LaTeX Info: Redefining \. on input line 903.
+LaTeX Info: Redefining \% on input line 903.
+Package cleveref Info: loaded `spanish' language definitions on input line 903.
+
+[569]
+
+LaTeX Info: Redefining \. on input line 919.
+LaTeX Info: Redefining \% on input line 919.
+Package cleveref Info: loaded `spanish' language definitions on input line 919.
+
+[570] (./build/libro/_minted/5D71CF63E5FCDA2F6D9945F69C9507E6.highlight.minted) (./build/libro/_minted/EFDA2A4935437242FEBC1BBE7A7731C7.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
+
+[571]
+
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
+
+[572]
+
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
+
+[573])
+
+LaTeX Info: Redefining \. on input line 68.
+LaTeX Info: Redefining \% on input line 68.
+Package cleveref Info: loaded `spanish' language definitions on input line 68.
+[574]
+\openout2 = capitulos/cap14.aux
+ (./capitulos/cap14.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@18=\count642
+\blx@sectionciteorder@18=\count643
+Package biblatex Info: Reference section=18 on input line 4.
+Package biblatex Info: Setting label 'refsection:18' on input line 4.
+
+Capítulo 14.
+
+
+[575
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 29.
+LaTeX Info: Redefining \% on input line 29.
+Package cleveref Info: loaded `spanish' language definitions on input line 29.
+[576]
+
+LaTeX Info: Redefining \. on input line 39.
+LaTeX Info: Redefining \% on input line 39.
+Package cleveref Info: loaded `spanish' language definitions on input line 39.
+[577]
+
+LaTeX Info: Redefining \. on input line 91.
+LaTeX Info: Redefining \% on input line 91.
+Package cleveref Info: loaded `spanish' language definitions on input line 91.
+[578]
+Overfull \hbox (5.05733pt too wide) in paragraph at lines 145--146
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 153.
+LaTeX Info: Redefining \% on input line 153.
+Package cleveref Info: loaded `spanish' language definitions on input line 153.
+
+[579]
+
+LaTeX Info: Redefining \. on input line 157.
+LaTeX Info: Redefining \% on input line 157.
+Package cleveref Info: loaded `spanish' language definitions on input line 157.
+
+[580]
+
+LaTeX Info: Redefining \. on input line 183.
+LaTeX Info: Redefining \% on input line 183.
+Package cleveref Info: loaded `spanish' language definitions on input line 183.
+
+[581]
+Package pgfplots info on input line 203: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap14/dada2_err.dat}
+PGFPlots: reading {figuras/cap14/dada2_umbral.dat}
+PGFPlots: reading {figuras/cap14/dada2_real.dat}
+
+
+LaTeX Info: Redefining \. on input line 227.
+LaTeX Info: Redefining \% on input line 227.
+Package cleveref Info: loaded `spanish' language definitions on input line 227.
+
+[582]
+
+LaTeX Info: Redefining \. on input line 227.
+LaTeX Info: Redefining \% on input line 227.
+Package cleveref Info: loaded `spanish' language definitions on input line 227.
+
+[583]
+\openout6 = main.listing
+ (./build/libro/_minted/38CCC5034A505B5BF98B52B03BC7BC4F.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 260.
+LaTeX Info: Redefining \% on input line 260.
+Package cleveref Info: loaded `spanish' language definitions on input line 260.
+
+[584]
+Overfull \hbox (14.81264pt too wide) in paragraph at lines 298--299
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 324.
+LaTeX Info: Redefining \% on input line 324.
+Package cleveref Info: loaded `spanish' language definitions on input line 324.
+
+[585]
+
+LaTeX Info: Redefining \. on input line 342.
+LaTeX Info: Redefining \% on input line 342.
+Package cleveref Info: loaded `spanish' language definitions on input line 342.
+
+[586]
+\openout6 = main.listing
+ (./build/libro/_minted/3A46EF9FB10B512D814CC79C67726550.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 366.
+LaTeX Info: Redefining \% on input line 366.
+Package cleveref Info: loaded `spanish' language definitions on input line 366.
+
+[587]
+
+LaTeX Info: Redefining \. on input line 381.
+LaTeX Info: Redefining \% on input line 381.
+Package cleveref Info: loaded `spanish' language definitions on input line 381.
+
+[588]
+
+LaTeX Info: Redefining \. on input line 407.
+LaTeX Info: Redefining \% on input line 407.
+Package cleveref Info: loaded `spanish' language definitions on input line 407.
+
+[589]
+Overfull \hbox (6.5188pt too wide) in paragraph at lines 411--412
+[]\TU/LibertinusSerif(0)/m/n/10.95 Una mues-tra con $\TU/LibertinusMath-Regular
+.otf(1)/b/n/10.95 𝑁 = 100$ \TU/LibertinusSerif(0)/m/n/10.95 lec-tu-ras tie-ne
+ los con-teos $\TU/LibertinusMath-Regular.otf(1)/b/n/10.95 (50, 20, 10, 10, 5, 
+2, 1, 1, 1)$\TU/LibertinusSerif(0)/m/n/10.95 .
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 424.
+LaTeX Info: Redefining \% on input line 424.
+Package cleveref Info: loaded `spanish' language definitions on input line 424.
+
+[590]
+
+LaTeX Info: Redefining \. on input line 454.
+LaTeX Info: Redefining \% on input line 454.
+Package cleveref Info: loaded `spanish' language definitions on input line 454.
+
+[591] (./figuras/cap14/rare_macros.tex)
+PGFPlots: reading {figuras/cap14/rare_A.dat}
+PGFPlots: reading {figuras/cap14/rare_B.dat}
+PGFPlots: reading {figuras/cap14/rare_C.dat}
+Package pgfplots info on input line 486: Deactivating LUA version of plot expre
+ssion for plot 3 (type 'pgfplothandlerlineto'): y expression '\capcatorceChaoA 
+' contains a TeX macro.
+Package pgfplots info on input line 487: Deactivating LUA version of plot expre
+ssion for plot 4 (type 'pgfplothandlerlineto'): y expression '\capcatorceChaoB 
+' contains a TeX macro.
+
+
+LaTeX Info: Redefining \. on input line 499.
+LaTeX Info: Redefining \% on input line 499.
+Package cleveref Info: loaded `spanish' language definitions on input line 499.
+
+[592]
+
+LaTeX Info: Redefining \. on input line 511.
+LaTeX Info: Redefining \% on input line 511.
+Package cleveref Info: loaded `spanish' language definitions on input line 511.
+
+[593]
+Overfull \hbox (1.02373pt too wide) detected at line 521
+[][][][][] [] [][]\TU/LibertinusMath-Regular.otf(1)/b/n/10.95 𝐷 = [] [] = 
+− [] 𝑝[] [] 𝑝[] = 𝐻,  [] [][]𝐷 = 𝑒[].
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 531.
+LaTeX Info: Redefining \% on input line 531.
+Package cleveref Info: loaded `spanish' language definitions on input line 531.
+
+[594]
+PGFPlots: reading {figuras/cap14/hill.dat}
+PGFPlots: reading {figuras/cap14/hill.dat}
+PGFPlots: reading {figuras/cap14/hill.dat}
+
+
+LaTeX Info: Redefining \. on input line 561.
+LaTeX Info: Redefining \% on input line 561.
+Package cleveref Info: loaded `spanish' language definitions on input line 561.
+
+[595]
+Package pgfplots info on input line 585: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+Package pgfplots info on input line 592: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+
+
+LaTeX Info: Redefining \. on input line 608.
+LaTeX Info: Redefining \% on input line 608.
+Package cleveref Info: loaded `spanish' language definitions on input line 608.
+
+[596]
+
+LaTeX Info: Redefining \. on input line 626.
+LaTeX Info: Redefining \% on input line 626.
+Package cleveref Info: loaded `spanish' language definitions on input line 626.
+
+[597]
+
+LaTeX Info: Redefining \. on input line 645.
+LaTeX Info: Redefining \% on input line 645.
+Package cleveref Info: loaded `spanish' language definitions on input line 645.
+
+[598]
+
+LaTeX Info: Redefining \. on input line 666.
+LaTeX Info: Redefining \% on input line 666.
+Package cleveref Info: loaded `spanish' language definitions on input line 666.
+
+[599] (./figuras/cap14/pcoa_macros.tex)
+PGFPlots: reading {figuras/cap14/pcoa_sano.dat}
+PGFPlots: reading {figuras/cap14/pcoa_dieta.dat}
+PGFPlots: reading {figuras/cap14/pcoa_antibiotico.dat}
+
+\openout6 = main.listing
+
+(./build/libro/_minted/D7B8B80E1E6BEEA8BA547DCCA1268E29.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 726.
+LaTeX Info: Redefining \% on input line 726.
+Package cleveref Info: loaded `spanish' language definitions on input line 726.
+
+[600]
+
+LaTeX Info: Redefining \. on input line 732.
+LaTeX Info: Redefining \% on input line 732.
+Package cleveref Info: loaded `spanish' language definitions on input line 732.
+
+[601]
+
+LaTeX Info: Redefining \. on input line 746.
+LaTeX Info: Redefining \% on input line 746.
+Package cleveref Info: loaded `spanish' language definitions on input line 746.
+
+[602]
+
+LaTeX Info: Redefining \. on input line 766.
+LaTeX Info: Redefining \% on input line 766.
+Package cleveref Info: loaded `spanish' language definitions on input line 766.
+
+[603]
+
+LaTeX Info: Redefining \. on input line 788.
+LaTeX Info: Redefining \% on input line 788.
+Package cleveref Info: loaded `spanish' language definitions on input line 788.
+
+[604]
+
+LaTeX Info: Redefining \. on input line 841.
+LaTeX Info: Redefining \% on input line 841.
+Package cleveref Info: loaded `spanish' language definitions on input line 841.
+
+[605]
+
+LaTeX Info: Redefining \. on input line 847.
+LaTeX Info: Redefining \% on input line 847.
+Package cleveref Info: loaded `spanish' language definitions on input line 847.
+
+[606]
+
+LaTeX Info: Redefining \. on input line 869.
+LaTeX Info: Redefining \% on input line 869.
+Package cleveref Info: loaded `spanish' language definitions on input line 869.
+
+[607] (./figuras/cap14/bracken.tex)
+PGFPlots: reading {figuras/cap14/bracken.dat}
+PGFPlots: reading {figuras/cap14/bracken.dat}
+PGFPlots: reading {figuras/cap14/bracken.dat}
+
+
+LaTeX Info: Redefining \. on input line 893.
+LaTeX Info: Redefining \% on input line 893.
+Package cleveref Info: loaded `spanish' language definitions on input line 893.
+
+[608]
+\openout6 = main.listing
+ (./build/libro/_minted/1A830E7A76E849DE6759D3100F5CBE67.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 914.
+LaTeX Info: Redefining \% on input line 914.
+Package cleveref Info: loaded `spanish' language definitions on input line 914.
+
+[609]
+Package pgfplots info on input line 925: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap14/bin_0.dat}
+PGFPlots: reading {figuras/cap14/bin_1.dat}
+PGFPlots: reading {figuras/cap14/bin_2.dat}
+PGFPlots: reading {figuras/cap14/bin_3.dat}
+PGFPlots: reading {figuras/cap14/bin_4.dat}
+
+
+LaTeX Info: Redefining \. on input line 949.
+LaTeX Info: Redefining \% on input line 949.
+Package cleveref Info: loaded `spanish' language definitions on input line 949.
+
+[610]
+
+LaTeX Info: Redefining \. on input line 972.
+LaTeX Info: Redefining \% on input line 972.
+Package cleveref Info: loaded `spanish' language definitions on input line 972.
+
+[611]
+Overfull \hbox (5.70332pt too wide) in paragraph at lines 1006--1007
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/C285A14A51F98FAA359D9956E921E8F5.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1024.
+LaTeX Info: Redefining \% on input line 1024.
+Package cleveref Info: loaded `spanish' language definitions on input line 1024
+.
+[612]
+
+LaTeX Info: Redefining \. on input line 1028.
+LaTeX Info: Redefining \% on input line 1028.
+Package cleveref Info: loaded `spanish' language definitions on input line 1028
+.
+[613]
+
+LaTeX Info: Redefining \. on input line 1046.
+LaTeX Info: Redefining \% on input line 1046.
+Package cleveref Info: loaded `spanish' language definitions on input line 1046
+.
+[614] (./build/libro/_minted/37DF78F37983FE76E5186D0C25254B53.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1055.
+LaTeX Info: Redefining \% on input line 1055.
+Package cleveref Info: loaded `spanish' language definitions on input line 1055
+.
+[615]
+
+LaTeX Info: Redefining \. on input line 1058.
+LaTeX Info: Redefining \% on input line 1058.
+Package cleveref Info: loaded `spanish' language definitions on input line 1058
+.
+[616]
+
+LaTeX Info: Redefining \. on input line 1058.
+LaTeX Info: Redefining \% on input line 1058.
+Package cleveref Info: loaded `spanish' language definitions on input line 1058
+.
+[617])
+
+LaTeX Info: Redefining \. on input line 69.
+LaTeX Info: Redefining \% on input line 69.
+Package cleveref Info: loaded `spanish' language definitions on input line 69.
+[618]
+
+[619
+
+
+
+]
+
+[620
+
+]
+\openout2 = capitulos/cap15.aux
+ (./capitulos/cap15.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@19=\count644
+\blx@sectionciteorder@19=\count645
+Package biblatex Info: Reference section=19 on input line 4.
+Package biblatex Info: Setting label 'refsection:19' on input line 4.
+
+Capítulo 15.
+
+
+[621
+
+
+]
+
+LaTeX Info: Redefining \. on input line 41.
+LaTeX Info: Redefining \% on input line 41.
+Package cleveref Info: loaded `spanish' language definitions on input line 41.
+[622]
+
+LaTeX Info: Redefining \. on input line 56.
+LaTeX Info: Redefining \% on input line 56.
+Package cleveref Info: loaded `spanish' language definitions on input line 56.
+[623] (./figuras/cap15/peptido.tex)
+
+LaTeX Info: Redefining \. on input line 76.
+LaTeX Info: Redefining \% on input line 76.
+Package cleveref Info: loaded `spanish' language definitions on input line 76.
+[624]
+<figuras/cap15/ramachandran.pdf, id=8291, 368.2696pt x 194.5531pt>
+File: figuras/cap15/ramachandran.pdf Graphic file (type pdf)
+<use figuras/cap15/ramachandran.pdf>
+Package luatex.def Info: figuras/cap15/ramachandran.pdf  used on input line 93.
+
+(luatex.def)             Requested size: 364.19495pt x 192.40926pt.
+
+
+LaTeX Info: Redefining \. on input line 101.
+LaTeX Info: Redefining \% on input line 101.
+Package cleveref Info: loaded `spanish' language definitions on input line 101.
+
+[625]
+
+LaTeX Info: Redefining \. on input line 107.
+LaTeX Info: Redefining \% on input line 107.
+Package cleveref Info: loaded `spanish' language definitions on input line 107.
+
+[626<./figuras/cap15/ramachandran.pdf>]
+
+LaTeX Info: Redefining \. on input line 118.
+LaTeX Info: Redefining \% on input line 118.
+Package cleveref Info: loaded `spanish' language definitions on input line 118.
+
+[627]
+\openout6 = main.listing
+ (./build/libro/_minted/C87FFF85B64F0F7132FD8F3460C71146.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 153.
+LaTeX Info: Redefining \% on input line 153.
+Package cleveref Info: loaded `spanish' language definitions on input line 153.
+
+[628]
+
+LaTeX Info: Redefining \. on input line 174.
+LaTeX Info: Redefining \% on input line 174.
+Package cleveref Info: loaded `spanish' language definitions on input line 174.
+
+[629]
+
+LaTeX Info: Redefining \. on input line 197.
+LaTeX Info: Redefining \% on input line 197.
+Package cleveref Info: loaded `spanish' language definitions on input line 197.
+
+[630]
+Package pgfplots info on input line 206: Using 'lua backend=false' for axis: st
+acked plots unsupported (yet).
+PGFPlots: reading {figuras/cap15/pdb_anual.dat}
+PGFPlots: reading {figuras/cap15/pdb_anual.dat}
+PGFPlots: reading {figuras/cap15/pdb_anual.dat}
+
+
+LaTeX Info: Redefining \. on input line 222.
+LaTeX Info: Redefining \% on input line 222.
+Package cleveref Info: loaded `spanish' language definitions on input line 222.
+
+[631]
+\openout6 = main.listing
+ (./build/libro/_minted/05E7087CB5AF8CDDFBE1D479DEFDF2F1.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 240.
+LaTeX Info: Redefining \% on input line 240.
+Package cleveref Info: loaded `spanish' language definitions on input line 240.
+
+[632] (./build/libro/_minted/3F3CCE42596143234D04566240B77BC7.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 269.
+LaTeX Info: Redefining \% on input line 269.
+Package cleveref Info: loaded `spanish' language definitions on input line 269.
+
+[633]
+PGFPlots: reading {figuras/cap15/ubq.dat}
+PGFPlots: reading {figuras/cap15/ubq.dat}
+
+
+LaTeX Info: Redefining \. on input line 295.
+LaTeX Info: Redefining \% on input line 295.
+Package cleveref Info: loaded `spanish' language definitions on input line 295.
+
+[634]
+
+LaTeX Info: Redefining \. on input line 321.
+LaTeX Info: Redefining \% on input line 321.
+Package cleveref Info: loaded `spanish' language definitions on input line 321.
+
+[635]
+
+LaTeX Info: Redefining \. on input line 350.
+LaTeX Info: Redefining \% on input line 350.
+Package cleveref Info: loaded `spanish' language definitions on input line 350.
+
+[636] (./figuras/cap15/kabsch.tex (./figuras/cap15/kabsch_pts.tex)
+(./figuras/cap15/kabsch_pts.tex) (./figuras/cap15/kabsch_pts.tex))
+
+LaTeX Info: Redefining \. on input line 367.
+LaTeX Info: Redefining \% on input line 367.
+Package cleveref Info: loaded `spanish' language definitions on input line 367.
+
+[637]
+\openout6 = main.listing
+ (./build/libro/_minted/FFBAC1997D4BF0AC5871CB0DD07F9CF4.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 399.
+LaTeX Info: Redefining \% on input line 399.
+Package cleveref Info: loaded `spanish' language definitions on input line 399.
+
+[638]
+
+LaTeX Info: Redefining \. on input line 411.
+LaTeX Info: Redefining \% on input line 411.
+Package cleveref Info: loaded `spanish' language definitions on input line 411.
+
+[639]
+
+LaTeX Info: Redefining \. on input line 426.
+LaTeX Info: Redefining \% on input line 426.
+Package cleveref Info: loaded `spanish' language definitions on input line 426.
+
+[640]
+Overfull \hbox (7.6928pt too wide) in paragraph at lines 426--426
+|[]\TU/SourceSansPro(2)/m/n/17 Pre-dic-ción de es-truc-tu-ra: de la ho-mo-lo-g
+ía a Alpha-
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 444.
+LaTeX Info: Redefining \% on input line 444.
+Package cleveref Info: loaded `spanish' language definitions on input line 444.
+
+[641]
+
+LaTeX Info: Redefining \. on input line 483.
+LaTeX Info: Redefining \% on input line 483.
+Package cleveref Info: loaded `spanish' language definitions on input line 483.
+
+[642]
+
+LaTeX Info: Redefining \. on input line 494.
+LaTeX Info: Redefining \% on input line 494.
+Package cleveref Info: loaded `spanish' language definitions on input line 494.
+
+[643] (./figuras/cap15/coevolucion.tex)
+
+LaTeX Info: Redefining \. on input line 526.
+LaTeX Info: Redefining \% on input line 526.
+Package cleveref Info: loaded `spanish' language definitions on input line 526.
+
+[644]
+
+LaTeX Info: Redefining \. on input line 536.
+LaTeX Info: Redefining \% on input line 536.
+Package cleveref Info: loaded `spanish' language definitions on input line 536.
+
+[645] (./figuras/cap15/alphafold.tex)
+
+LaTeX Info: Redefining \. on input line 565.
+LaTeX Info: Redefining \% on input line 565.
+Package cleveref Info: loaded `spanish' language definitions on input line 565.
+
+[646]
+
+LaTeX Info: Redefining \. on input line 567.
+LaTeX Info: Redefining \% on input line 567.
+Package cleveref Info: loaded `spanish' language definitions on input line 567.
+
+[647]
+
+LaTeX Info: Redefining \. on input line 583.
+LaTeX Info: Redefining \% on input line 583.
+Package cleveref Info: loaded `spanish' language definitions on input line 583.
+
+[648]
+PGFPlots: reading {figuras/cap15/plddt.dat}
+
+
+LaTeX Info: Redefining \. on input line 622.
+LaTeX Info: Redefining \% on input line 622.
+Package cleveref Info: loaded `spanish' language definitions on input line 622.
+
+[649]
+
+LaTeX Info: Redefining \. on input line 622.
+LaTeX Info: Redefining \% on input line 622.
+Package cleveref Info: loaded `spanish' language definitions on input line 622.
+
+[650]
+<figuras/cap15/pae_p53.pdf, id=8578, 242.7692pt x 199.46394pt>
+File: figuras/cap15/pae_p53.pdf Graphic file (type pdf)
+<use figuras/cap15/pae_p53.pdf>
+Package luatex.def Info: figuras/cap15/pae_p53.pdf  used on input line 626.
+(luatex.def)             Requested size: 225.79909pt x 185.52084pt.
+
+\openout6 = main.listing
+ (./build/libro/_minted/4849FBD41A344EB950BE5955A787D992.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 644.
+LaTeX Info: Redefining \% on input line 644.
+Package cleveref Info: loaded `spanish' language definitions on input line 644.
+
+[651<./figuras/cap15/pae_p53.pdf>]
+
+LaTeX Info: Redefining \. on input line 657.
+LaTeX Info: Redefining \% on input line 657.
+Package cleveref Info: loaded `spanish' language definitions on input line 657.
+
+[652]
+\openout6 = main.listing
+ (./build/libro/_minted/3D717BEC95385FF8A493546BEB52D043.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 690.
+LaTeX Info: Redefining \% on input line 690.
+Package cleveref Info: loaded `spanish' language definitions on input line 690.
+
+[653]
+
+LaTeX Info: Redefining \. on input line 706.
+LaTeX Info: Redefining \% on input line 706.
+Package cleveref Info: loaded `spanish' language definitions on input line 706.
+
+[654] (./figuras/cap15/docking_esquema.tex)
+
+LaTeX Info: Redefining \. on input line 734.
+LaTeX Info: Redefining \% on input line 734.
+Package cleveref Info: loaded `spanish' language definitions on input line 734.
+
+[655]
+
+LaTeX Info: Redefining \. on input line 738.
+LaTeX Info: Redefining \% on input line 738.
+Package cleveref Info: loaded `spanish' language definitions on input line 738.
+
+[656]
+Overfull \hbox (8.6793pt too wide) detected at line 752
+[][][][][][]
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 766.
+LaTeX Info: Redefining \% on input line 766.
+Package cleveref Info: loaded `spanish' language definitions on input line 766.
+
+[657]
+PGFPlots: reading {figuras/cap15/vina.dat}
+PGFPlots: reading {figuras/cap15/vina.dat}
+
+
+LaTeX Info: Redefining \. on input line 790.
+LaTeX Info: Redefining \% on input line 790.
+Package cleveref Info: loaded `spanish' language definitions on input line 790.
+
+[658]
+
+LaTeX Info: Redefining \. on input line 810.
+LaTeX Info: Redefining \% on input line 810.
+Package cleveref Info: loaded `spanish' language definitions on input line 810.
+
+[659]
+\openout6 = main.listing
+ (./build/libro/_minted/85D39DC79A134DB0FEFD7A2E8E50E6FE.highlight.minted)
+PGFPlots: reading {figuras/cap15/paisaje.dat}
+PGFPlots: reading {figuras/cap15/poses.dat}
+
+
+LaTeX Info: Redefining \. on input line 862.
+LaTeX Info: Redefining \% on input line 862.
+Package cleveref Info: loaded `spanish' language definitions on input line 862.
+
+[660]
+
+LaTeX Info: Redefining \. on input line 871.
+LaTeX Info: Redefining \% on input line 871.
+Package cleveref Info: loaded `spanish' language definitions on input line 871.
+
+[661]
+\openout6 = main.listing
+ (./build/libro/_minted/91041FB3B5B6A601F00F1CDFA7B1E1FA.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 895.
+LaTeX Info: Redefining \% on input line 895.
+Package cleveref Info: loaded `spanish' language definitions on input line 895.
+
+[662]
+Overfull \hbox (15.38777pt too wide) in paragraph at lines 906--907
+[]\TU/LibertinusSerif(0)/m/n/10.95 ¿Hay evi-den-cia ex-pe-ri-men-tal in-de-pen-
+dien-te (mu-ta-gé-ne-sis, re-la-ción estructura-
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 912.
+LaTeX Info: Redefining \% on input line 912.
+Package cleveref Info: loaded `spanish' language definitions on input line 912.
+
+[663]
+
+LaTeX Info: Redefining \. on input line 926.
+LaTeX Info: Redefining \% on input line 926.
+Package cleveref Info: loaded `spanish' language definitions on input line 926.
+
+[664] (./build/libro/_minted/8D0C3497C1178A98529C6B6FB695BA23.highlight.minted) (./build/libro/_minted/F7C1103CA20203F2B8956264237B0C4E.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 934.
+LaTeX Info: Redefining \% on input line 934.
+Package cleveref Info: loaded `spanish' language definitions on input line 934.
+
+[665]
+
+LaTeX Info: Redefining \. on input line 936.
+LaTeX Info: Redefining \% on input line 936.
+Package cleveref Info: loaded `spanish' language definitions on input line 936.
+
+[666]
+
+LaTeX Info: Redefining \. on input line 936.
+LaTeX Info: Redefining \% on input line 936.
+Package cleveref Info: loaded `spanish' language definitions on input line 936.
+
+[667])
+
+LaTeX Info: Redefining \. on input line 75.
+LaTeX Info: Redefining \% on input line 75.
+Package cleveref Info: loaded `spanish' language definitions on input line 75.
+[668]
+\openout2 = capitulos/cap16.aux
+ (./capitulos/cap16.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@20=\count646
+\blx@sectionciteorder@20=\count647
+Package biblatex Info: Reference section=20 on input line 4.
+Package biblatex Info: Setting label 'refsection:20' on input line 4.
+
+Capítulo 16.
+
+Overfull \hbox (4.60838pt too wide) in paragraph at lines 12--13
+[]\TU/SourceSansPro(0)/m/n/10 De-ri-var las pro-pie-da-des de los mo-de-los de 
+Erdős-Rényi, Watts-Strogatz y Barabási-
+ []
+
+
+
+[669
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 30.
+LaTeX Info: Redefining \% on input line 30.
+Package cleveref Info: loaded `spanish' language definitions on input line 30.
+[670]
+
+LaTeX Info: Redefining \. on input line 56.
+LaTeX Info: Redefining \% on input line 56.
+Package cleveref Info: loaded `spanish' language definitions on input line 56.
+[671]
+
+LaTeX Info: Redefining \. on input line 85.
+LaTeX Info: Redefining \% on input line 85.
+Package cleveref Info: loaded `spanish' language definitions on input line 85.
+[672]
+
+LaTeX Info: Redefining \. on input line 133.
+LaTeX Info: Redefining \% on input line 133.
+Package cleveref Info: loaded `spanish' language definitions on input line 133.
+
+[673]
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t''? on input line 177
+.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t''? on input line 177
+.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t1''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t1''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t2''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t2''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t3''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t3''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t4''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t4''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t5''? on input line 17
+7.
+
+
+Package pgf Warning: Returning node center instead of a point on node border. D
+id you specify a point identical to the center of node ``t5''? on input line 17
+7.
+
+
+
+LaTeX Info: Redefining \. on input line 186.
+LaTeX Info: Redefining \% on input line 186.
+Package cleveref Info: loaded `spanish' language definitions on input line 186.
+
+[674]
+
+LaTeX Info: Redefining \. on input line 198.
+LaTeX Info: Redefining \% on input line 198.
+Package cleveref Info: loaded `spanish' language definitions on input line 198.
+
+[675]
+
+LaTeX Info: Redefining \. on input line 211.
+LaTeX Info: Redefining \% on input line 211.
+Package cleveref Info: loaded `spanish' language definitions on input line 211.
+
+[676]
+Package pgfplots info on input line 226: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap16/ws.dat}
+PGFPlots: reading {figuras/cap16/ws.dat}
+
+
+LaTeX Info: Redefining \. on input line 252.
+LaTeX Info: Redefining \% on input line 252.
+Package cleveref Info: loaded `spanish' language definitions on input line 252.
+
+[677]
+
+LaTeX Info: Redefining \. on input line 259.
+LaTeX Info: Redefining \% on input line 259.
+Package cleveref Info: loaded `spanish' language definitions on input line 259.
+
+[678]
+Package pgfplots info on input line 276: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 276: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap16/grado_levadura.dat}
+PGFPlots: reading {figuras/cap16/grado_er.dat}
+PGFPlots: reading {figuras/cap16/grado_ba.dat}
+
+
+LaTeX Info: Redefining \. on input line 295.
+LaTeX Info: Redefining \% on input line 295.
+Package cleveref Info: loaded `spanish' language definitions on input line 295.
+
+[679]
+
+LaTeX Info: Redefining \. on input line 300.
+LaTeX Info: Redefining \% on input line 300.
+Package cleveref Info: loaded `spanish' language definitions on input line 300.
+
+[680]
+
+LaTeX Info: Redefining \. on input line 323.
+LaTeX Info: Redefining \% on input line 323.
+Package cleveref Info: loaded `spanish' language definitions on input line 323.
+
+[681]
+
+LaTeX Info: Redefining \. on input line 335.
+LaTeX Info: Redefining \% on input line 335.
+Package cleveref Info: loaded `spanish' language definitions on input line 335.
+
+[682] (./figuras/cap16/red_fus3.tex)
+Overfull \hbox (4.28581pt too wide) in paragraph at lines 349--350
+ [][] 
+ []
+
+
+\openout6 = main.listing
+(./build/libro/_minted/1413FDA43338E77FC1E70F48D7C77723.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 377.
+LaTeX Info: Redefining \% on input line 377.
+Package cleveref Info: loaded `spanish' language definitions on input line 377.
+
+[683]
+
+LaTeX Info: Redefining \. on input line 377.
+LaTeX Info: Redefining \% on input line 377.
+Package cleveref Info: loaded `spanish' language definitions on input line 377.
+
+[684]
+
+LaTeX Info: Redefining \. on input line 395.
+LaTeX Info: Redefining \% on input line 395.
+Package cleveref Info: loaded `spanish' language definitions on input line 395.
+
+[685]
+
+LaTeX Info: Redefining \. on input line 424.
+LaTeX Info: Redefining \% on input line 424.
+Package cleveref Info: loaded `spanish' language definitions on input line 424.
+
+[686]
+Overfull \hbox (9.27333pt too wide) in paragraph at lines 444--445
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 460.
+LaTeX Info: Redefining \% on input line 460.
+Package cleveref Info: loaded `spanish' language definitions on input line 460.
+
+[687]
+
+LaTeX Info: Redefining \. on input line 481.
+LaTeX Info: Redefining \% on input line 481.
+Package cleveref Info: loaded `spanish' language definitions on input line 481.
+
+[688]
+PGFPlots: reading {figuras/cap16/nar.dat}
+PGFPlots: reading {figuras/cap16/nar.dat}
+
+
+LaTeX Info: Redefining \. on input line 518.
+LaTeX Info: Redefining \% on input line 518.
+Package cleveref Info: loaded `spanish' language definitions on input line 518.
+
+[689]
+Overfull \hbox (11.38588pt too wide) in paragraph at lines 568--569
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 576.
+LaTeX Info: Redefining \% on input line 576.
+Package cleveref Info: loaded `spanish' language definitions on input line 576.
+
+[690]
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+PGFPlots: reading {figuras/cap16/ffl.dat}
+
+Overfull \hbox (7.92046pt too wide) in paragraph at lines 609--610
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 612.
+LaTeX Info: Redefining \% on input line 612.
+Package cleveref Info: loaded `spanish' language definitions on input line 612.
+
+[691]
+
+LaTeX Info: Redefining \. on input line 626.
+LaTeX Info: Redefining \% on input line 626.
+Package cleveref Info: loaded `spanish' language definitions on input line 626.
+
+[692]
+
+LaTeX Info: Redefining \. on input line 649.
+LaTeX Info: Redefining \% on input line 649.
+Package cleveref Info: loaded `spanish' language definitions on input line 649.
+
+[693]
+Package pgfplots info on input line 678: Using 'lua backend=false' for plot 0 (
+type 'quiver'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap16/toggle_q.dat}
+PGFPlots: reading {figuras/cap16/toggle_nu.dat}
+PGFPlots: reading {figuras/cap16/toggle_nv.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr0.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr1.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr2.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr3.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr4.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr5.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr6.dat}
+PGFPlots: reading {figuras/cap16/toggle_tr7.dat}
+
+\openout6 = main.listing
+ (./build/libro/_minted/47227E73A0E36DF68E90B96BE0B19F87.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 713.
+LaTeX Info: Redefining \% on input line 713.
+Package cleveref Info: loaded `spanish' language definitions on input line 713.
+
+[694]
+
+LaTeX Info: Redefining \. on input line 718.
+LaTeX Info: Redefining \% on input line 718.
+Package cleveref Info: loaded `spanish' language definitions on input line 718.
+
+[695]
+
+LaTeX Info: Redefining \. on input line 743.
+LaTeX Info: Redefining \% on input line 743.
+Package cleveref Info: loaded `spanish' language definitions on input line 743.
+
+[696]
+PGFPlots: reading {figuras/cap16/repressilator.dat}
+PGFPlots: reading {figuras/cap16/repressilator.dat}
+PGFPlots: reading {figuras/cap16/repressilator.dat}
+Package pgfplots info on input line 763: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+Package pgfplots info on input line 763: Using 'lua backend=false' for axis: ym
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap16/repr_frontera.dat}
+Package pgfplots info on input line 770: fill between: activating layered graph
+ics
+Package pgfplots info on input line 770: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+
+Overfull \hbox (13.77875pt too wide) in paragraph at lines 771--772
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 783.
+LaTeX Info: Redefining \% on input line 783.
+Package cleveref Info: loaded `spanish' language definitions on input line 783.
+
+[697]
+
+LaTeX Info: Redefining \. on input line 792.
+LaTeX Info: Redefining \% on input line 792.
+Package cleveref Info: loaded `spanish' language definitions on input line 792.
+
+[698]
+\openout6 = main.listing
+ (./build/libro/_minted/999132DD9D3BA81283E4564B4E849FFC.highlight.minted)
+PGFPlots: reading {figuras/cap16/ssa0.dat}
+PGFPlots: reading {figuras/cap16/ssa1.dat}
+PGFPlots: reading {figuras/cap16/ssa2.dat}
+PGFPlots: reading {figuras/cap16/ssa_ode.dat}
+PGFPlots: reading {figuras/cap16/ssa_hist.dat}
+PGFPlots: reading {figuras/cap16/ssa_hist.dat}
+
+Overfull \hbox (1.35205pt too wide) in paragraph at lines 840--841
+ [][] 
+ []
+
+
+Underfull \hbox (badness 1748) in paragraph at lines 841--841
+[][][]|\TU/SourceSansPro(0)/b/n/10 Iz-quier-da\TU/SourceSansPro(0)/m/n/10 : tres
+ tra-yec-to-rias exac-tas del al-go-rit-mo de Gi-lles-pie ([]ecua-
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 847.
+LaTeX Info: Redefining \% on input line 847.
+Package cleveref Info: loaded `spanish' language definitions on input line 847.
+
+[699]
+
+LaTeX Info: Redefining \. on input line 854.
+LaTeX Info: Redefining \% on input line 854.
+Package cleveref Info: loaded `spanish' language definitions on input line 854.
+
+[700]
+\openout6 = main.listing
+ (./build/libro/_minted/5948A2D1F45A165C3A9680C86F6254A9.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 884.
+LaTeX Info: Redefining \% on input line 884.
+Package cleveref Info: loaded `spanish' language definitions on input line 884.
+
+[701]
+PGFPlots: reading {figuras/cap16/pr_genie3.dat}
+PGFPlots: reading {figuras/cap16/pr_cor.dat}
+
+
+LaTeX Info: Redefining \. on input line 906.
+LaTeX Info: Redefining \% on input line 906.
+Package cleveref Info: loaded `spanish' language definitions on input line 906.
+
+[702]
+Overfull \hbox (0.113pt too wide) in paragraph at lines 909--910
+ \TU/SourceSansPro(0)/m/n/12 La to-po-lo-gía di-ce qué \TU/SourceSansPro(0)/m
+/it/12 pue-de \TU/SourceSansPro(0)/m/n/12 ha-cer un cir-cui-to; los pa-rá-me-tr
+os 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 923.
+LaTeX Info: Redefining \% on input line 923.
+Package cleveref Info: loaded `spanish' language definitions on input line 923.
+
+[703] (./build/libro/_minted/94F645EAA18A76206641A69EDCD4C9B2.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 933.
+LaTeX Info: Redefining \% on input line 933.
+Package cleveref Info: loaded `spanish' language definitions on input line 933.
+
+[704]
+
+LaTeX Info: Redefining \. on input line 938.
+LaTeX Info: Redefining \% on input line 938.
+Package cleveref Info: loaded `spanish' language definitions on input line 938.
+
+[705]
+
+LaTeX Info: Redefining \. on input line 938.
+LaTeX Info: Redefining \% on input line 938.
+Package cleveref Info: loaded `spanish' language definitions on input line 938.
+
+[706])
+
+LaTeX Info: Redefining \. on input line 76.
+LaTeX Info: Redefining \% on input line 76.
+Package cleveref Info: loaded `spanish' language definitions on input line 76.
+[707]
+\openout2 = capitulos/cap17.aux
+ (./capitulos/cap17.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@21=\count648
+\blx@sectionciteorder@21=\count649
+Package biblatex Info: Reference section=21 on input line 4.
+Package biblatex Info: Setting label 'refsection:21' on input line 4.
+
+
+[708
+
+
+
+
+]
+Capítulo 17.
+
+
+[709]
+
+LaTeX Info: Redefining \. on input line 36.
+LaTeX Info: Redefining \% on input line 36.
+Package cleveref Info: loaded `spanish' language definitions on input line 36.
+[710]
+
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
+Package cleveref Info: loaded `spanish' language definitions on input line 57.
+[711]
+
+LaTeX Info: Redefining \. on input line 77.
+LaTeX Info: Redefining \% on input line 77.
+Package cleveref Info: loaded `spanish' language definitions on input line 77.
+[712] (./figuras/cap17/onehot_kmer.tex
+Package pgfplots info on input line 68: Using 'lua backend=false' for axis: x c
+oord trafo unsupported.
+)
+
+LaTeX Info: Redefining \. on input line 118.
+LaTeX Info: Redefining \% on input line 118.
+Package cleveref Info: loaded `spanish' language definitions on input line 118.
+
+[713]
+
+LaTeX Info: Redefining \. on input line 125.
+LaTeX Info: Redefining \% on input line 125.
+Package cleveref Info: loaded `spanish' language definitions on input line 125.
+
+[714]
+
+LaTeX Info: Redefining \. on input line 158.
+LaTeX Info: Redefining \% on input line 158.
+Package cleveref Info: loaded `spanish' language definitions on input line 158.
+
+[715]
+
+LaTeX Info: Redefining \. on input line 185.
+LaTeX Info: Redefining \% on input line 185.
+Package cleveref Info: loaded `spanish' language definitions on input line 185.
+
+[716]
+
+LaTeX Info: Redefining \. on input line 206.
+LaTeX Info: Redefining \% on input line 206.
+Package cleveref Info: loaded `spanish' language definitions on input line 206.
+
+[717]
+Package pgfplots info on input line 223: Using 'lua backend=false' for plot 0 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap17/frontera_pts.dat}
+Package pgfplots info on input line 225: Using 'lua backend=false' for plot 1 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap17/frontera_pts.dat}
+PGFPlots: reading {figuras/cap17/frontera_lr0.dat}
+PGFPlots: reading {figuras/cap17/frontera_lr1.dat}
+PGFPlots: reading {figuras/cap17/frontera_lr2.dat}
+Package pgfplots info on input line 236: Using 'lua backend=false' for plot 0 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap17/frontera_pts.dat}
+Package pgfplots info on input line 238: Using 'lua backend=false' for plot 1 (
+type 'pgfplothandlerdiscard'): LUA does not support x filter (yet).
+PGFPlots: reading {figuras/cap17/frontera_pts.dat}
+PGFPlots: reading {figuras/cap17/frontera_sv.dat}
+PGFPlots: reading {figuras/cap17/frontera_svm0.dat}
+PGFPlots: reading {figuras/cap17/frontera_svm1.dat}
+PGFPlots: reading {figuras/cap17/frontera_svm2.dat}
+
+
+LaTeX Info: Redefining \. on input line 264.
+LaTeX Info: Redefining \% on input line 264.
+Package cleveref Info: loaded `spanish' language definitions on input line 264.
+
+[718]
+
+LaTeX Info: Redefining \. on input line 264.
+LaTeX Info: Redefining \% on input line 264.
+Package cleveref Info: loaded `spanish' language definitions on input line 264.
+
+[719]
+
+LaTeX Info: Redefining \. on input line 289.
+LaTeX Info: Redefining \% on input line 289.
+Package cleveref Info: loaded `spanish' language definitions on input line 289.
+
+[720] (./figuras/cap17/sesgo_varianza_rf.tex)
+PGFPlots: reading {figuras/cap17/sesgo_varianza.dat}
+PGFPlots: reading {figuras/cap17/sesgo_varianza.dat}
+PGFPlots: reading {figuras/cap17/sesgo_varianza.dat}
+PGFPlots: reading {figuras/cap17/sesgo_varianza.dat}
+Package pgfplots info on input line 305: Deactivating LUA version of plot expre
+ssion for plot 2 (type 'pgfplothandlerlineto'): y expression '\capdiecisieteRF 
+' contains a TeX macro.
+Package pgfplots info on input line 310: fill between: activating layered graph
+ics
+Package pgfplots info on input line 310: Setting layers 'axis background,axis g
+rid,axis ticks,axis lines,axis tick labels,pre main,main,axis descriptions,axis
+ foreground'...
+
+
+LaTeX Info: Redefining \. on input line 328.
+LaTeX Info: Redefining \% on input line 328.
+Package cleveref Info: loaded `spanish' language definitions on input line 328.
+
+[721]
+PGFPlots: reading {figuras/cap17/fuga.dat}
+PGFPlots: reading {figuras/cap17/fuga.dat}
+
+
+LaTeX Info: Redefining \. on input line 383.
+LaTeX Info: Redefining \% on input line 383.
+Package cleveref Info: loaded `spanish' language definitions on input line 383.
+
+[722]
+
+LaTeX Info: Redefining \. on input line 383.
+LaTeX Info: Redefining \% on input line 383.
+Package cleveref Info: loaded `spanish' language definitions on input line 383.
+
+[723]
+
+LaTeX Info: Redefining \. on input line 408.
+LaTeX Info: Redefining \% on input line 408.
+Package cleveref Info: loaded `spanish' language definitions on input line 408.
+
+[724]
+PGFPlots: reading {figuras/cap17/roc_bal.dat}
+PGFPlots: reading {figuras/cap17/roc_des.dat}
+PGFPlots: reading {figuras/cap17/pr_bal.dat}
+PGFPlots: reading {figuras/cap17/pr_des.dat}
+
+Overfull \hbox (7.96442pt too wide) in paragraph at lines 432--433
+ [][] 
+ []
+
+(./build/libro/_minted/BA022FD55628C92A057667795AC80AB4.highlight.minted)
+(./build/libro/_minted/F30E5D481B4EB9527CE57ED33945DFCB.highlight.minted)
+(./build/libro/_minted/1BCB07F019B2784E17DD5EB07860BCA5.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 440.
+LaTeX Info: Redefining \% on input line 440.
+Package cleveref Info: loaded `spanish' language definitions on input line 440.
+
+[725]
+\openout6 = main.listing
+ (./build/libro/_minted/55E5DD915CAE56D260B2C8D8E751D4EB.highlight.minted) (./build/libro/_minted/4209513BD6F17A204F49A1CA6014DBA7.highlight.minted)
+(./build/libro/_minted/8D271C0F2EBE164E46634A7BD3262183.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 471.
+LaTeX Info: Redefining \% on input line 471.
+Package cleveref Info: loaded `spanish' language definitions on input line 471.
+
+[726]
+
+LaTeX Info: Redefining \. on input line 526.
+LaTeX Info: Redefining \% on input line 526.
+Package cleveref Info: loaded `spanish' language definitions on input line 526.
+
+[727]
+
+LaTeX Info: Redefining \. on input line 548.
+LaTeX Info: Redefining \% on input line 548.
+Package cleveref Info: loaded `spanish' language definitions on input line 548.
+
+[728]
+
+LaTeX Info: Redefining \. on input line 571.
+LaTeX Info: Redefining \% on input line 571.
+Package cleveref Info: loaded `spanish' language definitions on input line 571.
+
+[729]
+
+LaTeX Info: Redefining \. on input line 596.
+LaTeX Info: Redefining \% on input line 596.
+Package cleveref Info: loaded `spanish' language definitions on input line 596.
+
+[730]
+
+LaTeX Info: Redefining \. on input line 648.
+LaTeX Info: Redefining \% on input line 648.
+Package cleveref Info: loaded `spanish' language definitions on input line 648.
+
+[731]
+\openout6 = main.listing
+ (./build/libro/_minted/96ABC0C9D6ADF9B5A361512A19E6A18B.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 680.
+LaTeX Info: Redefining \% on input line 680.
+Package cleveref Info: loaded `spanish' language definitions on input line 680.
+
+[732] (./figuras/cap17/logo_verdadero.tex) (./figuras/cap17/logo_aprendido.tex) (./figuras/cap17/filtro_pesos.tex)
+PGFPlots: reading {figuras/cap17/cnn_hist.dat}
+PGFPlots: reading {figuras/cap17/cnn_hist.dat}
+
+
+LaTeX Info: Redefining \. on input line 730.
+LaTeX Info: Redefining \% on input line 730.
+Package cleveref Info: loaded `spanish' language definitions on input line 730.
+
+[733]
+
+LaTeX Info: Redefining \. on input line 730.
+LaTeX Info: Redefining \% on input line 730.
+Package cleveref Info: loaded `spanish' language definitions on input line 730.
+
+[734]
+Package pgfplots info on input line 754: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+
+
+LaTeX Info: Redefining \. on input line 772.
+LaTeX Info: Redefining \% on input line 772.
+Package cleveref Info: loaded `spanish' language definitions on input line 772.
+
+[735]
+
+LaTeX Info: Redefining \. on input line 784.
+LaTeX Info: Redefining \% on input line 784.
+Package cleveref Info: loaded `spanish' language definitions on input line 784.
+
+[736] (./figuras/cap17/saliencia_marca.tex)
+Package pgfplots info on input line 804: Using 'lua backend=false' for plot 0 (
+type '[tikz@plot@handler: macro:->\global \pgf@plot@startedfalse \global \let \
+pgf@plotstreamend \pgf@plotstreamend@init \global \let \pgf@plotstreampoint \pg
+f@plotstreampoint@init \global \let \pgf@plotstreamjump \pgf@plotstreamjump@ini
+t \global \let \pgf@plotstreamspecial \pgf@plotstreamspecial@init \pgfplotyzero
+levelstreamstart ]'): plot handler does not support LUA.
+PGFPlots: reading {figuras/cap17/saliencia.dat}
+
+(./figuras/cap17/saliencia_letras.tex)
+\openout6 = main.listing
+
+(./build/libro/_minted/2026ABED8901CA855F5C83968FA10D11.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 825.
+LaTeX Info: Redefining \% on input line 825.
+Package cleveref Info: loaded `spanish' language definitions on input line 825.
+
+[737]
+
+LaTeX Info: Redefining \. on input line 825.
+LaTeX Info: Redefining \% on input line 825.
+Package cleveref Info: loaded `spanish' language definitions on input line 825.
+
+[738]
+
+LaTeX Info: Redefining \. on input line 842.
+LaTeX Info: Redefining \% on input line 842.
+Package cleveref Info: loaded `spanish' language definitions on input line 842.
+
+[739]
+
+LaTeX Info: Redefining \. on input line 866.
+LaTeX Info: Redefining \% on input line 866.
+Package cleveref Info: loaded `spanish' language definitions on input line 866.
+
+[740] (./figuras/cap17/atencion_celdas.tex)
+
+LaTeX Info: Redefining \. on input line 920.
+LaTeX Info: Redefining \% on input line 920.
+Package cleveref Info: loaded `spanish' language definitions on input line 920.
+
+[741]
+
+LaTeX Info: Redefining \. on input line 934.
+LaTeX Info: Redefining \% on input line 934.
+Package cleveref Info: loaded `spanish' language definitions on input line 934.
+
+[742]
+PGFPlots: reading {figuras/cap17/mlm_i44.dat}
+PGFPlots: reading {figuras/cap17/mlm_i44.dat}
+PGFPlots: reading {figuras/cap17/mlm_e24.dat}
+PGFPlots: reading {figuras/cap17/mlm_e24.dat}
+
+
+LaTeX Info: Redefining \. on input line 982.
+LaTeX Info: Redefining \% on input line 982.
+Package cleveref Info: loaded `spanish' language definitions on input line 982.
+
+[743]
+
+LaTeX Info: Redefining \. on input line 982.
+LaTeX Info: Redefining \% on input line 982.
+Package cleveref Info: loaded `spanish' language definitions on input line 982.
+
+[744]
+<figuras/cap17/contactos_ubq.pdf, id=9670, 187.43034pt x 207.23773pt>
+File: figuras/cap17/contactos_ubq.pdf Graphic file (type pdf)
+<use figuras/cap17/contactos_ubq.pdf>
+Package luatex.def Info: figuras/cap17/contactos_ubq.pdf  used on input line 98
+5.
+(luatex.def)             Requested size: 203.94827pt x 225.50833pt.
+
+
+LaTeX Info: Redefining \. on input line 993.
+LaTeX Info: Redefining \% on input line 993.
+Package cleveref Info: loaded `spanish' language definitions on input line 993.
+
+[745<./figuras/cap17/contactos_ubq.pdf>]
+<figuras/cap17/embeddings.pdf, id=9705, 354.4053pt x 171.30362pt>
+File: figuras/cap17/embeddings.pdf Graphic file (type pdf)
+<use figuras/cap17/embeddings.pdf>
+Package luatex.def Info: figuras/cap17/embeddings.pdf  used on input line 1004.
+
+(luatex.def)             Requested size: 364.19495pt x 176.04999pt.
+
+
+LaTeX Info: Redefining \. on input line 1021.
+LaTeX Info: Redefining \% on input line 1021.
+Package cleveref Info: loaded `spanish' language definitions on input line 1021
+.
+[746]
+
+LaTeX Info: Redefining \. on input line 1021.
+LaTeX Info: Redefining \% on input line 1021.
+Package cleveref Info: loaded `spanish' language definitions on input line 1021
+.
+[747<./figuras/cap17/embeddings.pdf>]
+<figuras/cap17/paisaje_ubq.pdf, id=9750, 336.14175pt x 154.51514pt>
+File: figuras/cap17/paisaje_ubq.pdf Graphic file (type pdf)
+<use figuras/cap17/paisaje_ubq.pdf>
+Package luatex.def Info: figuras/cap17/paisaje_ubq.pdf  used on input line 1026
+.
+(luatex.def)             Requested size: 364.19495pt x 167.4161pt.
+
+
+LaTeX Info: Redefining \. on input line 1035.
+LaTeX Info: Redefining \% on input line 1035.
+Package cleveref Info: loaded `spanish' language definitions on input line 1035
+.
+[748<./figuras/cap17/paisaje_ubq.pdf>]
+\openout6 = main.listing
+
+(./build/libro/_minted/F0BDEA94818F579E075846BE53E9466A.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1062.
+LaTeX Info: Redefining \% on input line 1062.
+Package cleveref Info: loaded `spanish' language definitions on input line 1062
+.
+[749]
+
+LaTeX Info: Redefining \. on input line 1076.
+LaTeX Info: Redefining \% on input line 1076.
+Package cleveref Info: loaded `spanish' language definitions on input line 1076
+.
+[750]
+
+LaTeX Info: Redefining \. on input line 1098.
+LaTeX Info: Redefining \% on input line 1098.
+Package cleveref Info: loaded `spanish' language definitions on input line 1098
+.
+[751]
+
+LaTeX Info: Redefining \. on input line 1104.
+LaTeX Info: Redefining \% on input line 1104.
+Package cleveref Info: loaded `spanish' language definitions on input line 1104
+.
+[752] (./build/libro/_minted/F9F428DCBBAD3D432A1A12B403A4520B.highlight.minted) (./build/libro/_minted/BB155732FC9F2DE329451AB4ED494FEE.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1111.
+LaTeX Info: Redefining \% on input line 1111.
+Package cleveref Info: loaded `spanish' language definitions on input line 1111
+.
+[753]
+
+LaTeX Info: Redefining \. on input line 1113.
+LaTeX Info: Redefining \% on input line 1113.
+Package cleveref Info: loaded `spanish' language definitions on input line 1113
+.
+[754]
+
+LaTeX Info: Redefining \. on input line 1113.
+LaTeX Info: Redefining \% on input line 1113.
+Package cleveref Info: loaded `spanish' language definitions on input line 1113
+.
+[755])
+
+LaTeX Info: Redefining \. on input line 77.
+LaTeX Info: Redefining \% on input line 77.
+Package cleveref Info: loaded `spanish' language definitions on input line 77.
+[756]
+\openout2 = capitulos/cap18.aux
+ (./capitulos/cap18.tex
+Package biblatex Info: Reference section=0 on input line 4.
+\blx@maxsegment@22=\count650
+\blx@sectionciteorder@22=\count651
+Package biblatex Info: Reference section=22 on input line 4.
+Package biblatex Info: Setting label 'refsection:22' on input line 4.
+
+Capítulo 18.
+(./figuras/cap18/amdahl.tex)
+
+[757
+
+
+
+
+]
+
+LaTeX Info: Redefining \. on input line 52.
+LaTeX Info: Redefining \% on input line 52.
+Package cleveref Info: loaded `spanish' language definitions on input line 52.
+[758]
+
+LaTeX Info: Redefining \. on input line 67.
+LaTeX Info: Redefining \% on input line 67.
+Package cleveref Info: loaded `spanish' language definitions on input line 67.
+[759] (./figuras/cap18/dag.tex)
+Overfull \hbox (0.53105pt too wide) in paragraph at lines 89--90
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 101.
+LaTeX Info: Redefining \% on input line 101.
+Package cleveref Info: loaded `spanish' language definitions on input line 101.
+
+[760]
+
+LaTeX Info: Redefining \. on input line 104.
+LaTeX Info: Redefining \% on input line 104.
+Package cleveref Info: loaded `spanish' language definitions on input line 104.
+
+[761]
+
+LaTeX Info: Redefining \. on input line 128.
+LaTeX Info: Redefining \% on input line 128.
+Package cleveref Info: loaded `spanish' language definitions on input line 128.
+
+[762] (./figuras/cap18/kahn_tabla.tex)
+\openout6 = main.listing
+
+(./build/libro/_minted/535DF59E5C72334DD10E3EF8D7EC7C59.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 168.
+LaTeX Info: Redefining \% on input line 168.
+Package cleveref Info: loaded `spanish' language definitions on input line 168.
+
+[763]
+
+LaTeX Info: Redefining \. on input line 168.
+LaTeX Info: Redefining \% on input line 168.
+Package cleveref Info: loaded `spanish' language definitions on input line 168.
+
+[764]
+
+LaTeX Info: Redefining \. on input line 188.
+LaTeX Info: Redefining \% on input line 188.
+Package cleveref Info: loaded `spanish' language definitions on input line 188.
+
+[765]
+
+LaTeX Info: Redefining \. on input line 208.
+LaTeX Info: Redefining \% on input line 208.
+Package cleveref Info: loaded `spanish' language definitions on input line 208.
+
+[766]
+\openout6 = main.listing
+ (./build/libro/_minted/0692DCCCB24ADFF6B5314AA04C8E46DC.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 247.
+LaTeX Info: Redefining \% on input line 247.
+Package cleveref Info: loaded `spanish' language definitions on input line 247.
+
+[767]
+\openout6 = main.listing
+ (./build/libro/_minted/3B9C846F0EDAB0E1FEB4985D59CE0713.highlight.minted)
+\openout6 = main.listing
+ (./build/libro/_minted/9D666DF2899C6AC9E3AAF8A4AD4646FD.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
+
+[768]
+
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
+
+[769]
+
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
+
+[770]
+
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
+
+[771]
+\openout6 = main.listing
+ (./build/libro/_minted/08050C007E609BC1D7AD271F414EA1B8.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 430.
+LaTeX Info: Redefining \% on input line 430.
+Package cleveref Info: loaded `spanish' language definitions on input line 430.
+
+[772]
+Overfull \hbox (0.96196pt too wide) in paragraph at lines 494--495
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 500.
+LaTeX Info: Redefining \% on input line 500.
+Package cleveref Info: loaded `spanish' language definitions on input line 500.
+
+[773]
+\openout6 = main.listing
+ (./build/libro/_minted/56C3900D4DDFEFC7A8CE842DB6B77BD2.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
+
+[774]
+
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
+
+[775]
+
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
+
+[776]
+
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
+
+[777]
+\openout6 = main.listing
+ (./build/libro/_minted/0992588239AE50CA70643B0FFC3D6647.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 680.
+LaTeX Info: Redefining \% on input line 680.
+Package cleveref Info: loaded `spanish' language definitions on input line 680.
+
+[778]
+\openout6 = main.listing
+ (./build/libro/_minted/5F049151EB17CB13A496886443737873.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 717.
+LaTeX Info: Redefining \% on input line 717.
+Package cleveref Info: loaded `spanish' language definitions on input line 717.
+
+[779]
+
+LaTeX Info: Redefining \. on input line 722.
+LaTeX Info: Redefining \% on input line 722.
+Package cleveref Info: loaded `spanish' language definitions on input line 722.
+
+[780]
+
+LaTeX Info: Redefining \. on input line 738.
+LaTeX Info: Redefining \% on input line 738.
+Package cleveref Info: loaded `spanish' language definitions on input line 738.
+
+[781]
+\openout6 = main.listing
+ (./build/libro/_minted/21E3E408064215D131CD2D6C4E41332B.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 766.
+LaTeX Info: Redefining \% on input line 766.
+Package cleveref Info: loaded `spanish' language definitions on input line 766.
+
+[782]
+\openout6 = main.listing
+ (./build/libro/_minted/01EC7F4AC7F96F5C1D1DCA054881C017.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 797.
+LaTeX Info: Redefining \% on input line 797.
+Package cleveref Info: loaded `spanish' language definitions on input line 797.
+
+[783]
+
+LaTeX Info: Redefining \. on input line 821.
+LaTeX Info: Redefining \% on input line 821.
+Package cleveref Info: loaded `spanish' language definitions on input line 821.
+
+[784]
+
+LaTeX Info: Redefining \. on input line 845.
+LaTeX Info: Redefining \% on input line 845.
+Package cleveref Info: loaded `spanish' language definitions on input line 845.
+
+[785]
+Package pgfplots info on input line 854: Using 'lua backend=false' for axis: xm
+ode=log unsupported (yet).
+PGFPlots: reading {figuras/cap18/speedup.dat}
+PGFPlots: reading {figuras/cap18/speedup.dat}
+
+
+LaTeX Info: Redefining \. on input line 881.
+LaTeX Info: Redefining \% on input line 881.
+Package cleveref Info: loaded `spanish' language definitions on input line 881.
+
+[786]
+
+LaTeX Info: Redefining \. on input line 886.
+LaTeX Info: Redefining \% on input line 886.
+Package cleveref Info: loaded `spanish' language definitions on input line 886.
+
+[787]
+
+LaTeX Info: Redefining \. on input line 898.
+LaTeX Info: Redefining \% on input line 898.
+Package cleveref Info: loaded `spanish' language definitions on input line 898.
+
+[788]
+
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
+
+[789]
+
+LaTeX Info: Redefining \. on input line 976.
+LaTeX Info: Redefining \% on input line 976.
+Package cleveref Info: loaded `spanish' language definitions on input line 976.
+
+[790] (./build/libro/_minted/4E4F64BACAA7800BA10FE89292736F64.highlight.minted) (./build/libro/_minted/37A0FC86D2C95354F02F7D312697A5B0.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 987.
+LaTeX Info: Redefining \% on input line 987.
+Package cleveref Info: loaded `spanish' language definitions on input line 987.
+
+[791]
+
+LaTeX Info: Redefining \. on input line 1022.
+LaTeX Info: Redefining \% on input line 1022.
+Package cleveref Info: loaded `spanish' language definitions on input line 1022
+.
+[792]
+\openout6 = main.listing
+ (./build/libro/_minted/2D231113131FDAB1AE8BC4AB53B630CB.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1040.
+LaTeX Info: Redefining \% on input line 1040.
+Package cleveref Info: loaded `spanish' language definitions on input line 1040
+.
+[793]
+\openout6 = main.listing
+ (./build/libro/_minted/77AA387E905C45F925527D86367F5296.highlight.minted)
+\openout6 = main.listing
+ (./build/libro/_minted/AD2ABF3BCA7A6F97A96495EACE6F38A9.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1072.
+LaTeX Info: Redefining \% on input line 1072.
+Package cleveref Info: loaded `spanish' language definitions on input line 1072
+.
+[794]
+
+LaTeX Info: Redefining \. on input line 1106.
+LaTeX Info: Redefining \% on input line 1106.
+Package cleveref Info: loaded `spanish' language definitions on input line 1106
+.
+[795]
+
+LaTeX Info: Redefining \. on input line 1115.
+LaTeX Info: Redefining \% on input line 1115.
+Package cleveref Info: loaded `spanish' language definitions on input line 1115
+.
+[796]
+Overfull \hbox (0.71283pt too wide) in paragraph at lines 1153--1154
+ [][] 
+ []
+
+
+
+LaTeX Info: Redefining \. on input line 1161.
+LaTeX Info: Redefining \% on input line 1161.
+Package cleveref Info: loaded `spanish' language definitions on input line 1161
+.
+[797]
+
+LaTeX Info: Redefining \. on input line 1171.
+LaTeX Info: Redefining \% on input line 1171.
+Package cleveref Info: loaded `spanish' language definitions on input line 1171
+.
+[798]
+
+LaTeX Info: Redefining \. on input line 1198.
+LaTeX Info: Redefining \% on input line 1198.
+Package cleveref Info: loaded `spanish' language definitions on input line 1198
+.
+[799]
+
+LaTeX Info: Redefining \. on input line 1214.
+LaTeX Info: Redefining \% on input line 1214.
+Package cleveref Info: loaded `spanish' language definitions on input line 1214
+.
+[800] (./build/libro/_minted/1D7A376A246DE556CA652091CAFF3793.highlight.minted)
+
+LaTeX Info: Redefining \. on input line 1224.
+LaTeX Info: Redefining \% on input line 1224.
+Package cleveref Info: loaded `spanish' language definitions on input line 1224
+.
+[801]
+
+LaTeX Info: Redefining \. on input line 1227.
+LaTeX Info: Redefining \% on input line 1227.
+Package cleveref Info: loaded `spanish' language definitions on input line 1227
+.
+[802]
+
+LaTeX Info: Redefining \. on input line 1227.
+LaTeX Info: Redefining \% on input line 1227.
+Package cleveref Info: loaded `spanish' language definitions on input line 1227
+.
+[803])
+
+LaTeX Info: Redefining \. on input line 78.
+LaTeX Info: Redefining \% on input line 78.
+Package cleveref Info: loaded `spanish' language definitions on input line 78.
+[804] (./preliminares/colofon.tex)
+
+[805
+
+
+
+
+] (./build/libro/main.aux
+LaTeX Info: Redefining \sptext on input line 9.
+LaTeX Info: Redefining \. on input line 9.
+LaTeX Info: Redefining \% on input line 9.
+Package cleveref Info: loaded `spanish' language definitions on input line 9.
+ (./build/libro/capitulos/cap00.aux)
+(./build/libro/capitulos/cap01.aux) (./build/libro/capitulos/cap02.aux)
+(./build/libro/capitulos/cap03.aux) (./build/libro/capitulos/cap04.aux)
+(./build/libro/capitulos/cap05.aux) (./build/libro/capitulos/cap06.aux)
+(./build/libro/capitulos/cap07.aux) (./build/libro/capitulos/cap08.aux)
+(./build/libro/capitulos/cap09.aux) (./build/libro/capitulos/cap10.aux)
+(./build/libro/capitulos/cap11.aux) (./build/libro/capitulos/cap12.aux)
+(./build/libro/capitulos/cap13.aux) (./build/libro/capitulos/cap14.aux)
+(./build/libro/capitulos/cap15.aux) (./build/libro/capitulos/cap16.aux)
+(./build/libro/capitulos/cap17.aux) (./build/libro/capitulos/cap18.aux))
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+ ***********
+
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+Package logreq Info: Writing requests to 'main.run.xml'.
+
+\openout1 = main.run.xml
+)
+
+Here is how much of LuaTeX's memory you used:
+ 110573 strings out of 475506
+ 1819458,8504848 words of node,token memory allocated
+ 12628 words of node memory still in use:
+   32 hlist, 2 vlist, 14 rule, 1 local_par, 5 glue, 4 kern, 1 penalty, 3 glyph, 
+3399 attribute, 81 glue_spec, 1737 attribute_list, 2 write, 24 pdf_literal, 199 
+pdf_action, 24 pdf_colorstack nodes
+   avail lists: 1:52,2:200331,3:108604,4:15746,5:1916,6:230,7:45817,8:100,9:2255
+9,10:51,11:1109,12:5
+ 123804 multiletter control sequences out of 65536+600000
+ 309 fonts using 105073463 bytes
+ 121i,21n,123p,3563b,3908s stack positions out of 10000i,1000n,20000p,251397b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liber
+tinusSerif-SemiboldItalic.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype
+/public/libertinus-fonts/LibertinusSerif-Semibold.otf></usr/local/texlive/2025/t
+exmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Semibold.otf></
+usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liberti
+nusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/li
+bertinus-fonts/LibertinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/f
+onts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/local/tex
+live/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-ExtraLight
+.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/Font
+Awesome5Brands-Regular-400.otf></usr/local/texlive/2025/texmf-dist/fonts/opentyp
+e/public/fontawesome5/FontAwesome5Free-Solid-900.otf></usr/local/texlive/2025/te
+xmf-dist/fonts/opentype/public/fira/FiraMono-Medium.otf></usr/local/texlive/2025
+/texmf-dist/fonts/opentype/public/fira/FiraMono-Oblique.otf></usr/local/texlive/
+2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-SemiboldIt.otf>
+</usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liber
+tinusSerif-Italic.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/
+libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/
+fonts/opentype/public/libertinus-fonts/LibertinusSerif-Regular.otf></usr/local/t
+exlive/2025/texmf-dist/fonts/opentype/public/fira/FiraMono-Regular.otf></usr/loc
+al/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Regu
+larIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro
+/SourceSansPro-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/ad
+obe/sourcesanspro/SourceSansPro-LightIt.otf></usr/local/texlive/2025/texmf-dist/
+fonts/opentype/adobe/sourcesanspro/SourceSansPro-Black.otf></usr/local/texlive/2
+025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Light.otf></usr/
+local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-S
+emibold.otf></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symb
+ols/msam10.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/s
+ymbols/msam7.pfb>
+Output written on main.pdf (817 pages, 9529593 bytes).
+
+PDF statistics: 11078 PDF objects out of 12825 (max. 8388607)
+ 9155 compressed objects within 92 object streams
+ 3183 named destinations out of 3580 (max. 131072)
+ 1327 words of extra memory for PDF output out of 10000 (max. 100000000)
+

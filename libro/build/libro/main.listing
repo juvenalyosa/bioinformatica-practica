@@ -1,4 +1,4 @@
-# profundidad media en ventanas de 500 pb, solo MAPQ >= 20
-mosdepth -t 4 -n --by 500 -Q 20 m1 m1.bam
-zcat m1.regions.bed.gz | head -3       # crom inicio fin media
-cat m1.mosdepth.summary.txt            # media por cromosoma
+pytest -q tests/                          # pruebas unitarias
+snakemake --lint                          # buenas practicas del flujo
+snakemake -n --configfile tests/config_mini.yaml       # ensayo en seco
+snakemake --cores 2 --sdm conda --configfile tests/config_mini.yaml

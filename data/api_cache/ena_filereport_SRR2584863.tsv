@@ -1,0 +1,2 @@
+run_accession	study_accession	sample_accession	scientific_name	instrument_model	library_layout	library_strategy	library_source	library_selection	read_count	base_count	fastq_ftp	fastq_bytes	fastq_md5
+SRR2584863	PRJNA295606	SAMN04096083	Escherichia coli B str. REL606	Illumina HiSeq 2500	PAIRED	WGS	GENOMIC	RANDOM	1553259	465977700	ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_1.fastq.gz;ftp.sra.ebi.ac.uk/vol1/fastq/SRR258/003/SRR2584863/SRR2584863_2.fastq.gz	183292913;191090316	4a1529a4165970302d6d8cb50b6e7a43;33492a66dcc95c3f8fc847b41d2c8ceb

@@ -33,11 +33,14 @@
         inner sep=0pt] at (1.9,-2.6) {\addfontfeatures{LetterSpace=18}PARTE};
       \fill[amarillo] (1.9,-9.4) rectangle (5.4,-9.52);
       \node[anchor=north west, text width=12.4cm, align=left, inner sep=0pt,
-        font=\titlefont\fontsize{32}{36}\selectfont, text=white] at (1.9,-10.1) {#1};
+        font=\titlefont\fontsize{32}{36}\selectfont, text=white] (pt) at (1.9,-10.1)
+        {\lefthyphenmin=64 #1};
       \node[anchor=north west, text width=12.4cm, align=left, inner sep=0pt,
-        font=\titlefont\itshape\fontsize{15}{19}\selectfont, text=azulclaro] at (1.9,-12.6) {#2};
+        font=\titlefont\itshape\fontsize{15}{19}\selectfont, text=azulclaro]
+        (ps) at ([yshift=-10pt]pt.south west) {\lefthyphenmin=64 #2};
       \node[anchor=north west, text width=11.2cm, align=justify, inner sep=0pt,
-        font=\liningserif\fontsize{11}{15.5}\selectfont, text=white!88!azulclaro] at (1.9,-14.6) {#3};
+        font=\liningserif\fontsize{11}{15.5}\selectfont, text=white!88!azulclaro]
+        at ([yshift=-26pt]ps.south west) {#3};
     \end{scope}
   \end{tikzpicture}%
   \null\cleardoublepage}

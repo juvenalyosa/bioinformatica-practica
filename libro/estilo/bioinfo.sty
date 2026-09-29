@@ -349,13 +349,13 @@
       \foreach \j in {0.5,1,...,10.4}{\draw[white,opacity=.05] (0,-\j) -- (17,-\j);}
       \begin{scope}[shift={(0,-8.2)}] \bioADNdeco \end{scope}
       \node[anchor=north east, font=\lightfont\fontsize{120}{120}\selectfont,
-        text=white, opacity=.95, inner sep=0pt] at (15.6,-0.9) {\thechapter};
+        text=white, opacity=.95, inner sep=0pt] at (15.6,-1.35) {\thechapter};
       \node[anchor=north east, font=\sffamily\bfseries\small, text=amarillo,
-        inner sep=0pt] at (15.6,-0.55)
+        inner sep=0pt] at (15.6,-0.75)
         {\addfontfeatures{LetterSpace=18}MÓDULO};
       \node[anchor=south west, text width=11.4cm, align=left,
         font=\titlefont\fontsize{27}{31}\selectfont, text=white,
-        inner sep=0pt] at (2.1,-6.3) {#1};
+        inner sep=0pt] at (2.1,-6.3) {\lefthyphenmin=64 #1};
     \end{scope}
     \fill[amarillo] ([yshift=-10.4cm]current page.north west) rectangle
       ([yshift=-10.55cm,xshift=5.4cm]current page.north west);

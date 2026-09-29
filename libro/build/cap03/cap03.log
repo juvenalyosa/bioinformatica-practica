@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  29 SEP 2026 21:50
+This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 01:17
  system commands enabled.
 **build/cap03/cap03.tex
 (./build/cap03/cap03.tex
@@ -2802,9 +2802,6 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \vbox (badness 4634) has occurred while \output is active []
-
-
 
 
 Package fontspec Info: 
@@ -2859,15 +2856,15 @@ LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 \pydata@fh@_BAA5337E9FBA6CCFD3B2B60EDB4FB472.data.minted=\write7
 
 \openout7 = _BAA5337E9FBA6CCFD3B2B60EDB4FB472.data.minted
-runsystem(latexminted config  --timestamp 20260929215053 BAA5337E9FBA6CCFD3B2B60
+runsystem(latexminted config  --timestamp 20260930011745 BAA5337E9FBA6CCFD3B2B60
 EDB4FB472)...executed.
 
 (./build/cap03/_BAA5337E9FBA6CCFD3B2B60EDB4FB472.config.minted)
-runsystem(latexminted cleanconfig  --timestamp 20260929215053 BAA5337E9FBA6CCFD3
+runsystem(latexminted cleanconfig  --timestamp 20260930011745 BAA5337E9FBA6CCFD3
 B2B60EDB4FB472)...executed.
 
 (./build/cap03/_minted/friendly.style.minted)
-(./build/cap03/_minted/D8E7F5BEC28183C6CCBE7890AA68A0CD.highlight.minted
+(./build/cap03/_minted/C4C8EF0263EC356020EF189BB2D8DA4F.highlight.minted
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 7.55997pt on input line 1.
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
@@ -2877,9 +2874,6 @@ LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/it' will be
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 5.03998pt on input line 8.
 )
-Underfull \vbox (badness 3417) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 93.
 LaTeX Info: Redefining \% on input line 93.
@@ -2903,9 +2897,6 @@ LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 10.07996pt on input line 170.
 
-Underfull \vbox (badness 1755) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 177.
 LaTeX Info: Redefining \% on input line 177.
@@ -2913,7 +2904,7 @@ Package cleveref Info: loaded `spanish' language definitions on input line 177.
 
 [7]
 \openout6 = cap03.listing
- (./build/cap03/_minted/8BBC87ECF22D703148B0F260BE4B9C3B.highlight.minted)
+ (./build/cap03/_minted/5AB595FA0408732FF710911B70390FEA.highlight.minted)
 
 LaTeX Info: Redefining \. on input line 192.
 LaTeX Info: Redefining \% on input line 192.
@@ -2930,18 +2921,12 @@ Package cleveref Info: loaded `spanish' language definitions on input line 214.
 LaTeX Warning: Reference `cap:04' on page 1 undefined on input line 235.
 
 
-Underfull \vbox (badness 1112) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 239.
 LaTeX Info: Redefining \% on input line 239.
 Package cleveref Info: loaded `spanish' language definitions on input line 239.
 
 [10]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 265.
 LaTeX Info: Redefining \% on input line 265.
@@ -2957,18 +2942,12 @@ Package cleveref Info: loaded `spanish' language definitions on input line 279.
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
 (Font)              scaled to size 6.71997pt on input line 22.
 )
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 294.
 LaTeX Info: Redefining \% on input line 294.
 Package cleveref Info: loaded `spanish' language definitions on input line 294.
 
 [13]
-Underfull \vbox (badness 1281) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 315.
 LaTeX Info: Redefining \% on input line 315.
@@ -2989,9 +2968,6 @@ LaTeX Info: Redefining \% on input line 376.
 Package cleveref Info: loaded `spanish' language definitions on input line 376.
 
 [15]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 393.
 LaTeX Info: Redefining \% on input line 393.
@@ -3015,23 +2991,20 @@ Package cleveref Info: loaded `spanish' language definitions on input line 422.
 
 [17]
 \openout6 = cap03.listing
- (./build/cap03/_minted/39B77A8D2597EEE0D6C9C0CCFA829BF2.highlight.minted)
+ (./build/cap03/_minted/6F8A1EDE7BEEE0542641B6EDCBFEB009.highlight.minted)
 
 LaTeX Info: Redefining \. on input line 450.
 LaTeX Info: Redefining \% on input line 450.
 Package cleveref Info: loaded `spanish' language definitions on input line 450.
 
 [18]
-Underfull \vbox (badness 6236) has occurred while \output is active []
-
-
 
 LaTeX Info: Redefining \. on input line 466.
 LaTeX Info: Redefining \% on input line 466.
 Package cleveref Info: loaded `spanish' language definitions on input line 466.
 
-[19] (./build/cap03/_minted/291FF48EDC2C675440EF11E825624CC8.highlight.minted)
-(./build/cap03/_minted/ED8FEB8E489F4B3CB3201559DC14FBA5.highlight.minted)
+[19] (./build/cap03/_minted/FCD0E571D71E11828D61237DB0F44534.highlight.minted)
+(./build/cap03/_minted/5AA0E90BF64EBE40CCE53D50F7A9114C.highlight.minted)
 
 LaTeX Info: Redefining \. on input line 472.
 LaTeX Info: Redefining \% on input line 472.
@@ -3068,16 +3041,16 @@ Package logreq Info: Writing requests to 'cap03.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 81793 strings out of 475506
- 305242,3417909 words of node,token memory allocated
+ 81786 strings out of 475506
+ 305241,3417909 words of node,token memory allocated
  2021 words of node memory still in use:
    31 hlist, 2 vlist, 14 rule, 2 glue, 4 kern, 1 glyph, 253 attribute, 81 glue_s
 pec, 164 attribute_list, 2 write, 24 pdf_literal, 13 pdf_action, 24 pdf_colorsta
 ck nodes
-   avail lists: 1:36,2:36230,3:13168,4:1710,5:534,6:64,7:14947,8:69,9:6470,10:25
+   avail lists: 1:37,2:36230,3:13168,4:1710,5:534,6:64,7:14949,8:69,9:6470,10:25
 ,11:937
- 102874 multiletter control sequences out of 65536+600000
- 194 fonts using 64298711 bytes
+ 102867 multiletter control sequences out of 65536+600000
+ 193 fonts using 64214143 bytes
  121i,19n,123p,1209b,2811s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSan
 sPro-SemiboldIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fi
@@ -3089,24 +3062,22 @@ local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusM
 ath-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/fira/F
 iraMono-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/li
 bertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/fo
-nts/opentype/public/fontawesome5/FontAwesome5Brands-Regular-400.otf></usr/local/
-texlive/2025/texmf-dist/fonts/opentype/public/fontawesome5/FontAwesome5Free-Soli
-d-900.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro
-/SourceSansPro-Black.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/publ
-ic/libertinus-fonts/LibertinusSerif-Regular.otf></usr/local/texlive/2025/texmf-d
-ist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr/loca
-l/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Regul
-arIt.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/
-SourceSansPro-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/pub
-lic/libertinus-fonts/LibertinusSerif-Italic.otf></usr/local/texlive/2025/texmf-d
-ist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Light.otf></usr/local/texli
-ve/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf
-></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSa
-nsPro-ExtraLight.otf>
-Output written on cap03.pdf (22 pages, 228577 bytes).
+nts/opentype/public/fontawesome5/FontAwesome5Free-Solid-900.otf></usr/local/texl
+ive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Black.otf><
+/usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Libert
+inusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/
+libertinus-fonts/LibertinusMath-Regular.otf></usr/local/texlive/2025/texmf-dist/
+fonts/opentype/adobe/sourcesanspro/SourceSansPro-RegularIt.otf></usr/local/texli
+ve/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Regular.otf>
+</usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liber
+tinusSerif-Italic.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/s
+ourcesanspro/SourceSansPro-Light.otf></usr/local/texlive/2025/texmf-dist/fonts/o
+pentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf></usr/local/texlive/2025/
+texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-ExtraLight.otf>
+Output written on cap03.pdf (22 pages, 227384 bytes).
 
-PDF statistics: 486 PDF objects out of 1000 (max. 8388607)
- 374 compressed objects within 4 object streams
+PDF statistics: 479 PDF objects out of 1000 (max. 8388607)
+ 370 compressed objects within 4 object streams
  105 named destinations out of 1000 (max. 131072)
  322 words of extra memory for PDF output out of 10000 (max. 100000000)
 
