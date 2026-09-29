@@ -1,0 +1,3 @@
+GATTA-CA
+G-TTAGCA
+score=2

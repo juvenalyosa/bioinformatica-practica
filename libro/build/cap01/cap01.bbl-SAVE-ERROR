@@ -1,0 +1,1301 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{1}
+  \datalist[entry]{apa/apasortcite//global/global/global}
+    \entry{c01-alberts2022}{book}{}{}
+      \name{author}{7}{}{%
+        {{hash=fb62457c285c73db074f895ec8f95805}{%
+           family={Alberts},
+           familyi={A\bibinitperiod},
+           given={Bruce},
+           giveni={B\bibinitperiod}}}%
+        {{hash=8f3bb258bb06846d54b421d7d3521505}{%
+           family={Heald},
+           familyi={H\bibinitperiod},
+           given={Rebecca},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f99df14c1f32023184c881c2b99105bd}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9e142d24b7c7fe4199234dadc866c1d2}{%
+           family={Morgan},
+           familyi={M\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0312c5684b42a3225b0b0ea32937a033}{%
+           family={Raff},
+           familyi={R\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=079205eca33fb4f81cd49113f2b13d21}{%
+           family={Roberts},
+           familyi={R\bibinitperiod},
+           given={Keith},
+           giveni={K\bibinitperiod}}}%
+        {{hash=92f833ece2868f0e33bb37e24935ca85}{%
+           family={Walter},
+           familyi={W\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York}%
+      }
+      \list{publisher}{1}{%
+        {W. W. Norton \& Company}%
+      }
+      \strng{namehash}{e9a8f9a71c33ec6ac86a6beb3554e231}
+      \strng{fullhash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{fullhashraw}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{bibnamehash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authorbibnamehash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authornamehash}{e9a8f9a71c33ec6ac86a6beb3554e231}
+      \strng{authorfullhash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authorfullhashraw}{510cfd295d360f3865eb2cca8d76b69b}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{7}
+      \field{isbn}{9780393884821}
+      \field{title}{Molecular Biology of the Cell}
+      \field{year}{2022}
+      \field{dateera}{ce}
+    \endentry
+    \entry{c01-crick1966}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \strng{bibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorbibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authornamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \field{extraname}{1}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{2}
+      \field{title}{Codon--anticodon pairing: The wobble hypothesis}
+      \field{volume}{19}
+      \field{year}{1966}
+      \field{dateera}{ce}
+      \field{pages}{548\bibrangedash 555}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1016/S0022-2836(66)80022-0
+      \endverb
+    \endentry
+    \entry{c01-crick1968}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \strng{bibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorbibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authornamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \field{extraname}{2}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{3}
+      \field{title}{The origin of the genetic code}
+      \field{volume}{38}
+      \field{year}{1968}
+      \field{dateera}{ce}
+      \field{pages}{367\bibrangedash 379}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1016/0022-2836(68)90392-6
+      \endverb
+    \endentry
+    \entry{c01-crick1961}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=2060ca9c4849750a4c75659da804b348}{%
+           family={Barnett},
+           familyi={B\bibinitperiod},
+           given={Leslie},
+           giveni={L\bibinitperiod}}}%
+        {{hash=61049d2c62fcdebdc1ec5684a467c165}{%
+           family={Brenner},
+           familyi={B\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=478fc1dfc1b664b76ba213c0d6ccf61d}{%
+           family={Watts-Tobin},
+           familyi={W\bibinithyphendelim T\bibinitperiod},
+           given={R.\bibnamedelimi J.},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{616581e70e34bdab40b2a37b1b350709}
+      \strng{fullhash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{fullhashraw}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{bibnamehash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authorbibnamehash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authornamehash}{616581e70e34bdab40b2a37b1b350709}
+      \strng{authorfullhash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authorfullhashraw}{270a6194696aae9d6ec421aa8eda2bcd}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{4809}
+      \field{title}{General Nature of the Genetic Code for Proteins}
+      \field{volume}{192}
+      \field{year}{1961}
+      \field{dateera}{ce}
+      \field{pages}{1227\bibrangedash 1232}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1038/1921227a0
+      \endverb
+    \endentry
+    \entry{c01-crick1970}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=aefa9aa13b26790480b87d46b56dc0f3}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={Francis},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{fullhash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{fullhashraw}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{bibnamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorbibnamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authornamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorfullhash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorfullhashraw}{aefa9aa13b26790480b87d46b56dc0f3}
+      \field{extraname}{3}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{5258}
+      \field{title}{Central Dogma of Molecular Biology}
+      \field{volume}{227}
+      \field{year}{1970}
+      \field{dateera}{ce}
+      \field{pages}{561\bibrangedash 563}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/227561a0
+      \endverb
+    \endentry
+    \entry{c01-freeland1998}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=31ccc35a52e43be750dcb9ec1dbbd5c7}{%
+           family={Freeland},
+           familyi={F\bibinitperiod},
+           given={Stephen\bibnamedelima J.},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=658d4ee2d925d0548f5ae7e78794115b}{%
+           family={Hurst},
+           familyi={H\bibinitperiod},
+           given={Laurence\bibnamedelima D.},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{fullhash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{fullhashraw}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{bibnamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorbibnamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authornamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorfullhash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorfullhashraw}{d2e04b6319d55996ea0d4336380b54b6}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{3}
+      \field{title}{The Genetic Code Is One in a Million}
+      \field{volume}{47}
+      \field{year}{1998}
+      \field{dateera}{ce}
+      \field{pages}{238\bibrangedash 248}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1007/PL00006381
+      \endverb
+    \endentry
+    \entry{c01-haig1991}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=e234ed51d54dca256ec86774ee0a64dd}{%
+           family={Haig},
+           familyi={H\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=658d4ee2d925d0548f5ae7e78794115b}{%
+           family={Hurst},
+           familyi={H\bibinitperiod},
+           given={Laurence\bibnamedelima D.},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{fullhash}{02be09d615f57bc3881b338f3b268960}
+      \strng{fullhashraw}{02be09d615f57bc3881b338f3b268960}
+      \strng{bibnamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorbibnamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authornamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorfullhash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorfullhashraw}{02be09d615f57bc3881b338f3b268960}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{5}
+      \field{title}{A quantitative measure of error minimization in the genetic code}
+      \field{volume}{33}
+      \field{year}{1991}
+      \field{dateera}{ce}
+      \field{pages}{412\bibrangedash 417}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1007/BF02103132
+      \endverb
+    \endentry
+    \entry{c01-koonin2009}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=bca4c562f895947d90e1e03fe873e750}{%
+           family={Koonin},
+           familyi={K\bibinitperiod},
+           given={Eugene\bibnamedelima V.},
+           giveni={E\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=c882d7c0e0db0b210a835278aca99d29}{%
+           family={Novozhilov},
+           familyi={N\bibinitperiod},
+           given={Artem\bibnamedelima S.},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{fullhash}{8319ba018c0655a8b042458115204f2c}
+      \strng{fullhashraw}{8319ba018c0655a8b042458115204f2c}
+      \strng{bibnamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorbibnamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authornamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorfullhash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorfullhashraw}{8319ba018c0655a8b042458115204f2c}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IUBMB Life}
+      \field{number}{2}
+      \field{title}{Origin and evolution of the genetic code: The universal enigma}
+      \field{volume}{61}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{pages}{99\bibrangedash 111}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1002/iub.146
+      \endverb
+    \endentry
+    \entry{c01-kyte1982}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5ef388de971884200152d456c5876c8e}{%
+           family={Kyte},
+           familyi={K\bibinitperiod},
+           given={Jack},
+           giveni={J\bibinitperiod}}}%
+        {{hash=600bc73cadbd1262dd9b8f38bb731290}{%
+           family={Doolittle},
+           familyi={D\bibinitperiod},
+           given={Russell\bibnamedelima F.},
+           giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{fullhash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{fullhashraw}{a704ad0d05c16e88945084715cb8500f}
+      \strng{bibnamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorbibnamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authornamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorfullhash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorfullhashraw}{a704ad0d05c16e88945084715cb8500f}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{1}
+      \field{title}{A simple method for displaying the hydropathic character of a protein}
+      \field{volume}{157}
+      \field{year}{1982}
+      \field{dateera}{ce}
+      \field{pages}{105\bibrangedash 132}
+      \range{pages}{28}
+      \verb{doi}
+      \verb 10.1016/0022-2836(82)90515-0
+      \endverb
+    \endentry
+    \entry{c01-nirenberg1964}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=7597ce9d6e4cad27757ba9a560051241}{%
+           family={Nirenberg},
+           familyi={N\bibinitperiod},
+           given={Marshall},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4968401be98695b0fcbd6a3cc35dc909}{%
+           family={Leder},
+           familyi={L\bibinitperiod},
+           given={Philip},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{fullhash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{fullhashraw}{faba81e280044fcb786f6a9aacda705a}
+      \strng{bibnamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorbibnamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authornamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorfullhash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorfullhashraw}{faba81e280044fcb786f6a9aacda705a}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{3639}
+      \field{title}{{RNA} Codewords and Protein Synthesis}
+      \field{volume}{145}
+      \field{year}{1964}
+      \field{dateera}{ce}
+      \field{pages}{1399\bibrangedash 1407}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1126/science.145.3639.1399
+      \endverb
+    \endentry
+    \entry{c01-nirenberg1961}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9ff08ca384cb5f88e46f79a45a6fcebf}{%
+           family={Nirenberg},
+           familyi={N\bibinitperiod},
+           given={Marshall\bibnamedelima W.},
+           giveni={M\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=e10650d88ccd8ef279328234590b7302}{%
+           family={Matthaei},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi Heinrich},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \strng{namehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{fullhash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{fullhashraw}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{bibnamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorbibnamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authornamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorfullhash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorfullhashraw}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the National Academy of Sciences}
+      \field{number}{10}
+      \field{title}{The dependence of cell-free protein synthesis in \emph{E. coli} upon naturally occurring or synthetic polyribonucleotides}
+      \field{volume}{47}
+      \field{year}{1961}
+      \field{dateera}{ce}
+      \field{pages}{1588\bibrangedash 1602}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1073/pnas.47.10.1588
+      \endverb
+    \endentry
+    \entry{c01-shannon1948}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=22e2130b8d96f93daba648ff62af869b}{%
+           family={Shannon},
+           familyi={S\bibinitperiod},
+           given={C.\bibnamedelimi E.},
+           giveni={C\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{fullhash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{fullhashraw}{22e2130b8d96f93daba648ff62af869b}
+      \strng{bibnamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorbibnamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authornamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorfullhash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorfullhashraw}{22e2130b8d96f93daba648ff62af869b}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bell System Technical Journal}
+      \field{number}{3}
+      \field{title}{A Mathematical Theory of Communication}
+      \field{volume}{27}
+      \field{year}{1948}
+      \field{dateera}{ce}
+      \field{pages}{379\bibrangedash 423}
+      \range{pages}{45}
+      \verb{doi}
+      \verb 10.1002/j.1538-7305.1948.tb01338.x
+      \endverb
+    \endentry
+    \entry{c01-temin1970}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=1243f5be330991ec559a153d9f3ddcdd}{%
+           family={Temin},
+           familyi={T\bibinitperiod},
+           given={Howard\bibnamedelima M.},
+           giveni={H\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=366db4c62b8753ead17d7a83df883f39}{%
+           family={Mizutani},
+           familyi={M\bibinitperiod},
+           given={Satoshi},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{fullhash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{fullhashraw}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{bibnamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorbibnamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authornamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorfullhash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorfullhashraw}{c86219715e52c1e61a4a2ae0d71d616a}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{5252}
+      \field{title}{Viral {RNA}-dependent {DNA} Polymerase: {RNA}-dependent {DNA} Polymerase in Virions of Rous Sarcoma Virus}
+      \field{volume}{226}
+      \field{year}{1970}
+      \field{dateera}{ce}
+      \field{pages}{1211\bibrangedash 1213}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/2261211a0
+      \endverb
+    \endentry
+    \entry{c01-watson1953}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=f5972932c20f9c58b7fc47abc04987f0}{%
+           family={Watson},
+           familyi={W\bibinitperiod},
+           given={J.\bibnamedelimi D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{fullhash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{fullhashraw}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{bibnamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorbibnamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authornamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorfullhash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorfullhashraw}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{4356}
+      \field{title}{Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid}
+      \field{volume}{171}
+      \field{year}{1953}
+      \field{dateera}{ce}
+      \field{pages}{737\bibrangedash 738}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1038/171737a0
+      \endverb
+    \endentry
+    \entry{c01-yamao1985}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=c921302f23da81b66c77a8f3b00839a5}{%
+           family={Yamao},
+           familyi={Y\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=b51565718d08d2a50ac958c0b32bcf6e}{%
+           family={Muto},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=b400c98ebe17d129451c4268bd4a8252}{%
+           family={Kawauchi},
+           familyi={K\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=06322ff4b77ef89425d5eb2f77fdfa0a}{%
+           family={Iwami},
+           familyi={I\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=d734976d43a7c95cc6bc69453970ec6d}{%
+           family={Iwagami},
+           familyi={I\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=994768903e1c460cec3efa347846701f}{%
+           family={Azumi},
+           familyi={A\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9cdc2ce1e40019b06d59dbf892f18e62}{%
+           family={Osawa},
+           familyi={O\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b88e96a72e1cffcb30ceb34bf31bdf6}
+      \strng{fullhash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{fullhashraw}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{bibnamehash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authorbibnamehash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authornamehash}{2b88e96a72e1cffcb30ceb34bf31bdf6}
+      \strng{authorfullhash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authorfullhashraw}{5783558149fb2ed9fc5893dc3a2283ab}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the National Academy of Sciences}
+      \field{number}{8}
+      \field{title}{{UGA} is read as tryptophan in \emph{Mycoplasma capricolum}}
+      \field{volume}{82}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{2306\bibrangedash 2309}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1073/pnas.82.8.2306
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{c01-alberts2022}{book}{}{}
+      \name{author}{7}{}{%
+        {{hash=fb62457c285c73db074f895ec8f95805}{%
+           family={Alberts},
+           familyi={A\bibinitperiod},
+           given={Bruce},
+           giveni={B\bibinitperiod}}}%
+        {{hash=8f3bb258bb06846d54b421d7d3521505}{%
+           family={Heald},
+           familyi={H\bibinitperiod},
+           given={Rebecca},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f99df14c1f32023184c881c2b99105bd}{%
+           family={Johnson},
+           familyi={J\bibinitperiod},
+           given={Alexander},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9e142d24b7c7fe4199234dadc866c1d2}{%
+           family={Morgan},
+           familyi={M\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0312c5684b42a3225b0b0ea32937a033}{%
+           family={Raff},
+           familyi={R\bibinitperiod},
+           given={Martin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=079205eca33fb4f81cd49113f2b13d21}{%
+           family={Roberts},
+           familyi={R\bibinitperiod},
+           given={Keith},
+           giveni={K\bibinitperiod}}}%
+        {{hash=92f833ece2868f0e33bb37e24935ca85}{%
+           family={Walter},
+           familyi={W\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York}%
+      }
+      \list{publisher}{1}{%
+        {W. W. Norton \& Company}%
+      }
+      \strng{namehash}{e9a8f9a71c33ec6ac86a6beb3554e231}
+      \strng{fullhash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{fullhashraw}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{bibnamehash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authorbibnamehash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authornamehash}{e9a8f9a71c33ec6ac86a6beb3554e231}
+      \strng{authorfullhash}{510cfd295d360f3865eb2cca8d76b69b}
+      \strng{authorfullhashraw}{510cfd295d360f3865eb2cca8d76b69b}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{7}
+      \field{isbn}{9780393884821}
+      \field{title}{Molecular Biology of the Cell}
+      \field{year}{2022}
+      \field{dateera}{ce}
+    \endentry
+    \entry{c01-crick1966}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \strng{bibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorbibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authornamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \field{extraname}{1}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{2}
+      \field{title}{Codon--anticodon pairing: The wobble hypothesis}
+      \field{volume}{19}
+      \field{year}{1966}
+      \field{dateera}{ce}
+      \field{pages}{548\bibrangedash 555}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1016/S0022-2836(66)80022-0
+      \endverb
+    \endentry
+    \entry{c01-crick1968}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{fullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \strng{bibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorbibnamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authornamehash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhash}{824b40d5be647c38492a42518ca34fed}
+      \strng{authorfullhashraw}{824b40d5be647c38492a42518ca34fed}
+      \field{extraname}{2}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{3}
+      \field{title}{The origin of the genetic code}
+      \field{volume}{38}
+      \field{year}{1968}
+      \field{dateera}{ce}
+      \field{pages}{367\bibrangedash 379}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1016/0022-2836(68)90392-6
+      \endverb
+    \endentry
+    \entry{c01-crick1961}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=2060ca9c4849750a4c75659da804b348}{%
+           family={Barnett},
+           familyi={B\bibinitperiod},
+           given={Leslie},
+           giveni={L\bibinitperiod}}}%
+        {{hash=61049d2c62fcdebdc1ec5684a467c165}{%
+           family={Brenner},
+           familyi={B\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=478fc1dfc1b664b76ba213c0d6ccf61d}{%
+           family={Watts-Tobin},
+           familyi={W\bibinithyphendelim T\bibinitperiod},
+           given={R.\bibnamedelimi J.},
+           giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{616581e70e34bdab40b2a37b1b350709}
+      \strng{fullhash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{fullhashraw}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{bibnamehash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authorbibnamehash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authornamehash}{616581e70e34bdab40b2a37b1b350709}
+      \strng{authorfullhash}{270a6194696aae9d6ec421aa8eda2bcd}
+      \strng{authorfullhashraw}{270a6194696aae9d6ec421aa8eda2bcd}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{4809}
+      \field{title}{General Nature of the Genetic Code for Proteins}
+      \field{volume}{192}
+      \field{year}{1961}
+      \field{dateera}{ce}
+      \field{pages}{1227\bibrangedash 1232}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1038/1921227a0
+      \endverb
+    \endentry
+    \entry{c01-crick1970}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=aefa9aa13b26790480b87d46b56dc0f3}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={Francis},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{fullhash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{fullhashraw}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{bibnamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorbibnamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authornamehash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorfullhash}{aefa9aa13b26790480b87d46b56dc0f3}
+      \strng{authorfullhashraw}{aefa9aa13b26790480b87d46b56dc0f3}
+      \field{extraname}{3}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{5258}
+      \field{title}{Central Dogma of Molecular Biology}
+      \field{volume}{227}
+      \field{year}{1970}
+      \field{dateera}{ce}
+      \field{pages}{561\bibrangedash 563}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/227561a0
+      \endverb
+    \endentry
+    \entry{c01-freeland1998}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=31ccc35a52e43be750dcb9ec1dbbd5c7}{%
+           family={Freeland},
+           familyi={F\bibinitperiod},
+           given={Stephen\bibnamedelima J.},
+           giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=658d4ee2d925d0548f5ae7e78794115b}{%
+           family={Hurst},
+           familyi={H\bibinitperiod},
+           given={Laurence\bibnamedelima D.},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{fullhash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{fullhashraw}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{bibnamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorbibnamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authornamehash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorfullhash}{d2e04b6319d55996ea0d4336380b54b6}
+      \strng{authorfullhashraw}{d2e04b6319d55996ea0d4336380b54b6}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{3}
+      \field{title}{The Genetic Code Is One in a Million}
+      \field{volume}{47}
+      \field{year}{1998}
+      \field{dateera}{ce}
+      \field{pages}{238\bibrangedash 248}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1007/PL00006381
+      \endverb
+    \endentry
+    \entry{c01-haig1991}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=e234ed51d54dca256ec86774ee0a64dd}{%
+           family={Haig},
+           familyi={H\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=658d4ee2d925d0548f5ae7e78794115b}{%
+           family={Hurst},
+           familyi={H\bibinitperiod},
+           given={Laurence\bibnamedelima D.},
+           giveni={L\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \strng{namehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{fullhash}{02be09d615f57bc3881b338f3b268960}
+      \strng{fullhashraw}{02be09d615f57bc3881b338f3b268960}
+      \strng{bibnamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorbibnamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authornamehash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorfullhash}{02be09d615f57bc3881b338f3b268960}
+      \strng{authorfullhashraw}{02be09d615f57bc3881b338f3b268960}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{5}
+      \field{title}{A quantitative measure of error minimization in the genetic code}
+      \field{volume}{33}
+      \field{year}{1991}
+      \field{dateera}{ce}
+      \field{pages}{412\bibrangedash 417}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1007/BF02103132
+      \endverb
+    \endentry
+    \entry{c01-koonin2009}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=bca4c562f895947d90e1e03fe873e750}{%
+           family={Koonin},
+           familyi={K\bibinitperiod},
+           given={Eugene\bibnamedelima V.},
+           giveni={E\bibinitperiod\bibinitdelim V\bibinitperiod}}}%
+        {{hash=c882d7c0e0db0b210a835278aca99d29}{%
+           family={Novozhilov},
+           familyi={N\bibinitperiod},
+           given={Artem\bibnamedelima S.},
+           giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{fullhash}{8319ba018c0655a8b042458115204f2c}
+      \strng{fullhashraw}{8319ba018c0655a8b042458115204f2c}
+      \strng{bibnamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorbibnamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authornamehash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorfullhash}{8319ba018c0655a8b042458115204f2c}
+      \strng{authorfullhashraw}{8319ba018c0655a8b042458115204f2c}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IUBMB Life}
+      \field{number}{2}
+      \field{title}{Origin and evolution of the genetic code: The universal enigma}
+      \field{volume}{61}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{pages}{99\bibrangedash 111}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1002/iub.146
+      \endverb
+    \endentry
+    \entry{c01-kyte1982}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=5ef388de971884200152d456c5876c8e}{%
+           family={Kyte},
+           familyi={K\bibinitperiod},
+           given={Jack},
+           giveni={J\bibinitperiod}}}%
+        {{hash=600bc73cadbd1262dd9b8f38bb731290}{%
+           family={Doolittle},
+           familyi={D\bibinitperiod},
+           given={Russell\bibnamedelima F.},
+           giveni={R\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{fullhash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{fullhashraw}{a704ad0d05c16e88945084715cb8500f}
+      \strng{bibnamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorbibnamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authornamehash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorfullhash}{a704ad0d05c16e88945084715cb8500f}
+      \strng{authorfullhashraw}{a704ad0d05c16e88945084715cb8500f}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Biology}
+      \field{number}{1}
+      \field{title}{A simple method for displaying the hydropathic character of a protein}
+      \field{volume}{157}
+      \field{year}{1982}
+      \field{dateera}{ce}
+      \field{pages}{105\bibrangedash 132}
+      \range{pages}{28}
+      \verb{doi}
+      \verb 10.1016/0022-2836(82)90515-0
+      \endverb
+    \endentry
+    \entry{c01-nirenberg1964}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=7597ce9d6e4cad27757ba9a560051241}{%
+           family={Nirenberg},
+           familyi={N\bibinitperiod},
+           given={Marshall},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4968401be98695b0fcbd6a3cc35dc909}{%
+           family={Leder},
+           familyi={L\bibinitperiod},
+           given={Philip},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{fullhash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{fullhashraw}{faba81e280044fcb786f6a9aacda705a}
+      \strng{bibnamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorbibnamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authornamehash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorfullhash}{faba81e280044fcb786f6a9aacda705a}
+      \strng{authorfullhashraw}{faba81e280044fcb786f6a9aacda705a}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Science}
+      \field{number}{3639}
+      \field{title}{{RNA} Codewords and Protein Synthesis}
+      \field{volume}{145}
+      \field{year}{1964}
+      \field{dateera}{ce}
+      \field{pages}{1399\bibrangedash 1407}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1126/science.145.3639.1399
+      \endverb
+    \endentry
+    \entry{c01-nirenberg1961}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9ff08ca384cb5f88e46f79a45a6fcebf}{%
+           family={Nirenberg},
+           familyi={N\bibinitperiod},
+           given={Marshall\bibnamedelima W.},
+           giveni={M\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+        {{hash=e10650d88ccd8ef279328234590b7302}{%
+           family={Matthaei},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi Heinrich},
+           giveni={J\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+      }
+      \strng{namehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{fullhash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{fullhashraw}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{bibnamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorbibnamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authornamehash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorfullhash}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \strng{authorfullhashraw}{d6c07b21ca2f1593afbfc6c026d64e38}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the National Academy of Sciences}
+      \field{number}{10}
+      \field{title}{The dependence of cell-free protein synthesis in \emph{E. coli} upon naturally occurring or synthetic polyribonucleotides}
+      \field{volume}{47}
+      \field{year}{1961}
+      \field{dateera}{ce}
+      \field{pages}{1588\bibrangedash 1602}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1073/pnas.47.10.1588
+      \endverb
+    \endentry
+    \entry{c01-shannon1948}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=22e2130b8d96f93daba648ff62af869b}{%
+           family={Shannon},
+           familyi={S\bibinitperiod},
+           given={C.\bibnamedelimi E.},
+           giveni={C\bibinitperiod\bibinitdelim E\bibinitperiod}}}%
+      }
+      \strng{namehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{fullhash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{fullhashraw}{22e2130b8d96f93daba648ff62af869b}
+      \strng{bibnamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorbibnamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authornamehash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorfullhash}{22e2130b8d96f93daba648ff62af869b}
+      \strng{authorfullhashraw}{22e2130b8d96f93daba648ff62af869b}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bell System Technical Journal}
+      \field{number}{3}
+      \field{title}{A Mathematical Theory of Communication}
+      \field{volume}{27}
+      \field{year}{1948}
+      \field{dateera}{ce}
+      \field{pages}{379\bibrangedash 423}
+      \range{pages}{45}
+      \verb{doi}
+      \verb 10.1002/j.1538-7305.1948.tb01338.x
+      \endverb
+    \endentry
+    \entry{c01-temin1970}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=1243f5be330991ec559a153d9f3ddcdd}{%
+           family={Temin},
+           familyi={T\bibinitperiod},
+           given={Howard\bibnamedelima M.},
+           giveni={H\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=366db4c62b8753ead17d7a83df883f39}{%
+           family={Mizutani},
+           familyi={M\bibinitperiod},
+           given={Satoshi},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{fullhash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{fullhashraw}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{bibnamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorbibnamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authornamehash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorfullhash}{c86219715e52c1e61a4a2ae0d71d616a}
+      \strng{authorfullhashraw}{c86219715e52c1e61a4a2ae0d71d616a}
+      \field{sortinit}{T}
+      \field{sortinithash}{9af77f0292593c26bde9a56e688eaee9}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{5252}
+      \field{title}{Viral {RNA}-dependent {DNA} Polymerase: {RNA}-dependent {DNA} Polymerase in Virions of Rous Sarcoma Virus}
+      \field{volume}{226}
+      \field{year}{1970}
+      \field{dateera}{ce}
+      \field{pages}{1211\bibrangedash 1213}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/2261211a0
+      \endverb
+    \endentry
+    \entry{c01-watson1953}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=f5972932c20f9c58b7fc47abc04987f0}{%
+           family={Watson},
+           familyi={W\bibinitperiod},
+           given={J.\bibnamedelimi D.},
+           giveni={J\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=824b40d5be647c38492a42518ca34fed}{%
+           family={Crick},
+           familyi={C\bibinitperiod},
+           given={F.\bibnamedelimi H.\bibnamedelimi C.},
+           giveni={F\bibinitperiod\bibinitdelim H\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \strng{namehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{fullhash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{fullhashraw}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{bibnamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorbibnamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authornamehash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorfullhash}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \strng{authorfullhashraw}{42ad3cb88232cc5b048e17be3ae4db9b}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature}
+      \field{number}{4356}
+      \field{title}{Molecular Structure of Nucleic Acids: A Structure for Deoxyribose Nucleic Acid}
+      \field{volume}{171}
+      \field{year}{1953}
+      \field{dateera}{ce}
+      \field{pages}{737\bibrangedash 738}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1038/171737a0
+      \endverb
+    \endentry
+    \entry{c01-yamao1985}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=c921302f23da81b66c77a8f3b00839a5}{%
+           family={Yamao},
+           familyi={Y\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=b51565718d08d2a50ac958c0b32bcf6e}{%
+           family={Muto},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=b400c98ebe17d129451c4268bd4a8252}{%
+           family={Kawauchi},
+           familyi={K\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=06322ff4b77ef89425d5eb2f77fdfa0a}{%
+           family={Iwami},
+           familyi={I\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=d734976d43a7c95cc6bc69453970ec6d}{%
+           family={Iwagami},
+           familyi={I\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=994768903e1c460cec3efa347846701f}{%
+           family={Azumi},
+           familyi={A\bibinitperiod},
+           given={Y.},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=9cdc2ce1e40019b06d59dbf892f18e62}{%
+           family={Osawa},
+           familyi={O\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{2b88e96a72e1cffcb30ceb34bf31bdf6}
+      \strng{fullhash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{fullhashraw}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{bibnamehash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authorbibnamehash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authornamehash}{2b88e96a72e1cffcb30ceb34bf31bdf6}
+      \strng{authorfullhash}{5783558149fb2ed9fc5893dc3a2283ab}
+      \strng{authorfullhashraw}{5783558149fb2ed9fc5893dc3a2283ab}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the National Academy of Sciences}
+      \field{number}{8}
+      \field{title}{{UGA} is read as tryptophan in \emph{Mycoplasma capricolum}}
+      \field{volume}{82}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{2306\bibrangedash 2309}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1073/pnas.82.8.2306
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

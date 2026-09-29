@@ -1,0 +1,59 @@
+[kmer] G=3.1e9 k=10: E[ocurrencias al azar]=2.96e+03
+[kmer] G=3.1e9 k=12: E[ocurrencias al azar]=185
+[kmer] G=3.1e9 k=16: E[ocurrencias al azar]=0.722
+[kmer] G=3.1e9 k=20: E[ocurrencias al azar]=0.00282
+[kmer] G=3.1e9 k=25: E[ocurrencias al azar]=2.75e-06
+[kmer] G=3.1e9 k=32: E[ocurrencias al azar]=1.68e-10
+[kmer] k mínimo con G/4^k<0.01: 20
+[kmer] tabla directa de 4^k enteros de 32 bits, k=12: 64 MiB;  k=16: 16 GiB
+[bwt] T=TACATACAG$  SA=[9, 5, 1, 7, 3, 6, 2, 8, 4, 0]  F=$AAAACCGTT  L=BWT=GTTCCAAAA$
+[bwt] C = {'$': 0, 'A': 1, 'C': 5, 'G': 7, 'T': 8}
+[bwt] LF = [7, 8, 9, 5, 6, 1, 2, 3, 4, 0]
+[bwt] Occ(A, i) i=0..10: [0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 4]
+[bwt] Occ(C, i) i=0..10: [0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2]
+[bwt] Occ(G, i) i=0..10: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+[bwt] Occ(T, i) i=0..10: [0, 0, 1, 2, 2, 2, 2, 2, 2, 2, 2]
+[bwt] reconstruido: TACATACAG$
+[busqueda] P=ACA: ''[0,10) -> 'A'[1,5) -> 'CA'[5,7) -> 'ACA'[1,3)  posiciones: [1, 5]
+[busqueda] P=GAC: ''[0,10) -> 'C'[5,7) -> 'AC'[1,3) -> 'GAC'[8,8)  posiciones: ninguna
+[busqueda] P=TAC: ''[0,10) -> 'C'[5,7) -> 'AC'[1,3) -> 'TAC'[8,10)  posiciones: [0, 4]
+[busqueda] ACA paso '': sp=0 ep=10
+[busqueda] ACA paso 'A': sp=1 ep=5
+[busqueda] ACA paso 'CA': sp=5 ep=7
+[busqueda] ACA paso 'ACA': sp=1 ep=3
+[bwt] C tabla: A:1 C:5 G:7 T:8
+[mem] log2 n = 32 bits;  SA completo 32 bit: 12.4 GB;  BWT 2 bit: 0.775 GB
+[mem] s=1: Occ(4x32 bit c/s) 49.600 GB; SA muestreado 12.400 GB
+[mem] s=32: Occ(4x32 bit c/s) 1.550 GB; SA muestreado 0.388 GB
+[mem] s=128: Occ(4x32 bit c/s) 0.388 GB; SA muestreado 0.097 GB
+[mem] BWA (Li y Durbin): 2n + n*ceil(log2 n)/32 bits = 1.163 GB por hebra
+[mem] ejemplo occ d=128, SA s=32: 1.550 GB
+[minim] demo seq=GATTACAGGTCCATGACATTGCAA k=3 w=4 (orden lexicográfico) seleccionados=[1, 4, 6, 10, 11, 12, 15, 17, 21] ['ATT', 'ACA', 'AGG', 'CCA', 'CAT', 'ATG', 'ACA', 'ATT', 'CAA']
+[minim] demo: 9 de 22 k-meros; densidad=0.409; 2/(w+1)=0.400
+[minim] aleatoria 200000 pb k=15 w=10: densidad hash=0.1877  lex=0.1986  2/(w+1)=0.1818
+[minim] aleatoria 200000 pb k=21 w=11: densidad hash=0.1669  lex=0.1819  2/(w+1)=0.1667
+[minim] aleatoria 200000 pb k=19 w=19: densidad hash=0.0999  lex=0.1104  2/(w+1)=0.1000
+[cadena] consulta 2002 pb, error 0.04; minimizadores ref=1120 consulta=367; anclas=236; en la cadena=187; fuera=49; puntuación f=1341.6
+[cadena] cadena ref 1025..2994; consulta 26..1996
+[mapq] p1=0.000316 p2=3.16e-06  P(error)=0.009901  MAPQ=20.0
+[mapq] dos idénticos: P(error)=0.5  MAPQ=3.01
+[mapq] tres idénticos: P(error)=0.6667  MAPQ=1.76
+[mapq] p1 vs (Q20,Q30): MAPQ=15.1
+[mapq-mm2] f1=200 f2=0 m=40: mapQ=211.9 (tope 60 -> 60)
+[mapq-mm2] f1=200 f2=150 m=40: mapQ=53.0 (tope 60 -> 53)
+[mapq-mm2] f1=200 f2=195 m=40: mapQ=5.3 (tope 60 -> 5)
+[inserto] media=350 sd=40; mu+4sd=510; mu-4sd=190; P(>mu+4sd | normal)=3.17e-05
+[mosdepth] delta = [0, 1, 0, 1, 0, 1, -1, -1, 1, 1, 0, -1, -1, 0]  cobertura = [0, 1, 1, 2, 2, 3, 2, 1, 2, 3, 3, 2, 1, 1]
+[pileup] SNV en posición 21: ref=A alt=G; profundidad=9; alt=5; frecuencia alélica=0.56
+[pileup] carriles=10; ref=TCACGGTCAACCAAATGACGTAAACGTGAATCCGTGGGGCATGA
+[perfil] lecturas=19855; cobertura media todas=29.8; MAPQ>=20=29.1
+[perfil] ventanas 1 kb normal: media=30.5 log2=0.06
+[perfil] ventanas 1 kb het: media=13.2 log2=-1.14
+[perfil] ventanas 1 kb hom: media=2.3 log2=-3.63
+[perfil] ventanas 1 kb dup: media=47.1 log2=0.69
+[perfil] ventanas 1 kb rep: media=0.6 log2=-5.73
+[perfil] mediana ventanas=29.1; log2 teórico het=-1.00 dup=0.58
+[perfil] cobertura MAPQ>=20 dentro de la repetición: 0.6; todas: 34.9
+[deteccion] c=10 L=150 z*=5.0: W_het=1500 pb  W_hom=375 pb
+[deteccion] c=30 L=150 z*=5.0: W_het=500 pb  W_hom=125 pb
+[deteccion] c=60 L=150 z*=5.0: W_het=250 pb  W_hom=62 pb

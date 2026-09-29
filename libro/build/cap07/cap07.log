@@ -1,0 +1,1745 @@
+This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  29 SEP 2026 22:50
+ system commands enabled.
+**build/cap07/cap07.tex
+(./build/cap07/cap07.tex
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+Lua module: luaotfload 2024-12-03 v3.29 Lua based OpenType font support
+Lua module: lualibs 2023-07-13 v2.76 ConTeXt Lua standard libraries.
+Lua module: lualibs-extended 2023-07-13 v2.76 ConTeXt Lua libraries -- extended 
+collection.
+luaotfload | conf : Root cache directory is "/Users/juvenalyosa/Library/texlive/
+2025/texmf-var/luatex-cache/generic/names".
+luaotfload | init : Loading fontloader "fontloader-2023-12-28.lua" from kpse-res
+olved path "/usr/local/texlive/2025/texmf-dist/tex/luatex/luaotfload/fontloader-
+2023-12-28.lua".
+Lua-only attribute luaotfload@noligature = 1
+luaotfload | init : Context OpenType loader version 3.134
+Inserting `luaotfload.node_processor' in `pre_linebreak_filter'.
+Inserting `luaotfload.node_processor' in `hpack_filter'.
+Inserting `luaotfload.glyph_stream' in `glyph_stream_provider'.
+Inserting `luaotfload.define_font' in `define_font'.
+Lua-only attribute luaotfload_color_attribute = 2
+luaotfload | conf : Root cache directory is "/Users/juvenalyosa/Library/texlive/
+2025/texmf-var/luatex-cache/generic/names".
+Inserting `luaotfload.harf.strip_prefix' in `find_opentype_file'.
+Inserting `luaotfload.harf.strip_prefix' in `find_truetype_file'.
+Removing  `luaotfload.glyph_stream' from `glyph_stream_provider'.
+Inserting `luaotfload.harf.glyphstream' in `glyph_stream_provider'.
+Inserting `luaotfload.harf.finalize_vlist' in `post_linebreak_filter'.
+Inserting `luaotfload.harf.finalize_hlist' in `hpack_filter'.
+Inserting `luaotfload.cleanup_files' in `wrapup_run'.
+Inserting `luaotfload.harf.finalize_unicode' in `finish_pdffile'.
+Inserting `luaotfload.glyphinfo' in `glyph_info'.
+Lua-only attribute luaotfload.letterspace_done = 3
+Inserting `luaotfload.aux.set_sscale_dimens' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_font_index' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.patch_cambria_domh' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.fixup_fontdata' in `luaotfload.patch_font_unsafe'.
+Inserting `luaotfload.aux.set_capheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.aux.set_xheight' in `luaotfload.patch_font'.
+Inserting `luaotfload.rewrite_fontname' in `luaotfload.patch_font'.
+Inserting `tracingstacklevels' in `input_level_string'. (/usr/local/texlive/202
+5/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2024/06/29 v1.4n Standard LaTeX document class
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/bk11.clo
+File: bk11.clo 2024/06/29 v1.4n Standard LaTeX file (size option)
+luaotfload | db : Font names database loaded from /Users/juvenalyosa/Library/tex
+live/2025/texmf-var/luatex-cache/generic/names/luaotfload-names.luc.gz)
+\c@part=\count194
+\c@chapter=\count195
+\c@section=\count196
+\c@subsection=\count197
+\c@subsubsection=\count198
+\c@paragraph=\count199
+\c@subparagraph=\count266
+\c@figure=\count267
+\c@table=\count268
+\abovecaptionskip=\skip49
+\belowcaptionskip=\skip50
+\bibindent=\dimen140
+)
+(./estilo/bioinfo.sty
+
+LaTeX Warning: You have requested package `estilo/bioinfo',
+               but the package provides `bioinfo'.
+
+Package: bioinfo 2026/09/29 Estilo Bioinformatica Practica
+(/usr/local/texlive/2025/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks17
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2024/12/12 v1.0g TeX engine tests
+))
+\Gm@cnth=\count269
+\Gm@cntv=\count270
+\c@Gm@tempcnt=\count271
+\Gm@bindingoffset=\dimen141
+\Gm@wd@mp=\dimen142
+\Gm@odd@mp=\dimen143
+\Gm@even@mp=\dimen144
+\Gm@layoutwidth=\dimen145
+\Gm@layoutheight=\dimen146
+\Gm@layouthoffset=\dimen147
+\Gm@layoutvoffset=\dimen148
+\Gm@dimlist=\toks18
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2025/02/14 v25.4 The multilingual framework for pdfLaTeX, LuaLaT
+eX and XeLaTeX
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/babel/luababel.def
+\bbl@readstream=\read2
+\l@dumylang=\language2
+Package babel Info: Non-standard hyphenation setup on input line 118.
+\l@nohyphenation=\language3
+\l@german-x-2024-02-28=\language4
+\l@ngerman-x-2024-02-28=\language5
+\l@afrikaans=\language6
+\l@albanian=\language7
+\l@ancientgreek=\language8
+\l@ibycus=\language9
+\l@arabic=\language10
+\l@armenian=\language11
+\l@basque=\language12
+\l@belarusian=\language13
+\l@bulgarian=\language14
+\l@catalan=\language15
+\l@pinyin=\language16
+\l@churchslavonic=\language17
+\l@coptic=\language18
+\l@croatian=\language19
+\l@czech=\language20
+\l@danish=\language21
+\l@dutch=\language22
+\l@ukenglish=\language23
+\l@usenglishmax=\language24
+\l@esperanto=\language25
+\l@estonian=\language26
+\l@ethiopic=\language27
+\l@farsi=\language28
+\l@finnish=\language29
+\l@schoolfinnish=\language30
+\l@french=\language31
+\l@friulan=\language32
+\l@galician=\language33
+\l@georgian=\language34
+\l@german=\language35
+\l@ngerman=\language36
+\l@swissgerman=\language37
+\l@greek=\language38
+\l@monogreek=\language39
+\l@hebrew=\language40
+\l@hungarian=\language41
+\l@icelandic=\language42
+\l@assamese=\language43
+\l@bengali=\language44
+\l@gujarati=\language45
+\l@hindi=\language46
+\l@kannada=\language47
+\l@malayalam=\language48
+\l@marathi=\language49
+\l@oriya=\language50
+\l@pali=\language51
+\l@panjabi=\language52
+\l@tamil=\language53
+\l@telugu=\language54
+\l@indonesian=\language55
+\l@interlingua=\language56
+\l@irish=\language57
+\l@italian=\language58
+\l@kurmanji=\language59
+\l@classiclatin=\language60
+\l@latin=\language61
+\l@liturgicallatin=\language62
+\l@latvian=\language63
+\l@lithuanian=\language64
+\l@macedonian=\language65
+\l@mongolian=\language66
+\l@mongolianlmc=\language67
+\l@bokmal=\language68
+\l@nynorsk=\language69
+\l@occitan=\language70
+\l@piedmontese=\language71
+\l@polish=\language72
+\l@portuguese=\language73
+\l@romanian=\language74
+\l@romansh=\language75
+\l@russian=\language76
+\l@sanskrit=\language77
+\l@serbian=\language78
+\l@serbianc=\language79
+\l@slovak=\language80
+\l@slovenian=\language81
+\l@spanish=\language82
+\l@swedish=\language83
+\l@thai=\language84
+\l@turkish=\language85
+\l@turkmen=\language86
+\l@ukrainian=\language87
+\l@uppersorbian=\language88
+\l@vietnamese=\language89
+\l@welsh=\language90
+\babelcatcodetablenum=\catcodetable14
+\bbl@pattcodes=\catcodetable15
+)
+\babel@savecnt=\count272
+\U@D=\dimen149
+\l@unhyphenated=\language91
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/babel/luababel.def
+\bbl@attr@locale=\attribute4
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/babel-spanish/spanish.ldf
+Language: spanish.ldf 2021/05/27 v5.0q Spanish support from the babel system
+\es@quottoks=\toks19
+\es@quotdepth=\count273
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/hyph-utf8/loadhyph/loadhyph-es.
+tex UTF-8 Spanish hyphenation patterns
+(/usr/local/texlive/2025/texmf-dist/tex/generic/hyph-utf8/patterns/tex/hyph-es.
+tex))))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/babel/locale/es/babel-spanish.t
+ex
+Package babel Info: Importing font and identification data for spanish
+(babel)             from babel-es.ini. Reported on input line 11.
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2024/11/05 v2.17t AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks20
+\ex@=\dimen150
+))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen151
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count274
+LaTeX Info: Redefining \frac on input line 235.
+\uproot@=\count275
+\leftroot@=\count276
+LaTeX Info: Redefining \overline on input line 398.
+LaTeX Info: Redefining \colon on input line 409.
+\classnum@=\count277
+\DOTSCASE@=\count278
+LaTeX Info: Redefining \ldots on input line 495.
+LaTeX Info: Redefining \dots on input line 498.
+LaTeX Info: Redefining \cdots on input line 619.
+\Mathstrutbox@=\box52
+\strutbox@=\box53
+LaTeX Info: Redefining \big on input line 721.
+LaTeX Info: Redefining \Big on input line 722.
+LaTeX Info: Redefining \bigg on input line 723.
+LaTeX Info: Redefining \Bigg on input line 724.
+\big@size=\dimen152
+LaTeX Font Info:    Redeclaring font encoding OML on input line 742.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 743.
+\macc@depth=\count279
+LaTeX Info: Redefining \bmod on input line 904.
+LaTeX Info: Redefining \pmod on input line 909.
+LaTeX Info: Redefining \smash on input line 939.
+LaTeX Info: Redefining \relbar on input line 969.
+LaTeX Info: Redefining \Relbar on input line 970.
+\c@MaxMatrixCols=\count280
+\dotsspace@=\muskip17
+\c@parentequation=\count281
+\dspbrk@lvl=\count282
+\tag@help=\toks21
+\row@=\count283
+\column@=\count284
+\maxfields@=\count285
+\andhelp@=\toks22
+\eqnshift@=\dimen153
+\alignsep@=\dimen154
+\tagshift@=\dimen155
+\tagwidth@=\dimen156
+\totwidth@=\dimen157
+\lineht@=\dimen158
+\@envbody=\toks23
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks24
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2024/10/04 v1.31 mathematical typesetting tools
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count286
+\calc@Bcount=\count287
+\calc@Adimen=\dimen159
+\calc@Bdimen=\dimen160
+\calc@Askip=\skip54
+\calc@Bskip=\skip55
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count288
+\calc@Cskip=\skip56
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
+)
+\g_MT_multlinerow_int=\count289
+\l_MT_multwidth_dim=\dimen161
+\origjot=\skip57
+\l_MT_shortvdotswithinadjustabove_dim=\dimen162
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen163
+\l_MT_above_intertext_sep=\dimen164
+\l_MT_below_intertext_sep=\dimen165
+\l_MT_above_shortintertext_sep=\dimen166
+\l_MT_below_shortintertext_sep=\dimen167
+\xmathstrut@box=\box54
+\xmathstrut@dim=\dimen168
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2025-01-18 L3 programming layer (loader) 
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-luatex.def
+File: l3backend-luatex.def 2024-05-08 L3 backend support: PDF output (LuaTeX)
+\l__color_backend_stack_int=\count290
+Inserting `l3color' in `luaotfload.parse_color'.
+\l__pdf_internal_box=\box55
+))
+Package: xparse 2024-08-16 L3 Experimental document command parser
+)
+Package: fontspec 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTeX
+Lua module: fontspec 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaTeX (/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec-luatex.sty
+Package: fontspec-luatex 2024/05/11 v2.9e Font selection for XeLaTeX and LuaLaT
+eX
+\l__fontspec_script_int=\count291
+\l__fontspec_language_int=\count292
+\l__fontspec_strnum_int=\count293
+\l__fontspec_tmp_int=\count294
+\l__fontspec_tmpa_int=\count295
+\l__fontspec_tmpb_int=\count296
+\l__fontspec_tmpc_int=\count297
+\l__fontspec_em_int=\count298
+\l__fontspec_emdef_int=\count299
+\l__fontspec_strong_int=\count300
+\l__fontspec_strongdef_int=\count301
+\l__fontspec_tmpa_dim=\dimen169
+\l__fontspec_tmpb_dim=\dimen170
+\l__fontspec_tmpc_dim=\dimen171
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/fontspec/fontspec.cfg)))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/unicode-math/unicode-math.sty
+Package: unicode-math 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaLaTeX
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/unicode-math/unicode-math-luatex.
+sty
+Package: unicode-math-luatex 2023/08/13 v0.8r Unicode maths in XeLaTeX and LuaL
+aTeX
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/l3packages/l3keys2e/l3keys2e.sty
+Package: l3keys2e 2024-08-16 LaTeX2e option processing using LaTeX3 keys
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/base/fix-cm.sty
+Package: fix-cm 2020/11/24 v1.1t fixes to LaTeX
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/ts1enc.def
+File: ts1enc.def 2001/06/05 v3.0e (jk/car/fm) Standard LaTeX file
+LaTeX Font Info:    Redeclaring font encoding TS1 on input line 47.
+))
+(/usr/local/texlive/2025/texmf-dist/tex/lualatex/lualatex-math/lualatex-math.st
+y
+Package: lualatex-math 2022/01/01 v1.12 Patches for mathematics typesetting wit
+h LuaLaTeX
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2025/02/11 v2.5l e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count302
+)
+Lua module: lualatex-math 2013/08/03 v1.3 Patches for mathematics typesetting wi
+th LuaLaTeX)
+\g__um_fam_int=\count303
+\g__um_fonts_used_int=\count304
+\l__um_primecount_int=\count305
+\g__um_primekern_muskip=\muskip18
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/unicode-math/unicode-math-table.t
+ex)))
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusSerif(0)' created for font
+(fontspec)             'LibertinusSerif' with options
+(fontspec)             [Ligatures=TeX,Extension=.otf,UprightFont=*-Regular,Ital
+icFont=*-Italic,BoldFont=*-Semibold,BoldItalicFont=*-SemiboldItalic,Numbers={Ol
+dStyle,Proportional}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=node;script=latn;
+language=dflt;+tlig;+onum;+pnum;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=node;script=latn;
+language=dflt;+tlig;+onum;+pnum;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=node;script=latn
+;language=dflt;+tlig;+onum;+pnum;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=node;script=latn
+;language=dflt;+tlig;+onum;+pnum;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;+onum;+pnum;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;+onum;+pnum;+smcp;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-SemiboldItalic.otf]:mode=node;scrip
+t=latn;language=dflt;+tlig;+onum;+pnum;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-SemiboldItalic.otf]:mode=node;scrip
+t=latn;language=dflt;+tlig;+onum;+pnum;+smcp;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusSerif(1)' created for font
+(fontspec)             'LibertinusSerif' with options
+(fontspec)             [Renderer=Basic,Extension=.otf,UprightFont=*-Regular,Ita
+licFont=*-Italic,BoldFont=*-Semibold,BoldItalicFont=*-SemiboldItalic,Numbers={O
+ldStyle,Proportional}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=base;script=latn;
+language=dflt;+onum;+pnum;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=base;script=latn;
+language=dflt;+onum;+pnum;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=base;script=latn
+;language=dflt;+onum;+pnum;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=base;script=latn
+;language=dflt;+onum;+pnum;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=base;script=latn;l
+anguage=dflt;+onum;+pnum;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=base;script=latn;l
+anguage=dflt;+onum;+pnum;+smcp;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-SemiboldItalic.otf]:mode=base;scrip
+t=latn;language=dflt;+onum;+pnum;"
+(fontspec)             - 'bold italic small caps'  (b/scit) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-SemiboldItalic.otf]:mode=base;scrip
+t=latn;language=dflt;+onum;+pnum;+smcp;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
+(Font)                  OT1/cmr/m/n --> TU/LibertinusSerif(1)/m/n on input line
+ 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> TU/LibertinusSerif(1)/m/it on input li
+ne 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> TU/LibertinusSerif(1)/b/n on input lin
+e 29.
+
+Package fontspec Info: 
+(fontspec)             Font family 'SourceSansPro(0)' created for font
+(fontspec)             'SourceSansPro' with options
+(fontspec)             [Ligatures=TeX,Extension=.otf,UprightFont=*-Regular,Ital
+icFont=*-RegularIt,BoldFont=*-Semibold,BoldItalicFont=*-SemiboldIt].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Regular.otf]:mode=node;script=latn;la
+nguage=dflt;+tlig;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Regular.otf]:mode=node;script=latn;la
+nguage=dflt;+tlig;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=node;script=latn;l
+anguage=dflt;+tlig;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-RegularIt.otf]:mode=node;script=latn;
+language=dflt;+tlig;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-SemiboldIt.otf]:mode=node;script=latn
+;language=dflt;+tlig;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'SourceSansPro(1)' created for font
+(fontspec)             'SourceSansPro' with options
+(fontspec)             [Renderer=Basic,Extension=.otf,UprightFont=*-Regular,Ita
+licFont=*-RegularIt,BoldFont=*-Semibold,BoldItalicFont=*-SemiboldIt].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Regular.otf]:mode=base;script=latn;la
+nguage=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Regular.otf]:mode=base;script=latn;la
+nguage=dflt;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=base;script=latn;l
+anguage=dflt;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=base;script=latn;l
+anguage=dflt;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-RegularIt.otf]:mode=base;script=latn;
+language=dflt;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-SemiboldIt.otf]:mode=base;script=latn
+;language=dflt;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> TU/SourceSansPro(1)/m/n on input line 
+32.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> TU/SourceSansPro(1)/b/n on input line
+ 32.
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Regular scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Regular scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Medium scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Oblique scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'FiraMono(0)' created for font 'FiraMono'
+(fontspec)             with options
+(fontspec)             [WordSpace={1,0,0},HyphenChar=None,PunctuationSpace=Word
+Space,Extension=.otf,UprightFont=*-Regular,ItalicFont=*-Oblique,BoldFont=*-Medi
+um,Scale=0.84].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Regular.otf]:mode=node;script=latn
+;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Medium.otf]:mode=node;script=latn;
+language=dflt;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Oblique.otf]:mode=node;script=latn
+;language=dflt;"
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Regular scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Regular scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Medium scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             FiraMono-Oblique scale = 0.84.
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'FiraMono(1)' created for font 'FiraMono'
+(fontspec)             with options
+(fontspec)             [Renderer=Basic,Extension=.otf,UprightFont=*-Regular,Ita
+licFont=*-Oblique,BoldFont=*-Medium,Scale=0.84].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Regular.otf]:mode=base;script=latn
+;language=dflt;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Medium.otf]:mode=base;script=latn;
+language=dflt;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->s*[0.84]"[FiraMono-Oblique.otf]:mode=base;script=latn
+;language=dflt;"
+
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> TU/FiraMono(1)/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> TU/FiraMono(1)/b/n on input line 34.
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusMath-Regular.otf(0)' created for
+(fontspec)             font 'LibertinusMath-Regular.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,RawFeature={mathfontdimen=xetex}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusMath-Regular.otf]:mode=base;script=math;l
+anguage=dflt;mathfontdimen=xetex;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusMath-Regular.otf(1)' created for
+(fontspec)             font 'LibertinusMath-Regular.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=9.855-},{Size=7.665-9.855,Font=Liberti
+nusMath-Regular.otf,Style=MathScript},{Size=-7.665,Font=LibertinusMath-Regular.
+otf,Style=MathScriptScript}},RawFeature={mathfontdimen=xetex}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <9.855->"[LibertinusMath-Regular.otf]:mode=base;script=m
+ath;language=dflt;mathfontdimen=xetex;"<7.665-9.855>"[LibertinusMath-Regular.ot
+f]:mode=base;script=math;language=dflt;mathfontdimen=xetex;+ssty=0;"<-7.665>"[L
+ibertinusMath-Regular.otf]:mode=base;script=math;language=dflt;mathfontdimen=xe
+tex;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `normal' on input line 36.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> TU/LibertinusMath-Regular.otf(1)/m/n on
+ input line 36.
+LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
+(Font)              `operators' in the math version `bold' on input line 36.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> TU/LibertinusMath-Regular.otf(1)/b/n o
+n input line 36.
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusMath-Regular.otf(2)' created for
+(fontspec)             font 'LibertinusMath-Regular.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=9.855-},{Size=7.665-9.855,Font=Liberti
+nusMath-Regular.otf,Style=MathScript},{Size=-7.665,Font=LibertinusMath-Regular.
+otf,Style=MathScriptScript}},RawFeature={mathfontdimen=xetex},RawFeature={mathf
+ontdimen=tex2}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <9.855->"[LibertinusMath-Regular.otf]:mode=base;script=m
+ath;language=dflt;mathfontdimen=xetex;mathfontdimen=tex2;"<7.665-9.855>"[Libert
+inusMath-Regular.otf]:mode=base;script=math;language=dflt;mathfontdimen=xetex;m
+athfontdimen=tex2;+ssty=0;"<-7.665>"[LibertinusMath-Regular.otf]:mode=base;scri
+pt=math;language=dflt;mathfontdimen=xetex;mathfontdimen=tex2;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 36.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> TU/LibertinusMath-Regular.otf(2)/m/n o
+n input line 36.
+LaTeX Font Info:    Encoding `OMS' has changed to `TU' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 36.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> TU/LibertinusMath-Regular.otf(2)/b/n o
+n input line 36.
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusMath-Regular.otf(3)' created for
+(fontspec)             font 'LibertinusMath-Regular.otf' with options
+(fontspec)             [Renderer=Basic,BoldItalicFont={},ItalicFont={},SmallCap
+sFont={},Script=Math,SizeFeatures={{Size=9.855-},{Size=7.665-9.855,Font=Liberti
+nusMath-Regular.otf,Style=MathScript},{Size=-7.665,Font=LibertinusMath-Regular.
+otf,Style=MathScriptScript}},RawFeature={mathfontdimen=xetex},RawFeature={mathf
+ontdimen=tex3}].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <9.855->"[LibertinusMath-Regular.otf]:mode=base;script=m
+ath;language=dflt;mathfontdimen=xetex;mathfontdimen=tex3;"<7.665-9.855>"[Libert
+inusMath-Regular.otf]:mode=base;script=math;language=dflt;mathfontdimen=xetex;m
+athfontdimen=tex3;+ssty=0;"<-7.665>"[LibertinusMath-Regular.otf]:mode=base;scri
+pt=math;language=dflt;mathfontdimen=xetex;mathfontdimen=tex3;+ssty=1;"
+
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 3
+6.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> TU/LibertinusMath-Regular.otf(3)/m/n o
+n input line 36.
+LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 36.
+
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> TU/LibertinusMath-Regular.otf(3)/b/n o
+n input line 36.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 36.
+
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 36.
+
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+
+Package fontspec Info: 
+(fontspec)             Font family 'SourceSansPro(2)' created for font
+(fontspec)             'SourceSansPro' with options
+(fontspec)             [Extension=.otf,UprightFont=*-Light,BoldFont=*-Semibold,
+ItalicFont=*-LightIt].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Light.otf]:mode=node;script=latn;lang
+uage=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Light.otf]:mode=node;script=latn;lang
+uage=dflt;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=node;script=latn;l
+anguage=dflt;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Semibold.otf]:mode=node;script=latn;l
+anguage=dflt;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-LightIt.otf]:mode=node;script=latn;la
+nguage=dflt;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'SourceSansPro(3)' created for font
+(fontspec)             'SourceSansPro' with options
+(fontspec)             [Extension=.otf,UprightFont=*-Black,BoldFont=*-Black].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Black.otf]:mode=node;script=latn;lang
+uage=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Black.otf]:mode=node;script=latn;lang
+uage=dflt;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Black.otf]:mode=node;script=latn;lang
+uage=dflt;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-Black.otf]:mode=node;script=latn;lang
+uage=dflt;+smcp;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'SourceSansPro(4)' created for font
+(fontspec)             'SourceSansPro' with options
+(fontspec)             [Extension=.otf,UprightFont=*-ExtraLight,ItalicFont=*-Ex
+traLightIt].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-ExtraLight.otf]:mode=node;script=latn
+;language=dflt;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-ExtraLight.otf]:mode=node;script=latn
+;language=dflt;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[SourceSansPro-ExtraLightIt.otf]:mode=node;script=la
+tn;language=dflt;"
+
+
+Package fontspec Info: 
+(fontspec)             Font family 'LibertinusSerif(2)' created for font
+(fontspec)             'LibertinusSerif' with options
+(fontspec)             [Extension=.otf,UprightFont=*-Regular,ItalicFont=*-Itali
+c,BoldFont=*-Semibold,Numbers=Lining].
+(fontspec)              
+(fontspec)              This font family consists of the following NFSS
+(fontspec)             series/shapes:
+(fontspec)              
+(fontspec)             - 'normal' (m/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=node;script=latn;
+language=dflt;+lnum;"
+(fontspec)             - 'small caps'  (m/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Regular.otf]:mode=node;script=latn;
+language=dflt;+lnum;+smcp;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=node;script=latn
+;language=dflt;+lnum;"
+(fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Semibold.otf]:mode=node;script=latn
+;language=dflt;+lnum;+smcp;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=node;script=latn;l
+anguage=dflt;+lnum;"
+(fontspec)             - 'italic small caps'  (m/scit) with NFSS spec.:
+(fontspec)             <->"[LibertinusSerif-Italic.otf]:mode=node;script=latn;l
+anguage=dflt;+lnum;+smcp;"
+
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/microtype.sty
+Package: microtype 2025/02/11 v3.2a Micro-typographical refinements (RS)
+\MT@toks=\toks25
+\MT@tempbox=\box56
+\MT@count=\count306
+LaTeX Info: Redefining \noprotrusionifhmode on input line 1087.
+LaTeX Info: Redefining \leftprotrusion on input line 1088.
+\MT@prot@toks=\toks26
+LaTeX Info: Redefining \rightprotrusion on input line 1107.
+LaTeX Info: Redefining \textls on input line 1449.
+\MT@outer@kern=\dimen172
+LaTeX Info: Redefining \microtypecontext on input line 2053.
+LaTeX Info: Redefining \textmicrotypecontext on input line 2070.
+\MT@listname@count=\count307
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/microtype-luatex.def
+File: microtype-luatex.def 2025/02/11 v3.2a Definitions specific to luatex (RS)
+
+Lua module: microtype 2025/02/11 v3.2a microtype module.
+Module microtype Info: overwriting function `keepligature' on input line 63
+LaTeX Info: Redefining \lsstyle on input line 779.
+LaTeX Info: Redefining \lslig on input line 779.
+\MT@outer@space=\skip58
+)
+Package microtype Info: Loading configuration file microtype.cfg.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/microtype/microtype.cfg
+File: microtype.cfg 2025/02/11 v3.2a microtype main configuration file (RS)
+)
+LaTeX Info: Redefining \microtypesetup on input line 3065.
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/csquotes/csquotes.sty
+Package: csquotes 2024-04-04 v5.2o context-sensitive quotations (JAW)
+\csq@reset=\count308
+\csq@gtype=\count309
+\csq@glevel=\count310
+\csq@qlevel=\count311
+\csq@maxlvl=\count312
+\csq@tshold=\count313
+\csq@ltx@everypar=\toks27
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/csquotes/csquotes.def
+File: csquotes.def 2024-04-04 v5.2o csquotes generic definitions (JAW)
+)
+Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
+Package csquotes Info: ... configuration file loaded successfully.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/csquotes/csquotes.cfg
+File: csquotes.cfg 
+)
+Package csquotes Info: Enabling multilingual quotes.
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2024/09/29 v3.02 LaTeX color extensions (UK)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: luatex.def on input line 274.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-def/luatex.def
+File: luatex.def 2024/04/13 v1.2e Graphics/color driver for luatex
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1349.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1353.
+Package xcolor Info: Model `RGB' extended on input line 1365.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1367.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1368.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1371.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1372.
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/colortbl/colortbl.sty
+Package: colortbl 2024/07/06 v1.0i Color table columns (DPC)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty
+Package: array 2024/10/17 v2.6g Tabular extension package (FMi)
+\col@sep=\dimen173
+\ar@mcellbox=\box57
+\extrarowheight=\dimen174
+\NC@list=\toks28
+\extratabsurround=\skip59
+\backup@length=\skip60
+\ar@cellbox=\box58
+)
+\everycr=\toks29
+\minrowclearance=\skip61
+\rownum=\count314
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2024/08/06 v1.4g Standard LaTeX Graphics (DPC,SPQR)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2023/12/02 v1.11 sin cos tan (DPC)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: luatex.def on input line 106.
+)
+\Gin@req@height=\dimen175
+\Gin@req@width=\dimen176
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.te
+x
+\pgfutil@everybye=\toks30
+\pgfutil@tempdima=\dimen177
+\pgfutil@tempdimb=\dimen178
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfutil-latex.def
+\pgfutil@abb=\box59
+) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfrcs.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/pgf.revision.tex)
+Package: pgfrcs 2023-01-15 v3.1.10 (3.1.10)
+))
+Package: pgf 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/basiclayer/pgfcore.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/systemlayer/pgfsys.sty
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys.code.tex
+Package: pgfsys 2023-01-15 v3.1.10 (3.1.10)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks31
+\pgfkeys@temptoks=\toks32
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfkeyslibraryfil
+tered.code.tex
+\pgfkeys@tmptoks=\toks33
+))
+\pgf@x=\dimen179
+\pgf@y=\dimen180
+\pgf@xa=\dimen181
+\pgf@ya=\dimen182
+\pgf@xb=\dimen183
+\pgf@yb=\dimen184
+\pgf@xc=\dimen185
+\pgf@yc=\dimen186
+\pgf@xd=\dimen187
+\pgf@yd=\dimen188
+\w@pgf@writea=\write3
+\r@pgf@reada=\read3
+\c@pgf@counta=\count315
+\c@pgf@countb=\count316
+\c@pgf@countc=\count317
+\c@pgf@countd=\count318
+\t@pgf@toka=\toks34
+\t@pgf@tokb=\toks35
+\t@pgf@tokc=\toks36
+\pgf@sys@id@count=\count319
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgf.cfg
+File: pgf.cfg 2023-01-15 v3.1.10 (3.1.10)
+)
+Driver file for pgf: pgfsys-luatex.def
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-luatex.d
+ef
+File: pgfsys-luatex.def 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsys-common-p
+df.def
+File: pgfsys-common-pdf.def 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsyssoftpath.
+code.tex
+File: pgfsyssoftpath.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfsyssoftpath@smallbuffer@items=\count320
+\pgfsyssoftpath@bigbuffer@items=\count321
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/systemlayer/pgfsysprotocol.
+code.tex
+File: pgfsysprotocol.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcore.code.tex
+Package: pgfcore 2023-01-15 v3.1.10 (3.1.10)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
+\pgfmath@dimen=\dimen189
+\pgfmath@count=\count322
+\pgfmath@box=\box60
+\pgfmath@toks=\toks37
+\pgfmath@stack@operand=\toks38
+\pgfmath@stack@operation=\toks39
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.code.
+tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.basic
+.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.trigo
+nometric.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.rando
+m.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.compa
+rison.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.base.
+code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.round
+.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.misc.
+code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integ
+erarithmetics.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count323
+)) (/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfint.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepoints.co
+de.tex
+File: pgfcorepoints.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@picminx=\dimen190
+\pgf@picmaxx=\dimen191
+\pgf@picminy=\dimen192
+\pgf@picmaxy=\dimen193
+\pgf@pathminx=\dimen194
+\pgf@pathmaxx=\dimen195
+\pgf@pathminy=\dimen196
+\pgf@pathmaxy=\dimen197
+\pgf@xx=\dimen198
+\pgf@xy=\dimen199
+\pgf@yx=\dimen256
+\pgf@yy=\dimen257
+\pgf@zx=\dimen258
+\pgf@zy=\dimen259
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathconst
+ruct.code.tex
+File: pgfcorepathconstruct.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@path@lastx=\dimen260
+\pgf@path@lasty=\dimen261
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathusage
+.code.tex
+File: pgfcorepathusage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@shorten@end@additional=\dimen262
+\pgf@shorten@start@additional=\dimen263
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorescopes.co
+de.tex
+File: pgfcorescopes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfpic=\box61
+\pgf@hbox=\box62
+\pgf@layerbox@main=\box63
+\pgf@picture@serial@count=\count324
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoregraphicst
+ate.code.tex
+File: pgfcoregraphicstate.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgflinewidth=\dimen264
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretransform
+ations.code.tex
+File: pgfcoretransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@pt@x=\dimen265
+\pgf@pt@y=\dimen266
+\pgf@pt@temp=\dimen267
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorequick.cod
+e.tex
+File: pgfcorequick.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreobjects.c
+ode.tex
+File: pgfcoreobjects.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepathproce
+ssing.code.tex
+File: pgfcorepathprocessing.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorearrows.co
+de.tex
+File: pgfcorearrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowsep=\dimen268
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreshade.cod
+e.tex
+File: pgfcoreshade.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@max=\dimen269
+\pgf@sys@shading@range@num=\count325
+\pgf@shadingcount=\count326
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreimage.cod
+e.tex
+File: pgfcoreimage.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoreexternal.
+code.tex
+File: pgfcoreexternal.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfexternal@startupbox=\box64
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorelayers.co
+de.tex
+File: pgfcorelayers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcoretranspare
+ncy.code.tex
+File: pgfcoretransparency.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorepatterns.
+code.tex
+File: pgfcorepatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/basiclayer/pgfcorerdf.code.
+tex
+File: pgfcorerdf.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmoduleshapes.cod
+e.tex
+File: pgfmoduleshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodeparttextbox=\box65
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmoduleplot.code.
+tex
+File: pgfmoduleplot.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-0-65.sty
+Package: pgfcomp-version-0-65 2023-01-15 v3.1.10 (3.1.10)
+\pgf@nodesepstart=\dimen270
+\pgf@nodesepend=\dimen271
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/compatibility/pgfcomp-version
+-1-18.sty
+Package: pgfcomp-version-1-18 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgffor.sty
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/utilities/pgfkeys.sty
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex))
+ (/usr/local/texlive/2025/texmf-dist/tex/latex/pgf/math/pgfmath.sty
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/utilities/pgffor.code.tex
+Package: pgffor 2023-01-15 v3.1.10 (3.1.10)
+\pgffor@iter=\dimen272
+\pgffor@skip=\dimen273
+\pgffor@stack=\toks40
+\pgffor@toks=\toks41
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/tikz.cod
+e.tex
+Package: tikz 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryplothan
+dlers.code.tex
+File: pgflibraryplothandlers.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@plot@mark@count=\count327
+\pgfplotmarksize=\dimen274
+)
+\tikz@lastx=\dimen275
+\tikz@lasty=\dimen276
+\tikz@lastxsaved=\dimen277
+\tikz@lastysaved=\dimen278
+\tikz@lastmovetox=\dimen279
+\tikz@lastmovetoy=\dimen280
+\tikzleveldistance=\dimen281
+\tikzsiblingdistance=\dimen282
+\tikz@figbox=\box66
+\tikz@figbox@bg=\box67
+\tikz@tempbox=\box68
+\tikz@tempbox@bg=\box69
+\tikztreelevel=\count328
+\tikznumberofchildren=\count329
+\tikznumberofcurrentchild=\count330
+\tikz@fig@count=\count331
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmodulematrix.cod
+e.tex
+File: pgfmodulematrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfmatrixcurrentrow=\count332
+\pgfmatrixcurrentcolumn=\count333
+\pgf@matrix@numberofcolumns=\count334
+)
+\tikz@expandcount=\count335
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytopaths.code.tex
+File: tikzlibrarytopaths.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryarrows.
+meta.code.tex
+File: pgflibraryarrows.meta.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfarrowinset=\dimen283
+\pgfarrowlength=\dimen284
+\pgfarrowwidth=\dimen285
+\pgfarrowlinewidth=\dimen286
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypositioning.code.tex
+File: tikzlibrarypositioning.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarycalc.code.tex
+File: tikzlibrarycalc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfit.code.tex
+File: tikzlibraryfit.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarybackgrounds.code.tex
+File: tikzlibrarybackgrounds.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@layerbox@background=\box70
+\pgf@layerboxsaved@background=\box71
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.code.tex
+File: tikzlibraryshapes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.geometric.code.tex
+File: tikzlibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.geometric.code.tex
+File: pgflibraryshapes.geometric.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.misc.code.tex
+File: tikzlibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.misc.code.tex
+File: pgflibraryshapes.misc.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.symbols.code.tex
+File: tikzlibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.symbols.code.tex
+File: pgflibraryshapes.symbols.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.arrows.code.tex
+File: tikzlibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.arrows.code.tex
+File: pgflibraryshapes.arrows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.callouts.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.callouts.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshapes.multipart.code.tex
+File: tikzlibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/shapes/pgflibrary
+shapes.multipart.code.tex
+File: pgflibraryshapes.multipart.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgfnodepartlowerbox=\box72
+\pgfnodeparttwobox=\box73
+\pgfnodepartthreebox=\box74
+\pgfnodepartfourbox=\box75
+\pgfnodeparttwentybox=\box76
+\pgfnodepartnineteenbox=\box77
+\pgfnodeparteighteenbox=\box78
+\pgfnodepartseventeenbox=\box79
+\pgfnodepartsixteenbox=\box80
+\pgfnodepartfifteenbox=\box81
+\pgfnodepartfourteenbox=\box82
+\pgfnodepartthirteenbox=\box83
+\pgfnodeparttwelvebox=\box84
+\pgfnodepartelevenbox=\box85
+\pgfnodeparttenbox=\box86
+\pgfnodepartninebox=\box87
+\pgfnodeparteightbox=\box88
+\pgfnodepartsevenbox=\box89
+\pgfnodepartsixbox=\box90
+\pgfnodepartfivebox=\box91
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.pathreplacing.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmoduledecoration
+s.code.tex
+\pgfdecoratedcompleteddistance=\dimen287
+\pgfdecoratedremainingdistance=\dimen288
+\pgfdecoratedinputsegmentcompleteddistance=\dimen289
+\pgfdecoratedinputsegmentremainingdistance=\dimen290
+\pgf@decorate@distancetomove=\dimen291
+\pgf@decorate@repeatstate=\count336
+\pgfdecorationsegmentamplitude=\dimen292
+\pgfdecorationsegmentlength=\dimen293
+)
+\tikz@lib@dec@box=\box92
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.pathreplacing.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.pathmorphing.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.pathmorphing.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarydecorations.text.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/decorations/pgfli
+brarydecorations.text.code.tex
+\pgf@lib@dec@text@box=\box93
+)
+\tikz@lib@dec@te@box=\box94
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarypatterns.code.tex
+File: tikzlibrarypatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibrarypattern
+s.code.tex
+File: pgflibrarypatterns.code.tex 2023-01-15 v3.1.10 (3.1.10)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryshadows.code.tex
+File: tikzlibraryshadows.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfadings.code.tex
+File: tikzlibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryfadings
+.code.tex
+File: pgflibraryfadings.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgf-blur/tikzlibraryshadows.blur.
+code.tex  v1.02, 2012/12/09
+\pgfbs@fading@count=\count337
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarymatrix.code.tex
+File: tikzlibrarymatrix.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarychains.code.tex
+File: tikzlibrarychains.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryintersections.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryinterse
+ctions.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryfpu.cod
+e.tex)
+\pgf@intersect@solutions=\count338
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarytrees.code.tex
+File: tikzlibrarytrees.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/graphs/tikzlibrarygraphs.code.tex
+File: tikzlibrarygraphs.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\tikz@lib@auto@number=\count339
+\tikz@qnode@count=\count340
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryquotes.code.tex
+File: tikzlibraryquotes.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryspy.code.tex
+File: tikzlibraryspy.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\tikz@lib@spybox=\box95
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarybending.code.tex
+File: tikzlibrarybending.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmodulebending.co
+de.tex
+File: pgfmodulebending.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/modules/pgfmodulenonlineart
+ransformations.code.tex
+File: pgfmodulenonlineartransformations.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgftransformnonlinearflatness=\dimen294
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibrarycurvili
+near.code.tex
+File: pgflibrarycurvilinear.code.tex 2023-01-15 v3.1.10 (3.1.10)
+\pgf@curvilinear@time@a=\dimen295
+\pgf@curvilinear@length@a=\dimen296
+\pgf@curvilinear@length@b=\dimen297
+\pgf@curvilinear@length@c=\dimen298
+\pgf@curvilinear@length@d=\dimen299
+)
+\pgf@arrows@the@rigidity=\dimen300
+))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibrarymath.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryfpu.code.tex)
+\tikz@math@for@depth=\count341
+\tikz@math@dimen=\dimen301
+\tikz@math@toks=\toks42
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pgfplots/pgfplots.sty
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.revision.tex)
+Package: pgfplots 2021/05/15 v1.18.1 Data Visualization (1.18.1)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotscore.code.tex
+Package pgfplots info on input line 124: Initializing with LUA version Lua 5.3
+\pgfplots@luabackend@table=\catcodetable16
+\t@pgfplots@toka=\toks43
+\t@pgfplots@tokb=\toks44
+\t@pgfplots@tokc=\toks45
+\pgfplots@tmpa=\dimen302
+\c@pgfplots@coordindex=\count342
+\c@pgfplots@scanlineindex=\count343
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/sys/pgfplotssysgeneric
+.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/pgfplotslibrary.c
+ode.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplot
+soldpgfsupp_loader.code.tex
+Package pgfplots: loading complementary utilities for your pgf version...
+\t@pgf@toka=\toks46
+\t@pgf@tokb=\toks47
+\t@pgf@tokc=\toks48
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplot
+soldpgfsupp_pgfutil-common-lists.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/luamath/pgflibrar
+yluamath.code.tex)
+Package pgfplots info on input line 290: luamath library shipped with pgf 3.1.1
+0 is up-to-date
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.code
+.tex
+Package pgfplots info on input line 82: Found new luatex: initializing lua comm
+ands instead of write18 (shell-escape)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/liststructure/pgfplots
+liststructure.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/liststructure/pgfplots
+liststructureext.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/liststructure/pgfplots
+array.code.tex
+\c@pgfplotsarray@tmp=\count344
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/liststructure/pgfplots
+matrix.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstable
+shared.code.tex
+\c@pgfplotstable@counta=\count345
+\t@pgfplotstable@a=\toks49
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/liststructure/pgfplots
+deque.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.co
+de.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.da
+ta.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.verb
+.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/pgflibrarypgfplot
+s.surfshading.code.tex
+\c@pgfplotslibrarysurf@no=\count346
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/sys/pgflibrarypgfplots
+.surfshading.pgfsys-luatex.def)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotscolormap.
+code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/util/pgfplotscolor.cod
+e.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotsstackedplots.c
+ode.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotsplothandlers.c
+ode.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotsmeshplothandle
+r.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotsmeshplotimage.
+code.tex)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.scaling.code.
+tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotscoordprocessin
+g.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.errorbars.cod
+e.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.markers.code.
+tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplotsticks.code.tex
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfplots.paths.code.te
+x)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.contourlua.code.tex)
+\pgfplots@numplots=\count347
+\pgfplots@xmin@reg=\dimen303
+\pgfplots@xmax@reg=\dimen304
+\pgfplots@ymin@reg=\dimen305
+\pgfplots@ymax@reg=\dimen306
+\pgfplots@zmin@reg=\dimen307
+\pgfplots@zmax@reg=\dimen308
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/frontendlayer/tikz/librarie
+s/tikzlibraryplotmarks.code.tex
+File: tikzlibraryplotmarks.code.tex 2023-01-15 v3.1.10 (3.1.10)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgf/libraries/pgflibraryplotmar
+ks.code.tex
+File: pgflibraryplotmarks.code.tex 2023-01-15 v3.1.10 (3.1.10)
+)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.fillbetween.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfcontrib/tikzlibrary
+fillbetween.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfcontrib/tikzlibrary
+decorations.softclip.code.tex
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/pgfcontrib/pgflibraryf
+illbetween.code.tex)))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.decorations.softclip.code.tex))
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.groupplots.code.tex
+\pgfplots@group@current@plot=\count348
+\pgfplots@group@current@row=\count349
+\pgfplots@group@current@column=\count350
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.colormaps.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pgfplots/libs/tikzlibrarypgfplo
+ts.statistics.code.tex)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen309
+\lightrulewidth=\dimen310
+\cmidrulewidth=\dimen311
+\belowrulesep=\dimen312
+\belowbottomsep=\dimen313
+\aboverulesep=\dimen314
+\abovetopsep=\dimen315
+\cmidrulesep=\dimen316
+\cmidrulekern=\dimen317
+\defaultaddspace=\dimen318
+\@cmidla=\count351
+\@cmidlb=\count352
+\@aboverulesep=\dimen319
+\@belowrulesep=\dimen320
+\@thisruleclass=\count353
+\@lastruleclass=\count354
+\@thisrulewidth=\dimen321
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/tabularx.sty
+Package: tabularx 2023/12/11 v2.12a `tabularx' package (DPC)
+\TX@col@width=\dimen322
+\TX@old@table=\dimen323
+\TX@old@col=\dimen324
+\TX@target=\dimen325
+\TX@delta=\dimen326
+\TX@cols=\count355
+\TX@ftn=\toks50
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2024/11/12 v2.9 Span multiple rows of a table
+\multirow@colwidth=\skip62
+\multirow@cntb=\count356
+\multirow@dima=\skip63
+\bigstrutjot=\dimen327
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/tools/longtable.sty
+Package: longtable 2024-10-27 v4.22 Multi-page Table package (DPC)
+\LTleft=\skip64
+\LTright=\skip65
+\LTpre=\skip66
+\LTpost=\skip67
+\LTchunksize=\count357
+\LTcapwidth=\dimen328
+\LT@head=\box96
+\LT@firsthead=\box97
+\LT@foot=\box98
+\LT@lastfoot=\box99
+\LT@gbox=\box100
+\LT@cols=\count358
+\LT@rows=\count359
+\c@LT@tables=\count360
+\c@LT@chunks=\count361
+\LT@p@ftn=\toks51
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/enumitem/enumitem.sty
+Package: enumitem 2025/02/06 v3.11 Customized lists
+\labelindent=\skip68
+\enit@outerparindent=\dimen329
+\enit@toks=\toks52
+\enit@inbox=\box101
+\enit@count@id=\count362
+\enitdp@description=\count363
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen330
+\captionmargin=\dimen331
+\caption@leftmargin=\dimen332
+\caption@rightmargin=\dimen333
+\caption@width=\dimen334
+\caption@indent=\dimen335
+\caption@parindent=\dimen336
+\caption@hangindent=\dimen337
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count364
+\c@continuedfloat=\count365
+Package caption Info: longtable package is loaded.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2021/01/08 v1.4c longtable captions (AR)
+))
+(/usr/local/texlive/2025/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2023/07/28 v1.6b Sub-captions (AR)
+Package caption Info: New subtype `subfigure' on input line 238.
+\c@subfigure=\count366
+Package caption Info: New subtype `subtable' on input line 238.
+\c@subtable=\count367
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/siunitx/siunitx.sty
+Package: siunitx 2025-02-27 v3.4.6 A comprehensive (SI) units package
+\l__siunitx_number_uncert_offset_int=\count368
+\l__siunitx_number_exponent_fixed_int=\count369
+\l__siunitx_number_min_decimal_int=\count370
+\l__siunitx_number_min_integer_int=\count371
+\l__siunitx_number_round_precision_int=\count372
+\l__siunitx_number_lower_threshold_int=\count373
+\l__siunitx_number_upper_threshold_int=\count374
+\l__siunitx_number_group_first_int=\count375
+\l__siunitx_number_group_size_int=\count376
+\l__siunitx_number_group_minimum_int=\count377
+\l__siunitx_angle_tmp_dim=\dimen338
+\l__siunitx_angle_marker_box=\box102
+\l__siunitx_angle_unit_box=\box103
+\l__siunitx_compound_count_int=\count378
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/translations/translations.sty
+Package: translations 2022/02/05 v1.12 internationalization of LaTeX2e packages
+ (CN)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+(/usr/local/texlive/2025/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+\pdftexcmds@toks=\toks53
+))
+\l__siunitx_table_tmp_box=\box104
+\l__siunitx_table_tmp_dim=\dimen339
+\l__siunitx_table_column_width_dim=\dimen340
+\l__siunitx_table_integer_box=\box105
+\l__siunitx_table_decimal_box=\box106
+\l__siunitx_table_uncert_box=\box107
+\l__siunitx_table_before_box=\box108
+\l__siunitx_table_after_box=\box109
+\l__siunitx_table_before_dim=\dimen341
+\l__siunitx_table_carry_dim=\dimen342
+\l__siunitx_unit_tmp_int=\count379
+\l__siunitx_unit_position_int=\count380
+\l__siunitx_unit_total_int=\count381
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count382
+\float@exts=\toks54
+\float@box=\box110
+\@float@everytoks=\toks55
+\@floatcapt=\box111
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/wrapfig/wrapfig.sty
+\wrapoverhang=\dimen343
+\WF@size=\dimen344
+\c@WF@wrappedlines=\count383
+\WF@box=\box112
+\WF@everypar=\toks56
+Package: wrapfig 2003/01/31  v 3.6
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/marginnote/marginnote.sty
+Package: marginnote 2018/08/09 1.4b non floating margin notes for LaTeX
+\c@mn@abspage=\count384
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pdfpages/pdfpages.sty
+Package: pdfpages 2025/01/30 v0.6e Insert pages of external PDF documents (AM)
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2024/03/16 v1.1e Standard LaTeX ifthen package (DPC)
+)
+(/usr/local/texlive/2025/texmf-dist/tex/latex/eso-pic/eso-pic.sty
+Package: eso-pic 2023/05/03 v3.0c eso-pic (RN)
+\ESO@tempdima=\dimen345
+\ESO@tempdimb=\dimen346
+)
+\AM@pagewidth=\dimen347
+\AM@pageheight=\dimen348
+\AM@fboxrule=\dimen349
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/pdfpages/ppluatex.def
+File: ppluatex.def 2025/01/30 v0.6e Pdfpages driver for LuaTeX (AM)
+)
+\pdfpages@includegraphics@status=\count385
+\AM@pagebox=\box113
+\AM@global@o

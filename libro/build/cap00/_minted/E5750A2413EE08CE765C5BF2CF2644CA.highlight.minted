@@ -1,0 +1,14 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{Bio}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{SeqIO}
+
+\PYG{n}{rec} \PYG{o}{=} \PYG{n}{SeqIO}\PYG{o}{.}\PYG{n}{read}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{NC\PYGZus{}045512.2.gb}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{genbank}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\PYG{n}{a} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{frombuffer}\PYG{p}{(}\PYG{n+nb}{bytes}\PYG{p}{(}\PYG{n}{rec}\PYG{o}{.}\PYG{n}{seq}\PYG{p}{)}\PYG{p}{,} \PYG{n}{dtype}\PYG{o}{=}\PYG{n}{np}\PYG{o}{.}\PYG{n}{uint8}\PYG{p}{)}
+\PYG{n}{g} \PYG{o}{=} \PYG{p}{(}\PYG{p}{(}\PYG{n}{a} \PYG{o}{==} \PYG{n+nb}{ord}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)} \PYG{err}{|} \PYG{p}{(}\PYG{n}{a} \PYG{o}{==} \PYG{n+nb}{ord}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}\PYG{p}{)}\PYG{o}{.}\PYG{n}{astype}\PYG{p}{(}\PYG{n+nb}{float}\PYG{p}{)}
+\PYG{n}{S} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{concatenate}\PYG{p}{(}\PYG{p}{[}\PYG{p}{[}\PYG{l+m+mf}{0.0}\PYG{p}{]}\PYG{p}{,} \PYG{n}{np}\PYG{o}{.}\PYG{n}{cumsum}\PYG{p}{(}\PYG{n}{g}\PYG{p}{)}\PYG{p}{]}\PYG{p}{)}        \PYG{c+c1}{\PYGZsh{} sumas acumuladas}
+\PYG{n}{W}\PYG{p}{,} \PYG{n}{step} \PYG{o}{=} \PYG{l+m+mi}{500}\PYG{p}{,} \PYG{l+m+mi}{50}
+\PYG{n}{starts} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{arange}\PYG{p}{(}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{n}{a}\PYG{o}{.}\PYG{n}{size} \PYG{o}{\PYGZhy{}} \PYG{n}{W} \PYG{o}{+} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{step}\PYG{p}{)}
+\PYG{n}{gc} \PYG{o}{=} \PYG{p}{(}\PYG{n}{S}\PYG{p}{[}\PYG{n}{starts} \PYG{o}{+} \PYG{n}{W}\PYG{p}{]} \PYG{o}{\PYGZhy{}} \PYG{n}{S}\PYG{p}{[}\PYG{n}{starts}\PYG{p}{]}\PYG{p}{)} \PYG{o}{/} \PYG{n}{W}             \PYG{c+c1}{\PYGZsh{} Theta(n), no Theta(nW)}
+\PYG{n}{p} \PYG{o}{=} \PYG{n}{g}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{p}{)}\PYG{p}{;} \PYG{n}{sd} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{sqrt}\PYG{p}{(}\PYG{n}{p} \PYG{o}{*} \PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{n}{p}\PYG{p}{)} \PYG{o}{/} \PYG{n}{W}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{l+s+sa}{f}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{p=}\PYG{l+s+si}{\PYGZob{}}\PYG{n}{p}\PYG{l+s+si}{:}\PYG{l+s+s2}{.4f}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{  fuera de 2 sd: }\PYG{l+s+si}{\PYGZob{}}\PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n+nb}{abs}\PYG{p}{(}\PYG{n}{gc}\PYG{+w}{ }\PYG{o}{\PYGZhy{}}\PYG{+w}{ }\PYG{n}{p}\PYG{p}{)}\PYG{+w}{ }\PYG{o}{\PYGZgt{}}\PYG{+w}{ }\PYG{l+m+mi}{2}\PYG{o}{*}\PYG{n}{sd}\PYG{p}{)}\PYG{l+s+si}{:}\PYG{l+s+s2}{.1\PYGZpc{}}\PYG{l+s+si}{\PYGZcb{}}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
+\end{MintedVerbatim}

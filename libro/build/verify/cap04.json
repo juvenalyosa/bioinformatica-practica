@@ -1,0 +1,152 @@
+[
+ {
+  "key": "c04-wang1994",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-carrillo1988",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-feng1987",
+  "ok": true,
+  "msg": "ok crossref (título 0.99)"
+ },
+ {
+  "key": "c04-higgins1988",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-thompson1994",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-sievers2011",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-edgar2004",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-katoh2002",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-notredame2000",
+  "ok": true,
+  "msg": "ok crossref (título 0.95)"
+ },
+ {
+  "key": "c04-edgar2006",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-henikoff1994",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-stormo1982",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-stormo2000",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-schneider1990",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-crooks2004",
+  "ok": true,
+  "msg": "ok crossref (título 0.95)"
+ },
+ {
+  "key": "c04-shannon1948",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-lawrence1993",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-castromondragon2022",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-rabiner1989",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-viterbi1967",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-baum1970",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-dempster1977",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-krogh1994",
+  "ok": true,
+  "msg": "ok crossref (título 0.95)"
+ },
+ {
+  "key": "c04-eddy1998",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-eddy2004",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-eddy2011",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-sjolander1996",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-mistry2021",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-durbin1998",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c04-cock2009",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ }
+]

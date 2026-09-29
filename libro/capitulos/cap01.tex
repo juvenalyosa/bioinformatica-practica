@@ -1,0 +1,959 @@
+% =====================================================================
+%  Capítulo 1 · Biología molecular para bioinformáticos
+%  Figuras y cifras: figuras/cap01/generar.py (datos reales en data/)
+% =====================================================================
+\chapter{Biología molecular para bioinformáticos}\label{cap:01}
+
+\epigrafe{No ha escapado a nuestra atención que el apareamiento específico que hemos postulado sugiere de inmediato un posible mecanismo de copia del material genético.}{\textcite{c01-watson1953}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Describir el dogma central como un sistema que almacena, copia y ejecuta información, y distinguir las transferencias generales, especiales y prohibidas de \textcite{c01-crick1970}.
+  \item Medir la información de una secuencia con la entropía de Shannon, relacionarla con la compresión y explicar por qué el ADN real está cerca de 2 bits por base.
+  \item Cuantificar la robustez del código genético frente a mutaciones puntuales y compararlo con códigos alternativos generados al azar.
+  \item Implementar un buscador de marcos abiertos de lectura (ORFs) en los seis marcos, construir su modelo nulo geométrico y evaluarlo contra la anotación real de \especie{Mycoplasma genitalium}.
+  \item Calcular el contenido GC, el sesgo GC (\ingles{GC skew}) y su versión acumulada, y usarlos para localizar el origen de replicación de \especie{Escherichia coli} a partir de la secuencia sola.
+\end{itemize}
+\end{objetivos}
+
+Un bioinformático no necesita saber pipetear, pero sí necesita saber qué significa cada letra que procesa. Una secuencia de ADN no es una cadena arbitraria: es el producto de miles de millones de años de copias imperfectas, filtradas por la selección natural y marcadas por la química de sus propias bases. Cada rareza estadística que encontremos en un genoma (una región pobre en codones de parada, un exceso de guaninas en una mitad del cromosoma, un dinucleótido que casi no aparece) tiene una explicación molecular, y cada explicación molecular deja una huella estadística. Este capítulo recorre ese puente en ambas direcciones.
+
+Avanzaremos en tres pasos. Primero trataremos la célula como un sistema de información: veremos cómo el ADN almacena un mensaje, cómo se copia y se traduce, cuánta información cabe en cada base y por qué el código genético parece diseñado para tolerar errores (\cref{sec:01-dogma}). Después buscaremos genes en un genoma real, el de la bacteria con uno de los genomas más pequeños conocidos, y aprenderemos a separar las señales biológicas del ruido con un modelo nulo explícito (\cref{sec:01-orfs}). Por último, contaremos letras a lo largo de un cromosoma completo y descubriremos que la replicación deja una cicatriz tan clara que permite localizar el origen de replicación de \especie{E.\,coli} con un error de unos pocos cientos de bases entre 4,6 millones (\cref{sec:01-gcskew}).
+
+% ---------------------------------------------------------------------
+\section{El dogma central como sistema de información}\label{sec:01-dogma}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-01-biologia-molecular/1.1_dogma_central.ipynb}{1.1 · El dogma central}
+
+\begin{intuicion}[La bóveda y la fotocopia]
+Piense en el archivo de planos de una gran fábrica. Los originales se guardan en una bóveda; nunca salen de allí y solo se copian, con muchísimo cuidado, cuando la fábrica abre una sucursal. Cuando un taller necesita construir una pieza, no se lleva el original: pide una fotocopia de la página que le interesa, la lleva al taller y allí una máquina lee la fotocopia y ensambla la pieza. La fotocopia se tira a las pocas horas; si tenía una mancha, se estropean unas cuantas piezas, pero el original sigue intacto. Esa división del trabajo (un archivo permanente, copias de trabajo desechables y máquinas que ejecutan) es exactamente la que usa la célula.
+\end{intuicion}
+
+\subsection{La doble hélice: un medio de almacenamiento}
+
+El ADN es un polímero de cuatro nucleótidos, que se distinguen por su base nitrogenada: adenina (\nuc{A}), citosina (\nuc{C}), guanina (\nuc{G}) y timina (\nuc{T}). Cada nucleótido se une al siguiente mediante un enlace fosfodiéster entre el carbono 3' de un azúcar y el carbono 5' del siguiente, de modo que cada hebra tiene una dirección química: un extremo 5' y un extremo 3'. Por convención, las secuencias se escriben siempre de 5' a 3'.
+
+\textcite{c01-watson1953} propusieron que dos hebras se enrollan en una doble hélice \emph{antiparalela} (una corre 5'$\to$3' y la otra 3'$\to$5') unidas por puentes de hidrógeno entre pares de bases complementarias: \nuc{A} con \nuc{T} y \nuc{G} con \nuc{C}. La frase que abre este capítulo resume la consecuencia: si cada hebra determina por completo a la otra, cualquiera de las dos sirve de molde para reconstruir la molécula entera. El ADN no es solo un almacén; es un almacén \emph{autocopiable}.
+
+Desde el punto de vista computacional, una molécula de ADN bicatenario es una cadena sobre un alfabeto de cuatro letras, más una regla determinista para obtener su pareja.
+
+\begin{definicion}{Secuencia y complemento reverso}{complemento}
+Una secuencia de ADN es una palabra $x = x_1x_2\cdots x_n$ sobre el alfabeto $\mathcal{A}=\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$, leída de 5' a 3'. Su \emph{complemento reverso} es
+\begin{equation}\label{eq:01-rc}
+\overline{x} = \kappa(x_n)\,\kappa(x_{n-1})\cdots\kappa(x_1),
+\qquad \kappa:\ \texttt{A}\leftrightarrow\texttt{T},\ \texttt{C}\leftrightarrow\texttt{G}.
+\end{equation}
+La hebra complementaria de $x$, leída también de 5' a 3', es exactamente $\overline{x}$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$x_i$}{Base en la posición $i$ de la hebra, contando desde el extremo 5'.}
+\simbolo{$n$}{Longitud de la secuencia, en nucleótidos (nt) o pares de bases (pb).}
+\simbolo{$\kappa$}{Función de complementariedad de Watson-Crick, que es su propia inversa: $\kappa(\kappa(b))=b$.}
+\simbolo{$\overline{x}$}{Complemento reverso: la otra hebra, escrita en la dirección convencional.}
+\end{simbolos}
+
+Dos propiedades de la \cref{eq:01-rc} nos acompañarán todo el capítulo. Primero, $\overline{\overline{x}}=x$: aplicar la operación dos veces devuelve la secuencia original. Segundo, la complementariedad \emph{intercambia} los conteos de bases: el número de \nuc{G} de una hebra es el número de \nuc{C} de la otra. Esta simetría parece trivial, pero es la razón por la que el sesgo GC de la \cref{sec:01-gcskew} cambia de signo cuando se lee la hebra opuesta.
+
+\subsection{Tres procesos, dos alfabetos: el dogma central}
+
+La información guardada en el ADN fluye por tres procesos principales:
+
+\begin{itemize}
+  \item \textbf{Replicación} (ADN$\to$ADN): la ADN polimerasa copia cada hebra por complementariedad antes de la división celular.
+  \item \textbf{Transcripción} (ADN$\to$ARN): la ARN polimerasa lee una hebra \emph{molde} de 3' a 5' y sintetiza un ARN de 5' a 3'. El ARN resultante es idéntico a la otra hebra, la \emph{codificante}, salvo que lleva uracilo (\nuc{U}) en lugar de timina.
+  \item \textbf{Traducción} (ARN$\to$proteína): el ribosoma lee el ARN mensajero (ARNm) de tres en tres nucleótidos (\emph{codones}) y, con la ayuda de los ARN de transferencia, une el aminoácido que corresponde a cada codón.
+\end{itemize}
+
+Francis Crick bautizó este esquema como \emph{dogma central} en 1958 y lo reformuló con precisión en 1970. En su versión madura, el dogma no afirma que la información fluya siempre de ADN a ARN y de ARN a proteína; afirma algo más sutil: que la información \emph{secuencial}, residuo a residuo, no puede transferirse desde una proteína a otra proteína ni a un ácido nucleico \parencite{c01-crick1970}. Crick clasificó las nueve transferencias posibles entre los tres tipos de polímero en tres grupos (\cref{fig:01-dogma}): \emph{generales}, que ocurren en todas las células; \emph{especiales}, que ocurren solo en circunstancias particulares, como en ciertos virus; y \emph{desconocidas}, que el dogma postula que no ocurren.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small,
+  mol/.style={draw=#1!70!black,fill=#1!12,rounded corners=4pt,thick,
+    minimum width=3.0cm,minimum height=1.3cm,align=center,text=tinta}]
+  \node[mol=azul] (dna) at (0,0) {\textbf{ADN}\\[-1pt]{\scriptsize archivo permanente · 4 letras}};
+  \node[mol=aqua] (rna) at (6.6,0) {\textbf{ARN}\\[-1pt]{\scriptsize copia de trabajo · 4 letras}};
+  \node[mol=naranja] (pro) at (3.3,-3.7) {\textbf{Proteína}\\[-1pt]{\scriptsize máquina funcional · 20 letras}};
+  % transferencias generales
+  \draw[flecha=tinta,very thick] ([yshift=4pt]dna.east) -- node[above,etiqueta,text=tinta]{transcripción} ([yshift=4pt]rna.west);
+  \draw[flecha=tinta,very thick] ([xshift=-2pt]rna.south) -- node[right,etiqueta,text=tinta,pos=0.45]{traducción} ([xshift=12pt]pro.north);
+  \draw[flecha=tinta,very thick] ([xshift=-8mm]dna.north) .. controls +(-0.4,1.3) and +(0.4,1.3) .. node[above,etiqueta,text=tinta]{replicación} ([xshift=8mm]dna.north);
+  % transferencias especiales
+  \draw[flecha=gris,thick,dashed] ([yshift=-6pt]rna.west) -- node[below,etiqueta]{transcripción reversa\\(retrovirus)} ([yshift=-6pt]dna.east);
+  \draw[flecha=gris,thick,dashed] ([xshift=-8mm]rna.north) .. controls +(-0.4,1.3) and +(0.4,1.3) .. node[above,etiqueta]{replicación de ARN (virus de ARN)} ([xshift=8mm]rna.north);
+  \draw[flecha=gris,thick,dashed] ([xshift=2pt]dna.south) -- node[left,etiqueta,pos=0.45,xshift=-6pt]{ADN$\to$proteína\\(solo \emph{in vitro})} ([xshift=-12pt]pro.north);
+  % transferencias desconocidas (prohibidas)
+  \draw[-{Stealth},rojo,thick,dotted] (pro.west) -- ++(-1.5,0) node[left,etiqueta,text=rojooscuro]{\faTimes\ proteína$\to$ADN};
+  \draw[-{Stealth},rojo,thick,dotted] (pro.east) -- ++(1.5,0) node[right,etiqueta,text=rojooscuro]{\faTimes\ proteína$\to$ARN};
+  \draw[-{Stealth},rojo,thick,dotted] ([xshift=-7mm]pro.south) .. controls +(-0.4,-1.1) and +(0.4,-1.1) .. node[below,etiqueta,text=rojooscuro]{\faTimes\ proteína$\to$proteína} ([xshift=7mm]pro.south);
+  % leyenda
+  \begin{scope}[shift={(-1.6,-4.95)}]
+    \draw[flecha=tinta,very thick] (0,0.5) -- (0.7,0.5) node[right,etiqueta,text=tinta]{general};
+    \draw[flecha=gris,thick,dashed] (0,0) -- (0.7,0) node[right,etiqueta]{especial};
+    \draw[-{Stealth},rojo,thick,dotted] (0,-0.5) -- (0.7,-0.5) node[right,etiqueta,text=rojooscuro]{desconocida};
+  \end{scope}
+\end{tikzpicture}
+\caption[El dogma central según Crick (1970)]{El dogma central en la formulación de \textcite{c01-crick1970}. Las flechas continuas son las transferencias generales de información secuencial, presentes en toda célula; las discontinuas, las transferencias especiales (la transcripción reversa y la replicación de ARN ocurren en virus; la traducción directa de ADN solo se ha logrado en sistemas acelulares). Las flechas punteadas rojas son las transferencias que el dogma declara inexistentes: una vez que la información llega a una proteína, no puede volver a salir como secuencia. Observe la asimetría de alfabetos: dos cajas usan 4 letras y una usa 20.}
+\label{fig:01-dogma}
+\end{figure}
+
+La palabra \emph{dogma} ha causado confusión: Crick la empleó para una hipótesis general todavía sin prueba directa, no para una creencia incuestionable. Por eso, cuando \textcite{c01-temin1970} y, de forma independiente, David Baltimore descubrieron en 1970 la transcriptasa reversa, que sintetiza ADN a partir de ARN, no refutaron el dogma: \textcite{c01-crick1970} ya contemplaba ARN$\to$ADN como transferencia especial. Lo que el dogma prohíbe es la salida de información secuencial desde las proteínas, y eso sigue sin observarse.
+
+¿Por qué la célula necesita una copia intermedia? Porque separar el archivo de la copia de trabajo permite tratarlos de manera distinta. El ADN se replica con una fidelidad extraordinaria, del orden de un error por cada $10^9$ nucleótidos copiados tras la corrección de pruebas y la reparación de apareamientos erróneos \parencite{c01-alberts2022}, porque cada error se hereda. El ARN, en cambio, se sintetiza con un error por cada $10^4$ nucleótidos aproximadamente: sale barato, se produce en muchas copias y se degrada en minutos. Un error en un ARNm estropea unas cuantas proteínas; un error en el ADN se transmite a todos los descendientes. La arquitectura del dogma es, en términos de ingeniería, una forma de concentrar el presupuesto de fidelidad donde más importa.
+
+\subsection{Transcripción y traducción, paso a paso}
+
+Tomemos un ejemplo real: los primeros 36 nucleótidos del gen \gen{S} del coronavirus SARS-CoV-2, que codifica la proteína de la espiga (\ingles{Spike}). La \cref{fig:01-spike} muestra el flujo completo. La hebra codificante y la hebra molde se aparean base a base; la ARN polimerasa lee la molde y produce un ARNm que reproduce la codificante con \nuc{U} en lugar de \nuc{T}. El ribosoma lee después el ARNm en codones consecutivos, sin solapamiento y sin separadores, y cada codón aporta un aminoácido.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap01/spike_flujo.tex}
+\caption[Del gen a la proteína en un fragmento real]{Transcripción y traducción de los primeros 36 nucleótidos del gen \gen{S} de SARS-CoV-2 (NC\_045512.2). La hebra molde, que la ARN polimerasa lee de 3' a 5', es la complementaria de la codificante; el ARNm reproduce la codificante con \nuc{U} en lugar de \nuc{T}. Cada llave agrupa un codón, y el círculo inferior es el aminoácido correspondiente, coloreado por clase fisicoquímica (amarillo: hidrofóbico; aqua: polar o especial; azul: básico; rojo: ácido). El tramo \texttt{MFVFLVLLPLVS}, casi todo hidrofóbico, es el péptido señal que dirige la proteína a la membrana. Figura generada con \archivo{figuras/cap01/generar.py}.}
+\label{fig:01-spike}
+\end{figure}
+
+La implementación computacional de ambos procesos es corta, y escribirla uno mismo es el mejor antídoto contra los errores de convención (¿qué hebra?, ¿qué dirección?) que aparecen una y otra vez en los análisis reales.
+
+\begin{codigo}[dogma.py]
+BASES = "TCAG"
+AA = ("FFLLSSSSYY**CC*WLLLLPPPPHHQQRRRR"
+      "IIIMTTTTNNKKSSRRVVVVAAAADDEEGGGG")      # orden clásico TCAG
+CODIGO = {a + b + c: AA[16 * i + 4 * j + k]
+          for i, a in enumerate(BASES) for j, b in enumerate(BASES)
+          for k, c in enumerate(BASES)}
+COMP = str.maketrans("ACGT", "TGCA")
+
+def complemento_reverso(x: str) -> str:
+    return x.translate(COMP)[::-1]            # ecuación (1.1)
+
+def transcribir(codificante: str) -> str:
+    return codificante.replace("T", "U")
+
+def traducir(adn: str, hasta_parada: bool = True) -> str:
+    prot = []
+    for i in range(0, len(adn) - 2, 3):
+        aa = CODIGO[adn[i:i + 3]]
+        if aa == "*" and hasta_parada:
+            break
+        prot.append(aa)
+    return "".join(prot)
+\end{codigo}
+
+Aplicado al gen \gen{S} completo (\num{3822} nt, incluida la parada), \py{traducir} produce $3822/3-1=1273$ aminoácidos que coinciden letra a letra con la traducción depositada en el GenBank. Traducir por error la hebra molde, o el complemento sin invertir, da una secuencia sin relación alguna, casi siempre interrumpida por paradas a las pocas decenas de residuos.
+
+\subsection{¿Cuánta información cabe en una base?}
+
+Si el ADN es un medio de almacenamiento, podemos preguntarnos por su capacidad, igual que con un disco duro. La herramienta para responder la creó \textcite{c01-shannon1948} para las líneas telefónicas, y se aplica sin cambios a las secuencias biológicas.
+
+Empecemos por un juego. Alguien elige una base al azar y usted debe adivinarla con preguntas de sí o no. La estrategia óptima es partir el conjunto por la mitad: ``¿es una purina (\nuc{A} o \nuc{G})?'', y después ``¿es \nuc{A}?''. Siempre bastan dos preguntas, porque $\log_2 4 = 2$. Esa es la capacidad máxima de una posición: \emph{2 bits por base}. Un genoma humano haploide de unos $3{,}1\times10^9$ pares de bases cabe, por lo tanto, en $3{,}1\times10^9\times 2/8 \approx 775$ megabytes, algo menos que un CD.
+
+Pero la capacidad es solo un techo. Si las bases no fueran equiprobables (por ejemplo, si el 70\,\% fueran \nuc{A}), usted podría empezar preguntando ``¿es \nuc{A}?'' y acertar a la primera la mayoría de las veces. El número \emph{medio} de preguntas bajaría, y con él la información que realmente aporta cada base. Shannon definió esa cantidad media como la entropía.
+
+\begin{definicion}{Entropía de Shannon}{entropia}
+Sea $X$ una variable aleatoria que toma valores en un alfabeto finito $\mathcal{A}$ con probabilidades $p_a=\Prob(X=a)$. Su entropía, en bits, es
+\begin{equation}\label{eq:01-entropia}
+H(X) = -\sum_{a\in\mathcal{A}} p_a \log_2 p_a,
+\end{equation}
+con el convenio $0\log_2 0 = 0$. La cantidad $-\log_2 p_a$ se llama \emph{sorpresa} (o autoinformación) del símbolo $a$, y $H$ es la sorpresa promedio.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$H(X)$}{Entropía: información media, en bits, que aporta observar un símbolo.}
+\simbolo{$\mathcal{A}$}{Alfabeto: $\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$ para ADN, los 20 aminoácidos para proteínas.}
+\simbolo{$p_a$}{Probabilidad (en la práctica, frecuencia observada) del símbolo $a$.}
+\simbolo{$-\log_2 p_a$}{Sorpresa de $a$: un símbolo raro sorprende mucho; uno casi seguro, casi nada.}
+\end{simbolos}
+
+La definición no es arbitraria. Shannon demostró que $H$ es, salvo una constante multiplicativa, la \emph{única} función que es continua en las probabilidades, crece con el número de alternativas equiprobables y se descompone de forma aditiva cuando una elección se hace en dos etapas, como en nuestro juego de preguntas \parencite{c01-shannon1948}. Sus cotas fundamentales se derivan en pocas líneas.
+
+\begin{teorema}{Cotas de la entropía}{cotas}
+Para cualquier distribución sobre un alfabeto de $K$ símbolos,
+\begin{equation}\label{eq:01-cotas}
+0 \;\le\; H(X) \;\le\; \log_2 K,
+\end{equation}
+con $H=0$ si y solo si un símbolo tiene probabilidad 1, y $H=\log_2 K$ si y solo si todos son equiprobables.
+\end{teorema}
+
+La cota inferior es inmediata: cada término $-p_a\log_2 p_a$ es no negativo porque $0\le p_a\le1$. Para la superior usamos la desigualdad $\ln y \le y-1$, válida para todo $y>0$ con igualdad solo en $y=1$. Tomando $y = 1/(Kp_a)$,
+\[
+H(X) - \log_2 K = \sum_a p_a \log_2\frac{1}{K p_a}
+\le \frac{1}{\ln 2}\sum_a p_a\left(\frac{1}{Kp_a}-1\right)
+= \frac{1}{\ln 2}\left(\sum_a \frac{1}{K} - 1\right) = 0,
+\]
+y la igualdad exige $Kp_a=1$ para todo $a$. Para el ADN, $K=4$ y el techo es 2 bits; para las proteínas, $K=20$ y el techo es $\log_2 20\approx 4{,}32$ bits.
+
+\begin{ejemplo}{La entropía de SARS-CoV-2}{entropia-sars}
+El genoma de SARS-CoV-2 tiene \num{29903} nucleótidos con composición $p_\texttt{A}=0{,}2994$, $p_\texttt{C}=0{,}1837$, $p_\texttt{G}=0{,}1961$ y $p_\texttt{T}=0{,}3208$: es rico en \nuc{A} y \nuc{T}. Aplicando la \cref{eq:01-entropia},
+\[
+\begin{aligned}
+H &= -\bigl(0{,}2994\log_2 0{,}2994 + 0{,}1837\log_2 0{,}1837 \\
+  &\qquad + 0{,}1961\log_2 0{,}1961 + 0{,}3208\log_2 0{,}3208\bigr)\\
+  &= 0{,}5210 + 0{,}4491 + 0{,}4608 + 0{,}5262 = 1{,}957 \text{ bits por base}.
+\end{aligned}
+\]
+El sesgo de composición le resta apenas $0{,}043$ bits por base al máximo teórico. Para comparar, una secuencia en la que una base aparece el 70\,\% de las veces y las otras tres el 10\,\% tendría $H=1{,}357$ bits, y la repetición \secuencia{AAAAAAAA} tendría $H=0$.
+\end{ejemplo}
+
+La entropía de bases sueltas ignora el orden. La repetición \secuencia{CAGCAGCAG}, asociada a la enfermedad de Huntington cuando se expande, tiene tres letras equiprobables y por tanto $H=\log_2 3\approx1{,}585$ bits por base; sin embargo, conocida una letra, la siguiente es completamente predecible. Para capturar esa estructura se calcula la entropía de \emph{palabras} de longitud $k$ ($k$-mers) y se divide entre $k$:
+\begin{equation}\label{eq:01-bloque}
+h_k = \frac{H_k}{k}, \qquad H_k = -\sum_{w\in\mathcal{A}^k} p_w \log_2 p_w, \qquad
+h = \lim_{k\to\infty} h_k .
+\end{equation}
+
+donde $w$ recorre las $4^k$ palabras posibles, $p_w$ es su frecuencia entre todas las ventanas de longitud $k$, $H_k$ es la \emph{entropía de bloque} y su límite $h$ es la \emph{tasa de entropía}.
+
+Como las dependencias entre vecinos solo pueden reducir la incertidumbre, $h_k$ es no creciente en $k$ y converge a la tasa de entropía $h$, que mide la información genuinamente nueva que aporta cada base. En la práctica, $k$ no puede crecer mucho: con $4^k$ palabras posibles y una secuencia finita, la mayoría de las palabras largas no aparecen nunca y la estimación se sesga hacia abajo. Para un genoma viral de 30 kb, $k\le3$ es razonable; para uno bacteriano de 5 Mb, $k\le 8$.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.5cm},
+    curso, height=5.2cm]
+\nextgroupplot[width=4.9cm, xlabel={$p$}, ylabel={$H_2(p)$ (bits)},
+    xmin=0, xmax=1, ymin=0, ymax=1.15, xtick={0,0.5,1}, ytick={0,0.5,1},
+    title={(a) entropía binaria}]
+  \addplot[azul, very thick, domain=0.0005:0.9995, samples=160] {-x*log2(x)-(1-x)*log2(1-x)};
+  \addplot[only marks, mark=*, mark size=2.2pt, naranja] coordinates {(0.5,1) (0.9,0.469)};
+  \node[etiqueta, anchor=north] at (axis cs:0.5,0.78) {moneda\\justa};
+  \node[etiqueta, anchor=east] at (axis cs:0.87,0.40) {$p=0{,}9$:\\$0{,}47$ bits};
+\nextgroupplot[width=7.9cm, ybar, bar width=5pt, ymin=0, ymax=3.1, ytick={0,0.5,1,1.5,2,2.5}, title={(b) tres secuencias},
+    symbolic x coords={aleatoria,sars,cag}, xtick=data,
+    xticklabels={aleatoria, SARS-CoV-2, repetición CAG},
+    enlarge x limits=0.25, ylabel={bits por base},
+    legend columns=4, legend style={at={(0.5,-0.2)}, anchor=north},
+    nodes near coords, every node near coord/.append style={font=\sffamily\tiny, rotate=90, anchor=west, text=tinta2},
+    nodes near coords style={/pgf/number format/.cd, fixed, precision=2, use comma}]
+  \addplot[fill=azul, draw=none] table[x=sec, y=k1] {figuras/cap01/entropia.dat};
+  \addplot[fill=aqua, draw=none] table[x=sec, y=k2] {figuras/cap01/entropia.dat};
+  \addplot[fill=violeta, draw=none] table[x=sec, y=k3] {figuras/cap01/entropia.dat};
+  \addplot[fill=naranja, draw=none] table[x=sec, y=gzip] {figuras/cap01/entropia.dat};
+  \legend{$h_1$, $h_2$, $h_3$, gzip}
+  \draw[gris, dashed] (rel axis cs:0,0.6452) -- (rel axis cs:1,0.6452);
+\end{groupplot}
+\end{tikzpicture}
+\caption[Entropía y compresión de tres secuencias]{Medir la información de una secuencia. (a) Entropía de un alfabeto de dos símbolos en función de la probabilidad $p$ de uno de ellos: es máxima (1 bit) cuando ambos son equiprobables y cae rápidamente cuando uno domina. (b) Entropía por base con palabras de $k=1,2,3$ letras (\cref{eq:01-bloque}) y bits por base tras comprimir con \cmd{gzip} (nivel 9) para tres secuencias de \num{29903} nt: una aleatoria, el genoma de SARS-CoV-2 y una repetición \texttt{CAG}. La línea discontinua marca el techo de 2 bits. El genoma real se comporta casi como una secuencia aleatoria; la repetición tiene $1{,}58$ bits con $k=1$ pero solo $0{,}53$ con $k=3$. El compresor genérico ni siquiera alcanza los 2 bits en las dos primeras secuencias.}
+\label{fig:01-entropia}
+\end{figure}
+
+La \cref{fig:01-entropia}b aplica estas ideas a tres secuencias de la misma longitud. La secuencia aleatoria tiene 2 bits por base con cualquier $k$. El genoma de SARS-CoV-2 queda muy cerca ($h_1=1{,}957$, $h_3=1{,}933$): su composición está sesgada y hay algo de dependencia entre vecinos, pero a simple vista el genoma es casi indistinguible del azar. La repetición, en cambio, se desploma de $1{,}585$ a $0{,}528$ bits cuando se tienen en cuenta los vecinos.
+
+\begin{cuidado}[Entropía no es significado]
+Que un genoma tenga casi 2 bits por base no quiere decir que ``contenga mucha información biológica'', ni que una región de baja entropía sea inútil. La entropía de Shannon mide la imprevisibilidad \emph{estadística} de las letras, no lo que hacen. Un texto en español y el mismo texto con las letras barajadas tienen idéntica $h_1$. En bioinformática, la baja entropía es sobre todo una \emph{alarma}: las regiones de baja complejidad (colas poli-A, microsatélites) producen alineamientos espurios y se enmascaran antes de buscar homólogos, como vimos con BLAST en el \cref{cap:03}.
+\end{cuidado}
+
+\subsection{Compresión: la entropía medida a la fuerza}
+
+La entropía tiene una interpretación operativa que la vuelve muy concreta: es el límite de la compresión sin pérdida. El \emph{teorema de codificación de la fuente} de \textcite{c01-shannon1948} establece que ningún código binario decodificable sin ambigüedad puede usar, en promedio, menos de $H$ bits por símbolo, $\bar\ell=\sum_a p_a\ell_a\ge H$ (donde $\ell_a$ es la longitud de la palabra de código del símbolo $a$), y que codificando bloques cada vez más largos se puede llegar tan cerca de $H$ como se quiera.
+
+Para el ADN, el código trivial \nuc{A}$\mapsto$\texttt{00}, \nuc{C}$\mapsto$\texttt{01}, \nuc{G}$\mapsto$\texttt{10}, \nuc{T}$\mapsto$\texttt{11} usa 2 bits por base y es óptimo si las bases son equiprobables. Un archivo FASTA, en cambio, gasta un byte (8 bits) por base: cuatro veces más de lo necesario. La \cref{fig:01-entropia}b muestra que \cmd{gzip}, un compresor genérico que busca repeticiones pero no ``sabe'' que solo hay cuatro letras, se queda en $2{,}4$--$2{,}5$ bits por base con la secuencia aleatoria y con el genoma viral (peor que el código trivial), mientras reduce la repetición \texttt{CAG} a $0{,}02$ bits por base. Por eso existen formatos especializados como CRAM.
+
+\subsection{El código genético: un diccionario de 64 entradas}
+
+Tres letras de un alfabeto de cuatro producen $4^3=64$ codones, que deben codificar 20 aminoácidos y una señal de parada. En términos de información, un codón podría transportar $\log_2 64 = 6$ bits, pero el mensaje que transporta (uno de 21 significados) necesita como máximo $\log_2 21\approx 4{,}39$ bits. El código es, por lo tanto, \emph{redundante}: la mayoría de los aminoácidos tienen varios codones sinónimos. Esa redundancia, lejos de ser un desperdicio, resultará ser la clave de su robustez.
+
+\begin{historia}[Descifrar el código en cinco años]
+En 1961, Marshall Nirenberg y Heinrich Matthaei añadieron a un extracto de \especie{E.\,coli} sin células un ARN sintético formado solo por uracilos (poli-U) y obtuvieron un polipéptido formado solo por fenilalanina: \texttt{UUU} codificaba Phe \parencite{c01-nirenberg1961}. Ese mismo año, \textcite{c01-crick1961} demostraron con mutantes de desplazamiento de marco en el bacteriófago T4 que el código se lee en tripletes, sin solapamiento y desde un punto de inicio fijo. \textcite{c01-nirenberg1964} idearon después un ensayo de unión de trinucleótidos al ribosoma que permitió asignar codones uno por uno, y el grupo de Har Gobind Khorana confirmó las asignaciones con ARN sintéticos de secuencia repetitiva. Hacia 1966 la tabla estaba completa. Nirenberg, Khorana y Robert Holley compartieron el Nobel de 1968.
+\end{historia}
+
+La \cref{fig:01-rueda} presenta el código estándar como una rueda que se lee desde el centro: primera base en el anillo interno, segunda en el intermedio y tercera en el externo. La disposición revela de inmediato un patrón que la tabla rectangular oculta: los codones sinónimos se agrupan en sectores contiguos que casi siempre comparten las dos primeras bases y difieren solo en la tercera. \textcite{c01-crick1966} explicó el patrón con la hipótesis del \emph{bamboleo} (\ingles{wobble}): el anticodón del ARN de transferencia se aparea de forma estricta con las dos primeras bases del codón pero de forma relajada con la tercera, de modo que un mismo ARNt puede leer varios codones.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+  \node (rueda) at (0,0) {\input{figuras/cap01/rueda_codigo.tex}};
+  \begin{scope}[shift={(5.1,1.4)}, font=\sffamily\scriptsize]
+    \node[anchor=west, font=\sffamily\bfseries\scriptsize, text=tinta] at (-0.2,0.55) {aminoácidos};
+    \foreach \c/\t [count=\i] in {amarillo/hidrofóbico, aqua/polar o especial, azul/básico (carga $+$), rojo/ácido (carga $-$), gris/parada}{
+      \fill[\c!35] (0,-\i*0.42+0.12) rectangle ++(0.36,0.28);
+      \node[anchor=west, text=tinta2] at (0.45,-\i*0.42+0.26) {\t};}
+    \node[anchor=west, font=\sffamily\bfseries\scriptsize, text=tinta] at (-0.2,-2.55) {cómo leerla};
+    \node[anchor=north west, text width=3.1cm, text=tinta2, align=left] at (-0.2,-2.7)
+      {1.ª base en el centro, 2.ª en el anillo medio, 3.ª en el externo. Ejemplo: \texttt{AUG} $\to$ Met, \texttt{UGG} $\to$ Trp.};
+  \end{scope}
+\end{tikzpicture}
+\caption[La rueda del código genético estándar]{El código genético estándar como rueda. Cada sector externo agrupa los codones que comparten las dos primeras bases y codifican el mismo aminoácido. Tres regularidades saltan a la vista: la tercera base casi nunca cambia el aminoácido dentro de un bloque de cuatro; los codones con \nuc{U} en la segunda posición (cuadrante superior de cada primera base) codifican casi siempre aminoácidos hidrofóbicos (amarillo); y los aminoácidos cargados (azul y rojo) se concentran en los codones con \nuc{A} o \nuc{G} en la segunda posición. Los codones de parada \texttt{UAA}, \texttt{UAG} y \texttt{UGA} aparecen en gris.}
+\label{fig:01-rueda}
+\end{figure}
+
+El código es casi universal, pero no del todo. Las mitocondrias de muchos organismos y algunas bacterias usan variantes: en los micoplasmas, por ejemplo, \texttt{UGA} no es de parada sino que codifica triptófano \parencite{c01-yamao1985}. El NCBI numera estas variantes como ``tablas de traducción'' (la 1 es la estándar, la 11 la de bacterias y la 4 la de micoplasmas y mitocondrias de hongos), y en la \cref{sec:01-orfs} veremos que ignorarlas puede arruinar la anotación de un genoma completo.
+
+\subsection{Robustez ante errores: ¿es óptimo el código?}
+
+Cuando la ADN polimerasa se equivoca, cambia una base por otra. En una región codificante, la consecuencia depende del codón y de la posición:
+
+\begin{itemize}
+  \item una mutación \textbf{sinónima} (o silenciosa) cambia el codón pero no el aminoácido;
+  \item una mutación \textbf{de sentido erróneo} (\ingles{missense}) cambia el aminoácido;
+  \item una mutación \textbf{sin sentido} (\ingles{nonsense}) crea un codón de parada y trunca la proteína.
+\end{itemize}
+
+Contemos todas las posibilidades. Hay 61 codones con sentido y cada uno tiene $3\times3=9$ vecinos que difieren en una sola base, de modo que existen $61\times9=549$ mutaciones puntuales. Un recuento directo sobre la tabla estándar (\py{CODIGO} en \archivo{dogma.py}) da 134 sinónimas (24,4\,\%), 23 sin sentido y 392 de sentido erróneo. Pero el promedio esconde una enorme diferencia entre posiciones.
+
+\begin{ejemplo}{Mutaciones en el gen de Spike}{spike-mut}
+Tomemos los \num{1273} codones con sentido del gen \gen{S} de SARS-CoV-2 y apliquemos, a cada uno, las nueve mutaciones puntuales posibles: \num{11457} mutaciones en total. Clasificándolas por posición del codón se obtiene:
+\begin{center}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Posición} & \textbf{Sinónimas} & \textbf{Sentido erróneo} & \textbf{Sin sentido}\\
+\midrule
+1.ª & 2,4\,\% & 92,1\,\% & 5,4\,\%\\
+2.ª & 0,0\,\% & 96,3\,\% & 3,7\,\%\\
+3.ª & 64,1\,\% & 31,7\,\% & 4,2\,\%\\
+\bottomrule
+\end{tabular}
+\end{center}
+En la segunda posición \emph{ninguna} mutación es silenciosa; en la tercera, casi dos de cada tres lo son. La primera posición tiene unas pocas sinónimas gracias a leucina y arginina, que tienen seis codones repartidos entre dos bloques (\texttt{CUN}/\texttt{UUR} y \texttt{CGN}/\texttt{AGR}). Esta asimetría es la base del cociente $d_N/d_S$ entre tasas de sustitución no sinónima y sinónima, que usaremos para detectar selección natural en genómica evolutiva.
+\end{ejemplo}
+
+La pregunta profunda es otra: cuando una mutación \emph{sí} cambia el aminoácido, ¿lo cambia por uno parecido? Si el código se hubiera fijado al azar, un error cambiaría con la misma facilidad un aminoácido hidrofóbico, que suele ir enterrado en el interior de la proteína, por uno cargado, que prefiere el agua; y eso suele destruir el plegamiento. \textcite{c01-haig1991} convirtieron esta intuición en una prueba estadística. La idea es definir un \emph{costo} que mida el daño medio que causan las mutaciones puntuales y comparar el código real con una población de códigos alternativos.
+
+\begin{definicion}{Costo de error de un código}{costo}
+Sea $g$ un código genético (una función de los 61 codones con sentido en los 20 aminoácidos) y $h(\cdot)$ una propiedad fisicoquímica de los aminoácidos. Sea $M$ el conjunto de pares $(c,c')$ de codones con sentido que difieren en una sola base. El costo de $g$ es
+\begin{equation}\label{eq:01-costo}
+\Phi(g) = \frac{1}{|M|}\sum_{(c,\,c')\in M}\Bigl(h\bigl(g(c)\bigr) - h\bigl(g(c')\bigr)\Bigr)^2 .
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$g(c)$}{Aminoácido que el código $g$ asigna al codón $c$.}
+\simbolo{$M$}{Pares de codones con sentido separados por una mutación puntual; en el código estándar, $|M|=526$ (las 549 mutaciones menos las 23 que crean una parada).}
+\simbolo{$h(a)$}{Propiedad del aminoácido $a$; aquí, la hidropatía de \textcite{c01-kyte1982}, positiva para los hidrofóbicos y negativa para los hidrofílicos.}
+\simbolo{$\Phi(g)$}{Cambio cuadrático medio de la propiedad por mutación: cuanto menor, más robusto es el código. Las sinónimas contribuyen con 0.}
+\end{simbolos}
+
+¿Con qué códigos alternativos comparamos? El procedimiento de \textcite{c01-haig1991} conserva la estructura de bloques del código real (qué codones van juntos y dónde están las paradas) y \emph{baraja} los 20 aminoácidos entre los 20 bloques. Hay $20!\approx 2{,}4\times10^{18}$ códigos así, demasiados para enumerarlos, pero basta con muestrear al azar unos cuantos miles para estimar la distribución de $\Phi$. Con este diseño, cualquier diferencia entre el código real y los barajados se debe a \emph{qué aminoácido} se asignó a cada bloque, no a la redundancia en sí.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.3cm},
+    curso, height=5.2cm]
+\nextgroupplot[width=5.0cm, xbar stacked, bar width=10pt, xmin=0, xmax=100,
+    ytick={1,2,3}, yticklabels={1.ª pos., 2.ª pos., 3.ª pos.}, y dir=reverse,
+    ymin=0.4, ymax=3.6, xlabel={\% de mutaciones},
+    legend style={at={(0.5,-0.42)}, anchor=north, legend columns=1},
+    title={(a) efecto por posición},
+    ymajorgrids=false]
+  \addplot[fill=azul, draw=white] table[y=pos, x=sin] {figuras/cap01/mut_pos.dat};
+  \addplot[fill=naranja!80, draw=white] table[y=pos, x=mis] {figuras/cap01/mut_pos.dat};
+  \addplot[fill=rojo!70!black, draw=white] table[y=pos, x=stop] {figuras/cap01/mut_pos.dat};
+  \legend{sinónima, sentido erróneo, sin sentido}
+\nextgroupplot[width=7.5cm, xmin=6, xmax=21, ymin=0, ymax=6800,
+    xlabel={costo $\Phi$ (hidropatía$^2$ media por mutación)},
+    title={(b) \num{100000} códigos barajados},
+    yticklabel style={/pgf/number format/fixed}]
+  \addplot[ybar interval, fill=azulclaro, draw=white, line width=0.3pt]
+    table[x=x, y=n] {figuras/cap01/costos_hist.dat};
+  \draw[naranja, very thick] (axis cs:9.394,0) -- (axis cs:9.394,6300);
+  \node[etiqueta, anchor=south west, text=naranja!70!black, font=\sffamily\scriptsize\bfseries]
+     at (axis cs:9.394,6000) {código real, $\Phi=9{,}39$};
+  \node[etiqueta, anchor=west] at (axis cs:15.3,3600) {media $13{,}30$\\(d.\,e. $1{,}70$)};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Robustez del código genético]{El código genético amortigua las mutaciones. (a) Efecto de las \num{11457} mutaciones puntuales posibles en los codones del gen \gen{S} de SARS-CoV-2, según la posición del codón: la tercera posición absorbe la mayoría de los cambios sin alterar la proteína. (b) Distribución del costo $\Phi$ (\cref{eq:01-costo}), medido con la hidropatía de Kyte-Doolittle, para \num{100000} códigos que conservan los bloques de codones del código real pero barajan los aminoácidos. El código real (línea naranja) queda en la cola izquierda: solo el 0,82\,\% de los códigos barajados es tan robusto o más. Con medidas más refinadas, que ponderan los tipos de error, esa fracción cae a una en un millón \parencite{c01-freeland1998}.}
+\label{fig:01-costo}
+\end{figure}
+
+La \cref{fig:01-costo}b muestra el resultado con \num{100000} códigos barajados. El código estándar tiene $\Phi=9{,}39$, frente a una media de $13{,}30$ para los barajados, y solo 824 de los \num{100000} (el 0,82\,\%) igualan o mejoran su robustez. \textcite{c01-haig1991}, usando el ``requerimiento polar'' de los aminoácidos como propiedad, obtuvieron un resultado del mismo tipo. \textcite{c01-freeland1998} refinaron el análisis teniendo en cuenta dos hechos biológicos: las transiciones (purina$\leftrightarrow$purina, pirimidina$\leftrightarrow$pirimidina) son mucho más frecuentes que las transversiones, y los errores de traducción son más frecuentes en la primera y tercera posiciones que en la segunda. Con esa ponderación, solo uno de cada millón de códigos alternativos resultó mejor que el natural, de ahí el título de su artículo.
+
+\begin{cuidado}[Lo que el experimento demuestra, y lo que no]
+Nuestra cifra (0,82\,\%) y la de Freeland y Hurst (una en un millón) no son contradictorias: dependen de la propiedad elegida y de cómo se ponderan los errores, y la versión con hidropatía sin ponderar es una aproximación didáctica. Además, que el código sea robusto no demuestra que la selección natural lo haya \emph{optimizado}. \textcite{c01-crick1968} sostuvo que el código podría ser un ``accidente congelado'': una vez que muchas proteínas dependen de él, cualquier cambio de asignación sería letal, y por eso ya no puede evolucionar. Las hipótesis estereoquímica, de coevolución con las rutas biosintéticas de los aminoácidos y adaptativa siguen en discusión; \textcite{c01-koonin2009} ofrecen una revisión equilibrada.
+\end{cuidado}
+
+\begin{ideaclave}
+El código genético guarda la información con redundancia,\\
+y la reparte de forma que los errores más probables sean los menos dañinos.
+\end{ideaclave}
+
+
+% ---------------------------------------------------------------------
+\section{Genes, genomas y marcos abiertos de lectura}\label{sec:01-orfs}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-01-biologia-molecular/1.2_genes_orfs.ipynb}{1.2 · Buscador de ORFs}
+
+\begin{intuicion}[Un recetario sin espacios]
+Imagine un libro de cocina de \num{580000} letras escrito sin espacios, sin puntos y sin títulos: solo \nuc{A}, \nuc{C}, \nuc{G} y \nuc{T}, una detrás de otra, y además impreso dos veces, una al derecho y otra al revés y cambiando cada letra por su pareja. En alguna parte hay unas 500 recetas, pero nadie las subrayó. Usted sabe, eso sí, que toda receta empieza con la palabra \secuencia{ATG} y termina con \secuencia{TAA}, \secuencia{TAG} o \secuencia{TGA}, y que las palabras tienen siempre tres letras. ¿Cómo encontraría las recetas? ¿Y cómo sabría que un tramo que ``parece'' receta no es una casualidad del alfabeto?
+\end{intuicion}
+
+\subsection{Anatomía de un gen: procariotas y eucariotas}
+
+Un gen que codifica una proteína es un tramo de ADN rodeado de señales que la maquinaria celular sabe leer. En bacterias, la estructura es compacta (\cref{fig:01-genes}, arriba):
+
+\begin{itemize}
+  \item Un \textbf{promotor}, con dos cajas conservadas a unas 10 y 35 bases antes del inicio de la transcripción, donde se une la ARN polimerasa.
+  \item Un \textbf{sitio de unión al ribosoma} (RBS), con la secuencia de \textbf{Shine-Dalgarno}, parecida a \secuencia{AGGAGG}, unas 8 bases antes del codón de inicio. \textcite{c01-shine1974} observaron que el extremo 3' del ARN ribosómico 16S de \especie{E.\,coli} es complementario de esa secuencia: el ribosoma ``encuentra'' el inicio apareándose con ella.
+  \item Una \textbf{región codificante} (CDS) continua, desde un codón de inicio (\secuencia{ATG} casi siempre; \secuencia{GTG} o \secuencia{TTG} en una minoría de genes bacterianos) hasta el primer codón de parada en el mismo marco.
+  \item Un \textbf{terminador}, a menudo una horquilla de ARN rica en GC seguida de uracilos.
+\end{itemize}
+
+Además, los genes bacterianos suelen organizarse en \emph{operones}: varios CDS consecutivos transcritos en un solo ARNm. En los eucariotas la situación es muy distinta. \textcite{c01-berget1977}, estudiando ARNm del adenovirus, descubrieron que la secuencia del mensajero maduro no es colineal con el ADN: faltan segmentos internos que se eliminan durante el procesamiento. \textcite{c01-gilbert1978} propuso llamar \emph{intrones} a los segmentos eliminados y \emph{exones} a los conservados, y sugirió que esta organización en piezas facilita la recombinación de dominios proteicos durante la evolución. El \emph{corte y empalme} (\ingles{splicing}) reconoce señales en los bordes del intrón, casi siempre \secuencia{GT} en el extremo 5' y \secuencia{AG} en el 3', y el ARNm maduro recibe además una caperuza de 7-metilguanosina en su extremo 5' y una cola de poliadenina en el 3'.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=1.22mm, y=1cm, font=\sffamily\scriptsize]
+  % ---------------- procariota
+  \node[anchor=west, font=\sffamily\small\bfseries, text=azulnoche] at (0,1.05) {Gen procariota};
+  \draw[base, line width=1.4pt] (0,0) -- (100,0);
+  \fill[violeta!80, rounded corners=1pt] (3,-0.22) rectangle (15,0.22);
+  \node[text=white] at (9,0) {promotor};
+  \node[etiqueta] at (5.5,0.42) {$-35$}; \node[etiqueta] at (12.5,0.42) {$-10$};
+  \draw[-{Stealth[length=1.6mm]}, thick, tinta] (16.5,0) -- (16.5,0.5) -- (22,0.5);
+  \node[etiqueta, anchor=south west] at (16,0.52) {$+1$};
+  \fill[amarillo, rounded corners=1pt] (24,-0.16) rectangle (29,0.16);
+  \node[etiqueta, anchor=north] at (26.5,-0.22) {RBS\\(Shine-Dalgarno)};
+  \fill[azul, rounded corners=1pt] (32,-0.25) rectangle (82,0.25);
+  \node[text=white, font=\sffamily\scriptsize\bfseries] at (57,0) {CDS: un solo bloque traducible};
+  \fill[verde] (32,-0.25) rectangle (35.5,0.25); \node[text=white,font=\ttfamily\tiny] at (33.75,0) {ATG};
+  \fill[rojo] (78.5,-0.25) rectangle (82,0.25); \node[text=white,font=\ttfamily\tiny] at (80.25,0) {TAA};
+  \draw[tinta2, thick] (88.6,0) -- ++(0,0.32) arc[start angle=180, end angle=0, radius=0.12cm] -- ++(0,-0.32);
+  \node[etiqueta, anchor=north] at (89.5,-0.1) {terminador};
+  % ---------------- eucariota
+  \begin{scope}[yshift=-2.45cm]
+  \node[anchor=west, font=\sffamily\small\bfseries, text=azulnoche] at (0,1.05) {Gen eucariota};
+  \draw[base, line width=1.4pt] (0,0) -- (100,0);
+  \fill[violeta!80, rounded corners=1pt] (2,-0.22) rectangle (11,0.22);
+  \node[text=white] at (6.5,0) {TATA};
+  \foreach \a/\b in {14/27, 41/53, 69/86}{
+    \fill[azul, rounded corners=1pt] (\a,-0.25) rectangle (\b,0.25);}
+  \fill[azulclaro] (14,-0.25) rectangle (18,0.25);
+  \fill[azulclaro] (80,-0.25) rectangle (86,0.25);
+  \foreach \x/\t in {22.5/exón 1, 47/exón 2, 74.5/exón 3}{
+    \node[text=white, font=\sffamily\scriptsize\bfseries] at (\x,0) {\t};}
+  \foreach \a/\b in {27/41, 53/69}{
+    \draw[gris, thick] (\a,0.27) -- ({(\a+\b)/2},0.62) -- (\b,0.27);
+    \node[etiqueta] at ({(\a+\b)/2},-0.02) {intrón};
+    \node[font=\ttfamily\tiny, text=tinta2] at (\a+1.6,-0.4) {GT};
+    \node[font=\ttfamily\tiny, text=tinta2] at (\b-1.6,-0.4) {AG};}
+  \fill[gris!70, rounded corners=1pt] (89,-0.16) rectangle (96,0.16);
+  \node[etiqueta, anchor=north] at (92.5,-0.22) {señal\\poli-A};
+  % flecha de procesamiento
+  \draw[flecha=tinta2] (36,-0.75) -- node[right, etiqueta]{transcripción, caperuza, \emph{splicing} y poliadenilación} (36,-1.45);
+  % ARNm maduro
+  \begin{scope}[yshift=-2.05cm]
+    \node[circle, fill=magenta, text=white, inner sep=1pt, font=\sffamily\tiny\bfseries] at (20,0) {m$^7$G};
+    \draw[base, line width=1.4pt] (22,0) -- (76,0);
+    \fill[azulclaro] (22,-0.25) rectangle (26,0.25);
+    \fill[azul] (26,-0.25) rectangle (35,0.25);
+    \fill[azul!85!black] (35,-0.25) rectangle (47,0.25);
+    \fill[azul] (47,-0.25) rectangle (58,0.25);
+    \fill[azulclaro] (58,-0.25) rectangle (64,0.25);
+    \node[text=white, font=\sffamily\scriptsize\bfseries] at (42,0) {CDS continua};
+    \node[etiqueta, anchor=north] at (24,-0.28) {5' UTR};
+    \node[etiqueta, anchor=north] at (61,-0.28) {3' UTR};
+    \node[font=\ttfamily\scriptsize, text=tinta2, anchor=west] at (64.5,0) {AAAA\ldots A};
+    \node[anchor=east, font=\sffamily\small\bfseries, text=azulnoche] at (17,0) {ARNm maduro};
+  \end{scope}
+  \end{scope}
+\end{tikzpicture}
+\caption[Estructura de un gen procariota y uno eucariota]{Anatomía de un gen. \textbf{Arriba}: en una bacteria, la región codificante (azul) es un bloque continuo entre un codón de inicio (verde) y el primer codón de parada del mismo marco (rojo); el ribosoma se posiciona gracias a la secuencia de Shine-Dalgarno. \textbf{Abajo}: en un eucariota la información codificante está repartida en exones separados por intrones, que se eliminan por \emph{splicing} (bordes \texttt{GT}\ldots\texttt{AG}); solo el ARNm maduro contiene una CDS continua, flanqueada por regiones no traducidas (UTR, azul claro), la caperuza 5' y la cola poli-A. Un buscador de ORFs como el de esta sección funciona sobre el genoma bacteriano, pero no sobre el ADN genómico eucariota.}
+\label{fig:01-genes}
+\end{figure}
+
+\subsection{Marcos de lectura}
+
+Como los codones se leen de tres en tres sin separadores, una misma secuencia puede cortarse en codones de tres maneras en cada hebra, según la letra en que empecemos. Con las dos hebras, hay seis \emph{marcos de lectura} (\cref{fig:01-marcos}).
+
+\begin{definicion}{Marco abierto de lectura (ORF)}{orf}
+Sea $s$ una de las dos hebras de un genoma (la directa $x$ o su complemento reverso $\overline{x}$) y $f\in\{0,1,2\}$ un desplazamiento. El marco $(s,f)$ es la sucesión de codones $c_k = s_{f+3k+1}\,s_{f+3k+2}\,s_{f+3k+3}$, $k=0,1,\ldots$. Dados un conjunto de codones de inicio $\mathcal{I}$ y de parada $\mathcal{T}$, un \emph{marco abierto de lectura} es un tramo de codones $c_a,\ldots,c_b$ de un mismo marco tal que
+\begin{equation}\label{eq:01-orf}
+c_a\in\mathcal{I},\qquad c_b\in\mathcal{T},\qquad c_k\notin\mathcal{T}\ \ \text{para}\ a\le k<b ,
+\end{equation}
+y $c_a$ es el primer codón de inicio posterior a la parada anterior del marco. Su longitud es $\ell=b-a$ codones (sin contar la parada).
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$s,\ f$}{Hebra y desplazamiento que definen uno de los seis marcos: $+1,+2,+3$ en $x$ y $-1,-2,-3$ en $\overline{x}$.}
+\simbolo{$c_k$}{$k$-ésimo codón del marco.}
+\simbolo{$\mathcal{I},\ \mathcal{T}$}{Codones de inicio ($\{\texttt{ATG}\}$, o $\{\texttt{ATG},\texttt{GTG},\texttt{TTG}\}$ en bacterias) y de parada (dependen de la tabla de traducción).}
+\simbolo{$\ell$}{Longitud del ORF en codones, igual al número de aminoácidos de la proteína que codificaría.}
+\end{simbolos}
+
+Elegir el \emph{primer} inicio tras la parada anterior da el ORF más largo posible en ese tramo; el inicio biológico real puede estar más adentro, y predecirlo con precisión es un problema aparte que los programas modernos resuelven combinando la señal de Shine-Dalgarno con el uso de codones \parencite{c01-hyatt2010}. El final, en cambio, es inequívoco: el primer codón de parada del marco. Por eso, cuando comparemos predicciones con la anotación, usaremos el extremo 3' como criterio de acierto.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap01/seis_marcos.tex}\\[4pt]
+{\sffamily\scriptsize\color{tinta2}
+\tikz\fill[verde] (0,0) rectangle (0.3,0.2);~inicio \texttt{ATG}\quad
+\tikz\fill[rojo] (0,0) rectangle (0.3,0.2);~parada que cierra un ORF\quad
+\tikz\fill[rojoclaro] (0,0) rectangle (0.3,0.2);~parada sin ORF abierto\quad
+\tikz\fill[azul!80] (0,0) rectangle (0.3,0.2);~ORF\quad
+\tikz\fill[azulpalido] (0,0) rectangle (0.3,0.2);~ORF sin cerrar}
+\caption[Los seis marcos de lectura de una secuencia]{Una secuencia de 45 nt leída en sus seis marcos. Los tres marcos superiores cortan la hebra directa empezando en la primera, segunda o tercera base; los tres inferiores hacen lo mismo con el complemento reverso, de modo que todas las filas se leen de 5' a 3'. Un ORF se abre con un \texttt{ATG} y se cierra con la primera parada \emph{del mismo marco}: en el marco $+3$, el \texttt{ATG} inicial abre un ORF que la parada \texttt{TAA} cierra seis codones después, aunque en el marco $+1$ haya paradas intercaladas. En el marco $-3$ el ORF llega al final de la secuencia sin cerrarse. Figura generada con \archivo{figuras/cap01/generar.py}.}
+\label{fig:01-marcos}
+\end{figure}
+
+\subsection{Un buscador de ORFs}
+
+La \cref{eq:01-orf} se traduce directamente en un algoritmo de una sola pasada por marco: recorrer los codones de izquierda a derecha con una variable de estado que indica si hay un ORF abierto. Al ver un inicio con el ORF cerrado, se abre; al ver una parada con el ORF abierto, se cierra y se registra. Las coordenadas de los ORFs de la hebra inversa se convierten a coordenadas de la hebra directa al final.
+
+\begin{codigo}[buscar\_orfs.py]
+PARADAS_11 = {"TAA", "TAG", "TGA"}           # tabla estándar/bacteriana
+PARADAS_4 = {"TAA", "TAG"}                   # Mycoplasma: TGA = Trp
+
+def buscar_orfs(x, min_cod=100, inicios=("ATG",), paradas=PARADAS_11):
+    """ORFs en los 6 marcos; coordenadas 0-based [ini, fin) en x."""
+    L, orfs = len(x), []
+    for hebra, s in ((+1, x), (-1, complemento_reverso(x))):
+        for f in range(3):
+            abierto = None
+            for k in range(f, len(s) - 2, 3):
+                c = s[k:k + 3]
+                if abierto is None and c in inicios:
+                    abierto = k                       # se abre
+                elif abierto is not None and c in paradas:
+                    n = (k - abierto) // 3            # codones
+                    if n >= min_cod:
+                        a, b = abierto, k + 3
+                        if hebra == -1:               # a hebra +
+                            a, b = L - b, L - a
+                        orfs.append((a, b, hebra, f + 1, n))
+                    abierto = None                    # se cierra
+    return orfs
+\end{codigo}
+
+El algoritmo recorre cada base una vez por marco, así que su costo es $O(L)$ en tiempo. En Python puro tarda unos segundos para un genoma bacteriano; la versión vectorizada del notebook convierte cada codón en un entero entre 0 y 63 y localiza, para cada parada, el primer inicio posterior a la parada anterior con una búsqueda binaria (\py{np.searchsorted}), lo que la hace unas cien veces más rápida con resultados idénticos.
+
+\subsection{El modelo nulo: ¿cuán largo puede ser un ORF por azar?}
+
+Aquí está el corazón estadístico de la lección. Si escribimos letras al azar también aparecen ORFs, pero cortos: tarde o temprano tropezamos con una parada. Para decidir si un ORF largo es un gen necesitamos saber qué longitudes produce el azar.
+
+Supongamos que las bases son independientes, con frecuencias $\pi_\texttt{A},\pi_\texttt{C},\pi_\texttt{G},\pi_\texttt{T}$. La probabilidad de que un codón cualquiera sea de parada es
+\begin{equation}\label{eq:01-pstop}
+p = \sum_{c\in\mathcal{T}} \pi_{c_1}\,\pi_{c_2}\,\pi_{c_3},
+\end{equation}
+que con bases equiprobables vale $p=3/64\approx 0{,}0469$. Recorriendo un marco codón a codón, cada codón es un ensayo de Bernoulli con probabilidad de ``éxito'' (parada) $p$, independiente de los demás. La longitud de un tramo entre dos paradas consecutivas es el número de fracasos antes del primer éxito.
+
+\begin{teorema}{Longitud de un ORF aleatorio}{geometrica}
+Bajo el modelo de bases independientes, la longitud $L$ (en codones) de un tramo sin paradas sigue una distribución geométrica:
+\begin{equation}\label{eq:01-geom}
+\Prob(L=\ell) = (1-p)^{\ell}\,p,\qquad
+\Prob(L\ge\ell) = (1-p)^{\ell},\qquad
+\E[L] = \frac{1-p}{p}.
+\end{equation}
+En escala logarítmica, la función de supervivencia $\Prob(L\ge\ell)$ es una recta de pendiente $\ln(1-p)$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\pi_b$}{Frecuencia de la base $b$ en el genoma.}
+\simbolo{$p$}{Probabilidad de que un codón al azar sea de parada (\cref{eq:01-pstop}).}
+\simbolo{$L$}{Número de codones consecutivos sin parada en un marco.}
+\simbolo{$\Prob(L\ge\ell)$}{Supervivencia: probabilidad de que un tramo alcance al menos $\ell$ codones.}
+\end{simbolos}
+
+La supervivencia se deduce sin cálculo: $L\ge\ell$ ocurre exactamente cuando los primeros $\ell$ codones no son de parada, y como son independientes, la probabilidad es el producto $(1-p)^\ell$. La media se obtiene de la serie $\E[L]=\sum_{\ell\ge1}\Prob(L\ge\ell)=\sum_{\ell\ge1}(1-p)^\ell=(1-p)/p$. Con bases equiprobables, $\E[L]=61/3\approx 20{,}3$ codones, y el 1\,\% de los tramos supera $\ell_{1\%}=\ln 0{,}01/\ln(61/64)\approx 96$ codones. Un tramo de 300 codones sin paradas tiene probabilidad $(61/64)^{300}\approx 5{,}6\times10^{-7}$.
+
+\begin{cuidado}[La composición manda]
+Los codones de parada son ricos en \nuc{A} y \nuc{T}. Con 20\,\% de GC, $p=0{,}096$ y el 1\,\% de los tramos al azar supera solo 46 codones; con 72\,\% de GC, $p=0{,}017$ y ese percentil sube a 271. En genomas ricos en GC, como los de \especie{Streptomyces}, el azar fabrica ORFs muy largos: nunca use un umbral ``universal'' sin recalcular $p$ con la composición de su genoma.
+\end{cuidado}
+
+El teorema también nos dice cómo elegir un umbral. Si el genoma tiene $L_g$ bases, cada uno de los seis marcos contiene unos $L_g/3$ codones y, por lo tanto, unas $pL_g/3$ paradas; el número total de tramos entre paradas es aproximadamente $N\approx 2pL_g$. El número esperado de tramos aleatorios de longitud al menos $\ell$ es $N(1-p)^\ell$, y exigir que sea menor que un número tolerable $\alpha$ de falsos positivos da
+\begin{equation}\label{eq:01-umbral}
+N(1-p)^{\ell^*}\le\alpha
+\quad\Longleftrightarrow\quad
+\ell^* \ge \frac{\ln(\alpha/N)}{\ln(1-p)} .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$L_g$}{Longitud del genoma en pares de bases.}
+\simbolo{$N$}{Número esperado de tramos entre paradas en los seis marcos, $\approx 2pL_g$.}
+\simbolo{$\alpha$}{Número de ORFs espurios que estamos dispuestos a tolerar en todo el genoma.}
+\simbolo{$\ell^*$}{Longitud mínima que garantiza, en promedio, no más de $\alpha$ falsos positivos.}
+\end{simbolos}
+
+Esta es una corrección por comparaciones múltiples disfrazada: cuanto mayor es el genoma, más ``intentos'' tiene el azar y más largo debe ser el umbral. El umbral es conservador por una segunda razón: exigir además un codón de inicio elimina muchos tramos.
+
+\subsection{Un genoma mínimo real: \emph{Mycoplasma genitalium}}
+
+\especie{Mycoplasma genitalium} es una bacteria parásita del tracto urogenital humano, sin pared celular, con uno de los genomas más pequeños conocidos entre los organismos capaces de crecer en cultivo. \textcite{c01-fraser1995} lo secuenciaron completo, el segundo genoma bacteriano de la historia, y describieron unos 580 kb con alrededor de 470 regiones codificantes predichas; su título, ``el complemento génico mínimo'', anunciaba la pregunta que ha guiado desde entonces la investigación sobre este organismo: ¿cuántos genes necesita una célula para vivir? \textcite{c01-glass2006} respondieron en parte con mutagénesis por transposones, concluyendo que 382 de sus 482 genes codificantes de proteínas son esenciales. \textcite{c01-hutchison2016} llevaron la pregunta a la síntesis: diseñaron y construyeron JCVI-syn3.0, una célula de \especie{Mycoplasma mycoides} con un genoma sintético de 531 kb y 473 genes, de los cuales 149 tenían una función biológica desconocida.
+
+La versión actual del genoma de referencia (NC\_000908.2) tiene \num{580076} pb, un contenido GC de solo 31,7\,\% y 504 CDS anotadas, más 20 pseudogenes. La mediana de longitud de sus proteínas es de 287 aminoácidos, y solo 35 tienen menos de 100.
+
+\begin{historia}[El codón que no para]
+En los micoplasmas, \texttt{UGA} no es un codón de parada sino que codifica triptófano. \textcite{c01-yamao1985} lo demostraron en \especie{Mycoplasma capricolum} y la variante se comparte en el linaje, hasta el punto de que el NCBI le asigna una tabla de traducción propia (la 4). Se cree que la presión hacia genomas pobres en GC favoreció el cambio: \texttt{UGG}, el codón habitual del triptófano, es rico en G, y \texttt{UGA} fue ``capturado'' para el mismo aminoácido.
+\end{historia}
+
+El detalle tiene consecuencias dramáticas. Si traducimos las 504 CDS de \especie{M.\,genitalium} con la tabla 4, las 504 proteínas coinciden con la anotación. Con la tabla bacteriana estándar (11), solo 145 (el 28,8\,\%) salen completas: las otras 359 contienen al menos un \texttt{TGA} interno y se truncan en él. Un anotador automático que ignorara la tabla de traducción predeciría cientos de genes fragmentados.
+
+\begin{ejemplo}{El umbral de longitud para \emph{M.\,genitalium}}{umbral}
+Con la composición real del genoma ($\pi_\texttt{A}=0{,}3457$, $\pi_\texttt{C}=0{,}1578$, $\pi_\texttt{G}=0{,}1591$, $\pi_\texttt{T}=0{,}3374$) y las dos paradas de la tabla 4, la \cref{eq:01-pstop} da
+\[
+p = \pi_\texttt{T}\pi_\texttt{A}\pi_\texttt{A} + \pi_\texttt{T}\pi_\texttt{A}\pi_\texttt{G}
+= 0{,}3374\times0{,}3457\times(0{,}3457+0{,}1591) = 0{,}0589 .
+\]
+La longitud media de un tramo al azar es $\E[L]=0{,}9411/0{,}0589\approx16{,}0$ codones. El número de tramos en los seis marcos es $N\approx 2\times0{,}0589\times\num{580076}\approx\num{68300}$, y la \cref{eq:01-umbral} con $\alpha=1$ da
+\[
+\ell^* \ge \frac{\ln(1/68\,300)}{\ln 0{,}9411} = \frac{-11{,}13}{-0{,}0607}\approx 183 \text{ codones}.
+\]
+Por debajo de 100 codones, en cambio, el azar produce unos $N(1-p)^{100}\approx 158$ tramos: demasiados para confiar en la longitud sola. Observe que la mayoría de los genes reales del genoma (mediana de 287 aa) están por encima del umbral estricto, pero no todos.
+\end{ejemplo}
+
+\subsection{Señal contra ruido}
+
+¿Cómo comprobamos que los ORFs largos del genoma real no son casualidad? Construimos un \emph{control negativo}: barajamos las letras del genoma. La secuencia barajada tiene exactamente la misma composición, y por tanto la misma $p$, pero ha perdido todo orden biológico. La \cref{fig:01-supervivencia} compara las funciones de supervivencia del genoma real, del barajado y de la predicción geométrica.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=6.4cm, ymode=log,
+    xmin=0, xmax=600, ymin=1e-6, ymax=1.5, unbounded coords=jump,
+    xlabel={$\ell$ (codones sin parada, tabla 4)}, ylabel={$\Prob(L\ge\ell)$},
+    ytick={1e-6,1e-5,1e-4,1e-3,1e-2,1e-1,1}, legend pos=north east]
+  \addplot[name path=real, azul, very thick] table[x=l, y=real] {figuras/cap01/supervivencia.dat};
+  \addlegendentry{genoma real}
+  \addplot[naranja, very thick] table[x=l, y=shuf] {figuras/cap01/supervivencia.dat};
+  \addlegendentry{genoma barajado}
+  \addplot[tinta, dashed, thick] table[x=l, y=teo] {figuras/cap01/supervivencia.dat};
+  \addlegendentry{teoría: $(1-0{,}0589)^{\ell}$}
+  \node[etiqueta, anchor=west, text=azulprofundo, font=\sffamily\small] at (axis cs:280,1.5e-4) {exceso de ORFs largos = genes};
+  \draw[gris, thin] (axis cs:100,1e-6) -- (axis cs:100,1.5);
+  \node[etiqueta, anchor=south west, rotate=90] at (axis cs:96,2e-6) {100 codones};
+\end{axis}
+\end{tikzpicture}
+\caption[Supervivencia de los ORFs de \emph{M.\,genitalium}]{Longitud de los tramos sin codones de parada en los seis marcos de \especie{M.\,genitalium} (tabla 4). El genoma barajado (naranja), que conserva la composición pero no el orden, sigue casi exactamente la recta geométrica del \cref{teo:geometrica} (discontinua) y no produce ningún tramo de más de 200 codones. El genoma real (azul) coincide con el azar para tramos cortos, pero a partir de unos 60 codones se separa y mantiene una cola pesada que llega a cientos de codones: ahí viven los genes. A 100 codones, la cola real es 6,4 veces más frecuente que la barajada; a 200, la barajada ya es cero.}
+\label{fig:01-supervivencia}
+\end{figure}
+
+Para longitudes cortas, las tres curvas coinciden: $\Prob(L\ge50)$ vale 0,049 en el genoma real, 0,050 en el barajado y 0,048 en la teoría. La mayoría de los tramos del genoma real son, estadísticamente, ruido: están en los marcos que no se traducen. Pero a 100 codones la frecuencia real es de $1{,}55\times10^{-2}$ frente a $2{,}4\times10^{-3}$ en el barajado, y a 200 codones el barajado no produce ningún tramo mientras que el real conserva un $0{,}63\,\%$. El genoma barajado es, además, la mejor validación del modelo: sus puntos caen sobre la recta teórica, lo que confirma que la dependencia entre bases vecinas apenas afecta a la distribución de las paradas.
+
+El barajado permite también estimar directamente la proporción de falsos descubrimientos que cometería un umbral $\ell_{\min}$:
+\begin{equation}\label{eq:01-fdr}
+\widehat{\mathrm{FDR}}(\ell_{\min}) \approx \frac{N_{\text{barajado}}(\ell_{\min})}{N_{\text{real}}(\ell_{\min})},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$N_{\text{real}}(\ell_{\min})$}{Número de ORFs (con inicio \texttt{ATG}, \texttt{GTG} o \texttt{TTG}) de al menos $\ell_{\min}$ codones en el genoma real.}
+\simbolo{$N_{\text{barajado}}(\ell_{\min})$}{Lo mismo en el genoma barajado, que estima cuántos de los anteriores esperaríamos por azar.}
+\end{simbolos}
+
+Con $\ell_{\min}=40$, el genoma barajado produce \num{2861} ORFs frente a \num{2909} en el real ($\widehat{\mathrm{FDR}}\approx0{,}98$): casi todo es ruido. Con 60 codones la proporción baja a 0,55; con 100, a 0,083 (67 frente a 809); con 150, a 0,004. No existe un umbral perfecto, solo un compromiso entre falsos positivos y genes cortos perdidos.
+
+\subsection{Sensibilidad, precisión y ORFs sombra}
+
+La anotación del GenBank nos da una ``respuesta correcta'' contra la que evaluar el buscador. Decimos que un ORF predicho es un \emph{verdadero positivo} (VP) si termina en el mismo codón de parada y la misma hebra que una CDS anotada; si no, es un \emph{falso positivo} (FP). Las CDS anotadas que ningún ORF alcanza son \emph{falsos negativos} (FN).
+\begin{equation}\label{eq:01-metricas}
+\text{sensibilidad} = \frac{\mathrm{VP}}{\mathrm{VP}+\mathrm{FN}},\qquad
+\text{precisión} = \frac{\mathrm{VP}}{\mathrm{VP}+\mathrm{FP}} .
+\end{equation}
+La sensibilidad responde ``¿qué fracción de los genes reales encontré?''; la precisión, ``¿qué fracción de mis predicciones son genes?''.
+
+Con un umbral de 100 codones y los tres inicios bacterianos, el buscador predice 809 ORFs, de los cuales 473 coinciden con CDS anotadas: sensibilidad de 93,8\,\% pero precisión de solo 58,5\,\%. ¿De dónde salen los 336 falsos positivos? Al examinarlos, 289 (el 86\,\%) se solapan en más de la mitad de su longitud con un gen real situado en \emph{otro marco o en la otra hebra}, y 29 caen en pseudogenes. Son \emph{ORFs sombra}: una región codificante está depurada de paradas en su marco, y como efecto colateral de su composición y su uso de codones, los marcos solapados también tienen menos paradas de lo que el azar predice.
+
+Como dos genes bacterianos rara vez se solapan mucho, un filtro sencillo elimina la mayoría de las sombras: se ordenan los ORFs de más largo a más corto y se descarta cualquier ORF que se solape más de un 50\,\% con otro más largo ya aceptado. Con este filtro, a 100 codones quedan 502 predicciones, la sensibilidad apenas baja a 92,5\,\% y la precisión sube a 92,8\,\%. La \cref{fig:01-sensprec} muestra el compromiso para todos los umbrales.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.1cm, y descriptions at=edge left},
+    curso, width=6.6cm, height=5.3cm, xmin=35, xmax=255, ymin=0, ymax=1.05,
+    xlabel={longitud mínima $\ell_{\min}$ (codones)},
+    yticklabel={\pgfmathparse{\tick*100}\pgfmathprintnumber[fixed,precision=0]{\pgfmathresult}\,\%},
+    ytick={0,0.2,0.4,0.6,0.8,1}]
+\nextgroupplot[title={sensibilidad}, legend pos=south west]
+  \addplot[naranja, very thick, mark=*, mark size=1.2pt] table[x=t, y=se] {figuras/cap01/sens_prec.dat};
+  \addlegendentry{todos los ORFs}
+  \addplot[azul, very thick, mark=*, mark size=1.2pt] table[x=t, y=sef] {figuras/cap01/sens_prec.dat};
+  \addlegendentry{con filtro de sombras}
+  \draw[gris] (axis cs:100,0) -- (axis cs:100,1.05);
+\nextgroupplot[title={precisión}]
+  \addplot[naranja, very thick, mark=*, mark size=1.2pt] table[x=t, y=pr] {figuras/cap01/sens_prec.dat};
+  \addplot[azul, very thick, mark=*, mark size=1.2pt] table[x=t, y=prf] {figuras/cap01/sens_prec.dat};
+  \draw[gris] (axis cs:100,0) -- (axis cs:100,1.05);
+\end{groupplot}
+\end{tikzpicture}
+\caption[Sensibilidad y precisión del buscador de ORFs]{Evaluación del buscador de ORFs contra las 504 CDS anotadas de \especie{M.\,genitalium} (acierto: mismo codón de parada y misma hebra). Al subir el umbral, la sensibilidad cae porque se pierden los genes cortos, y la precisión sube porque desaparece el ruido. El filtro de sombras (azul) dispara la precisión a cualquier umbral casi sin coste en sensibilidad: con 100 codones (línea gris) pasa del 58\,\% al 93\,\% manteniendo el 92\,\% de los genes.}
+\label{fig:01-sensprec}
+\end{figure}
+
+Los 38 genes que el buscador filtrado no encuentra a 100 codones tienen algo en común: 31 de ellos codifican proteínas de menos de 100 aminoácidos, por debajo del umbral. Los demás empiezan con un codón de inicio poco habitual o se solapan con un gen vecino más largo. Detectar genes pequeños sigue siendo un problema abierto; muchas proteínas de menos de 50 aminoácidos se han descubierto apenas en la última década.
+
+\begin{profundizacion}[Más allá de la longitud: contenido codificante]
+Las regiones codificantes tienen una \emph{periodicidad de tres}: la composición de la primera, segunda y tercera posición del codón es distinta, porque la tercera tolera más cambios. \textcite{c01-fickett1982} convirtió esa asimetría en un estadístico (TESTCODE) que reconoce regiones codificantes sin buscar ORFs. Los buscadores modernos combinan varias señales en modelos probabilísticos: Prodigal \parencite{c01-hyatt2010} modela el uso de codones, la señal de Shine-Dalgarno y el contexto del inicio, y supera el 95\,\% de sensibilidad en genomas bacterianos. Todos parten, sin embargo, del esqueleto que hemos construido: enumerar ORFs y compararlos con un modelo nulo.
+\end{profundizacion}
+
+
+% ---------------------------------------------------------------------
+\section{Composición de secuencias: contenido GC, GC skew y el origen de replicación}\label{sec:01-gcskew}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-01-biologia-molecular/1.3_composicion_gc_skew.ipynb}{1.3 · GC skew y oriC}
+
+\begin{intuicion}[Un saldo bancario que se lee en el ADN]
+Imagine que lleva la cuenta de un cajero que, a lo largo del día, recibe billetes de dos colores: suma uno por cada billete verde y resta uno por cada billete rojo. Si los billetes llegan al azar, el saldo oscila sin rumbo alrededor de cero. Pero si durante la mañana llega un pequeño exceso de verdes y durante la tarde un pequeño exceso de rojos, el saldo subirá toda la mañana y bajará toda la tarde, y su máximo marcará, con bastante precisión, la hora del almuerzo, aunque ningún billete individual lo revele. En esta sección haremos exactamente eso con las guaninas y las citosinas de un cromosoma bacteriano, y la ``hora del almuerzo'' será el punto donde la célula empieza a copiar su ADN.
+\end{intuicion}
+
+\subsection{Contenido GC}
+
+La medida de composición más sencilla es la proporción de bases que son \nuc{G} o \nuc{C}.
+
+\begin{definicion}{Contenido GC}{gc}
+Para una secuencia (o una ventana) con $n_\texttt{A}$, $n_\texttt{C}$, $n_\texttt{G}$ y $n_\texttt{T}$ bases de cada tipo,
+\begin{equation}\label{eq:01-gc}
+\mathrm{GC} = \frac{n_\texttt{G}+n_\texttt{C}}{n_\texttt{A}+n_\texttt{C}+n_\texttt{G}+n_\texttt{T}} .
+\end{equation}
+\end{definicion}
+
+Como cada \nuc{G} de una hebra está apareada con una \nuc{C} de la otra, el contenido GC es el mismo en ambas hebras: es una propiedad de la \emph{molécula}, no de una hebra concreta. Varía enormemente entre organismos: 31,7\,\% en \especie{M.\,genitalium}, 38,0\,\% en SARS-CoV-2, 50,8\,\% en \especie{E.\,coli} y más de 70\,\% en algunas actinobacterias. Controla la estabilidad térmica del ADN (un par G--C tiene tres puentes de hidrógeno, uno A--T dos) y, como vimos en la \cref{sec:01-orfs}, la probabilidad de encontrar paradas por azar. Variaciones locales del contenido GC dentro de un genoma bacteriano delatan a menudo \emph{islas genómicas} adquiridas por transferencia horizontal desde otros organismos.
+
+\subsection{Un cromosoma circular que se copia en dos direcciones}
+
+El cromosoma de \especie{Escherichia coli} K-12, secuenciado por \textcite{c01-blattner1997}, es una sola molécula circular de unos 4,64 Mb. Su replicación sigue un plan muy ordenado. Comienza siempre en el mismo lugar, el \emph{origen de replicación} (\emph{oriC}), donde la proteína DnaA abre la doble hélice. Desde allí parten dos \emph{horquillas de replicación} en direcciones opuestas, que se encuentran en el lado contrario del círculo, en la \emph{región de terminación} (\emph{ter}), donde la proteína Tus, unida a los sitios \emph{Ter}, las detiene. El cromosoma queda dividido en dos mitades, los \emph{replicores}, cada una copiada por una sola horquilla.
+
+Dentro de cada horquilla, las dos hebras hijas no se sintetizan igual. Las ADN polimerasas solo alargan cadenas en dirección 5'$\to$3', y las dos hebras molde son antiparalelas. Una de las hebras hijas, la \emph{adelantada} (\ingles{leading}), puede crecer de corrido en el mismo sentido en que avanza la horquilla. La otra, la \emph{rezagada} (\ingles{lagging}), debe sintetizarse hacia atrás, en fragmentos cortos que luego se unen: los fragmentos que \textcite{c01-okazaki1968} detectaron marcando con radiactividad el ADN recién sintetizado. Mientras la horquilla avanza y el siguiente fragmento aún no ha empezado, el molde de la hebra rezagada queda expuesto como \emph{cadena sencilla} (\cref{fig:01-replicacion}).
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  % --------- panel izquierdo: cromosoma circular
+  \begin{scope}
+    \draw[base, line width=3pt] (0,0) circle (1.7);
+    \draw[azul, line width=2pt] (90:1.98) arc[start angle=90, end angle=-40, radius=1.98];
+    \foreach \a in {88,72,...,-30}{\draw[naranja, line width=2pt] (\a:1.42) arc[start angle=\a, end angle=\a-11, radius=1.42];}
+    \draw[azul, line width=2pt] (90:1.42) arc[start angle=90, end angle=220, radius=1.42];
+    \foreach \a in {92,108,...,210}{\draw[naranja, line width=2pt] (\a:1.98) arc[start angle=\a, end angle=\a+11, radius=1.98];}
+    \foreach \a/\d in {-40/-1, 220/1}{
+      \fill[violeta] (\a:1.7) circle (3.2pt);
+      \draw[-{Stealth[length=1.8mm]}, violeta, thick] (\a+\d*5:2.3) arc[start angle=\a+\d*5, end angle=\a-\d*22, radius=2.3];}
+    \draw[tinta, dashed, thin] (90:2.2) -- (270:2.2);
+    \node[font=\sffamily\small\bfseries, text=tinta] at (90:2.45) {\emph{oriC}};
+    \node[font=\sffamily\small\bfseries, text=tinta] at (270:2.45) {\emph{ter}};
+    \node[etiqueta, anchor=west, font=\sffamily\tiny] at (0.08,-0.2) {replicor\\derecho};
+    \node[etiqueta, anchor=east, font=\sffamily\tiny] at (-0.08,-0.2) {replicor\\izquierdo};
+    \node[etiqueta, text=violeta] at (0,-3.05) {las dos horquillas avanzan en sentidos opuestos};
+  \end{scope}
+  % --------- panel derecho: horquilla
+  \begin{scope}[shift={(3.2,0)}]
+    \draw[tinta2, line width=1.8pt] (3.3,0.13) -- (6.3,0.13);
+    \draw[tinta2, line width=1.8pt] (3.3,-0.13) -- (6.3,-0.13);
+    \node[etiqueta, anchor=north] at (5.3,-0.2) {ADN parental};
+    \draw[tinta2, line width=1.8pt] (3.3,0.13) -- (0.2,1.7);
+    \draw[tinta2, line width=1.8pt] (3.3,-0.13) -- (0.2,-1.7);
+    % hebra adelantada
+    \draw[azul, line width=2.2pt, -{Stealth[length=2.4mm]}] (0.45,-1.33) -- (2.95,-0.08);
+    \node[etiqueta, anchor=north west, text=azulprofundo] at (0.1,-1.75) {\textbf{adelantada}: continua};
+    % hebra rezagada: fragmentos de Okazaki
+    \foreach \x/\y in {1.55/0.78, 0.55/1.28}{
+      \draw[naranja, line width=2.2pt, -{Stealth[length=2.2mm]}] (\x+0.8,\y-0.40) -- (\x,\y);}
+    \node[etiqueta, anchor=south west, text=naranja!70!black] at (0.1,1.75) {\textbf{rezagada}: fragmentos de Okazaki};
+    % molde expuesto
+    \draw[rojo, line width=6pt, opacity=0.3, line cap=round] (2.45,0.56) -- (3.2,0.18);
+    \draw[gris, thin] (2.85,0.42) -- (4.3,0.75) node[anchor=west, etiqueta, text=rojooscuro, align=left] {molde en cadena\\sencilla: C$\to$U};
+    \fill[violeta] (3.3,0) circle (3.5pt);
+    \draw[-{Stealth[length=2mm]}, violeta, thick] (3.5,-0.95) -- (4.5,-0.95) node[right, etiqueta, text=violeta] {avance};
+  \end{scope}
+\end{tikzpicture}
+\caption[Replicación bidireccional y horquilla de replicación]{\textbf{Izquierda}: el cromosoma bacteriano se replica desde \emph{oriC} con dos horquillas (violeta) que avanzan en sentidos opuestos hasta \emph{ter}. En cada replicor se dibujan la hebra hija continua (azul) y la discontinua (naranja); observe que sus papeles se \emph{intercambian} al pasar de un replicor al otro. \textbf{Derecha}: detalle de una horquilla. La hebra adelantada crece de forma continua hacia la horquilla; la rezagada se sintetiza en fragmentos de Okazaki que crecen en sentido contrario, de modo que su molde queda temporalmente como cadena sencilla (sombreado rojo), donde la desaminación de la citosina es mucho más rápida.}
+\label{fig:01-replicacion}
+\end{figure}
+
+Ahora viene la observación clave. Fijemos \emph{una} hebra del cromosoma, por ejemplo la que aparece escrita en el archivo FASTA. En un replicor, esa hebra es el molde de la hija adelantada; en el otro, el de la rezagada. El cambio de papel ocurre exactamente en \emph{oriC} y en \emph{ter}. Si la replicación trata de forma distinta a los dos moldes, la hebra del archivo debería mostrar un sesgo de composición que cambia de signo en esos dos puntos.
+
+\subsection{La cicatriz de la replicación}
+
+La citosina tiene un punto débil químico: puede perder su grupo amino y convertirse en uracilo, que en la siguiente replicación se aparea con adenina. El resultado neto es una mutación \nuc{C}$\to$\nuc{T}. Esta \emph{desaminación} es una de las fuentes más importantes de mutaciones espontáneas, y es mucho más rápida en ADN de cadena sencilla que en la doble hélice, donde la citosina está protegida por su pareja: \textcite{c01-frederico1990} midieron una constante de velocidad más de cien veces mayor en cadena sencilla. Juntemos las piezas: el molde de la hebra rezagada pasa más tiempo como cadena sencilla, así que acumula más \nuc{C}$\to$\nuc{T}; esa hebra pierde \nuc{C} y, por complementariedad, la hebra opuesta pierde \nuc{G}. \textcite{c01-lobry1996} mostró que en varias bacterias la hebra adelantada es, en efecto, más rica en \nuc{G} que en \nuc{C}, y que el sesgo cambia de signo en el origen y el término de la replicación.
+
+Un modelo mínimo permite ver cuánto sesgo produce una asimetría pequeña. Consideremos una hebra dentro de un replicor y fijémonos solo en las \nuc{G} y las \nuc{C}. Sea $c$ la tasa de mutación \nuc{C}$\to$\nuc{T} en esa hebra y $a$ la tasa de \nuc{G}$\to$\nuc{A} (que no es otra cosa que \nuc{C}$\to$\nuc{T} en la hebra complementaria). Supongamos que las \nuc{G} y las \nuc{C} se reponen a partir de \nuc{A} y \nuc{T} con una misma tasa $u$, y que la hebra tiene aproximadamente tantas \nuc{A} como \nuc{T}.
+
+\begin{teorema}{Sesgo de equilibrio}{skew-equilibrio}
+En el modelo anterior, las frecuencias de equilibrio satisfacen $u\,\pi_\texttt{A} = a\,\pi_\texttt{G}$ y $u\,\pi_\texttt{T} = c\,\pi_\texttt{C}$, de modo que, si $\pi_\texttt{A}\approx\pi_\texttt{T}$,
+\begin{equation}\label{eq:01-skew-eq}
+\frac{\pi_\texttt{G}}{\pi_\texttt{C}} = \frac{c}{a},
+\qquad
+S^* = \frac{\pi_\texttt{G}-\pi_\texttt{C}}{\pi_\texttt{G}+\pi_\texttt{C}} = \frac{c-a}{c+a} .
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$c,\ a$}{Tasas de las mutaciones \nuc{C}$\to$\nuc{T} y \nuc{G}$\to$\nuc{A} leídas en la hebra considerada.}
+\simbolo{$u$}{Tasa (simétrica) de las mutaciones que crean \nuc{G} o \nuc{C} a partir de \nuc{A} o \nuc{T}.}
+\simbolo{$\pi_b$}{Frecuencia de equilibrio de la base $b$ en esa hebra.}
+\simbolo{$S^*$}{Sesgo GC de equilibrio: positivo si la hebra pierde más \nuc{C} que \nuc{G}.}
+\end{simbolos}
+
+La derivación es un balance de flujos: en equilibrio, las \nuc{G} que se pierden por unidad de tiempo ($a\pi_\texttt{G}$) deben igualar a las que se crean ($u\pi_\texttt{A}$), y lo mismo con las \nuc{C}. Dividiendo ambas igualdades se obtiene la \cref{eq:01-skew-eq}. El resultado es revelador: el sesgo no depende de la magnitud absoluta de las tasas, sino solo de su \emph{cociente}. Una asimetría minúscula, sostenida durante millones de generaciones, basta para dejar una huella medible en todo el genoma. \textcite{c01-frank1999} revisan los mecanismos propuestos, que no se reducen a la desaminación: también contribuyen diferencias en la fidelidad de las polimerasas de cada hebra y efectos selectivos ligados a la orientación de los genes.
+
+\subsection{El sesgo GC y su versión acumulada}
+
+Para medir la huella necesitamos un número que, a diferencia del contenido GC, distinga entre las dos hebras.
+
+\begin{definicion}{Sesgo GC y sesgo acumulado}{skew}
+El \emph{sesgo GC} (\ingles{GC skew}) de una ventana de la hebra leída es
+\begin{equation}\label{eq:01-skew}
+S = \frac{n_\texttt{G}-n_\texttt{C}}{n_\texttt{G}+n_\texttt{C}} \in [-1, 1].
+\end{equation}
+El \emph{sesgo acumulado} en la posición $j$ es el saldo
+\begin{equation}\label{eq:01-cumskew}
+C(j) = \sum_{i=1}^{j}\Bigl(\mathbb{1}[x_i=\texttt{G}] - \mathbb{1}[x_i=\texttt{C}]\Bigr).
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$n_\texttt{G},\ n_\texttt{C}$}{Número de guaninas y citosinas en la ventana, en la hebra que estamos leyendo.}
+\simbolo{$S$}{Sesgo GC: $+1$ si solo hay \nuc{G}, $-1$ si solo hay \nuc{C}, $0$ si están equilibradas.}
+\simbolo{$C(j)$}{Saldo acumulado: suma $+1$ por cada \nuc{G} y $-1$ por cada \nuc{C} desde el inicio hasta la posición $j$.}
+\end{simbolos}
+
+Por la complementariedad, leer la otra hebra invierte el signo de $S$ en cada ventana: el sesgo es una propiedad de la \emph{hebra}. El sesgo acumulado, introducido como herramienta sistemática por \textcite{c01-grigoriev1998}, tiene una ventaja decisiva sobre las ventanas: no obliga a elegir un tamaño de ventana y suma la señal a lo largo de todo el replicor, de modo que un sesgo diminuto pero sostenido produce una pendiente clara. Si en un replicor el sesgo medio es $s$ y el contenido GC es $g$, cada base aporta en promedio
+\begin{equation}\label{eq:01-pendiente}
+\E\bigl[C(j+1)-C(j)\bigr] = \tfrac{g}{2}(1+s) - \tfrac{g}{2}(1-s) = g\,s,
+\end{equation}
+así que $C$ sube con pendiente $gs$ en el replicor de sesgo positivo y baja con pendiente $g|s|$ en el otro. El resultado es una curva en forma de V (o de V invertida) con el \emph{mínimo en oriC y el máximo en ter}.
+
+\begin{ejemplo}{Sesgo a mano}{skew-mano}
+Tomemos la ventana \secuencia{GGCAGCTGGA}. Las \nuc{G} están en las posiciones 1, 2, 5, 8 y 9, así que $n_\texttt{G}=5$; las \nuc{C}, en las posiciones 3 y 6, así que $n_\texttt{C}=2$. Por la \cref{eq:01-skew},
+\[
+S = \frac{5-2}{5+2} = \frac{3}{7}\approx 0{,}43 .
+\]
+El saldo acumulado, base a base, es $1, 2, 1, 1, 2, 1, 1, 2, 3, 3$: sube con cada \nuc{G}, baja con cada \nuc{C} y se queda quieto con \nuc{A} y \nuc{T}. Su valor final, $C(10)=3$, es exactamente $n_\texttt{G}-n_\texttt{C}$. En la hebra complementaria, \secuencia{TCCAGCTGCC}, se obtiene $n_\texttt{G}=2$, $n_\texttt{C}=5$ y $S=-3/7$.
+\end{ejemplo}
+
+\begin{codigo}[gc\_skew.py]
+import numpy as np
+
+def sesgo_ventanas(x: str, w: int = 10_000) -> np.ndarray:
+    """Sesgo (G-C)/(G+C) en ventanas contiguas de w bases."""
+    a = np.frombuffer(x.encode("ascii"), dtype=np.uint8)
+    n = len(a) // w
+    a = a[: n * w].reshape(n, w)
+    g = (a == ord("G")).sum(axis=1)
+    c = (a == ord("C")).sum(axis=1)
+    return (g - c) / (g + c)
+
+def sesgo_acumulado(x: str) -> np.ndarray:
+    """Saldo C(j): +1 por cada G, -1 por cada C (ecuación 1.15)."""
+    a = np.frombuffer(x.encode("ascii"), dtype=np.uint8)
+    paso = (a == ord("G")).astype(np.int32) - (a == ord("C"))
+    return np.cumsum(paso)
+
+C = sesgo_acumulado(ecoli)            # ecoli: str con 4 641 652 pb
+ori_pred = int(np.argmin(C)) + 1      # coordenada 1-based
+ter_pred = int(np.argmax(C)) + 1
+\end{codigo}
+
+\subsection{Encontrar \emph{oriC} en \emph{E.\,coli}}
+
+Apliquemos el método al genoma de referencia de \especie{E.\,coli} K-12 MG1655 (NC\_000913.3, \num{4641652} pb). Según su propia anotación, el origen de replicación (\ingles{feature} \texttt{rep\_origin}) ocupa las posiciones \num{3925744}--\num{3925975}. No hay una anotación de \emph{ter} como tal, pero sí del gen \gen{tus} (\num{1684259}--\num{1685188}), cuyo producto se une a los sitios de terminación: es un buen marcador de esa región.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2, vertical sep=0.45cm, x descriptions at=edge bottom},
+    curso, width=\linewidth, xmin=0, xmax=4.6417, xtick={0,0.5,...,4.5}]
+\nextgroupplot[height=3.7cm, ymin=-0.1, ymax=0.1, ytick={-0.1,-0.05,0,0.05,0.1},
+    ylabel={sesgo GC\\(10 kb)}, ylabel style={align=center},
+    yticklabel style={/pgf/number format/.cd, fixed, precision=2, use comma}]
+  \addplot[ycomb, azul, line width=0.55pt] table[x=mb, y=pos] {figuras/cap01/skew_ventanas.dat};
+  \addplot[ycomb, rojo, line width=0.55pt] table[x=mb, y=neg] {figuras/cap01/skew_ventanas.dat};
+  \draw[tinta, thin] (axis cs:3.92586,-0.1) -- (axis cs:3.92586,0.1);
+  \draw[gris, thin] (axis cs:1.68472,-0.1) -- (axis cs:1.68472,0.1);
+\nextgroupplot[height=5cm, ymin=-20, ymax=32,
+    xlabel={posición en el genoma (Mb)}, ylabel={sesgo acumulado $C(j)$\\(miles)}, ylabel style={align=center}]
+  \addplot[violeta, very thick] table[x=mb, y=k] {figuras/cap01/skew_acum.dat};
+  \draw[tinta, thin] (axis cs:3.92586,-20) -- (axis cs:3.92586,32);
+  \draw[gris, thin] (axis cs:1.68472,-20) -- (axis cs:1.68472,32);
+  \addplot[only marks, mark=*, mark size=2.6pt, violeta, mark options={draw=white, line width=0.8pt}]
+    coordinates {(3.925597,-13.943) (1.552389,25.418)};
+  \node[etiqueta, anchor=north east, align=right] at (axis cs:3.86,-14.5) {mínimo: \num{3925597}\\\emph{oriC} anotado: línea negra};
+  \node[etiqueta, anchor=south east, align=right] at (axis cs:1.50,25.8) {máximo: \num{1552389}};
+  \node[etiqueta, anchor=south west, align=left] at (axis cs:1.72,-19) {gen \emph{tus}\\(línea gris)};
+\end{groupplot}
+\end{tikzpicture}
+\caption[El sesgo GC de \emph{E.\,coli} localiza \emph{oriC}]{El sesgo GC de \especie{E.\,coli} K-12 (NC\_000913.3). \textbf{Arriba}: sesgo en 464 ventanas de 10 kb; es positivo en el replicor que va de \emph{oriC} a \emph{ter} en el sentido de la numeración (pasando por la posición 0) y negativo en el otro, aunque cada ventana individual es ruidosa. \textbf{Abajo}: el sesgo acumulado de la \cref{eq:01-cumskew}, que integra la señal y dibuja una V invertida limpia. Su mínimo (\num{3925597}) cae a 262 pb del centro del \emph{oriC} anotado (línea negra); su máximo (\num{1552389}) está a 132 kb del gen \gen{tus}, en la región de terminación.}
+\label{fig:01-skew}
+\end{figure}
+
+La \cref{fig:01-skew} muestra el resultado. El sesgo por ventana es pequeño (en promedio $+0{,}032$ en un replicor y $-0{,}033$ en el otro) y ruidoso: 224 de las 464 ventanas son positivas, casi la mitad, pero no están mezcladas al azar sino agrupadas en dos bloques. El sesgo acumulado convierte ese patrón en una curva inequívoca. Su mínimo global está en la posición \num{3925597}: a solo 262 pb del centro del \emph{oriC} anotado, un error del 0,006\,\% del genoma. Su máximo está en \num{1552389}, a 132 kb del gen \gen{tus}; los dos replicores miden 2,37 y 2,27 Mb, casi iguales, como corresponde a dos horquillas que avanzan a velocidades parecidas. Con un cálculo de una línea sobre la secuencia, sin pipetas ni geles, hemos localizado el origen de replicación.
+
+\begin{ejemplo}{¿Cuadra la amplitud de la V?}{amplitud}
+La \cref{eq:01-pendiente} permite predecir cuánto desciende el saldo entre el máximo y el mínimo. El arco que va de \emph{ter} ($\approx$\num{1552389}) a \emph{oriC} ($\approx$\num{3925597}) mide \num{2373208} pb, el contenido GC es $g=0{,}5079$ y el sesgo medio de ese replicor es $s=-0{,}0327$. El descenso esperado es
+\[
+|\Delta C| \approx g\,|s|\,\Delta j = 0{,}5079\times0{,}0327\times\num{2373208}\approx \num{39400}.
+\]
+El observado es $C_{\max}-C_{\min} = \num{25418}-(-\num{13943}) = \num{39361}$. La coincidencia, mejor que el 0,2\,\%, confirma que la V es la suma de un sesgo pequeño y casi constante a lo largo de todo el replicor, y no el efecto de unas pocas regiones extremas.
+\end{ejemplo}
+
+\subsection{El genoma como un reloj}
+
+Como el cromosoma es circular, la forma natural de representarlo es como la esfera de un reloj, con la posición 0 arriba y avanzando en el sentido de las agujas (\cref{fig:01-mapa}). Este tipo de mapa, con anillos concéntricos para distintas pistas, es el formato estándar para presentar genomas bacterianos.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap01/mapa_circular.tex}
+\caption[Mapa circular de \emph{E.\,coli}]{El cromosoma de \especie{E.\,coli} K-12 como un reloj, en ventanas de 20 kb. \textbf{Anillo interno}: sesgo GC (azul, $G>C$, hacia fuera; rojo, $C>G$, hacia dentro). \textbf{Anillo externo}: desviación del contenido GC de cada ventana respecto a la media del genoma (azul oscuro hacia fuera, más GC; azul claro hacia dentro, menos GC). El sesgo divide el círculo en dos mitades de signo opuesto cuyas fronteras coinciden con \emph{oriC} y con la región de \gen{tus}. El contenido GC no muestra ese patrón: es una propiedad de la molécula, no de las hebras. Sus caídas bruscas (ventanas con hasta un 41\,\% de GC) señalan regiones de composición anómala, como las islas genómicas.}
+\label{fig:01-mapa}
+\end{figure}
+
+\subsection{Señal contra ruido: el tamaño de la ventana}
+
+¿Por qué el sesgo por ventana es tan ruidoso, y cuánto hay que agrandar la ventana para ver la señal? Supongamos que una ventana contiene $m$ bases que son \nuc{G} o \nuc{C} y que no hay ningún sesgo real: cada una es \nuc{G} con probabilidad $1/2$, independientemente de las demás. Entonces el número de guaninas es $K\sim\mathrm{Bin}(m,1/2)$, y el sesgo es $S=(K-(m-K))/m = (2K-m)/m$.
+
+\begin{teorema}{Ruido del sesgo en una ventana}{ruido}
+Sin sesgo real, $\E[S]=0$ y
+\begin{equation}\label{eq:01-ruido}
+\mathrm{DE}(S) = \frac{2}{m}\,\mathrm{DE}(K) = \frac{2}{m}\sqrt{m\cdot\tfrac12\cdot\tfrac12} = \frac{1}{\sqrt{m}},
+\qquad m\approx w\cdot g .
+\end{equation}
+Si además existe un sesgo real que varía entre ventanas con desviación típica $\sigma_s$, las varianzas se suman: $\mathrm{DE}_{\text{obs}}^2\approx 1/m + \sigma_s^2$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$m$}{Número de bases \nuc{G} o \nuc{C} en la ventana.}
+\simbolo{$w,\ g$}{Tamaño de la ventana (pb) y contenido GC del genoma.}
+\simbolo{$K$}{Número de guaninas entre esas $m$ bases.}
+\simbolo{$\mathrm{DE}(S)$}{Desviación estándar del sesgo debida solo al azar del muestreo.}
+\simbolo{$\sigma_s$}{Variabilidad real del sesgo entre ventanas (señal biológica).}
+\end{simbolos}
+
+Con ventanas de 1 kb en \especie{E.\,coli}, $m\approx508$ y el ruido es $\pm0{,}044$, mayor que la señal de $\pm0{,}03$: la señal queda enterrada. Con ventanas de 100 kb el ruido baja a $\pm0{,}0044$ y la señal destaca con claridad. La \cref{fig:01-ruido} compara la dispersión observada con la predicción del \cref{teo:ruido}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.86\linewidth, height=6cm, xmode=log, ymode=log,
+    xmin=150, xmax=2.7e5, ymin=2.5e-3, ymax=0.16,
+    xlabel={tamaño de ventana $w$ (pb)}, ylabel={desviación estándar del sesgo},
+    legend pos=south west, legend cell align=left,
+    xtick={1e3,1e4,1e5}, xticklabels={1 kb, 10 kb, 100 kb},
+    ytick={0.003,0.01,0.03,0.1}, yticklabels={0{,}003, 0{,}01, 0{,}03, 0{,}1}]
+  \addplot[naranja, very thick] table[x=w, y=teo] {figuras/cap01/ruido_ventana.dat};
+  \addlegendentry{ruido puro $1/\sqrt{m}$}
+  \addplot[violeta, very thick] table[x=w, y expr={sqrt(\thisrow{teo}^2+0.031^2)}] {figuras/cap01/ruido_ventana.dat};
+  \addlegendentry{ruido $+$ señal $\sqrt{1/m+\sigma_s^2}$, $\sigma_s=0{,}031$}
+  \addplot[only marks, mark=*, mark size=2.3pt, azul, mark options={draw=white, line width=0.6pt}] table[x=w, y=sd] {figuras/cap01/ruido_ventana.dat};
+  \addlegendentry{observado en \emph{E.\,coli}}
+\end{axis}
+\end{tikzpicture}
+\caption[Ruido del sesgo según el tamaño de ventana]{Dispersión del sesgo GC entre ventanas de \especie{E.\,coli} en función del tamaño de ventana (escala log-log). Para ventanas pequeñas, la dispersión observada (puntos) está cerca del ruido binomial puro (naranja), que decrece como $1/\sqrt{m}$: casi toda la variación es azar de muestreo. Para ventanas grandes, el ruido sigue bajando pero la dispersión observada se estabiliza en torno a 0,03: es la señal de los dos replicores, que no depende del tamaño de ventana. El modelo que suma ambas varianzas (violeta) describe los extremos; los puntos intermedios quedan algo por encima porque existe además variación local real (genes de orientación particular, operones ribosomales, islas genómicas).}
+\label{fig:01-ruido}
+\end{figure}
+
+La lección es general y reaparecerá a lo largo del libro: todo promedio en ventana es un compromiso entre resolución y ruido, y el tamaño de ventana adecuado es aquel en el que el ruido de muestreo, $1/\sqrt{m}$, cae por debajo de la magnitud de la señal que se quiere ver. En \especie{E.\,coli}, eso exige $m\gtrsim 1/0{,}03^2\approx1100$ bases G o C, es decir, ventanas de al menos unos 2--3 kb, y en la práctica bastante más. El sesgo en la otra pareja de bases, $(n_\texttt{A}-n_\texttt{T})/(n_\texttt{A}+n_\texttt{T})$, también existe pero es unas tres veces más débil: en ventanas de 100 kb su magnitud media es 0,011 frente a 0,031 del sesgo GC.
+
+\begin{profundizacion}[La replicación organiza todo el genoma]
+El sesgo de composición es solo una de las huellas de la replicación. \textcite{c01-rocha2004} revisa las demás: los genes, sobre todo los esenciales y los muy expresados, tienden a estar en la hebra adelantada, probablemente para evitar choques frontales entre la ARN polimerasa y la horquilla; y en bacterias de crecimiento rápido los genes cercanos a \emph{oriC} están en más copias que los cercanos a \emph{ter}. Como parte del sesgo GC se debe a esa orientación de los genes, separar la contribución mutacional de la selectiva no es trivial \parencite{c01-frank1999}.
+\end{profundizacion}
+
+% ---------------------------------------------------------------------
+\begin{resumen}
+\begin{itemize}
+  \item El dogma central describe un sistema de información: el ADN guarda, el ARN es la copia de trabajo y la proteína ejecuta. La información secuencial no sale de las proteínas; la transcripción reversa y la replicación de ARN son transferencias especiales \parencite{c01-crick1970}.
+  \item La entropía de Shannon $H=-\sum p\log_2 p$ mide la sorpresa media por símbolo: como máximo 2 bits por base en ADN. Los genomas reales están cerca del máximo; las repeticiones, muy por debajo. La entropía es el límite de la compresión sin pérdida.
+  \item El código genético es redundante y robusto: la tercera posición del codón absorbe la mayoría de las mutaciones, y las sustituciones de aminoácido que produce una mutación puntual tienden a conservar la hidropatía mejor que en casi cualquier código alternativo.
+  \item Un ORF va de un codón de inicio a la primera parada del mismo marco; toda secuencia tiene seis marcos. Por azar, la longitud de un tramo sin paradas es geométrica, $\Prob(L\ge\ell)=(1-p)^\ell$, con $p$ determinada por la composición y el código genético del organismo.
+  \item En \especie{M.\,genitalium} (tabla 4, \texttt{TGA}$=$Trp), los genes forman una cola de ORFs largos muy por encima del modelo nulo. Un umbral de 100 codones con filtro de sombras recupera el 92\,\% de los genes con 93\,\% de precisión; los genes cortos siguen siendo difíciles.
+  \item La replicación bidireccional desde \emph{oriC} y la desaminación de la citosina en el molde de la hebra rezagada dejan un sesgo $S=(G-C)/(G+C)$ que cambia de signo en \emph{oriC} y \emph{ter}. El mínimo del sesgo acumulado localiza el \emph{oriC} de \especie{E.\,coli} a 262 pb de su posición anotada; el ruido en una ventana, $1/\sqrt{m}$, dicta el tamaño de ventana.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Escriba a mano el complemento reverso de \secuencia{ATGGCCTTAGC} y compruebe con Biopython que \py{Seq(x).reverse_complement()} da lo mismo. ¿Cuál es el complemento reverso del complemento reverso?
+\ej{1} Calcule la entropía de Shannon de \secuencia{ATATATAT} con $k=1$ y con $k=2$. ¿Por qué $h_2<h_1$? ¿Qué valor tomaría la tasa de entropía $h$ para una repetición infinita de \texttt{AT}?
+\ej{1} Usando la \cref{eq:01-pstop}, calcule $p$, la longitud media al azar y el percentil 99 de un ORF para un genoma con 20\,\%, 50\,\% y 72\,\% de GC (tabla 11, $\pi_\texttt{G}=\pi_\texttt{C}=\mathrm{GC}/2$). Compare con los valores de la \cref{sec:01-orfs}.
+\ej{2} Repita el cálculo de robustez del código del cuaderno 1.1 usando la carga de los aminoácidos (+1 para K, R; $-1$ para D, E; 0 para el resto) en lugar de la hidropatía. ¿Sigue siendo el código real excepcional? ¿Por qué cree que la respuesta cambia?
+\ej{2} Modifique \py{buscar_orfs} para que, además de las coordenadas, devuelva la proteína traducida con la tabla que se le indique. Aplíquelo al genoma de SARS-CoV-2 (NC\_045512.2) con $\ell_{\min}=50$ y compare sus cinco ORFs más largos con los genes anotados. ¿Qué ocurre con \gen{ORF1ab}, que requiere un desplazamiento ribosomal de marco?
+\ej{3} Demuestre que, bajo el modelo de bases independientes, la longitud esperada de un ORF que empieza en \texttt{ATG} y se detiene en la primera parada es la misma que la de un tramo entre paradas. Después, verifique con una simulación que el número esperado de ORFs de al menos $\ell$ codones en una secuencia aleatoria de longitud $L_g$ es aproximadamente $2L_g\,p\,q\,(1-p)^{\ell}/(p+q)$, donde $q$ es la probabilidad de un codón de inicio. (Pista: una parada solo cierra un ORF si antes hubo un inicio.)
+\ej{3} Descargue el genoma de \especie{Bacillus subtilis} 168 (NC\_000964.3) y localice su origen de replicación con el sesgo acumulado. ¿Dónde cae el mínimo? Rote la secuencia para centrar la V y estime la longitud de cada replicor. Compare la amplitud observada con la predicha por la \cref{eq:01-pendiente}.
+\end{ejercicios}
+
+\referenciascapitulo

@@ -1,0 +1,968 @@
+% =====================================================================
+%  Capítulo 4 · Alineamiento múltiple, motivos y perfiles
+% =====================================================================
+\chapter{Alineamiento múltiple, motivos y perfiles}\label{cap:04}
+
+\epigrafe{Los HMM de perfil convierten un alineamiento múltiple de secuencias en un sistema de puntuación específico de cada posición, adecuado para buscar en bases de datos secuencias remotamente homólogas.}{\textcite{c04-eddy1998}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Definir un alineamiento múltiple de secuencias (MSA), puntuarlo con la suma de pares y explicar por qué su solución exacta es computacionalmente intratable.
+  \item Reproducir paso a paso el alineamiento progresivo: distancias, árbol guía y alineamiento de perfiles; reconocer sus limitaciones y cómo las corrigen MUSCLE, MAFFT, T-Coffee y Clustal Omega.
+  \item Construir una matriz de peso posicional (PWM) a partir de sitios de unión, con pseudoconteos, y usarla para buscar sitios en una secuencia.
+  \item Calcular la entropía y el contenido de información de cada posición de un motivo e interpretar un \ingles{sequence logo}.
+  \item Formular un modelo oculto de Márkov y resolver sus tres problemas clásicos con los algoritmos \ingles{forward}, de Viterbi y de Baum-Welch.
+  \item Describir la arquitectura de un HMM de perfil (estados de coincidencia, inserción y deleción) y explicar cómo HMMER y Pfam lo usan para anotar dominios de proteínas.
+\end{itemize}
+\end{objetivos}
+
+En el \cref{cap:03} aprendimos a comparar \emph{dos} secuencias. Pero la evolución rara vez nos entrega pares aislados: una familia de proteínas puede tener cientos o miles de miembros repartidos por todo el árbol de la vida, y lo que realmente queremos saber es qué tienen en común \emph{todos} ellos. Una posición que se conserva en la hemoglobina humana, en la del ratón y en la mioglobina de un cachalote, separadas por cientos de millones de años de evolución, no se conserva por casualidad: probablemente sostiene el grupo hemo, estabiliza una hélice o participa en la función. El alineamiento de dos secuencias no puede distinguir ese residuo de uno que simplemente no ha tenido tiempo de cambiar; el alineamiento de muchas, sí.
+
+Este capítulo recorre el camino que va de un conjunto de secuencias emparentadas a un \emph{modelo estadístico} de la familia. Primero construiremos el alineamiento múltiple y veremos por qué la programación dinámica del \cref{sec:03-dp} deja de ser practicable, lo que obliga a recurrir a heurísticas como el alineamiento progresivo (\cref{sec:04-msa}). Después resumiremos un conjunto de sitios alineados, sin huecos, en una matriz de peso posicional, y mediremos con la teoría de la información cuánta ``señal'' contiene cada posición (\cref{sec:04-motivos}). Por último, generalizaremos esas matrices a modelos que admiten inserciones y deleciones, los modelos ocultos de Márkov de perfil, que son el motor de HMMER y de la base de datos Pfam (\cref{sec:04-hmm}). Al final del capítulo, el HMM de pares que se anunció con el algoritmo de Gotoh (\cref{eq:03-gotoh-m}) habrá encontrado su lugar natural.
+
+% ---------------------------------------------------------------------
+\section{Alineamiento múltiple: el método progresivo}\label{sec:04-msa}
+% ---------------------------------------------------------------------
+\enlacerepo{4.1 · MSA: alineamiento progresivo}
+
+\begin{intuicion}[La receta de la abuela]
+Cinco primos conservan, cada uno, una copia manuscrita de la receta de pan de la abuela. Con los años, cada copia ha acumulado cambios: alguien sustituyó la manteca por aceite, otro añadió una pizca de anís, otro olvidó copiar una línea entera. Si quisiera reconstruir la receta original, no empezaría comparando las copias más distintas. Empezaría por las de las dos hermanas que viven juntas, casi idénticas, y fijaría entre ambas una versión común; luego la compararía con la del primo que vive en la misma ciudad; y solo al final se enfrentaría a la copia del pariente lejano. Cada decisión que tome en los primeros pasos (``esta línea se perdió aquí'') condicionará todas las siguientes. Ese procedimiento, con sus virtudes y su punto débil, es exactamente el alineamiento progresivo.
+\end{intuicion}
+
+\subsection{De dos secuencias a muchas}
+
+Un alineamiento múltiple extiende la idea del alineamiento por pares: se escriben $k$ secuencias una debajo de otra, insertando huecos, de modo que los residuos que descienden de un mismo residuo ancestral queden en la misma columna.
+
+\begin{definicion}{Alineamiento múltiple de secuencias}{msa}
+Sean $x^{(1)},\dots,x^{(k)}$ secuencias sobre un alfabeto $\mathcal{A}$. Un \emph{alineamiento múltiple} es una matriz $\mathbf{M}$ de $k$ filas y $L$ columnas con entradas en $\mathcal{A}\cup\{\texttt{-}\}$ tal que (i) al eliminar los huecos de la fila $p$ se recupera exactamente $x^{(p)}$ y (ii) ninguna columna está formada solo por huecos. Cada columna es una hipótesis de homología posicional.
+\end{definicion}
+
+Los MSA son la materia prima de buena parte de la bioinformática: de ellos se infieren árboles filogenéticos, se identifican residuos catalíticos, se predicen estructuras secundarias y terciarias, se construyen los perfiles y HMM de la \cref{sec:04-hmm} y se detectan sitios bajo selección. Por eso importa tanto hacerlos bien. Y, como en el caso de dos secuencias, ``hacerlos bien'' exige primero decidir cómo se puntúan.
+
+\subsection{La puntuación de suma de pares}
+
+La función objetivo más usada es la \emph{suma de pares} (SP, \ingles{sum of pairs}): puntuar cada columna como la suma de las puntuaciones de todos los pares de residuos que contiene, con la misma matriz de sustitución que usamos para dos secuencias.
+
+\begin{equation}\label{eq:04-sp}
+S_{\mathrm{SP}}(\mathbf{M}) \;=\; \sum_{c=1}^{L}\;\sum_{p<r} w_p\,w_r\;\sigma\!\left(M_{pc},\,M_{rc}\right),
+\qquad
+\sigma(a,b)=\begin{cases}
+s(a,b) & a,b\in\mathcal{A}\\
+-d & \text{uno de los dos es \texttt{-}}\\
+0 & a=b=\texttt{-}
+\end{cases}
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathbf{M}$, $M_{pc}$}{Alineamiento múltiple y su símbolo en la fila $p$, columna $c$.}
+\simbolo{$L$}{Número de columnas del alineamiento.}
+\simbolo{$p<r$}{Recorre los $\binom{k}{2}$ pares de filas distintas.}
+\simbolo{$w_p$}{Peso de la secuencia $p$ (todos iguales a 1 en la versión sin ponderar).}
+\simbolo{$s(a,b)$}{Puntuación de sustitución (p.\,ej., BLOSUM62, \cref{sec:03-matrices}).}
+\simbolo{$d$}{Penalización por cada par residuo--hueco; en la práctica se usan huecos afines por par.}
+\end{simbolos}
+
+La SP es natural, pero tiene un defecto conocido: cuenta todos los pares por igual. Si un conjunto contiene diez variantes casi idénticas de una proteína de mamífero y una sola de levadura, la puntuación estará dominada por las comparaciones entre mamíferos, y el alineamiento se ajustará a ellos a costa de la secuencia divergente. Los pesos $w_p$ corrigen ese sesgo. Una receta sencilla y eficaz es la de \textcite{c04-henikoff1994}, que asigna más peso a las secuencias que aportan residuos poco comunes en cada columna:
+\begin{equation}\label{eq:04-henikoff}
+w_p \;\propto\; \sum_{c=1}^{L}\frac{1}{r_c\;n_c(M_{pc})},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$r_c$}{Número de símbolos distintos presentes en la columna $c$.}
+\simbolo{$n_c(a)$}{Número de veces que aparece el símbolo $a$ en la columna $c$.}
+\end{simbolos}
+
+\noindent Una secuencia que comparte cada residuo con otras nueve recibe, en esa columna, una décima parte del crédito que recibe una que tiene un residuo único. Los pesos se normalizan después para que sumen uno.
+
+\begin{ejemplo}{Suma de pares de cuatro columnas de globinas}{sp}
+Las cuatro primeras columnas del alineamiento de cinco globinas que construiremos en esta sección (\cref{fig:04-msa}) son
+\begin{center}
+\ttfamily\small
+\begin{tabular}{@{}l cccc@{}}
+MYG\_HUMAN  & M & G & - & L\\
+MYG\_PHYMC  & M & V & - & L\\
+HBA\_HUMAN  & M & V & - & L\\
+HBB\_HUMAN  & M & V & H & L\\
+HBB1\_MOUSE & M & V & H & L
+\end{tabular}
+\end{center}
+Con BLOSUM62, $d=8$ y pesos unitarios, hay $\binom52=10$ pares por columna:
+\begin{itemize}
+  \item Columna 1: diez pares \texttt{M}--\texttt{M}, $10\times5=50$.
+  \item Columna 2: cuatro pares \texttt{G}--\texttt{V} ($-3$) y seis \texttt{V}--\texttt{V} ($+4$): $-12+24=12$.
+  \item Columna 3: tres pares hueco--hueco (0), seis pares hueco--\texttt{H} ($-8$) y un par \texttt{H}--\texttt{H} ($+8$): $-48+8=-40$.
+  \item Columna 4: diez pares \texttt{L}--\texttt{L}, $10\times4=40$.
+\end{itemize}
+El total es $50+12-40+40=62$. Los pesos de Henikoff de las cinco filas (tratando el hueco como un símbolo más) resultan $0{,}267$, $0{,}173$, $0{,}173$, $0{,}194$ y $0{,}194$: la mioglobina humana recibe más peso porque su \texttt{G} es única en la columna 2.
+\end{ejemplo}
+
+\subsection{Programación dinámica en $k$ dimensiones}
+
+La recurrencia de Needleman-Wunsch (\cref{eq:03-nw}) se generaliza sin dificultad conceptual. En lugar de una tabla bidimensional, llenamos un hipercubo con una celda por cada tupla de prefijos $(i_1,\dots,i_k)$. La última columna de un alineamiento óptimo de esos prefijos contiene, en cada fila, o bien el último residuo del prefijo, o bien un hueco; hay por tanto $2^k-1$ posibilidades (se excluye la columna de solo huecos):
+\begin{equation}\label{eq:04-dpk}
+F(\mathbf{i}) \;=\; \max_{\substack{\boldsymbol{\delta}\in\{0,1\}^k\\ \boldsymbol{\delta}\neq \mathbf{0}}}
+\Big\{\,F(\mathbf{i}-\boldsymbol{\delta}) + \mathrm{SP}\big(\text{columna definida por }\boldsymbol{\delta}\big)\Big\},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathbf{i}=(i_1,\dots,i_k)$}{Vector de longitudes de los prefijos considerados.}
+\simbolo{$\boldsymbol{\delta}$}{Vector binario: $\delta_p=1$ si la fila $p$ aporta su residuo $x^{(p)}_{i_p}$ a la columna; $\delta_p=0$ si aporta un hueco.}
+\simbolo{$F(\mathbf{i})$}{Mejor puntuación SP de un alineamiento de los $k$ prefijos.}
+\end{simbolos}
+
+Si todas las secuencias miden $n$, el hipercubo tiene $(n+1)^k$ celdas, cada una consulta $2^k-1$ vecinas y cada columna candidata requiere $\binom{k}{2}$ sumas. El coste total es
+\begin{equation}\label{eq:04-costo}
+T(n,k) = O\!\left(k^2\,2^k\,n^k\right)\ \text{en tiempo}, \qquad O\!\left(n^k\right)\ \text{en memoria}.
+\end{equation}
+Para las cinco globinas de este capítulo ($n\approx150$) eso son unas $151^5\approx7{,}9\times10^{10}$ celdas, más de 300 gigabytes de memoria con enteros de 4 bytes, y $2{,}4\times10^{12}$ transiciones. Con diez secuencias, el número de celdas ($\approx6\times10^{21}$) supera la memoria de todos los ordenadores del planeta juntos (\cref{fig:04-complejidad}).
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  % --- cubo 3D de predecesores
+  \begin{scope}[x={(2.2cm,0)}, y={(1.05cm,0.8cm)}, z={(0,2.2cm)}]
+    \foreach \a/\b/\c/\d/\e/\f in {0/0/0/1/0/0, 0/0/0/0/1/0, 0/0/0/0/0/1, 1/0/0/1/1/0, 1/0/0/1/0/1,
+                                  0/1/0/1/1/0, 0/1/0/0/1/1, 0/0/1/1/0/1, 0/0/1/0/1/1,
+                                  1/1/0/1/1/1, 1/0/1/1/1/1, 0/1/1/1/1/1}
+      \draw[base, thick] (\a,\b,\c) -- (\d,\e,\f);
+    \foreach \p in {{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1}}
+      \draw[flecha=naranja, shorten >=6pt, shorten <=4pt] (\p) -- (1,1,1);
+    \draw[flecha=rojo, very thick, shorten >=6pt, shorten <=4pt] (0,0,0) -- (1,1,1);
+    \foreach \p in {{0,0,0},{1,0,0},{0,1,0},{0,0,1},{1,1,0},{1,0,1},{0,1,1}}
+      \fill[naranja] (\p) circle (2.6pt);
+    \fill[azulprofundo] (1,1,1) circle (4.2pt);
+    \node[etiqueta, anchor=south west, text=azulprofundo] at (1,1,1) {$(i,j,l)$};
+    \node[etiqueta, anchor=north] at (0,0,0) {$(i{-}1,j{-}1,l{-}1)$};
+    \node[etiqueta, text=rojo, anchor=north west] at (0.5,0.5,0.5) {diagonal};
+    \draw[flecha=gris] (0,-0.25,-0.35) -- node[below,etiqueta]{$x^{(1)}$} (0.7,-0.25,-0.35);
+    \draw[flecha=gris] (-0.35,0,0.1) -- node[left,etiqueta]{$x^{(3)}$} (-0.35,0,0.8);
+    \draw[flecha=gris] (1.25,0,0) -- node[below right,etiqueta]{$x^{(2)}$} (1.25,0.75,0);
+  \end{scope}
+  % --- gráfica de complejidad
+  \begin{scope}[shift={(5.9,-0.9)}]
+  \begin{axis}[curso, width=6.9cm, height=5.6cm, ymode=log,
+      xlabel={número de secuencias $k$}, ylabel={operaciones $\approx(n{+}1)^k(2^k{-}1)$},
+      xmin=2, xmax=10, ymin=1e3, ymax=1e30, xtick={2,4,6,8,10},
+      ytick={1e5,1e10,1e15,1e20,1e25,1e30}, legend pos=north west]
+    \addplot[azul, mark=*, mark size=1.3pt, samples at={2,3,...,10}] {(151)^x*(2^x-1)};
+    \addlegendentry{$n=150$}
+    \addplot[naranja, mark=square*, mark size=1.3pt, samples at={2,3,...,10}] {(301)^x*(2^x-1)};
+    \addlegendentry{$n=300$}
+    \addplot[rojo, dashed, thick, domain=2:10] {3.15e16};
+    \node[etiqueta, text=rojooscuro, anchor=north east] at (axis cs:9.9,3.15e16) {1 año a $10^9$ op/s};
+    \addplot[verde, dashed, thick, domain=2:10] {1e9};
+    \node[etiqueta, text=verde, anchor=north east] at (axis cs:9.9,1e9) {1 segundo};
+  \end{axis}
+  \end{scope}
+\end{tikzpicture}
+\caption[Programación dinámica en varias dimensiones]{El costo del alineamiento múltiple exacto. \textbf{Izquierda}: con tres secuencias, cada celda $(i,j,l)$ del cubo de programación dinámica depende de $2^3-1=7$ vecinas (puntos naranjas): la diagonal principal (rojo) coloca un residuo de cada secuencia en la columna; las otras seis combinan residuos y huecos. \textbf{Derecha}: el número de operaciones crece exponencialmente con $k$. Con proteínas de 150 residuos, la línea de un año de cómputo se cruza ya con siete secuencias; ninguna mejora de hardware alcanzará a una curva así.}
+\label{fig:04-complejidad}
+\end{figure}
+
+¿Se trata solo de que no hemos encontrado un algoritmo más astuto? Probablemente no.
+
+\begin{teorema}{Intratabilidad del MSA}{np}
+Encontrar el alineamiento múltiple de puntuación SP óptima es un problema NP-difícil; su versión de decisión es NP-completa aun con matrices de puntuación sencillas \parencite{c04-wang1994}.
+\end{teorema}
+
+En consecuencia, salvo que P${}={}$NP, no existe un algoritmo que resuelva el MSA exacto en tiempo polinómico en $k$. \textcite{c04-wang1994} demostraron además la NP-completitud del \emph{alineamiento sobre un árbol}, una variante que puntúa el MSA a lo largo de una filogenia en lugar de sumar todos los pares.
+
+\begin{profundizacion}[Podar el hipercubo: la cota de Carrillo-Lipman]
+No todo está perdido para valores pequeños de $k$. \textcite{c04-carrillo1988} observaron que la proyección del MSA óptimo sobre cada par de secuencias es un alineamiento por pares cuya puntuación no puede quedar muy por debajo del óptimo de ese par: si lo hiciera, la suma total sería inferior a la de un MSA heurístico ya conocido. Esta desigualdad define una región alrededor de la diagonal del hipercubo fuera de la cual el camino óptimo no puede pasar, y permite alinear exactamente una decena de proteínas cortas. Más allá, incluso la región podada crece de forma exponencial.
+\end{profundizacion}
+
+\subsection{La heurística progresiva}
+
+La salida práctica se debe a \textcite{c04-feng1987}, que propusieron construir el MSA \emph{de manera progresiva}, siguiendo el orden de parentesco de las secuencias. El procedimiento, que con variaciones usan casi todos los programas actuales, tiene tres etapas:
+
+\begin{enumerate}
+  \item \textbf{Distancias}. Se alinean todos los pares de secuencias (o se estima su parecido con un método rápido) y se convierte cada similitud en una distancia $d_{ij}$, por ejemplo $d_{ij}=1-\text{identidad}$.
+  \item \textbf{Árbol guía}. Con la matriz de distancias se construye un árbol mediante un método de agrupamiento (UPGMA o \ingles{neighbor-joining}, que estudiaremos a fondo en el capítulo de filogenia).
+  \item \textbf{Alineamiento progresivo}. Se recorren los nodos internos del árbol desde las hojas hacia la raíz; en cada nodo se alinean los dos subalineamientos hijos mediante programación dinámica, y el resultado se congela y se pasa al nodo padre.
+\end{enumerate}
+
+UPGMA, el método de agrupamiento más simple, une en cada paso los dos grupos $A$ y $B$ más cercanos y actualiza las distancias como promedio ponderado por tamaño:
+\begin{equation}\label{eq:04-upgma}
+d\big(A\cup B,\;C\big) = \frac{|A|\,d(A,C) + |B|\,d(B,C)}{|A|+|B|},\qquad h(A\cup B)=\tfrac12\,d(A,B).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$A,B,C$}{Grupos (conjuntos de secuencias) en el paso actual.}
+\simbolo{$|A|$}{Número de secuencias del grupo $A$.}
+\simbolo{$h(\cdot)$}{Altura del nodo nuevo en el dendrograma.}
+\end{simbolos}
+
+\noindent El árbol guía no pretende ser una filogenia correcta; solo es un \emph{orden de trabajo} razonable: alinear primero lo fácil (lo más parecido) y dejar para el final lo difícil.
+
+\paragraph{Alinear perfiles} El paso tres exige alinear no dos secuencias, sino dos \emph{alineamientos}. Para ello cada subalineamiento se resume en un \emph{perfil}: para cada columna $u$, el vector de frecuencias $f_u(a)$ de cada símbolo. La programación dinámica es idéntica a la de Needleman-Wunsch o Gotoh; solo cambia la puntuación de ``alinear la columna $u$ del perfil $P$ con la columna $v$ del perfil $Q$'', que se toma como la SP media entre ambas:
+\begin{equation}\label{eq:04-perfil}
+S(P_u, Q_v) \;=\; \sum_{a\in\mathcal{A}}\sum_{b\in\mathcal{A}} f^{P}_u(a)\;f^{Q}_v(b)\;s(a,b).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$P_u$, $Q_v$}{Columna $u$ del perfil $P$ y columna $v$ del perfil $Q$.}
+\simbolo{$f^{P}_u(a)$}{Fracción (posiblemente ponderada) de secuencias de $P$ con el símbolo $a$ en la columna $u$.}
+\end{simbolos}
+
+\noindent Alinear una secuencia con otra es el caso particular en que ambos perfiles tienen una sola fila y $f$ es una función indicadora. Como una columna de perfil es una distribución y no una letra, la \cref{eq:04-perfil} ya anticipa la idea central de la \cref{sec:04-hmm}: puntuar \emph{posiciones} con distribuciones propias.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap04/arbol_guia.tex}
+\caption[Matriz de distancias y árbol guía de cinco globinas]{Las dos primeras etapas del alineamiento progresivo aplicadas a cinco globinas reales de UniProt. \textbf{Izquierda}: distancias $d_{ij}=1-\text{identidad}$ calculadas a partir de alineamientos globales por pares (BLOSUM62, huecos $-10/-1$); cuanto más oscuro, más parecidas. \textbf{Derecha}: árbol guía UPGMA; los círculos naranjas indican el \emph{orden} en que se alinean los perfiles. Primero se unen las dos mioglobinas (1) y las dos cadenas $\beta$ (2); luego la cadena $\alpha$ se incorpora a las $\beta$ (3) y, por último, se alinean entre sí los dos grandes perfiles (4). Calculado con \archivo{figuras/cap04/generar.py}.}
+\label{fig:04-arbol}
+\end{figure}
+
+\begin{ejemplo}{El árbol guía de cinco globinas}{upgma}
+Las distancias de la \cref{fig:04-arbol} muestran dos parejas muy cercanas: las mioglobinas de humano y cachalote ($d=0{,}156$) y las $\beta$-globinas de humano y ratón ($d=0{,}197$). UPGMA procede así:
+\begin{enumerate}
+  \item Une las mioglobinas, a altura $0{,}156/2=0{,}078$.
+  \item Une las $\beta$-globinas, a altura $0{,}197/2\approx0{,}099$.
+  \item Actualiza la distancia de HBA\_HUMAN al grupo $\beta$ con la \cref{eq:04-upgma}: $\tfrac12(0{,}536+0{,}543)=0{,}539$. Es la menor, así que la cadena $\alpha$ se une a las $\beta$ a altura $0{,}270$.
+  \item Quedan dos grupos (mioglobinas y hemoglobinas); su distancia es la media de los seis pares cruzados, $4{,}305/6\approx0{,}718$, y la raíz queda a altura $0{,}359$.
+\end{enumerate}
+El orden de alineamiento reproduce la biología: las cadenas $\alpha$ y $\beta$ de la hemoglobina proceden de una duplicación génica más reciente que la que separó a la mioglobina. El MSA resultante, de 155 columnas, tiene una puntuación SP de $2473$ (BLOSUM62, huecos afines $-10/-1$ por par).
+\end{ejemplo}
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap04/msa_globinas.tex}
+\caption[Fragmento del MSA progresivo de globinas]{Primeras 62 columnas del alineamiento progresivo de las cinco globinas, calculado con perfiles y huecos afines. Los residuos se colorean por clase fisicoquímica (azul, hidrofóbicos; rojo, básicos; magenta, ácidos; verde, polares; naranja, glicina; amarillo, prolina; aqua, histidina y tirosina) cuando al menos el 60\,\% (claro) u 80\,\% (intenso) de la columna comparte el residuo. Las barras inferiores miden la conservación, $1-H_c/\log_2 5$, penalizada por los huecos. Destacan el triptófano invariante de la columna 16 y el hueco de cinco posiciones de la cadena $\alpha$ (columnas 54--58), una deleción real de la hemoglobina $\alpha$ respecto a la $\beta$.}
+\label{fig:04-msa}
+\end{figure}
+
+\begin{historia}[De Feng-Doolittle a la familia Clustal]
+El artículo de \textcite{c04-feng1987} tenía un objetivo filogenético: obtener alineamientos coherentes para construir árboles. Un año después, \textcite{c04-higgins1988} publicaron CLUSTAL, un paquete diseñado para ejecutarse en los microordenadores personales de la época, que combinaba alineamientos rápidos por pares, un dendrograma y alineamiento progresivo de perfiles. Su sucesor, CLUSTAL W \parencite{c04-thompson1994}, añadió tres ideas que siguen vigentes: ponderar las secuencias para compensar la sobrerrepresentación, penalizar los huecos de forma distinta según la posición (más baratos donde ya hay huecos o en regiones hidrofílicas) y elegir la matriz de sustitución según la divergencia de las secuencias que se alinean en cada nodo.
+\end{historia}
+
+\subsection{``Una vez un hueco, siempre un hueco''}
+
+El alineamiento progresivo es \emph{codicioso}: cada nodo toma la mejor decisión local y la congela. \textcite{c04-feng1987} lo convirtieron en regla explícita: una vez que un hueco se introduce en un subalineamiento, no se elimina en pasos posteriores. La regla es sensata (los huecos entre secuencias cercanas son los más fiables) pero tiene un costo evidente: un error cometido al alinear las dos primeras secuencias se propaga a todo el alineamiento final, y ninguna información aportada después por las demás secuencias puede corregirlo.
+
+\begin{cuidado}[Errores que se heredan]
+Si en el paso 1 de la \cref{fig:04-arbol} la programación dinámica hubiera colocado un hueco de las mioglobinas un par de posiciones a la izquierda de su lugar correcto (un empate de puntuación basta), ese hueco seguiría allí al final, aunque las tres hemoglobinas ``votaran'' por otra ubicación. Conviene revisar los huecos y comparar varios programas.
+\end{cuidado}
+
+La historia de los programas posteriores es, en buena medida, la historia de los intentos de mitigar este problema sin perder la velocidad del método progresivo (\cref{fig:04-metodos}).
+
+\paragraph{Refinamiento iterativo} Una vez obtenido un MSA, se divide el árbol guía quitando una rama, lo que parte las secuencias en dos grupos; se extrae el subalineamiento de cada grupo, se eliminan las columnas que hayan quedado solo con huecos y se vuelven a alinear los dos perfiles. Si la SP mejora, se acepta el cambio. MUSCLE \parencite{c04-edgar2004} aplica este refinamiento restringido por el árbol tras dos etapas progresivas: la primera usa distancias rápidas por conteo de $k$-meros; la segunda recalcula el árbol a partir del primer MSA. Su función de puntuación perfil-perfil, la \ingles{log-expectation}, sustituye a la SP media de la \cref{eq:04-perfil}.
+
+\paragraph{Consistencia} T-Coffee \parencite{c04-notredame2000} ataca el problema desde otro ángulo: antes de alinear nada, construye una \emph{biblioteca} con todos los alineamientos por pares, globales y locales. El peso de alinear el residuo $x^{(1)}_i$ con $x^{(2)}_j$ aumenta si existe una tercera secuencia $x^{(3)}$ en la que ambos residuos se alinean con un mismo residuo $x^{(3)}_l$ (\ingles{extensión} de la biblioteca). Así, cuando el método progresivo alinea dos secuencias, ``consulta'' implícitamente a todas las demás, y la decisión codiciosa deja de serlo tanto.
+
+\paragraph{Velocidad} MAFFT \parencite{c04-katoh2002} convierte cada proteína en una señal numérica de volumen y polaridad de sus residuos y usa la transformada rápida de Fourier para localizar en segundos las regiones homólogas, que luego se alinean con programación dinámica restringida; ofrece un modo progresivo (FFT-NS-2) y uno con refinamiento iterativo (FFT-NS-i). Clustal Omega \parencite{c04-sievers2011} escala a conjuntos de decenas de miles de secuencias o más construyendo el árbol guía a partir de distancias a un subconjunto de secuencias de referencia (mBed) y alineando los perfiles como HMM contra HMM.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=4mm]
+  \node[caja=azul, minimum width=2.5cm, minimum height=1.1cm] (d) {\textbf{1. Distancias}\\[-1pt]{\scriptsize por pares}};
+  \node[caja=azul, minimum width=2.5cm, minimum height=1.1cm, right=6mm of d] (t) {\textbf{2. Árbol guía}\\[-1pt]{\scriptsize UPGMA / NJ}};
+  \node[caja=azul, minimum width=2.5cm, minimum height=1.1cm, right=6mm of t] (p) {\textbf{3. Progresivo}\\[-1pt]{\scriptsize perfil contra perfil}};
+  \node[caja=naranja, minimum width=2.5cm, minimum height=1.1cm, right=6mm of p] (r) {\textbf{4. Refinamiento}\\[-1pt]{\scriptsize opcional}};
+  \draw[flecha] (d) -- (t); \draw[flecha] (t) -- (p); \draw[flecha] (p) -- (r);
+  \draw[flecha=naranja, rounded corners=4pt] (r.north) -- ++(0,0.45) -| node[pos=0.25, above, etiqueta, text=naranja]{recalcular el árbol (MUSCLE)} (t.north);
+  \tikzset{tag/.style={draw=#1!60, fill=#1!8, rounded corners=2pt, font=\sffamily\scriptsize, text=tinta, align=left, inner sep=3pt, text width=2.35cm}}
+  \node[tag=gris, below=5mm of d] (d1) {DP completa\\\textit{CLUSTAL W}};
+  \node[tag=gris, below=2mm of d1] (d2) {conteo de $k$-meros\\\textit{MUSCLE}};
+  \node[tag=gris, below=2mm of d2] (d3) {FFT de propiedades\\\textit{MAFFT}};
+  \node[tag=gris, below=2mm of d3] (d4) {incrustación mBed\\\textit{Clustal Omega}};
+  \node[tag=gris, below=5mm of t] (t1) {neighbor-joining\\\textit{CLUSTAL W}};
+  \node[tag=gris, below=2mm of t1] (t2) {UPGMA\\\textit{MUSCLE}};
+  \node[tag=gris, below=2mm of t2] (t3) {agrupamiento de\\vectores mBed\\\textit{Clustal Omega}};
+  \node[tag=gris, below=5mm of p] (p1) {SP media, pesos\\\textit{CLUSTAL W}};
+  \node[tag=gris, below=2mm of p1] (p2) {log-expectation\\\textit{MUSCLE}};
+  \node[tag=gris, below=2mm of p2] (p3) {biblioteca de\\consistencia\\\textit{T-Coffee}};
+  \node[tag=gris, below=2mm of p3] (p4) {HMM contra HMM\\\textit{Clustal Omega}};
+  \node[tag=naranja, below=5mm of r] (r1) {particiones del árbol\\\textit{MUSCLE}};
+  \node[tag=naranja, below=2mm of r1] (r2) {FFT-NS-i\\\textit{MAFFT}};
+  \node[tag=naranja, below=2mm of r2] (r3) {iteraciones HMM\\\textit{Clustal Omega}};
+\end{tikzpicture}
+\caption[Anatomía de un programa moderno de MSA]{Casi todos los programas modernos de MSA comparten el esqueleto progresivo de \textcite{c04-feng1987} y se distinguen en cómo implementan cada etapa. Debajo de cada caja se indican, en cursiva, los programas que popularizaron cada variante. Las etapas 1 y 2 determinan la \emph{velocidad}; las etapas 3 y 4, la \emph{exactitud}. La flecha superior representa la segunda iteración de MUSCLE, que reconstruye el árbol a partir del primer alineamiento.}
+\label{fig:04-metodos}
+\end{figure}
+
+
+¿Cuál es el mejor? La pregunta solo tiene respuesta empírica. Los programas se comparan con \ingles{benchmarks} de alineamientos de referencia, casi siempre derivados de superposiciones de estructuras tridimensionales, como BAliBASE o PREFAB; la exactitud se mide como la fracción de pares de residuos (o de columnas) de la referencia que el programa reproduce. La revisión de \textcite{c04-edgar2006} resume las lecciones de esas comparaciones: la consistencia y el refinamiento mejoran la exactitud sobre todo en familias divergentes (por debajo de un 25--30\,\% de identidad), donde ningún método es fiable, mientras que con secuencias cercanas todos los programas dan resultados muy parecidos.
+
+\begin{codigo}[msa\_globinas.py]
+import subprocess
+from Bio import AlignIO
+
+# Clustal Omega: FASTA de entrada, formato Clustal de salida
+subprocess.run(["clustalo", "-i", "globinas.fasta",
+                "-o", "globinas.aln", "--outfmt=clu",
+                "--force"], check=True)
+aln = AlignIO.read("globinas.aln", "clustal")
+print(aln.get_alignment_length(), "columnas")
+for fila in aln:
+    print(f"{fila.id:12s} {str(fila.seq[:60])}")
+
+filas = [str(f.seq) for f in aln]
+print("SP =", suma_de_pares(filas))        # ver ejercicio 4.2
+print("pesos =", pesos_henikoff(filas))
+\end{codigo}
+
+\noindent Las funciones \py{suma_de_pares} y \py{pesos_henikoff} implementan la \cref{eq:04-sp} con penalización lineal y la \cref{eq:04-henikoff}. Un ejercicio muy instructivo es comparar los MSA de Clustal Omega, MAFFT (\cmd{mafft --auto}) y MUSCLE sobre las mismas globinas y visualizar las columnas en las que discrepan.
+
+
+% ---------------------------------------------------------------------
+\section{Motivos, matrices de peso posicional y logos}\label{sec:04-motivos}
+% ---------------------------------------------------------------------
+\enlacerepo{4.2 · Motivos, PWM, entropía y logos}
+
+\begin{intuicion}[Reconocer una firma]
+Nadie firma dos veces exactamente igual. Aun así, un empleado de banco experimentado reconoce la firma de un cliente: sabe que la inicial siempre tiene el mismo bucle, que el trazo final a veces sube y a veces no, y que el punto sobre la \emph{i} es opcional. En su cabeza no hay una firma ``correcta'', sino una idea de qué rasgos son obligatorios, cuáles son frecuentes y cuáles dan igual. Una proteína que se une al ADN hace algo muy parecido: tolera variación en algunas posiciones de su sitio de unión y es muy exigente en otras. Esta sección enseña a escribir esa ``idea de la firma'' como una tabla de números.
+\end{intuicion}
+
+\subsection{Motivos y secuencias consenso}
+
+Un \emph{motivo} es un patrón corto y recurrente, de ADN o de proteína, asociado a una función: el sitio donde se une un factor de transcripción, una señal de corte y empalme, el sitio de unión al ribosoma o un segmento catalítico. A diferencia de los dominios completos de la \cref{sec:04-hmm}, los motivos de ADN suelen medir entre 6 y 20 posiciones, no contienen huecos y se presentan como \emph{sitios alineados} de igual longitud.
+
+Tomemos un ejemplo clásico. La proteína de unión a la caja TATA (TBP) reconoce, unas 30 bases antes del inicio de la transcripción de muchos genes eucariotas, una secuencia rica en \nuc{A} y \nuc{T}. La base de datos JASPAR \parencite{c04-castromondragon2022} guarda su perfil MA0108.2, construido a partir de 389 sitios alineados de 15 bases. La forma más antigua de resumir esos sitios es la \emph{secuencia consenso}, que toma la base mayoritaria de cada columna:
+\begin{center}
+\secuencia{GTATAAAAGGCGGGG}
+\end{center}
+El consenso es cómodo, pero pierde casi toda la información. No distingue una columna en la que el 96\,\% de los sitios tiene una \nuc{T} (la posición 4) de otra en la que la \nuc{G} gana con apenas un 39\,\% (la posición 1). Y un sitio real con una sola discrepancia respecto al consenso puede ser mucho mejor, o mucho peor, que otro con tres. Necesitamos una representación \emph{cuantitativa}.
+
+\subsection{De sitios a frecuencias: conteos y pseudoconteos}
+
+Sea un conjunto de $N$ sitios alineados de longitud $W$. La \emph{matriz de conteos} (o de frecuencias de posición, PFM) registra cuántas veces aparece cada base en cada columna:
+\begin{equation}\label{eq:04-conteos}
+n_{b,i} \;=\; \sum_{s=1}^{N} \mathbb{1}\!\left[x^{(s)}_i = b\right], \qquad b\in\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\},\ \ i=1,\dots,W.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$x^{(s)}_i$}{Base en la posición $i$ del sitio $s$.}
+\simbolo{$n_{b,i}$}{Número de sitios con la base $b$ en la posición $i$; $\sum_b n_{b,i}=N$.}
+\end{simbolos}
+
+La estimación de máxima verosimilitud de la probabilidad de la base $b$ en la posición $i$ es $n_{b,i}/N$. Con pocas observaciones, esta estimación es peligrosa: si una base no aparece en ninguno de los sitios conocidos, su probabilidad estimada es exactamente cero, y cualquier sitio futuro que la contenga será declarado \emph{imposible}. La solución estándar es sumar \emph{pseudoconteos}:
+\begin{equation}\label{eq:04-pseudo}
+f_{b,i} \;=\; \frac{n_{b,i} + \alpha_b}{N + \sum_{b'}\alpha_{b'}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$f_{b,i}$}{Probabilidad estimada de la base $b$ en la posición $i$.}
+\simbolo{$\alpha_b$}{Pseudoconteo de la base $b$ (p.\,ej., $\alpha_b=0{,}5$, o $\alpha_b=\beta\,q_b$ proporcional al fondo).}
+\end{simbolos}
+
+\noindent Desde el punto de vista bayesiano, la \cref{eq:04-pseudo} es la media posterior de una distribución multinomial con una distribución previa de Dirichlet de parámetros $\alpha_b$: los pseudoconteos son ``observaciones imaginarias'' que expresan lo que creíamos antes de ver los datos. Cuando $N$ es grande pesan poco; cuando $N$ es pequeño, dominan. Para proteínas, en las que el alfabeto tiene 20 letras y los datos son siempre escasos, conviene usar mezclas de distribuciones de Dirichlet que codifican preferencias fisicoquímicas \parencite{c04-sjolander1996}: si una columna contiene solo \texttt{I} y \texttt{L}, la previa ``sabe'' que una \texttt{V} es mucho más plausible que una \texttt{D}.
+
+\subsection{La matriz de peso posicional}
+
+La pregunta que queremos responder ante una ventana $y=y_1\cdots y_W$ de una secuencia es la misma del \cref{cap:03}: ¿es más verosímil bajo el modelo del motivo o bajo el modelo de fondo? Si suponemos que las posiciones son independientes, la razón de verosimilitudes se factoriza y su logaritmo es una suma:
+\begin{equation}\label{eq:04-pwm}
+W_{b,i} = \log_2\frac{f_{b,i}}{q_b},\qquad
+S(y) \;=\; \log_2\frac{\Prob(y\mid\text{motivo})}{\Prob(y\mid\text{fondo})} \;=\; \sum_{i=1}^{W} W_{y_i,\,i}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$W_{b,i}$}{Entrada de la matriz de peso posicional (PWM o PSSM), en bits.}
+\simbolo{$q_b$}{Frecuencia de fondo de la base $b$ (p.\,ej., $0{,}25$, o la composición del genoma).}
+\simbolo{$y$}{Ventana candidata de longitud $W$.}
+\simbolo{$S(y)$}{Puntuación de la ventana: log-razón de verosimilitudes motivo/fondo.}
+\end{simbolos}
+
+Esta es exactamente la lógica de las matrices de sustitución (\cref{eq:03-logodds}), aplicada ahora a una sola secuencia contra un modelo \emph{posicional}. Una entrada positiva indica que la base es más frecuente en los sitios que en el fondo; una negativa, lo contrario; y la suma de las entradas a lo largo de la ventana decide.
+
+\begin{historia}[Un perceptrón para los ribosomas]
+Las matrices de peso nacieron antes que su interpretación probabilística. \textcite{c04-stormo1982} buscaban distinguir los verdaderos sitios de inicio de la traducción en \especie{Escherichia coli} de los codones \texttt{AUG} que no se usan, y entrenaron para ello un \emph{perceptrón}: una tabla de pesos, uno por base y posición, que suma sus valores sobre la ventana y compara el total con un umbral. Los pesos aprendidos resultaron ser un buen clasificador y, a la vez, una descripción legible del sitio. Dos décadas después, \textcite{c04-stormo2000} mostró que, bajo el supuesto de aditividad, la puntuación de una PWM es proporcional a la energía libre de unión de la proteína con el sitio, lo que da a la matriz un significado físico además del estadístico.
+\end{historia}
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap04/pwm_tbp.tex}
+\caption[PWM del sitio de unión de TBP]{Matriz de peso posicional $W_{b,i}=\log_2(f_{b,i}/0{,}25)$ del perfil de TBP (JASPAR MA0108.2, 389 sitios), con pseudoconteos $\alpha_b=0{,}5$. Azul: bases favorecidas; rojo: desfavorecidas. El núcleo \secuencia{TATAAA} (posiciones 2--7) concentra los pesos extremos; en la posición 3, la \nuc{C} vale $-7{,}6$ bits: verla en un sitio multiplica su verosimilitud por $2^{-7{,}6}\approx 1/190$. La fila inferior da el contenido de información $R_i$ de cada columna (\cref{eq:04-ic}); las posiciones 10--15 apenas aportan señal.}
+\label{fig:04-pwm}
+\end{figure}
+
+\begin{ejemplo}{La columna 3 del perfil de TBP}{pwm}
+En la posición 3 del perfil MA0108.2 los conteos son $n_{\texttt{A}}=352$, $n_{\texttt{C}}=0$, $n_{\texttt{G}}=2$, $n_{\texttt{T}}=35$ ($N=389$). Con $\alpha_b=0{,}5$ el denominador de la \cref{eq:04-pseudo} es $389+2=391$ y
+\begin{align*}
+f_{\texttt{A},3}&=\tfrac{352{,}5}{391}=0{,}9015, & f_{\texttt{C},3}&=\tfrac{0{,}5}{391}=0{,}0013,\\
+f_{\texttt{G},3}&=\tfrac{2{,}5}{391}=0{,}0064, & f_{\texttt{T},3}&=\tfrac{35{,}5}{391}=0{,}0908.
+\end{align*}
+Con fondo uniforme, los pesos son $W_{\texttt{A},3}=\log_2(0{,}9015/0{,}25)=1{,}85$, $W_{\texttt{C},3}=-7{,}61$, $W_{\texttt{G},3}=-5{,}29$ y $W_{\texttt{T},3}=-1{,}46$ bits. Sin pseudoconteos, $W_{\texttt{C},3}$ sería $-\infty$ y un único error de secuenciación en esa posición anularía cualquier sitio. Sumando el máximo de cada columna se obtiene la puntuación del consenso, $16{,}21$ bits; la peor secuencia posible puntúa $-49{,}13$.
+\end{ejemplo}
+
+\subsection{Entropía, información y logos}
+
+¿Cuánta ``señal'' hay en cada columna? Claude Shannon definió la incertidumbre de una variable aleatoria discreta como su \emph{entropía} \parencite{c04-shannon1948}. Aplicada a la columna $i$ de un motivo,
+\begin{equation}\label{eq:04-entropia}
+H_i \;=\; -\sum_{b} f_{b,i}\,\log_2 f_{b,i}\quad\text{(bits)}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$H_i$}{Entropía de la columna $i$: número medio de preguntas de sí o no necesarias para adivinar la base.}
+\end{simbolos}
+
+\noindent Una columna uniforme ($f_{b,i}=1/4$) tiene la entropía máxima, $\log_24=2$ bits; una columna invariante, entropía cero. El \emph{contenido de información} de la columna es la reducción de incertidumbre que produce conocer que estamos en un sitio:
+\begin{equation}\label{eq:04-ic}
+R_i \;=\; \log_2 4 - \big(H_i + e_N\big).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$R_i$}{Contenido de información de la posición $i$, entre 0 y 2 bits para ADN.}
+\simbolo{$e_N$}{Corrección por muestra pequeña: con pocos sitios, $H_i$ se subestima sistemáticamente; $e_N\to0$ cuando $N\to\infty$.}
+\end{simbolos}
+
+\noindent \textcite{c04-schneider1990} usaron $R_i$ para inventar el \emph{sequence logo}: en cada posición se apilan las cuatro letras, ordenadas de menor a mayor frecuencia, con altura
+\begin{equation}\label{eq:04-logo}
+h_{b,i} \;=\; f_{b,i}\;R_i,
+\end{equation}
+de modo que la altura total de la pila es $R_i$ y la proporción de cada letra dentro de la pila es su frecuencia. De un vistazo, el logo muestra \emph{qué} posiciones importan (pilas altas) y \emph{qué} base se prefiere en ellas (la letra de arriba). WebLogo \parencite{c04-crooks2004} popularizó la herramienta en la web y es hoy el estándar de facto.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap04/logo_tbp.tex}
+\caption[Sequence logo del sitio de TBP]{\ingles{Sequence logo} del perfil de TBP, dibujado en TikZ directamente a partir de las frecuencias de la \cref{fig:04-pwm}: la altura de cada letra es $f_{b,i}R_i$ (\cref{eq:04-logo}). Las posiciones 3--7 alternan \nuc{A} y \nuc{T} con más de 1,4 bits cada una; la posición 6 muestra que TBP tolera tanto \nuc{A} como \nuc{T}; la cola \nuc{G}/\nuc{C} de las posiciones 9--15 es casi ruido (menos de 0,3 bits). El contenido total del motivo es $\sum_i R_i\approx 9{,}9$ bits.}
+\label{fig:04-logo}
+\end{figure}
+
+Con un fondo no uniforme (un genoma rico en \nuc{A}/\nuc{T}, por ejemplo), la medida adecuada es la \emph{entropía relativa} o divergencia de Kullback-Leibler entre la columna y el fondo:
+\begin{equation}\label{eq:04-kl}
+D_i \;=\; D_{\mathrm{KL}}\!\left(f_{\cdot,i}\,\middle\|\,q\right) \;=\; \sum_b f_{b,i}\,\log_2\frac{f_{b,i}}{q_b}\;\ge 0,
+\end{equation}
+que se reduce a $R_i$ (sin corrección) cuando $q_b=1/4$. Esta cantidad tiene una interpretación que conecta las dos mitades de la sección.
+
+\begin{teorema}{Puntuación esperada de una PWM}{kl}
+Si los sitios se generan con las frecuencias $f_{b,i}$ del propio modelo, la puntuación esperada de la \cref{eq:04-pwm} es $\E_f[S]=\sum_{i} D_{\mathrm{KL}}(f_{\cdot,i}\|q)$. Si las ventanas proceden del fondo, $\E_q[S]=-\sum_i D_{\mathrm{KL}}(q\|f_{\cdot,i})\le 0$.
+\end{teorema}
+
+La demostración es una línea: por linealidad de la esperanza, $\E_f[S]=\sum_i\sum_b f_{b,i}W_{b,i}$, que es la \cref{eq:04-kl} sumada sobre las posiciones. El teorema dice que el contenido de información de un motivo es la \emph{separación media}, en bits, entre sitios y fondo. Para TBP, $\sum_i D_i=9{,}93$ bits, y una simulación de \num{20000} sitios da una media de $9{,}95$; las ventanas aleatorias promedian $-18{,}09$ bits, en perfecto acuerdo con $-\sum_iD_{\mathrm{KL}}(q\|f_{\cdot,i})=-18{,}09$ (\cref{fig:04-scan}). Un motivo con $R$ bits aparece por azar, aproximadamente, una vez cada $2^{R}$ posiciones: el de TBP, una vez cada mil bases.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.62\linewidth, height=5.2cm,
+   xlabel={frecuencia de la base mayoritaria $p$}, ylabel={bits},
+   xmin=0.25, xmax=1, ymin=0, ymax=2.1,
+   legend style={at={(0.5,1.03)}, anchor=south, legend columns=3}]
+  \addplot[azul, domain=0.2501:0.9999, samples=120] {2 + x*ln(x)/ln(2) + (1-x)*ln((1-x)/3)/ln(2)};
+  \addlegendentry{$R=2-H$ (resto repartido)}
+  \addplot[naranja, domain=0.2501:0.9999, samples=120, dashed] {-(x*ln(x)/ln(2) + (1-x)*ln((1-x)/3)/ln(2))};
+  \addlegendentry{$H$}
+  \addplot[only marks, mark=*, mark size=1.8pt, color=tinta, fill=amarillo] table[x=pmax, y=R] {figuras/cap04/tbp_ic.dat};
+  \addlegendentry{columnas de TBP}
+  \addplot[only marks, mark=none, nodes near coords, point meta=explicit symbolic,
+     every node near coord/.style={font=\sffamily\tiny, text=tinta2, anchor=south east}]
+     table[x=pmax, y=R, meta=col] {figuras/cap04/tbp_ic_etiq.dat};
+\end{axis}
+\end{tikzpicture}
+\caption[Entropía e información de una columna]{Entropía $H$ (naranja) y contenido de información $R=2-H$ (azul) de una columna de ADN en la que la base mayoritaria tiene frecuencia $p$ y las otras tres se reparten el resto por igual. Los puntos son las 15 columnas reales de TBP (se numeran algunas; las posiciones 9--15 se agrupan cerca de $p\approx0{,}4$ y las 5 y 7 junto a la 3). Caen sobre la curva o por encima de ella, porque en ellas el resto no se reparte por igual (p.\,ej., la posición 6 mezcla \nuc{A} y \nuc{T}), y un reparto desigual \emph{aumenta} la información. La relación no es lineal: pasar del 90\,\% al 99\,\% de conservación añade más información que pasar del 40\,\% al 60\,\%.}
+\label{fig:04-entropia}
+\end{figure}
+
+\subsection{Buscar sitios en una secuencia}
+
+Con la PWM en la mano, buscar sitios es sencillo: se desliza una ventana de longitud $W$ por la secuencia (y por su reverso complementario), se calcula $S(y)$ en cada posición y se reportan las que superan un umbral $\tau$. El coste es $O(nW)$ para una secuencia de longitud $n$. La dificultad no es computacional, sino estadística: elegir $\tau$.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, name=hist, width=\linewidth, height=4.8cm,
+   xlabel={puntuación $S(y)$ (bits)}, ylabel={densidad}, xmin=-40, xmax=20, ymin=0, ymax=0.175,
+   ytick={0,0.05,0.1,0.15}, yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=2},
+   legend pos=north west, legend image post style={}, area legend, title={Distribución de puntuaciones}]
+  \addplot[const plot mark mid, fill=gris!35, draw=gris, thin] table[x=x, y=fondo] {figuras/cap04/hist_pwm.dat} \closedcycle;
+  \addlegendentry{ventanas aleatorias}
+  \addplot[const plot mark mid, fill=azul!35, draw=azul, thin] table[x=x, y=sitios] {figuras/cap04/hist_pwm.dat} \closedcycle;
+  \addlegendentry{sitios simulados del perfil}
+  \draw[rojo, thick, dashed] (axis cs:6,0) -- (axis cs:6,0.155);
+  \node[etiqueta, text=rojooscuro, anchor=south east] at (axis cs:5.8,0.14) {umbral $\tau=6$};
+  \draw[naranja, thick] (axis cs:9.93,0) -- (axis cs:9.93,0.15) node[above, etiqueta, text=naranja, inner sep=1pt] {$\sum_i D_i$};
+  \draw[tinta2, thick] (axis cs:-18.09,0) -- (axis cs:-18.09,0.07) node[above, etiqueta] {$-\sum_i D_{\mathrm{KL}}(q\|f_{\cdot,i})$};
+\end{axis}
+\begin{axis}[at={(hist.south west)}, anchor=north west, yshift=-2.2cm, curso, width=\linewidth, height=4.4cm,
+   xlabel={posición en la secuencia}, ylabel={$S(y)$}, xmin=1, xmax=386, ymin=-45, ymax=28,
+   title={Barrido de una secuencia aleatoria de 400 pb con dos sitios implantados}]
+  \addplot[azul, thin] table[x=pos, y=score] {figuras/cap04/barrido.dat};
+  \addplot[rojo, dashed, thick, domain=1:386] {6};
+  \draw[verde, thick] (axis cs:291,-45) -- (axis cs:291,14);
+  \draw[rojooscuro, thick] (axis cs:121,-45) -- (axis cs:121,14);
+  \node[etiqueta, text=verde, anchor=south] at (axis cs:291,14) {sitio 2: 10,5 bits};
+  \node[etiqueta, text=rojooscuro, anchor=south] at (axis cs:121,14) {sitio 1: 4,2 bits (perdido)};
+\end{axis}
+\end{tikzpicture}
+\caption[Detección de sitios con una PWM]{\textbf{Arriba}: distribución de $S(y)$ para \num{20000} sitios generados a partir de las frecuencias de TBP (azul) y \num{20000} ventanas de fondo uniforme (gris). Sus medias coinciden con las predicciones del \cref{teo:kl}. Con $\tau=6$ bits se recupera el 87\,\% de los sitios y solo pasa el 0,19\,\% de las ventanas aleatorias. \textbf{Abajo}: barrido de una secuencia aleatoria en la que se implantaron dos sitios muestreados del perfil. El sitio 2 (\secuencia{GTATAAGTAGCGAGG}) destaca claramente; el sitio 1 (\secuencia{CCATAATAACTAGCG}), también muestreado del modelo, puntúa solo 4,2 bits y cae bajo el umbral: un falso negativo tan legítimo como inevitable.}
+\label{fig:04-scan}
+\end{figure}
+
+La \cref{fig:04-scan} muestra el dilema. Un umbral de 6 bits deja pasar solo un 0,19\,\% de las ventanas aleatorias, lo que parece poco; pero el genoma humano tiene unos $3{,}1\times10^9$ pares de bases y dos hebras, así que esperaríamos $2\times3{,}1\times10^9\times0{,}0019\approx1{,}2\times10^7$ ``sitios'' de TBP, la inmensa mayoría sin ninguna función. Esta abundancia de aciertos espurios no es un defecto de la PWM: refleja que la especificidad de un factor de transcripción \emph{in vivo} depende también de la accesibilidad de la cromatina, de otros factores cercanos y de la posición respecto a los genes, información que la matriz no contiene.
+
+\begin{codigo}[motivo\_tbp.py]
+from Bio import motifs
+from Bio.Seq import Seq
+
+with open("MA0108.2.jaspar") as fh:            # descargado de JASPAR
+    m = motifs.read(fh, "jaspar")
+pwm = m.counts.normalize(pseudocounts=0.5)     # f con pseudoconteos
+pssm = pwm.log_odds()                          # W = log2(f / q)
+print(m.name, m.consensus)                     # TBP GTATAAAAGGCGGGG
+print(f"máx={pssm.max:.2f}  mín={pssm.min:.2f}  "
+      f"media en sitios={pssm.mean():.2f}")     # 16.21 -49.13 9.93
+
+prom = Seq("GGCCGCTATAAAAGGGCGCGGCATGCGCCGCCATG")
+for pos, score in pssm.search(prom, threshold=6.0):
+    hebra = "+" if pos >= 0 else "-"           # pos < 0: hebra reversa
+    print(pos, hebra, f"{score:.2f}")          # 5 + 15.55
+\end{codigo}
+
+\noindent El módulo \py{Bio.motifs} de Biopython \parencite{c04-cock2009} implementa las \cref{eq:04-pseudo,eq:04-pwm}; su método \py{mean()} devuelve precisamente la puntuación esperada del \cref{teo:kl}. La secuencia \py{prom} es un fragmento sintético con una caja TATA en la posición 5 (contando desde cero).
+
+\begin{cuidado}[El supuesto de independencia]
+La \cref{eq:04-pwm} supone que cada posición contribuye de forma independiente a la unión. Es una aproximación sorprendentemente buena para muchos factores, pero falla cuando dos bases vecinas interactúan (por ejemplo, por la flexibilidad del ADN) o cuando el factor se une como dímero con espaciadores variables. En esos casos se usan modelos con dependencias entre posiciones, o los modelos de Márkov de la sección siguiente.
+\end{cuidado}
+
+\begin{profundizacion}[Descubrir motivos sin conocerlos]
+Hasta ahora partimos de sitios ya alineados. El problema inverso, encontrar un motivo desconocido compartido por un conjunto de secuencias (por ejemplo, promotores de genes coexpresados), es mucho más difícil, porque hay que estimar a la vez la PWM y la posición del sitio en cada secuencia. \textcite{c04-lawrence1993} lo resolvieron con un muestreador de Gibbs: se elige al azar una posición en cada secuencia, se construye la PWM con todas menos una, se remuestrea la posición de la excluida en proporción a $2^{S(y)}$ y se repite. El método converge hacia los motivos de alto contenido de información. Las alternativas deterministas se basan en el algoritmo EM \parencite{c04-dempster1977}, el mismo principio que usaremos para entrenar HMM.
+\end{profundizacion}
+
+% ---------------------------------------------------------------------
+\section{Modelos ocultos de Márkov y perfiles (HMMER)}\label{sec:04-hmm}
+% ---------------------------------------------------------------------
+\enlacerepo{4.3 · HMM y perfiles con HMMER}
+
+\begin{intuicion}[Un partido por la radio]
+Imagine que escucha un partido de fútbol por una radio extranjera, en un idioma que no entiende. No ve el campo, pero oye el rugido del público: murmullo, silbidos, gritos. Cuando el equipo local ataca, los gritos son frecuentes; cuando defiende, predominan los silbidos. Además, la posesión no cambia a cada segundo: quien ataca suele seguir atacando un rato. Con esas dos regularidades (qué sonidos produce cada situación y cuánto duran las situaciones) usted puede reconstruir, con bastante acierto, la historia del partido que no vio. Un modelo oculto de Márkov formaliza exactamente ese razonamiento: estados que no se observan, que persisten y cambian con ciertas probabilidades, y que emiten señales que sí se observan.
+\end{intuicion}
+
+\subsection{Estados, transiciones y emisiones}
+
+En bioinformática los ``sonidos'' son nucleótidos o aminoácidos, y los estados ocultos son categorías biológicas: región codificante o intergénica, isla CpG o ADN ordinario, hélice o lámina, posición 17 de un dominio o inserción. \textcite{c04-eddy2004} ofrece una introducción breve y muy clara; el tutorial de \textcite{c04-rabiner1989}, escrito para el reconocimiento del habla, sigue siendo la referencia clásica.
+
+\begin{definicion}{Modelo oculto de Márkov}{hmm}
+Un HMM con $K$ estados sobre un alfabeto $\mathcal{A}$ es una terna $\theta=(\boldsymbol{\pi}, \mathbf{A}, \mathbf{E})$ que genera un camino de estados $\pi_1\pi_2\cdots\pi_L$ y una secuencia $x_1\cdots x_L$: el primer estado se elige con probabilidad $\pi_k$; cada estado siguiente depende solo del anterior, con probabilidad $a_{kl}$; y cada estado $\pi_i$ emite el símbolo $x_i$ con probabilidad $e_{\pi_i}(x_i)$. Se observa $x$; el camino permanece oculto.
+\end{definicion}
+
+La probabilidad conjunta de una secuencia y un camino es el producto de las decisiones que los generaron:
+\begin{equation}\label{eq:04-conjunta}
+\Prob(x,\boldsymbol{\pi}\mid\theta) \;=\; \pi_{\pi_1}\,e_{\pi_1}(x_1)\,\prod_{i=2}^{L} a_{\pi_{i-1}\pi_i}\,e_{\pi_i}(x_i).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\boldsymbol{\pi}=\pi_1\cdots\pi_L$}{Camino de estados ocultos (no confundir con $\pi_k$, la probabilidad inicial).}
+\simbolo{$\pi_k$}{Probabilidad de empezar en el estado $k$.}
+\simbolo{$a_{kl}$}{Probabilidad de transición del estado $k$ al $l$; $\sum_l a_{kl}=1$.}
+\simbolo{$e_k(b)$}{Probabilidad de que el estado $k$ emita el símbolo $b$; $\sum_b e_k(b)=1$.}
+\simbolo{$L$}{Longitud de la secuencia observada.}
+\end{simbolos}
+
+Usaremos a lo largo de la sección un modelo de juguete con dos estados para ADN: \textsf{H}, regiones ricas en \nuc{G}+\nuc{C} (como las islas CpG), y \textsf{L}, regiones pobres en \nuc{G}+\nuc{C} (\cref{fig:04-hmm2}). El modelo plantea los tres problemas canónicos que \textcite{c04-rabiner1989} ordenó:
+\begin{enumerate}
+  \item \textbf{Evaluación}: ¿cuál es la probabilidad $\Prob(x\mid\theta)$ de la secuencia, sumando sobre todos los caminos? (algoritmo \ingles{forward}).
+  \item \textbf{Decodificación}: ¿cuál es el camino de estados más probable? (algoritmo de Viterbi).
+  \item \textbf{Aprendizaje}: ¿qué parámetros $\theta$ hacen más probables las secuencias observadas? (algoritmo de Baum-Welch).
+\end{enumerate}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small,
+  estado/.style={circle, draw=#1!80!black, fill=#1!12, very thick, minimum size=1.35cm, font=\sffamily\bfseries\Large, text=#1!70!black}]
+  \node[estado=naranja] (H) at (0,0) {H};
+  \node[estado=azul] (L) at (4.6,0) {L};
+  \node[circle, draw=gris, fill=papel, minimum size=0.8cm, font=\sffamily\small, text=tinta2] (B) at (2.3,2.0) {inicio};
+  \draw[flecha=gris] (B) -- node[above left, etiqueta]{0,5} (H);
+  \draw[flecha=gris] (B) -- node[above right, etiqueta]{0,5} (L);
+  \draw[flecha=tinta2] (H) to[bend left=18] node[above, etiqueta]{$a_{\textsf{HL}}=0{,}2$} (L);
+  \draw[flecha=tinta2] (L) to[bend left=18] node[below, etiqueta]{$a_{\textsf{LH}}=0{,}3$} (H);
+  \draw[flecha=naranja] (H) to[loop left, looseness=5] node[left, etiqueta]{$a_{\textsf{HH}}=0{,}8$} (H);
+  \draw[flecha=azul] (L) to[loop right, looseness=5] node[right, etiqueta]{$a_{\textsf{LL}}=0{,}7$} (L);
+  % emisiones
+  \foreach \st/\x/\va/\vc/\vg/\vt/\col in {H/0/0.15/0.35/0.35/0.15/naranja, L/4.6/0.35/0.15/0.15/0.35/azul}{
+    \begin{scope}[shift={(\x-1.05,-2.9)}]
+      \draw[base] (-0.1,0) -- (2.2,0);
+      \foreach \b/\v/\i in {A/\va/0, C/\vc/1, G/\vg/2, T/\vt/3}{
+        \fill[nuc\b] (\i*0.55,0) rectangle ++(0.42,\v*3.2);
+        \node[font=\sffamily\tiny, text=tinta2, anchor=south] at (\i*0.55+0.21,\v*3.2) {\pgfmathprintnumber[use comma,fixed,precision=2]{\v}};
+        \node[font=\ttfamily\bfseries\scriptsize, text=nuc\b, anchor=north] at (\i*0.55+0.21,0) {\b};
+      }
+      \node[etiqueta, anchor=south, text=\col] at (1.05,1.4) {emisiones $e_{\textsf{\st}}(b)$};
+    \end{scope}
+    \draw[\col, dotted, thick] (\x,-0.7) -- (\x,-1.45);
+  }
+\end{tikzpicture}
+\caption[Un HMM de dos estados para ADN]{El modelo de juguete de esta sección. Dos estados ocultos, \textsf{H} (rico en \nuc{G}+\nuc{C}) y \textsf{L} (pobre), con transiciones que favorecen la permanencia en el mismo estado, y distribuciones de emisión opuestas (barras). Ninguna base individual revela el estado: una \nuc{G} es $0{,}35/0{,}15\approx2{,}3$ veces más probable en \textsf{H} que en \textsf{L}, pero puede proceder de ambos. La evidencia sobre el estado se acumula a lo largo de las posiciones consecutivas, porque los estados persisten.}
+\label{fig:04-hmm2}
+\end{figure}
+
+\subsection{El algoritmo forward: sumar sobre todos los caminos}
+
+Hay $K^L$ caminos posibles; para $K=2$ y $L=300$, unos $10^{90}$. Por suerte, la estructura de Márkov permite reutilizar cálculos, igual que en la programación dinámica del \cref{cap:03}, pero \emph{sumando} en lugar de maximizar. Definimos la variable \ingles{forward} como la probabilidad de haber emitido los primeros $i$ símbolos y estar en el estado $k$:
+\begin{align}
+f_k(1) &= \pi_k\,e_k(x_1), \label{eq:04-fwd-ini}\\
+f_l(i+1) &= e_l(x_{i+1})\,\sum_{k=1}^{K} f_k(i)\,a_{kl}, \qquad i=1,\dots,L-1, \label{eq:04-fwd}\\
+\Prob(x\mid\theta) &= \sum_{k=1}^{K} f_k(L). \label{eq:04-fwd-fin}
+\end{align}
+
+\begin{simbolos}
+\simbolo{$f_k(i)$}{$\Prob(x_1\cdots x_i,\ \pi_i=k)$: probabilidad del prefijo terminando en el estado $k$.}
+\simbolo{$K$}{Número de estados.}
+\end{simbolos}
+
+El costo es $O(LK^2)$: en cada posición, cada estado suma las contribuciones de todos los estados anteriores. El algoritmo simétrico, \ingles{backward}, recorre la secuencia desde el final y calcula la probabilidad del sufijo dado el estado:
+\begin{equation}\label{eq:04-bwd}
+b_k(L)=1,\qquad b_k(i) = \sum_{l=1}^{K} a_{kl}\,e_l(x_{i+1})\,b_l(i+1),\qquad i=L-1,\dots,1.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$b_k(i)$}{$\Prob(x_{i+1}\cdots x_L\mid \pi_i=k)$: probabilidad del sufijo dado que en $i$ estamos en $k$.}
+\end{simbolos}
+
+\noindent Combinando ambos se obtiene la \emph{probabilidad posterior} de cada estado en cada posición, la cantidad más útil en la práctica:
+\begin{equation}\label{eq:04-posterior}
+\Prob(\pi_i = k\mid x,\theta) \;=\; \frac{f_k(i)\,b_k(i)}{\Prob(x\mid\theta)}.
+\end{equation}
+
+\begin{ejemplo}{Forward a mano}{forward}
+Con el modelo de la \cref{fig:04-hmm2} y $x={}$\secuencia{GCGCATTAT}:
+\[
+f_{\textsf{H}}(1)=0{,}5\times0{,}35=0{,}175,\qquad f_{\textsf{L}}(1)=0{,}5\times0{,}15=0{,}075.
+\]
+Para la segunda base (\nuc{C}), según la \cref{eq:04-fwd},
+\[
+f_{\textsf{H}}(2)=0{,}35\,(0{,}175\times0{,}8+0{,}075\times0{,}3)=0{,}35\times0{,}1625=0{,}0569,
+\]
+\[
+f_{\textsf{L}}(2)=0{,}15\,(0{,}175\times0{,}2+0{,}075\times0{,}7)=0{,}15\times0{,}0875=0{,}0131.
+\]
+Continuando hasta $i=9$ y sumando (\cref{eq:04-fwd-fin}) se obtiene $\Prob(x\mid\theta)=5{,}10\times10^{-6}$, es decir, $\log_2\Prob(x)=-17{,}58$ bits. Las probabilidades posteriores del estado \textsf{H} (\cref{eq:04-posterior}) son $0{,}80$, $0{,}87$, $0{,}86$, $0{,}75$ en las cuatro primeras posiciones (\secuencia{GCGC}) y caen a $0{,}36$, $0{,}22$, $0{,}18$, $0{,}18$, $0{,}24$ en el tramo \secuencia{ATTAT}.
+\end{ejemplo}
+
+\begin{cuidado}[Desbordamiento por abajo]
+Las probabilidades forward decrecen exponencialmente con $L$. Para una secuencia de \num{5000} bases como la que usaremos para entrenar el modelo, $\Prob(x)\approx2^{-9712}$, un número que ningún formato de coma flotante puede representar (el menor \texttt{double} positivo es del orden de $2^{-1074}$). Hay dos soluciones: trabajar en escala logarítmica, sustituyendo las sumas por $\log\sum\exp$ (p.\,ej., \py{numpy.logaddexp}), o \emph{reescalar} $f_k(i)$ en cada posición dividiendo por $c_i=\sum_kf_k(i)$ y acumulando $\log\Prob(x)=\sum_i\log c_i$. HMMER usa una variante de la segunda, el \ingles{sparse rescaling} \parencite{c04-eddy2011}.
+\end{cuidado}
+
+\subsection{El algoritmo de Viterbi: el mejor camino}
+
+Si en lugar de sumar sobre caminos queremos el \emph{más probable}, basta con cambiar la suma de la \cref{eq:04-fwd} por un máximo y recordar de dónde vino cada máximo. El algoritmo fue propuesto por \textcite{c04-viterbi1967} para decodificar códigos convolucionales en telecomunicaciones.
+
+\begin{teorema}{Algoritmo de Viterbi}{viterbi}
+Sea $v_k(i)$ la probabilidad del camino más probable que emite $x_1\cdots x_i$ y termina en el estado $k$. Entonces
+\begin{align}
+v_k(1) &= \pi_k\,e_k(x_1), \label{eq:04-vit-ini}\\
+v_l(i+1) &= e_l(x_{i+1})\,\max_{k}\big[v_k(i)\,a_{kl}\big], \label{eq:04-vit}
+\end{align}
+y $\Prob(x,\boldsymbol{\pi}^*)=\max_k v_k(L)$, donde $\boldsymbol{\pi}^*$ es el camino óptimo. El costo es $O(LK^2)$ en tiempo y $O(LK)$ en memoria.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$v_k(i)$}{Probabilidad del mejor camino parcial que termina en $k$ en la posición $i$.}
+\simbolo{$\boldsymbol{\pi}^*$}{Camino de Viterbi: $\argmax_{\boldsymbol{\pi}}\Prob(x,\boldsymbol{\pi})$.}
+\simbolo{$\mathrm{ptr}_i(l)$}{Puntero: el estado $k$ que maximizó la \cref{eq:04-vit} para llegar a $l$ en $i$.}
+\end{simbolos}
+
+\noindent El camino se recupera, como en Needleman-Wunsch, con un \ingles{traceback}: $\pi^*_L=\argmax_k v_k(L)$ y, hacia atrás, $\pi^*_{i-1}=\mathrm{ptr}_i(\pi^*_i)$. En la práctica se trabaja con logaritmos, de modo que los productos se vuelven sumas y la \cref{eq:04-vit} adopta la forma exacta de una recurrencia de programación dinámica: $V_l(i+1)=\log e_l(x_{i+1})+\max_k[V_k(i)+\log a_{kl}]$.
+
+\begin{figure}[tbp]
+\centering
+\input{figuras/cap04/trellis.tex}
+\caption[Trellis de Viterbi]{Enrejado (\ingles{trellis}) de Viterbi para $x={}$\secuencia{GCGCATTAT} con el modelo de la \cref{fig:04-hmm2}. Cada nodo muestra $\log_2 v_k(i)$; las flechas grises indican el predecesor elegido por el máximo de la \cref{eq:04-vit} y las discontinuas, las alternativas descartadas. El camino óptimo (naranja, nodos amarillos) es \textsf{HHHHLLLLL}: la región \secuencia{GCGC} se asigna a \textsf{H} y el tramo \secuencia{ATTAT} a \textsf{L}. Obsérvese que en $i=5$ el mejor predecesor de \textsf{L} ya es \textsf{H}: el cambio de estado ``se paga'' una sola vez, con $\log_2 0{,}2$.}
+\label{fig:04-trellis}
+\end{figure}
+
+\begin{ejemplo}{Viterbi frente a posterior}{viterbi}
+En la \cref{fig:04-trellis}, $\log_2 v_{\textsf{L}}(9)=-19{,}98$ supera a $\log_2 v_{\textsf{H}}(9)=-22{,}42$, así que el camino termina en \textsf{L}. Su probabilidad conjunta es $2^{-19{,}98}$, y como $\Prob(x)=2^{-17{,}58}$, la probabilidad posterior del camino completo es
+\[
+\Prob(\boldsymbol{\pi}^*\mid x)=\frac{2^{-19{,}98}}{2^{-17{,}58}}=2^{-2{,}40}\approx0{,}19.
+\]
+El camino más probable acapara menos de una quinta parte de la probabilidad: el 81\,\% restante se reparte entre los otros 511 caminos. Por eso, cuando interesa la etiqueta de cada posición más que un camino global coherente, se prefiere la \emph{decodificación posterior}, que asigna a cada $i$ el estado con mayor \cref{eq:04-posterior}.
+\end{ejemplo}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=4.8cm, xmin=1, xmax=400, ymin=-0.18, ymax=1.12,
+   xlabel={posición}, ylabel={$\Prob(\pi_i=\textsf{H}\mid x)$}, ytick={0,0.5,1},
+   legend style={at={(0.5,1.03)}, anchor=south, legend columns=3}]
+  \addplot[const plot, draw=none, fill=naranja!18] table[x=pos, y=real] {figuras/cap04/posterior.dat} \closedcycle;
+  \addlegendentry{estado real \textsf{H}}
+  \addplot[azul, thick] table[x=pos, y=post] {figuras/cap04/posterior.dat};
+  \addlegendentry{posterior (forward-backward)}
+  \addplot[violeta, thick, const plot] table[x=pos, y expr=\thisrow{vit}*0.1-0.15] {figuras/cap04/posterior.dat};
+  \addlegendentry{Viterbi (\textsf{H} arriba)}
+\end{axis}
+\end{tikzpicture}
+\caption[Decodificación de una secuencia simulada]{Decodificación de 400 bases simuladas con el modelo de la \cref{fig:04-hmm2}, pero con transiciones más persistentes ($a_{\textsf{HH}}=a_{\textsf{LL}}=0{,}98$). Fondo naranja: tramos generados realmente por \textsf{H}. Curva azul: probabilidad posterior de \textsf{H}; su umbral en 0,5 acierta el estado en el 94\,\% de las posiciones. Escalón violeta (abajo): camino de Viterbi, con un 92,5\,\% de acierto. Ambos métodos detectan los bloques largos; los tramos cortos y los bordes son inciertos, y solo la posterior lo \emph{dice}.}
+\label{fig:04-posterior}
+\end{figure}
+
+\begin{codigo}[forward\_viterbi.py]
+import numpy as np
+
+def forward_viterbi(x, A, E, pi, alfabeto="ACGT"):
+    """Log-verosimilitud (forward) y camino de Viterbi, en log2."""
+    o = [alfabeto.index(c) for c in x]
+    lA, lE = np.log2(A), np.log2(E)
+    f = np.log2(pi) + lE[:, o[0]]                 # inicio forward (log)
+    v, ptr = f.copy(), []
+    for s in o[1:]:
+        f = lE[:, s] + np.logaddexp2.reduce(f[:, None] + lA, axis=0)
+        cand = v[:, None] + lA                     # K x K
+        ptr.append(cand.argmax(axis=0))
+        v = lE[:, s] + cand.max(axis=0)
+    camino = [int(v.argmax())]
+    for p in reversed(ptr):                        # traceback
+        camino.append(int(p[camino[-1]]))
+    return np.logaddexp2.reduce(f), v.max(), camino[::-1]
+
+A = np.array([[0.8, 0.2], [0.3, 0.7]])
+E = np.array([[.15, .35, .35, .15], [.35, .15, .15, .35]])
+lp, lv, c = forward_viterbi("GCGCATTAT", A, E, np.array([.5, .5]))
+print(f"{lp:.2f} {lv:.2f}", "".join("HL"[k] for k in c))
+# -17.58 -19.98 HHHHLLLLL
+\end{codigo}
+
+\subsection{Baum-Welch: aprender los parámetros}
+
+Hasta ahora supusimos conocidos $\mathbf{A}$ y $\mathbf{E}$. Si dispusiéramos de secuencias con los estados anotados, estimarlos sería contar: la fracción de veces que \textsf{H} va seguido de \textsf{L}, la fracción de \nuc{G} emitidas por \textsf{H}, etc. Pero, por definición, los estados están ocultos. El algoritmo de \textcite{c04-baum1970} resuelve el problema sustituyendo los conteos que no podemos observar por sus \emph{valores esperados} bajo los parámetros actuales, y repitiendo.
+
+Para cada posición $i$ definimos la probabilidad posterior de una transición concreta y de un estado concreto:
+\begin{align}
+\xi_i(k,l) &= \Prob(\pi_i=k,\ \pi_{i+1}=l\mid x,\theta) = \frac{f_k(i)\;a_{kl}\;e_l(x_{i+1})\;b_l(i+1)}{\Prob(x\mid\theta)}, \label{eq:04-xi}\\
+\gamma_i(k) &= \Prob(\pi_i=k\mid x,\theta) = \frac{f_k(i)\,b_k(i)}{\Prob(x\mid\theta)}. \label{eq:04-gamma}
+\end{align}
+
+\begin{simbolos}
+\simbolo{$\xi_i(k,l)$}{Probabilidad posterior de que la transición $k\to l$ ocurra entre las posiciones $i$ e $i+1$.}
+\simbolo{$\gamma_i(k)$}{Probabilidad posterior de estar en $k$ en la posición $i$ (\cref{eq:04-posterior}).}
+\end{simbolos}
+
+\noindent Los conteos esperados se obtienen sumando sobre las posiciones (y sobre las secuencias de entrenamiento, si hay varias), y los nuevos parámetros son las frecuencias relativas de esos conteos:
+\begin{equation}\label{eq:04-bw}
+\hat a_{kl} = \frac{\sum_{i=1}^{L-1}\xi_i(k,l)}{\sum_{l'}\sum_{i=1}^{L-1}\xi_i(k,l')},\qquad
+\hat e_k(b) = \frac{\sum_{i:\,x_i=b}\gamma_i(k)}{\sum_{i=1}^{L}\gamma_i(k)},\qquad
+\hat\pi_k=\gamma_1(k).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\hat a_{kl}$, $\hat e_k(b)$, $\hat\pi_k$}{Parámetros reestimados para la siguiente iteración.}
+\simbolo{$\sum_{i:\,x_i=b}$}{Suma solo sobre las posiciones en las que se observó el símbolo $b$.}
+\end{simbolos}
+
+Se calculan forward y backward con los parámetros actuales (paso E), se reestiman los parámetros con la \cref{eq:04-bw} (paso M) y se itera hasta que la verosimilitud deja de aumentar. Baum-Welch es un caso particular del algoritmo EM, formulado en general años después por \textcite{c04-dempster1977}, y hereda su propiedad fundamental.
+
+\begin{teorema}{Monotonía de Baum-Welch}{bw}
+Cada iteración de la \cref{eq:04-bw} cumple $\Prob(x\mid\hat\theta)\ge\Prob(x\mid\theta)$, con igualdad solo en un punto estacionario de la verosimilitud \parencite{c04-baum1970}.
+\end{teorema}
+
+\noindent El teorema garantiza la convergencia a un máximo \emph{local}, no al global. La verosimilitud de un HMM tiene en general muchos máximos locales, así que en la práctica se ejecuta el algoritmo desde varios puntos de partida, o se inicializa con una estimación razonable (por ejemplo, a partir de un MSA, como veremos con los perfiles).
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm}, curso,
+   width=0.47\linewidth, height=5cm, xlabel={iteración}, xmin=0, xmax=59]
+\nextgroupplot[ylabel={$\log_2\Prob(x\mid\theta)$ (bits)}, title={Verosimilitud},
+   yticklabel style={/pgf/number format/fixed}, ymin=-10000, ymax=-9690]
+  \addplot[azul, thick] table[x=it, y=ll] {figuras/cap04/baumwelch.dat};
+  \input{figuras/cap04/baumwelch_ref.tex}
+  \addplot[rojo, dashed, thick, domain=0:59] {\capcuatrollverdadero};
+  \node[etiqueta, text=rojooscuro, anchor=north east] at (axis cs:58,\capcuatrollverdadero) {parámetros verdaderos};
+\nextgroupplot[ylabel={valor del parámetro}, title={Parámetros}, ymin=0, ymax=1.05,
+   legend pos=south east]
+  \addplot[naranja, thick] table[x=it, y=aHH] {figuras/cap04/baumwelch.dat};
+  \addlegendentry{$\hat a_{\textsf{HH}}$}
+  \addplot[aqua, thick] table[x=it, y=eHG] {figuras/cap04/baumwelch.dat};
+  \addlegendentry{$\hat e_{\textsf{H}}(\texttt{G})$}
+  \addplot[naranja, dashed, domain=0:59] {0.98};
+  \addplot[aqua, dashed, domain=0:59] {0.35};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Convergencia de Baum-Welch]{Baum-Welch aplicado a \num{5000} bases simuladas con $a_{\textsf{HH}}=a_{\textsf{LL}}=0{,}98$, partiendo de parámetros deliberadamente erróneos ($a_{\textsf{HH}}=0{,}6$; emisiones casi uniformes). \textbf{Izquierda}: la log-verosimilitud aumenta en cada iteración, como garantiza el \cref{teo:bw}, desde $-9991$ hasta $-9712$ bits; tras 47 iteraciones queda a menos de 0,1 bits de su valor final. Termina \emph{por encima} de la de los parámetros verdaderos (línea roja, $-9718$): el modelo se ajusta a las fluctuaciones de la muestra. \textbf{Derecha}: los parámetros convergen a $\hat a_{\textsf{HH}}=0{,}981$ y $\hat e_{\textsf{H}}(\texttt{G})=0{,}328$, cerca de los valores verdaderos (discontinuas).}
+\label{fig:04-bw}
+\end{figure}
+
+\subsection{HMM de pares: el alineamiento como modelo probabilístico}
+
+Estamos ahora en condiciones de cerrar un cabo que dejamos suelto en el \cref{cap:03}. Las tres matrices de Gotoh (\cref{eq:03-gotoh-m}) corresponden a tres estados de un HMM que, en lugar de emitir una secuencia, emite \emph{dos} a la vez: un estado $M$ emite un par alineado $(x_i,y_j)$ con probabilidad $p_{x_iy_j}$; un estado $X$ emite $x_i$ frente a un hueco; un estado $Y$ emite $y_j$ frente a un hueco. La transición $M\to X$ tiene probabilidad $\delta$ (abrir un hueco) y $X\to X$, probabilidad $\varepsilon$ (extenderlo). \textcite{c04-durbin1998} muestran que el algoritmo de Viterbi de este HMM de pares, escrito en log-razones frente a un modelo de fondo, \emph{es} el algoritmo de Gotoh, con
+\[
+s(a,b)=\log\frac{p_{ab}}{q_aq_b}+\text{cte.},\qquad d_o\approx-\log\delta,\qquad d_e\approx-\log\varepsilon.
+\]
+
+\subsection{HMM de perfil: un modelo para cada familia}
+
+Un perfil (\cref{eq:04-perfil}) asigna una distribución propia a cada columna de un MSA; una PWM hace lo mismo para motivos sin huecos. Lo que les falta a ambos es una forma principiada de modelar inserciones y deleciones que dependan de la posición: en una familia de proteínas, los bucles superficiales aceptan inserciones con facilidad, mientras que el núcleo hidrofóbico casi nunca las tolera. \textcite{c04-krogh1994} resolvieron el problema con una arquitectura de HMM que hoy llamamos \emph{HMM de perfil}, y \textcite{c04-eddy1998} la convirtió en una herramienta de uso general.
+
+\begin{definicion}{HMM de perfil}{phmm}
+Un HMM de perfil de longitud $m$ tiene, para cada posición consenso $j=1,\dots,m$, tres estados: un estado de \emph{coincidencia} $M_j$, que emite un residuo con distribución $e_{M_j}(\cdot)$ específica de la posición; un estado de \emph{inserción} $I_j$, que emite residuos extra entre las posiciones $j$ y $j+1$ con una distribución cercana al fondo; y un estado \emph{silencioso} de \emph{deleción} $D_j$, que salta la posición $j$ sin emitir. Estados inicial ($B$) y final ($E$) completan el modelo.
+\end{definicion}
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, x=2.15cm, y=1.35cm,
+  mst/.style={draw=azul!80!black, fill=azul!10, thick, minimum size=0.78cm, inner sep=0pt, rounded corners=1pt},
+  ist/.style={draw=verde!80!black, fill=verde!10, thick, diamond, minimum size=0.9cm, inner sep=0pt},
+  dst/.style={draw=naranja!80!black, fill=naranja!10, thick, circle, minimum size=0.8cm, inner sep=0pt},
+  tr/.style={-{Stealth[length=1.8mm]}, gris, thin},
+  hl/.style={-{Stealth[length=2.2mm]}, rojo, very thick}]
+  \node[mst, fill=papel, draw=tinta2] (B) at (0,0) {$B$};
+  \foreach \j in {1,...,4}{
+    \node[mst] (M\j) at (\j,0) {$M_{\j}$};
+    \node[dst] (D\j) at (\j,2) {$D_{\j}$};
+  }
+  \foreach \j in {0,...,4}{ \node[ist] (I\j) at (\j+0.5,1) {$I_{\j}$}; }
+  \node[mst, fill=papel, draw=tinta2] (E) at (5,0) {$E$};
+  \begin{scope}[on background layer]
+  % transiciones genéricas
+  \draw[tr] (B) -- (M1); \draw[tr] (B) -- (I0); \draw[tr] (B) -- (D1);
+  \draw[tr] (I0) -- (M1); \draw[tr] (I0) to[loop above, looseness=6] (I0);
+  \foreach \j/\k in {1/2,2/3,3/4}{
+    \draw[tr] (M\j) -- (M\k); \draw[tr] (M\j) -- (D\k); \draw[tr] (M\j) -- (I\j);
+    \draw[tr] (I\j) -- (M\k); \draw[tr] (D\j) -- (D\k); \draw[tr] (D\j) -- (M\k);
+  }
+  \foreach \j in {1,2,3,4}{ \draw[tr] (I\j) to[loop above, looseness=6] (I\j); }
+  \draw[tr] (M4) -- (E); \draw[tr] (D4) -- (E); \draw[tr] (M4) -- (I4); \draw[tr] (I4) -- (E);
+  % camino de CAACT-
+  \draw[hl] (B) -- (M1); \draw[hl] (M1) -- (M2); \draw[hl] (M2) -- (I2);
+  \draw[hl] (I2) to[loop above, looseness=6] (I2); \draw[hl] (I2) -- (M3);
+  \draw[hl] (M3) -- (D4); \draw[hl] (D4) -- (E);
+  \end{scope}
+  % leyenda
+  \node[etiqueta, anchor=west, align=left] at (-0.35,-0.85) {\textcolor{azul}{$\blacksquare$} coincidencia (emite con $e_{M_j}$)\quad \textcolor{verde}{$\blacklozenge$} inserción (emite $\approx$ fondo)\quad \textcolor{naranja}{$\bullet$} deleción (silencioso)};
+  \node[etiqueta, anchor=west, text=rojo] at (-0.35,-1.25) {camino de \texttt{CAACT-}:\ $B\,M_1\,M_2\,I_2\,I_2\,M_3\,D_4\,E$};
+\end{tikzpicture}
+\caption[Arquitectura de un HMM de perfil]{Arquitectura de un HMM de perfil de longitud 4, en la variante \emph{Plan7} de HMMER, que no permite transiciones directas entre estados de inserción y deleción. Los estados $M_j$ (cuadrados) y $D_j$ (círculos) forman la columna vertebral; los $I_j$ (rombos) cuelgan entre posiciones y tienen un bucle que permite inserciones de cualquier longitud. En rojo, el camino que recorre la secuencia \texttt{CAACT} del \cref{ej:phmm}: dos residuos insertados tras la posición 2 y una deleción de la posición 4. Toda secuencia alineada al MSA corresponde a un camino, y viceversa.}
+\label{fig:04-phmm}
+\end{figure}
+
+La idea clave es que las penalizaciones de hueco, que en Needleman-Wunsch eran constantes, se convierten en probabilidades de transición \emph{distintas en cada posición}: $a_{M_jD_{j+1}}$ puede ser minúscula en una hélice del núcleo y grande en un bucle. Y como el modelo es un HMM, todo lo que sabemos (forward, Viterbi, Baum-Welch) se aplica directamente.
+
+\paragraph{Construcción a partir de un MSA} Dado un MSA de la familia, se decide primero qué columnas son \emph{consenso}: una regla sencilla es declarar de coincidencia toda columna en la que al menos la mitad de las secuencias tienen un residuo, y de inserción las demás. Después, cada secuencia del MSA define un camino por el modelo y basta con contar transiciones y emisiones, añadir pseudoconteos (o una previa de mezcla de Dirichlet, \textcite{c04-sjolander1996}) y normalizar:
+\begin{equation}\label{eq:04-phmm-est}
+e_{M_j}(a) = \frac{c_{j}(a) + \alpha_a}{\sum_{a'}\big(c_{j}(a') + \alpha_{a'}\big)},\qquad
+a_{kl} = \frac{C_{kl}+\beta}{\sum_{l'}\big(C_{kl'}+\beta\big)}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$c_j(a)$}{Número ponderado de secuencias con el residuo $a$ en la columna consenso $j$.}
+\simbolo{$C_{kl}$}{Número ponderado de veces que los caminos del MSA usan la transición $k\to l$.}
+\simbolo{$\alpha_a,\ \beta$}{Pseudoconteos de emisión y de transición.}
+\end{simbolos}
+
+\noindent Los conteos se ponderan (por ejemplo, con los pesos de la \cref{eq:04-henikoff}) para que las subfamilias sobrerrepresentadas no dominen el modelo.
+
+\begin{ejemplo}{Un HMM de perfil de juguete}{phmm}
+Consideremos el MSA de cinco secuencias de ADN y seis columnas:
+\begin{center}
+\ttfamily\small
+\begin{tabular}{@{}l cccccc@{}}
+\textrm{\sffamily\scriptsize columna} & 1 & 2 & 3 & 4 & 5 & 6\\
+\midrule
+s1 & C & A & - & - & T & G\\
+s2 & C & A & A & - & T & G\\
+s3 & C & G & - & - & T & G\\
+s4 & C & A & A & C & T & -\\
+s5 & T & A & - & - & T & G\\
+\midrule
+\textrm{\sffamily\scriptsize estado} & $M_1$ & $M_2$ & $I_2$ & $I_2$ & $M_3$ & $M_4$
+\end{tabular}
+\end{center}
+Las columnas 3 y 4 tienen residuos en solo 2 y 1 de las 5 secuencias, así que son de inserción; las demás definen $M_1,\dots,M_4$. Con un pseudoconteo de 1 por base, las emisiones de $M_1$ (conteos \texttt{C}:4, \texttt{T}:1) son $e_{M_1}=(\tfrac19,\tfrac59,\tfrac19,\tfrac29)=(0{,}111;\ 0{,}556;\ 0{,}111;\ 0{,}222)$ para (\texttt{A},\texttt{C},\texttt{G},\texttt{T}); la columna 5, invariante, da $e_{M_3}(\texttt{T})=\tfrac{5+1}{5+4}=0{,}667$; y $M_4$, con solo cuatro residuos, $e_{M_4}(\texttt{G})=\tfrac{4+1}{4+4}=0{,}625$. Los caminos son \mbox{$B\,M_1M_2M_3M_4\,E$} para s1, s3 y s5; \mbox{$B\,M_1M_2I_2M_3M_4\,E$} para s2; y \mbox{$B\,M_1M_2I_2I_2M_3D_4\,E$} para s4 (\cref{fig:04-phmm}). Desde $M_2$ hay tres transiciones a $M_3$ y dos a $I_2$; con $\beta=1$ sobre las tres salidas posibles ($M_3$, $I_2$, $D_3$), $a_{M_2M_3}=\tfrac{4}{8}=0{,}5$, $a_{M_2I_2}=\tfrac38=0{,}375$ y $a_{M_2D_3}=\tfrac18=0{,}125$.
+\end{ejemplo}
+
+\paragraph{Alinear una secuencia al perfil} Para puntuar una secuencia $x$ contra el modelo se usa Viterbi (o forward) en log-razones frente al fondo $q$. Las recurrencias tienen la misma forma que las de Gotoh, pero con parámetros que dependen de $j$:
+\begin{align}
+V^{M}_j(i) &= \log\frac{e_{M_j}(x_i)}{q_{x_i}} + \max\begin{cases}
+V^{M}_{j-1}(i-1) + \log a_{M_{j-1}M_j}\\
+V^{I}_{j-1}(i-1) + \log a_{I_{j-1}M_j}\\
+V^{D}_{j-1}(i-1) + \log a_{D_{j-1}M_j}
+\end{cases}\label{eq:04-vm}\\[2pt]
+V^{I}_j(i) &= \log\frac{e_{I_j}(x_i)}{q_{x_i}} + \max\begin{cases}
+V^{M}_{j}(i-1) + \log a_{M_{j}I_j}\\
+V^{I}_{j}(i-1) + \log a_{I_{j}I_j}
+\end{cases}\label{eq:04-vi}\\[2pt]
+V^{D}_j(i) &= \max\begin{cases}
+V^{M}_{j-1}(i) + \log a_{M_{j-1}D_j}\\
+V^{D}_{j-1}(i) + \log a_{D_{j-1}D_j}
+\end{cases}\label{eq:04-vd}
+\end{align}
+
+\begin{simbolos}
+\simbolo{$V^{M}_j(i)$}{Mejor log-razón de un camino que ha emitido $x_1\cdots x_i$ y termina en $M_j$ (ídem para $I_j$, $D_j$).}
+\simbolo{$q_{x_i}$}{Frecuencia de fondo del residuo $x_i$; normalmente $e_{I_j}\approx q$, por lo que el primer término de la \cref{eq:04-vi} es casi cero.}
+\simbolo{$i$, $j$}{Posición en la secuencia y posición en el modelo, respectivamente.}
+\end{simbolos}
+
+\noindent Obsérvese que $D_j$ no consume residuos (su índice $i$ no cambia) y que, siguiendo la arquitectura Plan7, no hay transiciones $I\leftrightarrow D$. El costo es $O(mL)$, el mismo que alinear dos secuencias de longitudes $m$ y $L$. Sustituyendo cada $\max$ por una suma (en espacio de probabilidades) se obtiene el algoritmo forward del perfil, que da la probabilidad de la secuencia bajo el modelo sumando sobre \emph{todos} sus alineamientos posibles.
+
+\subsection{HMMER y Pfam}
+
+HMMER implementa este programa completo. Sus versiones iniciales puntuaban con Viterbi y eran unas cien veces más lentas que BLAST, lo que limitaba su uso. HMMER3 \parencite{c04-eddy2011} cambió la situación con dos ideas: puntuar con el algoritmo forward completo, que es más sensible porque integra la evidencia de todos los alineamientos, y colocar delante una cascada de filtros heurísticos que descartan pronto la inmensa mayoría de las secuencias no homólogas (\cref{fig:04-hmmer}). El primero, el filtro MSV (\ingles{multiple segment Viterbi}), calcula la mejor suma de varios segmentos sin huecos con instrucciones vectoriales SIMD, la misma técnica que acelera Smith-Waterman. Según el propio artículo, HMMER3 es entre 100 y \num{1000} veces más rápido que HMMER2 y aproximadamente tan rápido como BLAST para proteínas.
+
+\begin{figure}[tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \foreach \y/\w/\col/\tit/\sub/\pct in {
+      0/12.4/azul/{Base de datos}/{todas las secuencias}/{100\,\%},
+      -1.25/10.6/azulmedio/{Filtro MSV}/{segmentos sin huecos, SIMD; $P\le0{,}02$}/{$\approx2$\,\%},
+      -2.5/8.8/violeta/{Filtro Viterbi}/{alineamiento con huecos; $P\le0{,}001$}/{$\approx0{,}1$\,\%},
+      -3.75/7.2/naranja/{Forward}/{suma sobre alineamientos}/{$\approx10^{-3}$\,\%},
+      -5.0/6.2/rojo/{Dominios}/{forward-backward}/{resultado}}{
+    \fill[\col!14, draw=\col!70!black, rounded corners=3pt] (-\w/2,\y-0.45) rectangle (\w/2,\y+0.45);
+    \node[font=\sffamily\bfseries\small, text=\col!70!black, anchor=west] at (-\w/2+0.2,\y+0.12) {\tit};
+    \node[etiqueta, anchor=west] at (-\w/2+0.2,\y-0.2) {\sub};
+    \node[font=\sffamily\bfseries\small, text=tinta, anchor=east] at (\w/2-0.2,\y) {\pct};
+  }
+  \foreach \y in {-0.45,-1.7,-2.95,-4.2}{ \draw[flecha=tinta2] (0,\y) -- (0,\y-0.35); }
+\end{tikzpicture}
+\caption[El embudo de filtros de HMMER3]{La cascada de aceleración de HMMER3 \parencite{c04-eddy2011}. Cada etapa es más lenta y más sensible que la anterior, pero solo procesa las secuencias que la anterior dejó pasar. Los umbrales se expresan como valores $P$: el filtro MSV deja pasar, por defecto, el 2\,\% de las secuencias no homólogas, y el de Viterbi, el 0,1\,\%. La puntuación final, sobre la que se calculan los valores $E$, es siempre la del algoritmo forward completo; los filtros solo deciden a quién merece la pena aplicarlo.}
+\label{fig:04-hmmer}
+\end{figure}
+
+HMMER expresa sus resultados igual que BLAST en el \cref{cap:03}: una puntuación en bits (log-razón en base 2 entre el modelo y el fondo) y un valor $E$. Para asignar valores $E$ sin simulaciones costosas, \textcite{c04-eddy2011} conjeturó, y comprobó empíricamente con miles de modelos, que las puntuaciones Viterbi en bits de secuencias no homólogas siguen una distribución de Gumbel de pendiente fija $\lambda=\ln2$, y que la cola alta de las puntuaciones forward sigue una exponencial de la misma pendiente. Así, solo hay que estimar un parámetro de posición por modelo, lo que se hace una vez al construirlo.
+
+\begin{consola}[Construir un HMM de perfil y buscar homólogos]
+# 1. HMM a partir de un MSA (Stockholm o FASTA alineado)
+hmmbuild globinas.hmm globinas.sto
+# 2. Buscar el perfil en una base de datos de proteínas
+hmmsearch --tblout aciertos.tbl -E 1e-5 globinas.hmm uniprot_sprot.fasta
+# 3. Anotar dominios de una proteína contra todo Pfam
+hmmpress Pfam-A.hmm                       # indexa la base (una vez)
+hmmscan --domtblout dominios.tbl Pfam-A.hmm consulta.fasta
+\end{consola}
+
+\begin{codigo}[leer\_hmmer.py]
+from Bio import SearchIO
+
+for q in SearchIO.parse("dominios.tbl", "hmmscan3-domtab"):
+    for hit in q:                              # una familia Pfam
+        for hsp in hit:                        # un dominio
+            print(f"{hit.id:15s} {hsp.bitscore:6.1f} bits  "
+                  f"E={hsp.evalue:.1e}  "
+                  f"{hsp.query_start + 1}-{hsp.query_end}")
+\end{codigo}
+
+La aplicación más influyente de los HMM de perfil es la anotación de dominios. Pfam \parencite{c04-mistry2021} es una colección de familias de proteínas, cada una definida por un \emph{alineamiento semilla} curado a mano, un HMM de perfil construido con HMMER a partir de él y un \emph{umbral de recolección} (\ingles{gathering threshold}) en bits, elegido por los curadores para que no incluya falsos positivos conocidos. El alineamiento completo de la familia se obtiene buscando el HMM en UniProt. La versión de 2021 añadió más de 350 familias nuevas, revisó las que cubren el proteoma del SARS-CoV-2 y reintrodujo Pfam-B, un suplemento de \num{136730} agrupaciones automáticas de secuencias aún no cubiertas por ninguna familia.
+
+\begin{historia}[De los ribosomas a las familias de proteínas]
+Los HMM llegaron a la biología desde el reconocimiento del habla, donde el tutorial de \textcite{c04-rabiner1989} los había popularizado. El grupo de David Haussler, en Santa Cruz, los adaptó a las proteínas: \textcite{c04-krogh1994} modelaron con la arquitectura de la \cref{fig:04-phmm} las globinas, las cinasas y las proteínas EF-hand, y mostraron que un modelo entrenado solo con secuencias no alineadas podía producir un MSA y detectar miembros lejanos de la familia. El libro de \textcite{c04-durbin1998}, escrito por cuatro protagonistas de esta historia, sigue siendo la mejor introducción a todo el tema.
+\end{historia}
+
+\begin{ideaclave}
+PWM: una distribución por posición, sin huecos.\\
+HMM de perfil: una distribución por posición, con huecos que también dependen de la posición.
+\end{ideaclave}
+
+\begin{resumen}
+\begin{itemize}
+  \item Un MSA se puntúa típicamente con la suma de pares, idealmente ponderada para compensar secuencias redundantes. Su optimización exacta cuesta $O(k^22^kn^k)$ y es NP-difícil.
+  \item El alineamiento progresivo (distancias, árbol guía, alineamiento de perfiles) es rápido pero codicioso: ``una vez un hueco, siempre un hueco''. El refinamiento iterativo (MUSCLE), la consistencia (T-Coffee), la FFT (MAFFT) y los árboles mBed con alineamiento HMM--HMM (Clustal Omega) mitigan sus errores o lo escalan.
+  \item Una PWM resume sitios alineados como log-razones $\log_2(f_{b,i}/q_b)$; los pseudoconteos evitan probabilidades nulas. Su puntuación esperada en sitios verdaderos es la entropía relativa total del motivo.
+  \item El contenido de información $R_i=2-H_i$ mide la conservación de cada columna en bits; el \ingles{sequence logo} lo muestra apilando letras de altura $f_{b,i}R_i$.
+  \item Un HMM se evalúa con forward, se decodifica con Viterbi o por probabilidades posteriores y se entrena con Baum-Welch (EM), todos en $O(LK^2)$.
+  \item Un HMM de perfil añade a cada posición estados de coincidencia, inserción y deleción, con parámetros propios. HMMER3 lo busca en bases de datos con filtros acelerados y puntuación forward; Pfam lo usa para definir y anotar familias de dominios.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Calcule a mano la puntuación SP (BLOSUM62, $d=8$) de la columna \texttt{K}, \texttt{K}, \texttt{R}, \texttt{-}, \texttt{E}. ¿Cuánto cambia si se asigna peso $0{,}5$ a cada una de las dos primeras secuencias y peso 1 a las demás?
+\ej{1} Escriba la función \py{suma_de_pares(filas, d)} que implementa la \cref{eq:04-sp} con penalización lineal y compruebe que las cuatro primeras columnas del \cref{ej:sp} suman 62.
+\ej{1} Una columna de un motivo tiene frecuencias $(0{,}5;\ 0{,}5;\ 0;\ 0)$ y otra $(0{,}7;\ 0{,}1;\ 0{,}1;\ 0{,}1)$. ¿Cuál tiene más contenido de información? Dibuje a mano sus pilas en un \ingles{logo}.
+\ej{2} Con la matriz de distancias de la \cref{fig:04-arbol}, construya el árbol por \ingles{neighbor-joining} en lugar de UPGMA. ¿Cambia el orden en que se alinean los perfiles? Alinee las globinas con Clustal Omega y MAFFT y cuente las columnas en que difieren.
+\ej{2} Descargue de JASPAR la matriz de conteos de otro factor (por ejemplo, CTCF, MA0139) y calcule su contenido total de información. ¿Cada cuántas bases esperaría un sitio por azar? Compare con el número de sitios de CTCF que se conocen en el genoma humano.
+\ej{2} Verifique numéricamente, con el código de \archivo{forward\_viterbi.py}, que $\sum_k f_k(i)\,b_k(i)=\Prob(x)$ para \emph{todas} las posiciones $i$. ¿Por qué debe cumplirse esta identidad?
+\ej{3} Implemente Baum-Welch con reescalado para el modelo de dos estados y reproduzca la \cref{fig:04-bw}. Repita desde 20 puntos de partida aleatorios: ¿llegan todos al mismo máximo? ¿Qué ocurre si inicializa con $e_{\textsf{H}}=e_{\textsf{L}}$ exactamente?
+\ej{3} Construya con \cmd{hmmbuild} un HMM de perfil a partir del MSA de globinas y búsquelo con \cmd{hmmsearch} en Swiss-Prot. Compare el número de aciertos con $E<10^{-5}$ con el que obtiene \cmd{blastp} usando como consulta solo la hemoglobina $\beta$ humana. Explique la diferencia en términos de la \cref{eq:04-vm}.
+\end{ejercicios}
+
+\referenciascapitulo

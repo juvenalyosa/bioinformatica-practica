@@ -1,0 +1,35 @@
+[costo] 2001.7: 95,263,072 USD   final: 525 USD   ley de Moore en 2022: 71,604 USD   factor real: 181,583x
+[costo] 2007.5 -> 8,927,342;  2008 -> 3,063,820
+[phred] Q=10: p=0.1  exactitud=90.0000%
+[phred] Q=20: p=0.01  exactitud=99.0000%
+[phred] Q=30: p=0.001  exactitud=99.9000%
+[phred] Q=40: p=0.0001  exactitud=99.9900%
+[fastq] seq = AGAACCTTTTAATAAATCCACGTG  qual = CDFFGGFEGFEDEBA?@<:75/,#
+[fastq] Q = [34, 35, 37, 37, 38, 38, 37, 36, 38, 37, 36, 35, 36, 33, 32, 30, 31, 27, 25, 22, 20, 14, 11, 2]
+[fastq] errores esperados = 0.78 en 24 bases
+[phred] 150 pb a Q20: E[errores]=1.500; P(sin error)=0.221
+[phred] 150 pb a Q30: E[errores]=0.150; P(sin error)=0.861
+[fastqc] 38 cajas; mediana última=27.0; p10 última=18.0
+[ventana] primera ventana con media<20: inicio en posición 21 (media=19.75); se conservan 20 bases
+[ventana] medias: [37.75, 37.25, 37.0, 36.5, 36.0, 35.5, 35.0, 34.5, 34.0, 33.5, 32.25, 31.75, 30.25, 29.5, 28.5, 26.75, 26.5, 24.75, 23.0, 22.25, 19.75, 18.0, 17.75, 15.5, 13.75, 12.0, 9.0]
+[cutadapt -q 20] conserva 23 bases
+[LW sim] c=0.5: cubierta=0.3939 (teo 0.3935); islas/(G/L)=0.3031 (teo 0.3033)
+[LW sim] c=1: cubierta=0.6316 (teo 0.6321); islas/(G/L)=0.3686 (teo 0.3679)
+[LW sim] c=1.5: cubierta=0.7780 (teo 0.7769); islas/(G/L)=0.3398 (teo 0.3347)
+[LW sim] c=2: cubierta=0.8658 (teo 0.8647); islas/(G/L)=0.2759 (teo 0.2707)
+[LW sim] c=3: cubierta=0.9510 (teo 0.9502); islas/(G/L)=0.1517 (teo 0.1494)
+[LW sim] c=4: cubierta=0.9801 (teo 0.9817); islas/(G/L)=0.0748 (teo 0.0733)
+[LW sim] c=5: cubierta=0.9925 (teo 0.9933); islas/(G/L)=0.0353 (teo 0.0337)
+[LW sim] c=6: cubierta=0.9964 (teo 0.9975); islas/(G/L)=0.0178 (teo 0.0149)
+[LW sim] c=7: cubierta=0.9988 (teo 0.9991); islas/(G/L)=0.0080 (teo 0.0064)
+[LW sim] c=8: cubierta=0.9996 (teo 0.9997); islas/(G/L)=0.0031 (teo 0.0027)
+[LW ej] c=1: N=33,333 no_cubiertas=1,839,397.2 islas=14,977.6 long_media_isla=214 pb
+[LW ej] c=5: N=166,667 no_cubiertas=33,689.7 islas=3,052.6 long_media_isla=1,638 pb
+[LW ej] c=10: N=333,333 no_cubiertas=227.0 islas=111.8 long_media_isla=44,729 pb
+[profundidad] P(D>=10)>=0.99  Poisson: c>=18.79   NB(r=10): c>=29.38   NB(r=5): c>=44.06
+[profundidad] P(D>=20)>=0.99  Poisson: c>=31.85   NB(r=10): c>=53.90   NB(r=5): c>=83.31
+[profundidad] c=30: P(D<10) Poisson=7.12e-06  NB r=10: 0.0089
+[profundidad] c=30 Poisson: fracción con D=0: 9.36e-14
+[NB] var teórica=120.0  var sim=120.3
+[esquema] N=22 L=14 G=120: c=2.57, media=2.57, huecos=4 pb, filas=7
+[ok] figuras generadas en /Users/juvenalyosa/bioinformatics/libro/figuras/cap06

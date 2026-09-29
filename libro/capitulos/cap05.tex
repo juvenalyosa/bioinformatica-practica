@@ -1,0 +1,1144 @@
+% =====================================================================
+%  Capítulo 5 · Filogenética y evolución molecular
+% =====================================================================
+\chapter{Filogenética y evolución molecular}\label{cap:05}
+
+\epigrafe{Las afinidades de todos los seres de la misma clase se han representado a veces por un gran árbol. Creo que este símil expresa en gran parte la verdad.}{\textcite{c05-darwin2009}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Describir un árbol filogenético con precisión (raíz, nodos, ramas, clados, biparticiones) y calcular cuántas topologías posibles existen para $n$ taxones.
+  \item Formular la evolución de una secuencia como una cadena de Márkov de tiempo continuo, derivar la distancia de Jukes-Cantor y explicar qué añaden K80, F81, HKY85, GTR y la heterogeneidad gamma.
+  \item Reconstruir árboles a partir de matrices de distancias con UPGMA y Neighbor-Joining, y reconocer cuándo cada método es consistente mediante las condiciones de ultrametricidad y de cuatro puntos.
+  \item Calcular la verosimilitud de un árbol con el algoritmo de poda de Felsenstein, seleccionar modelos con AIC y BIC, interpretar el soporte bootstrap y UFBoot, y explicar la atracción de ramas largas.
+\end{itemize}
+\end{objetivos}
+
+En el \cref{cap:03} aprendimos a alinear secuencias y a decidir si su parecido es mayor que el esperado por azar. Ese parecido, dijimos, delata un ancestro común. Este capítulo da el paso siguiente: si varias secuencias descienden de ancestros comunes, ¿en qué orden se separaron sus linajes, y cuánto cambió cada uno desde entonces? La respuesta es un \emph{árbol filogenético}, y reconstruirlo es uno de los problemas estadísticos más ricos de la biología.
+
+El capítulo sigue ese orden. Primero construiremos el lenguaje probabilístico de la evolución molecular: cadenas de Márkov, matrices de tasas y los modelos de sustitución, desde el sencillo Jukes-Cantor hasta el modelo general reversible con tasas gamma (\cref{sec:05-modelos}). Después usaremos esas distancias para reconstruir árboles con dos algoritmos clásicos y rapidísimos, UPGMA y Neighbor-Joining, y entenderemos con precisión matemática cuándo funcionan (\cref{sec:05-distancias}). Por último, pasaremos al método que domina la práctica actual, la máxima verosimilitud, junto con la selección de modelos y el bootstrap, y lo contrastaremos con la parsimonia para ver por qué un buen modelo puede evitar errores sistemáticos (\cref{sec:05-ml}).
+
+% =====================================================================
+\section{Distancias evolutivas y modelos de sustitución}\label{sec:05-modelos}
+% =====================================================================
+\enlacerepo{5.1 · Distancias y modelos de sustitución}
+
+\begin{intuicion}[La pared repintada]
+Imagine dos paredes que hace años se pintaron del mismo color. Desde entonces, cada cierto tiempo, alguien elige al azar uno de cuatro colores y repinta una de ellas. Hoy usted solo ve el color final de cada pared. Si los colores difieren, sabe que hubo al menos un repintado; pero si coinciden, no puede descartar que hayan pasado por rojo, azul y verde para volver, por casualidad, al mismo tono. Tras muchísimos repintados, las paredes coinciden una de cada cuatro veces, sin importar si pasaron diez o mil años. Contar diferencias visibles subestima la historia, y la subestima cada vez más cuanto más larga es. Para recuperar el número real de repintados hace falta un \emph{modelo} de cómo se repinta.
+\end{intuicion}
+
+Cada posición de una secuencia de ADN se comporta como esa pared: acumula sustituciones que se superponen, se revierten y se ocultan unas a otras. Esta sección construye los modelos que permiten «ver a través» de esas superposiciones. Antes, sin embargo, necesitamos un vocabulario preciso para hablar de árboles.
+
+\subsection{Árboles: el vocabulario mínimo}
+
+\begin{definicion}{Árbol filogenético}{arbol}
+Un \emph{árbol filogenético} es un grafo conexo y sin ciclos cuyas \emph{hojas} (nodos de grado 1) representan los taxones o secuencias observadas y cuyos \emph{nodos internos} representan ancestros hipotéticos. Cada \emph{rama} (arista) tiene una longitud $b\ge 0$, medida en sustituciones esperadas por sitio. El árbol es \emph{binario} si todo nodo interno tiene grado 3; es \emph{enraizado} si uno de sus nodos, la \emph{raíz}, se distingue como el ancestro común de todos los demás y define así la dirección del tiempo.
+\end{definicion}
+
+La \cref{fig:05-anatomia} resume los términos. Dos más serán imprescindibles. Un \emph{clado} es un ancestro junto con \emph{todos} sus descendientes, y solo tiene sentido en árboles enraizados. En un árbol no enraizado, el concepto equivalente es la \emph{bipartición} (\ingles{split}): al cortar una rama, el conjunto de hojas se divide en dos, por ejemplo $\{A,B\}\,|\,\{C,D,E\}$. Un árbol no enraizado queda completamente determinado por el conjunto de sus biparticiones, un hecho que usaremos para comparar árboles y para calcular el soporte bootstrap. Finalmente, la \emph{topología} es la forma del árbol (quién está emparentado con quién) sin atender a las longitudes de las ramas.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  % ------------------------------ (a) enraizado
+  \begin{scope}[on background layer]
+    \fill[azul!9, rounded corners=4pt] (1.35,-1.3) rectangle (4.75,-3.5);
+  \end{scope}
+  \draw[tinta, thick] (-0.1,-1.3) -- (0.4,-1.3);
+  \draw[tinta, thick] (0.4,-0.4) -- (0.4,-2.2);
+  \draw[tinta, thick] (0.4,-0.4) -- (2.4,-0.4);
+  \draw[tinta, thick] (2.4,0) -- (2.4,-0.8);
+  \draw[tinta, thick] (2.4,0) -- (4.2,0);
+  \draw[tinta, thick] (2.4,-0.8) -- (4.2,-0.8);
+  \draw[naranja, very thick] (0.4,-2.2) -- node[below, etiqueta, text=naranja!80!black, pos=0.5] {rama} (1.6,-2.2);
+  \draw[tinta, thick] (1.6,-1.6) -- (1.6,-2.8);
+  \draw[tinta, thick] (1.6,-1.6) -- (4.2,-1.6);
+  \draw[tinta, thick] (1.6,-2.8) -- (3.2,-2.8);
+  \draw[tinta, thick] (3.2,-2.4) -- (3.2,-3.2);
+  \draw[tinta, thick] (3.2,-2.4) -- (4.2,-2.4);
+  \draw[tinta, thick] (3.2,-3.2) -- (4.2,-3.2);
+  \foreach \p in {(2.4,-0.4),(1.6,-2.2),(3.2,-2.8)} \fill[azulprofundo] \p circle (2.2pt);
+  \fill[naranja] (0.4,-1.3) circle (2.8pt);
+  \foreach \y/\t in {0/A,-0.8/B,-1.6/C,-2.4/D,-3.2/E}
+     \node[anchor=west, font=\sffamily\small\bfseries, text=tinta] at (4.25,\y) {\t};
+  \node[etiqueta, anchor=east, text=naranja!80!black] at (-0.15,-1.3) {raíz};
+  \node[etiqueta, anchor=south] (ni) at (1.1,0.35) {nodo interno\\(ancestro hipotético)};
+  \draw[-{Stealth[length=1.6mm]}, tinta2] (ni.south) ++(0.35,0.05) -- (2.32,-0.33);
+  \draw[decorate, decoration={brace, amplitude=4pt}, tinta2] (4.75,0.15) -- (4.75,-3.35);
+  \node[etiqueta, anchor=west] at (4.85,-1.6) {hojas\\(taxones)};
+  \node[etiqueta, text=azulprofundo, anchor=south west] at (1.4,-3.5) {clado CDE};
+  \node[font=\sffamily\bfseries\small, text=tinta] at (2.1,1.75) {(a) árbol enraizado};
+  % ------------------------------ (b) no enraizado
+  \begin{scope}[shift={(8.2,-1.6)}]
+    \coordinate (u) at (0,0);  \coordinate (v) at (1.1,0); \coordinate (w) at (2.2,0);
+    \draw[tinta, thick] (u) -- (-0.8,0.8) node[anchor=south east, font=\sffamily\small\bfseries] {A};
+    \draw[tinta, thick] (u) -- (-0.8,-0.8) node[anchor=north east, font=\sffamily\small\bfseries] {B};
+    \draw[tinta, thick] (u) -- (v) -- (w);
+    \draw[tinta, thick] (v) -- (1.1,1.05) node[anchor=south, font=\sffamily\small\bfseries] {C};
+    \draw[tinta, thick] (w) -- (3.0,0.8) node[anchor=south west, font=\sffamily\small\bfseries] {D};
+    \draw[tinta, thick] (w) -- (3.0,-0.8) node[anchor=north west, font=\sffamily\small\bfseries] {E};
+    \foreach \p in {u,v,w} \fill[azulprofundo] (\p) circle (2.2pt);
+    \draw[rojo, dashed, thick] (0.55,0.55) -- (0.55,-0.75);
+    \node[etiqueta, text=rojooscuro] at (0.55,-1.15) {bipartición\\AB\,|\,CDE};
+    \node[font=\sffamily\bfseries\small, text=tinta] at (1.1,3.35) {(b) árbol no enraizado};
+  \end{scope}
+\end{tikzpicture}
+\caption[Anatomía de un árbol filogenético]{Anatomía de un árbol filogenético con cinco taxones. \textbf{(a)} En el árbol enraizado, la raíz (naranja) fija la dirección del tiempo: cada nodo interno (azul) es un ancestro hipotético, y el recuadro sombreado marca el clado formado por C, D, E y su ancestro común. \textbf{(b)} El mismo árbol sin raíz: las relaciones de parentesco se expresan como biparticiones; la línea roja corta la rama interna que separa $\{A,B\}$ de $\{C,D,E\}$. Los métodos de este capítulo producen árboles no enraizados; la raíz se añade después, por ejemplo con un grupo externo.}
+\label{fig:05-anatomia}
+\end{figure}
+
+\subsubsection*{¿Cuántos árboles hay?}
+
+Antes de reconstruir un árbol conviene saber entre cuántos candidatos debemos elegir. Consideremos árboles binarios no enraizados. Con tres hojas hay uno solo: una estrella de tres puntas. Un árbol binario no enraizado con $k$ hojas tiene $2k-3$ ramas; la $(k+1)$-ésima hoja puede insertarse en el punto medio de cualquiera de ellas, y cada elección produce una topología distinta. Multiplicando las opciones desde $k=3$ hasta $k=n-1$ se obtiene el resultado clásico, que se encuentra, por ejemplo, en \textcite{c05-felsenstein2004}.
+
+\begin{teorema}{Número de topologías}{topologias}
+El número de topologías binarias distintas con $n\ge 3$ hojas etiquetadas es
+\begin{equation}\label{eq:05-topologias}
+U(n) = \prod_{k=3}^{n-1}(2k-3) = (2n-5)!!,\qquad R(n) = (2n-3)!! = U(n+1),
+\end{equation}
+para árboles no enraizados y enraizados, respectivamente.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$U(n),\ R(n)$}{Número de árboles binarios no enraizados y enraizados con $n$ hojas.}
+\simbolo{$m!!$}{Doble factorial de un impar: $m!!=m\cdot(m-2)\cdots 3\cdot 1$.}
+\simbolo{$2k-3$}{Número de ramas de un árbol no enraizado con $k$ hojas: lugares donde insertar la siguiente.}
+\end{simbolos}
+
+La igualdad $R(n)=U(n+1)$ tiene una lectura sencilla: enraizar un árbol equivale a añadirle una hoja ficticia (la raíz) en alguna de sus $2n-3$ ramas. La \cref{tab:05-topologias} muestra lo rápido que crece el problema. Con diez taxones hay unos dos millones de árboles no enraizados; con cincuenta, alrededor de $10^{74}$, una cifra que se acerca al número de átomos del universo observable. Ningún computador puede evaluarlos todos, y por eso los métodos prácticos son, o bien algoritmos constructivos que edifican un único árbol paso a paso (\cref{sec:05-distancias}), o bien búsquedas heurísticas que exploran una pequeña fracción del espacio (\cref{sec:05-ml}).
+
+\begin{table}[t]
+\centering
+\caption[Número de topologías]{Número de topologías binarias para $n$ taxones (\cref{eq:05-topologias}). Valores calculados de forma exacta en \archivo{figuras/cap05/generar.py}.}
+\label{tab:05-topologias}
+\small
+\input{figuras/cap05/topologias.tex}
+\end{table}
+
+\subsection{El reloj molecular y la distancia \texorpdfstring{$p$}{p}}
+
+\begin{historia}[El reloj de las proteínas]
+A comienzos de los años sesenta, al comparar las secuencias de hemoglobinas y citocromos de distintos animales, Emile Zuckerkandl y Linus Pauling notaron que el número de diferencias entre dos proteínas homólogas crecía de forma aproximadamente proporcional al tiempo transcurrido desde la separación de las especies, estimado a partir de los fósiles. Propusieron entonces que las proteínas funcionan como un \emph{reloj evolutivo molecular} \parencite{c05-zuckerkandl1965}. La idea transformó la biología: si las moléculas cambian a ritmo aproximadamente constante, sus diferencias no solo revelan parentescos, sino también fechas.
+\end{historia}
+
+La medida más directa de divergencia entre dos secuencias alineadas es la proporción de sitios en que difieren.
+
+\begin{definicion}{Distancia $p$}{distp}
+Sean $x$ e $y$ dos secuencias alineadas con $L$ sitios comparables (sin huecos). La \emph{distancia} $p$ es
+\begin{equation}\label{eq:05-p}
+p = \frac{1}{L}\sum_{h=1}^{L}\mathbb{1}\left[x_h\neq y_h\right].
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$p$}{Proporción observada de sitios diferentes (distancia $p$ o distancia de Hamming normalizada).}
+\simbolo{$L$}{Número de sitios alineados comparables.}
+\simbolo{$x_h,\ y_h$}{Nucleótidos de las dos secuencias en el sitio $h$.}
+\end{simbolos}
+
+La distancia $p$ es un buen estimador del número de sustituciones solo cuando la divergencia es pequeña. A medida que el tiempo avanza, un sitio puede cambiar dos veces (\nuc{A}$\to$\nuc{G}$\to$\nuc{C}), revertir a su estado original (\nuc{A}$\to$\nuc{G}$\to$\nuc{A}) o cambiar en paralelo en ambos linajes hacia la misma base. Todos estos \emph{impactos múltiples} (\ingles{multiple hits}) quedan ocultos. El resultado es la \emph{saturación}: $p$ crece cada vez más despacio y, para ADN con bases equiprobables, se estanca en $3/4$, la probabilidad de que dos bases elegidas al azar difieran. Para corregir la saturación necesitamos un modelo explícito del proceso de sustitución.
+
+\subsection{La evolución como cadena de Márkov de tiempo continuo}
+
+Modelaremos cada sitio de la secuencia como un proceso aleatorio $X(t)$ que toma valores en $\{$\nuc{A}, \nuc{C}, \nuc{G}, \nuc{T}$\}$ y salta de un estado a otro a lo largo del tiempo. Los modelos estándar hacen cuatro supuestos:
+\begin{enumerate}
+  \item \textbf{Independencia}: los sitios evolucionan de forma independiente (y, salvo el modelo gamma, idéntica).
+  \item \textbf{Propiedad de Márkov}: la probabilidad de un cambio futuro depende solo del estado actual, no de la historia.
+  \item \textbf{Homogeneidad}: las tasas de cambio no varían a lo largo del tiempo ni entre ramas.
+  \item \textbf{Estacionariedad y reversibilidad}: la composición de bases está en equilibrio y el proceso «se ve igual» hacia adelante y hacia atrás en el tiempo.
+\end{enumerate}
+
+\begin{definicion}{Matriz de tasas instantáneas}{Q}
+Una cadena de Márkov de tiempo continuo sobre $s$ estados se describe mediante una matriz $Q=(q_{ij})$ de tamaño $s\times s$ tal que, para un intervalo de tiempo $\Delta t$ muy pequeño,
+\begin{equation}\label{eq:05-Q}
+\Prob\big(X(t+\Delta t)=j \,\big|\, X(t)=i\big) = q_{ij}\,\Delta t + o(\Delta t),\quad i\neq j;\qquad q_{ii} = -\sum_{j\neq i} q_{ij}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$Q$}{Matriz de tasas instantáneas de sustitución ($4\times4$ para ADN, $20\times20$ para proteínas).}
+\simbolo{$q_{ij}$}{Tasa a la que el estado $i$ se sustituye por $j$ ($q_{ij}\ge0$ si $i\ne j$).}
+\simbolo{$q_{ii}$}{Menos la tasa total de salida del estado $i$; hace que cada fila sume cero.}
+\simbolo{$o(\Delta t)$}{Términos que se anulan más rápido que $\Delta t$ (p.\,ej., dos cambios en el mismo intervalo).}
+\end{simbolos}
+
+La matriz $Q$ describe lo que ocurre en un instante; lo que observamos, sin embargo, son los resultados después de un tiempo finito. Sea $P(t)$ la matriz de probabilidades de transición, con $P_{ij}(t)=\Prob(X(t)=j\mid X(0)=i)$. Para llegar de $i$ a $j$ en el tiempo $t+\Delta t$, el proceso debe estar en algún estado $k$ en el tiempo $t$ y luego pasar de $k$ a $j$ en el breve intervalo final:
+\[
+P_{ij}(t+\Delta t) = \sum_k P_{ik}(t)\,\big(\delta_{kj}+q_{kj}\,\Delta t\big) + o(\Delta t)
+\quad\Longrightarrow\quad
+\frac{P(t+\Delta t)-P(t)}{\Delta t} \to P(t)\,Q.
+\]
+Esta es la \emph{ecuación de Kolmogorov hacia adelante}, $P'(t)=P(t)\,Q$ con $P(0)=I$. Su solución es la exponencial de una matriz:
+
+\begin{teorema}{Probabilidades de transición}{expQ}
+Para una cadena de Márkov homogénea con matriz de tasas $Q$,
+\begin{equation}\label{eq:05-expQ}
+P(t) = e^{Qt} = \sum_{k=0}^{\infty}\frac{(Qt)^k}{k!} = U\,\mathrm{diag}\!\left(e^{\lambda_1 t},\dots,e^{\lambda_s t}\right)U^{-1},
+\end{equation}
+y se cumple la propiedad de Chapman-Kolmogorov $P(t+u)=P(t)\,P(u)$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$P(t)$}{Matriz de probabilidades de transición: $P_{ij}(t)$ es la probabilidad de ver $j$ tras un tiempo $t$ partiendo de $i$.}
+\simbolo{$e^{Qt}$}{Exponencial matricial, definida por la serie de potencias.}
+\simbolo{$U,\ \lambda_k$}{Matriz de vectores propios de $Q$ y sus valores propios ($\lambda_1=0$, los demás negativos).}
+\simbolo{$I$}{Matriz identidad: con $t=0$ nada ha cambiado.}
+\end{simbolos}
+
+La descomposición espectral de la \cref{eq:05-expQ} es la forma en que los programas calculan $P(t)$: se diagonaliza $Q$ una sola vez y, para cada rama, basta con exponenciar $s$ números. El valor propio nulo corresponde a la distribución estacionaria $\pi$, que satisface $\pi Q=0$ y, por tanto, $\pi P(t)=\pi$ para todo $t$: si la composición de bases está en equilibrio, la evolución no la altera.
+
+Dos condiciones adicionales hacen que los modelos sean manejables. La primera es la \emph{reversibilidad temporal}, o condición de balance detallado:
+\begin{equation}\label{eq:05-reversible}
+\pi_i\, q_{ij} = \pi_j\, q_{ji}\quad\text{para todo } i,j.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\pi_i$}{Frecuencia de equilibrio del nucleótido $i$ ($\sum_i\pi_i=1$).}
+\simbolo{$\pi_i q_{ij}$}{Flujo de sustituciones $i\to j$ en equilibrio; la reversibilidad exige que iguale al flujo $j\to i$.}
+\end{simbolos}
+
+Con reversibilidad, la probabilidad de observar $x$ en un extremo de una rama e $y$ en el otro no depende de cuál extremo sea el «antiguo». Por eso, la distancia entre dos secuencias actuales separadas por dos ramas de longitudes $b_1$ y $b_2$ que se unen en su ancestro común se comporta como una sola rama de longitud $b_1+b_2$, y por eso los métodos de inferencia pueden trabajar con árboles no enraizados. La segunda condición es una \emph{normalización}: escalamos $Q$ de modo que la tasa media de sustitución en equilibrio sea uno,
+\begin{equation}\label{eq:05-norm}
+-\sum_i \pi_i\, q_{ii} = 1.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$-\sum_i \pi_i q_{ii}$}{Número esperado de sustituciones por sitio y por unidad de tiempo, promediado sobre la composición de equilibrio.}
+\end{simbolos}
+
+Con esta convención, el tiempo $t$ se mide directamente en \emph{sustituciones esperadas por sitio}, y la longitud de una rama coincide con la distancia evolutiva $d$ que queremos estimar. Tiempo y tasa quedan confundidos en un único parámetro: sin un reloj externo (fósiles, fechas de muestreo) no es posible separarlos.
+
+\subsection{Jukes-Cantor: la derivación completa}
+
+El modelo más sencillo, propuesto por \textcite{c05-jukes1969}, supone que las cuatro bases son equiprobables ($\pi_i=1/4$) y que cualquier base se sustituye por cualquier otra con la misma tasa $\alpha$:
+\begin{equation}\label{eq:05-QJC}
+Q_{\text{JC}} = \begin{pmatrix}
+-3\alpha & \alpha & \alpha & \alpha\\
+\alpha & -3\alpha & \alpha & \alpha\\
+\alpha & \alpha & -3\alpha & \alpha\\
+\alpha & \alpha & \alpha & -3\alpha
+\end{pmatrix}\quad\text{(orden \nuc{A}, \nuc{C}, \nuc{G}, \nuc{T})}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\alpha$}{Tasa de sustitución hacia cada una de las otras tres bases.}
+\simbolo{$3\alpha$}{Tasa total de salida de cualquier base; con la \cref{eq:05-norm}, $3\alpha=1$.}
+\end{simbolos}
+
+Por simetría, todas las probabilidades de permanecer son iguales, $P_{ii}(t)\equiv a(t)$, y todas las de cambio también, $P_{ij}(t)\equiv (1-a(t))/3$. La ecuación de Kolmogorov para un elemento diagonal da
+\[
+a'(t) = \underbrace{-3\alpha\, a(t)}_{\text{salir de } i} + \underbrace{3\cdot\alpha\,\frac{1-a(t)}{3}}_{\text{volver a } i} = \alpha - 4\alpha\, a(t),\qquad a(0)=1.
+\]
+Es una ecuación lineal de primer orden, cuya solución es $a(t)=\tfrac14+\tfrac34 e^{-4\alpha t}$. Como el número esperado de sustituciones es $d=3\alpha t$, podemos escribir $4\alpha t = 4d/3$ y obtenemos el resultado central de esta sección.
+
+\begin{teorema}{Distancia de Jukes-Cantor}{jc}
+Bajo el modelo JC69, dos secuencias separadas por $d$ sustituciones esperadas por sitio difieren en una proporción esperada de sitios
+\begin{equation}\label{eq:05-pjc}
+p(d) = \frac34\left(1-e^{-4d/3}\right).
+\end{equation}
+Invirtiendo esta relación con el valor observado $\hat p$ se obtiene el estimador de la distancia y, por el método delta, su varianza aproximada:
+\begin{equation}\label{eq:05-djc}
+\hat d_{\text{JC}} = -\frac34\ln\!\left(1-\frac43\,\hat p\right),\qquad
+\Var(\hat d_{\text{JC}}) \approx \frac{\hat p\,(1-\hat p)}{L\,\left(1-\frac43\hat p\right)^2}.
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$d$}{Distancia evolutiva: sustituciones esperadas por sitio entre las dos secuencias (suma de las ramas que las separan).}
+\simbolo{$p(d),\ \hat p$}{Proporción de diferencias esperada según el modelo y observada en los datos.}
+\simbolo{$\hat d_{\text{JC}}$}{Estimador de máxima verosimilitud de $d$ bajo JC69.}
+\simbolo{$L$}{Longitud del alineamiento; la varianza decrece como $1/L$.}
+\end{simbolos}
+
+La \cref{eq:05-pjc} captura la saturación con exactitud: para $d$ pequeño, $p\approx d$ (casi no hay impactos múltiples), pero cuando $d\to\infty$, $p\to 3/4$. La \cref{eq:05-djc} tiene dos consecuencias prácticas. Primero, $\hat d_{\text{JC}}$ no está definida si $\hat p\ge 3/4$: los datos son compatibles con cualquier distancia grande. Segundo, el denominador de la varianza se acerca a cero cuando $\hat p$ se acerca a $3/4$, de modo que las distancias grandes son muy imprecisas. La \cref{fig:05-saturacion} muestra ambas cosas: la curva teórica, los puntos simulados y lo mucho que se aplana la relación a partir de $d\approx 1$.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.4cm,
+  xlabel={distancia evolutiva $d$ (sustituciones por sitio)},
+  ylabel={proporción observada $p$},
+  xmin=0, xmax=3, ymin=0, ymax=1.22,
+  ytick={0,0.2,0.4,0.6,0.8,1},
+  legend style={at={(0.5,1.0)}, anchor=north}, legend columns=3]
+  \addplot[gris, dashed, thin, domain=0:1, forget plot] {x};
+  \node[etiqueta, anchor=west] at (axis cs:0.97,0.97) {$p=d$};
+  \addplot[gris, dotted, thick, domain=0:3, forget plot] {0.75};
+  \node[etiqueta, anchor=north east] at (axis cs:2.95,0.74) {asíntota $3/4$};
+  \addplot[azul, very thick] table[x=d, y=pjc] {figuras/cap05/saturacion.dat};
+  \addlegendentry{JC69}
+  \addplot[naranja, very thick] table[x=d, y=pk80] {figuras/cap05/saturacion.dat};
+  \addlegendentry{K80, $\kappa=10$ (total)}
+  \addplot[naranja, thick, dashed] table[x=d, y=ptr] {figuras/cap05/saturacion.dat};
+  \addlegendentry{K80: solo transiciones $P$}
+  \addplot[aqua!70!black, very thick] table[x=d, y=pjcg] {figuras/cap05/saturacion.dat};
+  \addlegendentry{JC69+$\Gamma$, $\alpha=0{,}5$}
+  \addplot[only marks, mark=*, mark size=1.6pt, azulprofundo] table[x=d, y=p] {figuras/cap05/saturacion_sim.dat};
+  \addlegendentry{simulación JC, $L=500$}
+\end{axis}
+\end{tikzpicture}
+\caption[Saturación de la distancia $p$]{Saturación de la distancia observada. La proporción de sitios diferentes crece casi como $d$ al principio, pero se curva y se estanca en $3/4$ (JC69, azul). Los puntos son pares de secuencias de 500 pb simulados bajo JC69: su dispersión alrededor de la curva recuerda que $\hat p$ es una estimación ruidosa. Con un sesgo fuerte hacia transiciones (K80 con $\kappa=10$, naranja), las transiciones saturan mucho antes (línea discontinua, $P\to1/4$) y el total avanza más lentamente. Con heterogeneidad de tasas (aqua), los sitios rápidos se saturan pronto y los lentos casi no cambian, de modo que la curva se aplana más despacio y engaña más: un mismo $\hat p$ corresponde a un $d$ mucho mayor.}
+\label{fig:05-saturacion}
+\end{figure}
+
+\subsection{Más allá de Jukes-Cantor: K80, F81, HKY85 y GTR}
+
+JC69 es elegante, pero dos de sus supuestos son claramente falsos en datos reales. El primero es que todas las sustituciones son igual de probables. Las bases se dividen químicamente en \emph{purinas} (\nuc{A}, \nuc{G}, de dos anillos) y \emph{pirimidinas} (\nuc{C}, \nuc{T}, de un anillo). Las \emph{transiciones} intercambian bases dentro de un mismo grupo (\nuc{A}$\leftrightarrow$\nuc{G}, \nuc{C}$\leftrightarrow$\nuc{T}); las \emph{transversiones}, entre grupos. Aunque hay el doble de tipos de transversión que de transición, en la mayoría de los genomas las transiciones son bastante más frecuentes, porque los errores de replicación y la desaminación de bases favorecen cambios que conservan el tamaño del anillo. \textcite{c05-kimura1980} incorporó esta asimetría con dos tasas: $\alpha$ para transiciones y $\beta$ para transversiones (\cref{fig:05-modelos}). Su parámetro clave es el cociente $\kappa=\alpha/\beta$, y la distancia correspondiente es
+\begin{equation}\label{eq:05-k80}
+\hat d_{\text{K80}} = -\frac12\ln\!\left(1-2P-Q\right) - \frac14\ln\!\left(1-2Q\right).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$P,\ Q$}{Proporciones observadas de sitios que difieren por una transición y por una transversión ($p=P+Q$).}
+\simbolo{$\kappa=\alpha/\beta$}{Cociente de tasas transición/transversión (en mamíferos suele estar entre 2 y 10).}
+\end{simbolos}
+
+(Aquí $Q$ es la proporción de transversiones, no la matriz de tasas.) El segundo supuesto discutible es la composición equilibrada. Muchos genomas son ricos en \nuc{A}+\nuc{T} o en \nuc{G}+\nuc{C}. En el modelo F81 de \textcite{c05-felsenstein1981}, la tasa hacia una base es proporcional a su frecuencia de equilibrio, $q_{ij}=\mu\,\pi_j$, y la distancia generaliza la de Jukes-Cantor sustituyendo el $3/4$ por $B=1-\sum_i\pi_i^2$, la probabilidad de que dos bases elegidas al azar según $\pi$ difieran:
+\begin{equation}\label{eq:05-f81}
+\hat d_{\text{F81}} = -B\,\ln\!\left(1-\frac{\hat p}{B}\right),\qquad B = 1-\sum_i\pi_i^2.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mu$}{Tasa global de sustitución (fijada por la normalización).}
+\simbolo{$B$}{Nivel de saturación del modelo: la $p$ esperada entre secuencias no relacionadas.}
+\end{simbolos}
+
+\textcite{c05-hasegawa1985} combinaron ambas ideas en el modelo HKY85, que tiene frecuencias desiguales \emph{y} un cociente $\kappa$. Finalmente, el \emph{modelo general reversible} (GTR), cuya forma general analizaron \textcite{c05-rodriguez1990}, permite una tasa distinta para cada uno de los seis pares de bases. Todos ellos pueden escribirse con una sola fórmula,
+\begin{equation}\label{eq:05-gtr}
+q_{ij} = \mu\, r_{ij}\,\pi_j \quad (i\ne j),\qquad r_{ij}=r_{ji},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$r_{ij}$}{Parámetro de intercambiabilidad simétrico entre las bases $i$ y $j$ (uno de ellos se fija en 1).}
+\simbolo{$\pi_j$}{Frecuencia de equilibrio de la base de llegada.}
+\simbolo{$\mu$}{Factor de escala que impone la \cref{eq:05-norm}.}
+\end{simbolos}
+
+\noindent y la reversibilidad (\cref{eq:05-reversible}) se cumple automáticamente, porque $\pi_i q_{ij}=\mu\,r_{ij}\pi_i\pi_j$ es simétrico en $i,j$. Los modelos más sencillos son casos particulares que restringen los $r_{ij}$ y los $\pi_j$ (\cref{tab:05-modelos-adn}). Esta estructura \emph{anidada} será importante al compararlos mediante pruebas de razón de verosimilitudes en la \cref{sec:05-ml}.
+
+\begin{table}[t]
+\centering
+\caption[Modelos de sustitución de nucleótidos]{Modelos reversibles de sustitución de nucleótidos como casos particulares de GTR (\cref{eq:05-gtr}). Los parámetros libres no incluyen las longitudes de las ramas. Cualquiera de ellos puede combinarse con heterogeneidad gamma (+$\Gamma$, un parámetro más) o con una proporción de sitios invariables (+I).}
+\label{tab:05-modelos-adn}
+\small
+\begin{tabular}{@{}llllc@{}}
+\toprule
+\textbf{Modelo} & \textbf{Frecuencias} $\pi$ & \textbf{Intercambiabilidades} $r_{ij}$ & \textbf{Referencia} & \textbf{Libres}\\
+\midrule
+JC69  & iguales   & todas iguales                     & \textcite{c05-jukes1969} & 0\\
+K80   & iguales   & transición $\kappa$, transversión 1 & \textcite{c05-kimura1980} & 1\\
+F81   & libres    & todas iguales                     & \textcite{c05-felsenstein1981} & 3\\
+HKY85 & libres    & transición $\kappa$, transversión 1 & \textcite{c05-hasegawa1985} & 4\\
+GTR   & libres    & seis valores (uno fijo)           & \textcite{c05-rodriguez1990} & 8\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \node[nt=A, minimum size=9mm, font=\ttfamily\bfseries\Large] (A) at (0,2.4) {A};
+  \node[nt=G, minimum size=9mm, font=\ttfamily\bfseries\Large] (G) at (3.4,2.4) {G};
+  \node[nt=C, minimum size=9mm, font=\ttfamily\bfseries\Large] (C) at (0,0) {C};
+  \node[nt=T, minimum size=9mm, font=\ttfamily\bfseries\Large] (T) at (3.4,0) {T};
+  \draw[{Stealth[length=2.6mm]}-{Stealth[length=2.6mm]}, line width=2.2pt, naranja] (A) -- node[above, font=\sffamily\small, text=naranja!80!black] {$\alpha = \kappa\beta$} (G);
+  \draw[{Stealth[length=2.6mm]}-{Stealth[length=2.6mm]}, line width=2.2pt, naranja] (C) -- node[below, font=\sffamily\small, text=naranja!80!black] {$\alpha = \kappa\beta$} (T);
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick, azul, dashed] (A) -- node[left, text=azul] {$\beta$} (C);
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick, azul, dashed] (G) -- node[right, text=azul] {$\beta$} (T);
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick, azul, dashed] (A) -- node[pos=0.28, above right, text=azul, inner sep=1pt] {$\beta$} (T);
+  \draw[{Stealth[length=2mm]}-{Stealth[length=2mm]}, thick, azul, dashed] (G) -- node[pos=0.28, above left, text=azul, inner sep=1pt] {$\beta$} (C);
+  \node[etiqueta] at (1.7,3.35) {\textbf{purinas} (dos anillos)};
+  \node[etiqueta] at (1.7,-0.95) {\textbf{pirimidinas} (un anillo)};
+  \node[etiqueta, text=naranja!80!black, anchor=west] at (-0.6,-1.55) {\rule[2pt]{6mm}{2pt}\ transiciones};
+  \node[etiqueta, text=azul, anchor=west] at (1.9,-1.55) {\tikz\draw[thick,azul,dashed](0,0)--(0.6,0);\ transversiones};
+  % jerarquía
+  \begin{scope}[shift={(7.6,0)}]
+    \node[caja=azul, text width=2.2cm] (jc) at (1.6,3.0) {\textbf{JC69}\\\scriptsize una tasa, $\pi$ iguales};
+    \node[caja=naranja, text width=1.75cm] (k80) at (0.1,1.45) {\textbf{K80}\\\scriptsize $+\kappa$};
+    \node[caja=aqua, text width=1.75cm] (f81) at (3.1,1.45) {\textbf{F81}\\\scriptsize $+\pi$ libres};
+    \node[caja=violeta, text width=2.2cm] (hky) at (1.6,-0.1) {\textbf{HKY85}\\\scriptsize $\kappa$ y $\pi$};
+    \node[caja=magenta, text width=2.2cm] (gtr) at (1.6,-1.55) {\textbf{GTR}\\\scriptsize seis $r_{ij}$ y $\pi$};
+    \draw[flecha] (jc) -- (k80); \draw[flecha] (jc) -- (f81);
+    \draw[flecha] (k80) -- (hky); \draw[flecha] (f81) -- (hky);
+    \draw[flecha] (hky) -- (gtr);
+  \end{scope}
+\end{tikzpicture}
+\caption[Tasas de los modelos de sustitución]{\textbf{Izquierda}: las seis clases de sustitución entre nucleótidos. Las transiciones (naranja, trazo grueso) conservan el tipo de anillo y ocurren a una tasa $\alpha$ típicamente varias veces mayor que la de las transversiones (azul, $\beta$). JC69 hace iguales todas las flechas; K80 distingue los dos colores; GTR permite un valor distinto para cada una de las seis. \textbf{Derecha}: jerarquía de modelos anidados; cada flecha añade parámetros y cada modelo inferior contiene al superior como caso particular.}
+\label{fig:05-modelos}
+\end{figure}
+
+\subsection{Heterogeneidad de tasas entre sitios: el modelo \texorpdfstring{$\Gamma$}{Gamma}}
+
+El supuesto más dañino de todos los modelos anteriores es que todos los sitios evolucionan a la misma velocidad. En un gen codificante, las terceras posiciones de los codones, a menudo sinónimas, cambian mucho más deprisa que las segundas; en un ARN ribosómico, los bucles varían mientras los tallos apareados se conservan. Si ignoramos esta variación, los sitios rápidos saturan pronto, los lentos no aportan diferencias, y la distancia resultante se subestima sistemáticamente.
+
+\textcite{c05-yang1994} popularizó la solución estándar: suponer que la tasa relativa $r$ de cada sitio es una variable aleatoria con distribución gamma de media 1,
+\begin{equation}\label{eq:05-gamma}
+g(r;\alpha) = \frac{\alpha^{\alpha}}{\Gamma(\alpha)}\, r^{\alpha-1}e^{-\alpha r},\qquad \E[r]=1,\quad \Var(r)=\frac1\alpha,
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$r$}{Tasa relativa de un sitio: multiplica todas las longitudes de rama para ese sitio.}
+\simbolo{$\alpha$}{Parámetro de forma; $\alpha$ pequeño significa tasas muy desiguales, $\alpha\to\infty$ recupera tasas iguales.}
+\simbolo{$\Gamma(\alpha)$}{Función gamma de Euler, que normaliza la densidad.}
+\end{simbolos}
+
+\noindent La probabilidad de un sitio se calcula entonces promediando sobre $r$. Como la integral no tiene forma cerrada para árboles, Yang propuso aproximarla con $K$ categorías de igual probabilidad, cada una representada por la tasa media de su intervalo. Con $K=4$ y $\alpha=0{,}5$, las cuatro tasas son \num{0.033}, \num{0.252}, \num{0.820} y \num{2.894}: una cuarta parte de los sitios es casi invariable y otra cuarta parte evoluciona casi tres veces más rápido que el promedio. Para distancias entre pares la integral sí es explícita y da la distancia JC+$\Gamma$,
+\begin{equation}\label{eq:05-djcg}
+\hat d_{\text{JC}+\Gamma} = \frac34\,\alpha\left[\left(1-\frac43\hat p\right)^{-1/\alpha}-1\right],
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\hat d_{\text{JC}+\Gamma}$}{Distancia de Jukes-Cantor corregida por heterogeneidad gamma; tiende a $\hat d_{\text{JC}}$ cuando $\alpha\to\infty$.}
+\end{simbolos}
+
+\noindent que siempre es mayor que la de JC para el mismo $\hat p$. La \cref{fig:05-gamma} ilustra cómo cambia la forma de la distribución con $\alpha$. En la práctica, además de $+\Gamma$, suele añadirse una proporción de sitios invariables (+I), y los programas modernos ofrecen modelos de tasas libres (\ingles{FreeRate}) que no imponen la forma gamma.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.56\linewidth, height=5.4cm,
+  xlabel={tasa relativa $r$}, ylabel={densidad $g(r;\alpha)$},
+  xmin=0, xmax=3, ymin=0, ymax=2.2, legend pos=north east]
+  \addplot[rojo, very thick] table[x=r, y=a025] {figuras/cap05/gamma.dat};
+  \addlegendentry{$\alpha=0{,}25$}
+  \addplot[naranja, very thick] table[x=r, y=a05] {figuras/cap05/gamma.dat};
+  \addlegendentry{$\alpha=0{,}5$}
+  \addplot[aqua!80!black, very thick] table[x=r, y=a1] {figuras/cap05/gamma.dat};
+  \addlegendentry{$\alpha=1$}
+  \addplot[azul, very thick] table[x=r, y=a4] {figuras/cap05/gamma.dat};
+  \addlegendentry{$\alpha=4$}
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.40\linewidth, height=5.4cm, ybar, bar width=9pt,
+  xlabel={categoría}, ylabel={tasa media}, ymin=0, ymax=3.3,
+  xtick={1,2,3,4}, grid=none,
+  nodes near coords, every node near coord/.append style={font=\sffamily\tiny, text=tinta2},
+  point meta=explicit symbolic]
+  \addplot[fill=naranja!70, draw=naranja!80!black] coordinates {(1,0.0334) [0,033] (2,0.2519) [0,252] (3,0.8203) [0,820] (4,2.8944) [2,894]};
+\end{axis}
+\end{tikzpicture}
+\caption[Distribución gamma de tasas entre sitios]{\textbf{Izquierda}: densidad gamma de media 1 para varios valores del parámetro de forma. Con $\alpha<1$ la distribución tiene forma de L: muchos sitios casi invariables y unos pocos muy rápidos, la situación habitual en genes codificantes. Con $\alpha=4$ las tasas se concentran alrededor de 1. \textbf{Derecha}: las cuatro categorías discretas de igual probabilidad para $\alpha=0{,}5$ \parencite{c05-yang1994}: la categoría más rápida evoluciona unas 90 veces más deprisa que la más lenta.}
+\label{fig:05-gamma}
+\end{figure}
+
+\begin{ejemplo}{Tres distancias para el mismo par de secuencias}{distancias}
+Considere el siguiente par de fragmentos alineados de 40 pb (las marcas indican \texttt{i} para transición y \texttt{v} para transversión):
+\begin{center}
+\ttfamily\small
+\begin{tabular}{@{}l@{}}
+ATGGCTAAGCTTACGGATCCAGTACTGAAACGTTGCAAGT\\
+|||i||||i|||||v|||||v||||||i|||||i||v|||\\
+ATGACTAAACTTACTGATCCTGTACTGGAACGTCGCCAGT
+\end{tabular}
+\end{center}
+Hay 7 diferencias: 4 transiciones y 3 transversiones. Por lo tanto, $\hat p = 7/40 = 0{,}175$, $P=0{,}100$ y $Q=0{,}075$.
+\begin{itemize}
+  \item \textbf{JC69} (\cref{eq:05-djc}): $\hat d = -\tfrac34\ln(1-\tfrac43\cdot0{,}175) = -\tfrac34\ln(0{,}7667) = 0{,}199$, con error estándar $\sqrt{\Var}\approx 0{,}078$.
+  \item \textbf{K80} (\cref{eq:05-k80}): $\hat d = -\tfrac12\ln(1-0{,}2-0{,}075) - \tfrac14\ln(1-0{,}15) = 0{,}161+0{,}041 = 0{,}201$.
+  \item \textbf{JC+$\Gamma$} (\cref{eq:05-djcg}): con $\alpha=1$, $\hat d=0{,}228$; con $\alpha=0{,}5$, $\hat d = 0{,}263$.
+\end{itemize}
+Tres lecciones se desprenden de estas cifras. Primera: todas las correcciones superan a $\hat p$, porque añaden los cambios ocultos. Segunda: K80 apenas difiere de JC aquí, porque la proporción de transiciones observada (4 de 7) no está muy sesgada; la diferencia crece con $\kappa$ y con la divergencia. Tercera: la corrección gamma es la que más pesa (un 32\,\% más que JC con $\alpha=0{,}5$), y el error estándar ($\pm0{,}078$ para JC) es casi tan grande como las diferencias entre modelos: con 40 sitios, la incertidumbre de muestreo domina. Todas las cifras se reproducen con \archivo{figuras/cap05/generar.py}.
+\end{ejemplo}
+
+\begin{codigo}[distancias.py]
+import numpy as np
+from scipy.linalg import expm
+
+TS = {("A", "G"), ("G", "A"), ("C", "T"), ("T", "C")}
+
+def distancias(x: str, y: str) -> dict:
+    """Distancias p, JC69 y K80 entre dos secuencias alineadas."""
+    pares = [(a, b) for a, b in zip(x, y) if "-" not in (a, b)]
+    L = len(pares)
+    P = sum((a, b) in TS for a, b in pares) / L       # transiciones
+    Q = sum(a != b and (a, b) not in TS for a, b in pares) / L
+    p = P + Q
+    d_jc = -0.75 * np.log(1 - 4 * p / 3)
+    d_k80 = -0.5 * np.log(1 - 2 * P - Q) - 0.25 * np.log(1 - 2 * Q)
+    return dict(p=p, jc=d_jc, k80=d_k80)
+
+def matriz_P_k80(d: float, kappa: float) -> np.ndarray:
+    """P(t) = exp(Qt) para K80 normalizado a d sustituciones."""
+    Q = np.array([[0, 1, kappa, 1], [1, 0, 1, kappa],
+                  [kappa, 1, 0, 1], [1, kappa, 1, 0]], float)
+    np.fill_diagonal(Q, -Q.sum(1))
+    Q /= -np.mean(np.diag(Q))            # tasa media = 1
+    return expm(Q * d)                   # orden A, C, G, T
+
+print(distancias("ATGGCTAAGCTTACGG", "ATGACTAAACTTACTG"))
+print(matriz_P_k80(0.3, kappa=4).round(4)[0])   # fila de A
+\end{codigo}
+
+La segunda función muestra la \cref{eq:05-expQ} en acción. Con $d=0{,}3$ y $\kappa=4$, la fila de \nuc{A} de $P(t)$ es $(0{,}758;\ 0{,}045;\ 0{,}151;\ 0{,}045)$: la probabilidad de terminar en \nuc{G} (transición) es más del triple que la de terminar en \nuc{C} o en \nuc{T}.
+
+\begin{cuidado}[Distancias que mienten]
+\begin{enumerate}
+  \item \emph{Saturación}: si $\hat p$ se acerca al nivel de saturación ($3/4$ en JC, $B$ en F81), la distancia corregida explota o no existe. Para genes muy divergentes conviene usar proteínas en lugar de ADN, o eliminar las terceras posiciones de los codones.
+  \item \emph{Modelo inadecuado}: ignorar la heterogeneidad de tasas subestima sobre todo las distancias grandes y deforma el árbol entero, no solo las ramas largas.
+  \item \emph{Huecos}: la \cref{eq:05-p} supone sitios comparables; los programas eliminan los huecos par a par o en todo el alineamiento, y la elección cambia el resultado.
+\end{enumerate}
+\end{cuidado}
+
+\begin{ideaclave}
+$p$ mide lo que vemos; $d$ mide lo que ocurrió.\\
+El modelo de sustitución es el puente entre ambos.
+\end{ideaclave}
+
+% =====================================================================
+\section{UPGMA y Neighbor-Joining}\label{sec:05-distancias}
+% =====================================================================
+\enlacerepo{5.2 · UPGMA y Neighbor-Joining}
+
+\begin{intuicion}[Reconstruir las carreteras desde la tabla de kilómetros]
+En la guantera de un coche viejo aparece una tabla con las distancias por carretera entre cinco pueblos, pero no hay mapa. ¿Es posible dibujar la red de carreteras? Si las carreteras forman un árbol, sin circuitos, y las distancias se midieron recorriéndolas, la respuesta es sí, y además de forma exacta: cada distancia es la suma de los tramos que la componen, y esa redundancia basta para deducir dónde están los cruces y cuánto mide cada tramo. Pero si alguien anotó las distancias en línea recta, o se equivocó al copiarlas, la tabla deja de ser coherente con ningún árbol, y hay que buscar el que mejor se le ajuste.
+\end{intuicion}
+
+Los métodos de distancias siguen exactamente ese programa. Primero reducen el alineamiento a una matriz $D$ de distancias evolutivas entre pares, calculadas con los modelos de la \cref{sec:05-modelos}; luego buscan un árbol cuyas distancias de camino reproduzcan $D$. Son rápidos, intuitivos y todavía se usan mucho, tanto como árboles finales en análisis exploratorios como árboles iniciales para métodos más costosos. Para entender cuándo funcionan necesitamos dos definiciones.
+
+\subsection{Árboles aditivos y ultramétricos}
+
+\begin{definicion}{Distancias aditivas y ultramétricas}{aditiva}
+Una matriz de distancias $D$ sobre $n$ taxones es \emph{aditiva} si existe un árbol con longitudes de rama no negativas tal que, para todo par $i,j$, $D_{ij}$ es la suma de las longitudes de las ramas del camino entre $i$ y $j$. Es \emph{ultramétrica} si, además, el árbol puede enraizarse de modo que todas las hojas estén a la misma distancia de la raíz.
+\end{definicion}
+
+Un árbol ultramétrico es un árbol con \emph{reloj molecular}: todos los linajes han acumulado el mismo número de sustituciones desde la raíz, de modo que la profundidad de cada nodo es proporcional a su edad. Un árbol aditivo no exige nada de eso: las ramas pueden tener longitudes arbitrarias, como ocurre cuando unos linajes evolucionan más deprisa que otros (\cref{fig:05-ultrametrico}). Ambas propiedades pueden comprobarse directamente sobre la matriz, sin conocer el árbol.
+
+\begin{teorema}{Condiciones de tres y cuatro puntos}{cuatropuntos}
+(i) $D$ es ultramétrica si y solo si, para toda terna $i,j,k$,
+\begin{equation}\label{eq:05-trespuntos}
+D_{ij} \le \max\{D_{ik},\,D_{jk}\},
+\end{equation}
+es decir, los dos valores mayores de cada terna son iguales. (ii) $D$ es aditiva si y solo si, para todo cuarteto $i,j,k,l$, de las tres sumas
+\begin{equation}\label{eq:05-cuatropuntos}
+D_{ij}+D_{kl},\qquad D_{ik}+D_{jl},\qquad D_{il}+D_{jk}
+\end{equation}
+las dos mayores son iguales \parencite{c05-buneman1974}.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$i,j,k,l$}{Cuatro taxones cualesquiera, todos distintos.}
+\simbolo{$D_{ij}$}{Distancia entre los taxones $i$ y $j$.}
+\end{simbolos}
+
+La condición de cuatro puntos tiene una explicación gráfica muy clara (\cref{fig:05-cuatropuntos}). En un árbol, cuatro hojas siempre se agrupan en dos pares separados por un camino interno de longitud $e\ge 0$. Si los pares son $\{i,j\}$ y $\{k,l\}$, la suma $D_{ij}+D_{kl}$ \emph{no} recorre ese camino, mientras que las otras dos sumas lo recorren dos veces cada una. Así, las dos sumas «cruzadas» son iguales y superan a la primera en exactamente $2e$. Esto no solo prueba la condición: dice también cómo leer la topología del cuarteto (el par con la suma \emph{menor} son vecinos) y cuánto mide su rama interna.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  % ultramétrico
+  \begin{scope}
+    \foreach \y/\t in {0/A,-0.7/B,-1.4/C,-2.1/D} \node[anchor=west, font=\sffamily\small\bfseries] at (4.05,\y) {\t};
+    \draw[tinta, thick] (0,-1.05) -- (0.0,-1.05);
+    \draw[tinta, thick] (0,-0.35) -- (0,-1.75);
+    \draw[tinta, thick] (0,-0.35) -- (2.4,-0.35); \draw[tinta, thick] (2.4,0) -- (2.4,-0.7);
+    \draw[tinta, thick] (2.4,0) -- (4,0); \draw[tinta, thick] (2.4,-0.7) -- (4,-0.7);
+    \draw[tinta, thick] (0,-1.75) -- (1.4,-1.75); \draw[tinta, thick] (1.4,-1.4) -- (1.4,-2.1);
+    \draw[tinta, thick] (1.4,-1.4) -- (4,-1.4); \draw[tinta, thick] (1.4,-2.1) -- (4,-2.1);
+    \draw[rojo, dashed] (4,0.35) -- (4,-2.45);
+    \draw[flecha=tinta2] (0,-2.8) -- node[below, etiqueta] {tiempo} (4,-2.8);
+    \node[font=\sffamily\bfseries\small] at (2.1,0.75) {(a) ultramétrico (con reloj)};
+  \end{scope}
+  % aditivo
+  \begin{scope}[shift={(6.9,0)}]
+    \draw[tinta, thick] (0,-0.35) -- (0,-1.75);
+    \draw[tinta, thick] (0,-0.35) -- (1.0,-0.35); \draw[tinta, thick] (1.0,0) -- (1.0,-0.7);
+    \draw[tinta, thick] (1.0,0) -- (1.6,0); \draw[naranja, very thick] (1.0,-0.7) -- (5.1,-0.7);
+    \draw[tinta, thick] (0,-1.75) -- (1.8,-1.75); \draw[tinta, thick] (1.8,-1.4) -- (1.8,-2.1);
+    \draw[tinta, thick] (1.8,-1.4) -- (3.2,-1.4); \draw[tinta, thick] (1.8,-2.1) -- (2.5,-2.1);
+    \foreach \x/\y/\t in {1.6/0/A,5.1/-0.7/B,3.2/-1.4/C,2.5/-2.1/D}
+      \node[anchor=west, font=\sffamily\small\bfseries] at (\x+0.05,\y) {\t};
+    \node[etiqueta, text=naranja!80!black, anchor=south] at (3.3,-0.68) {linaje acelerado};
+    \draw[flecha=tinta2] (0,-2.8) -- node[below, etiqueta] {sustituciones por sitio} (5.1,-2.8);
+    \node[font=\sffamily\bfseries\small] at (2.5,0.75) {(b) aditivo (sin reloj)};
+  \end{scope}
+\end{tikzpicture}
+\caption[Árboles ultramétricos y aditivos]{\textbf{(a)} En un árbol ultramétrico todas las hojas quedan alineadas (línea roja): la distancia raíz-hoja es la misma para todos los taxones, como exige un reloj molecular estricto, y la altura de cada nodo es proporcional a su edad. \textbf{(b)} En un árbol aditivo las ramas tienen longitudes arbitrarias; el linaje de B (naranja) ha acumulado muchas más sustituciones que su hermano A. Las distancias entre hojas siguen siendo sumas de ramas, pero ya no reflejan directamente los tiempos. UPGMA supone el caso (a); Neighbor-Joining solo necesita el caso (b).}
+\label{fig:05-ultrametrico}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \coordinate (u) at (0,0); \coordinate (v) at (2,0);
+  \coordinate (i) at (-1.3,1.1); \coordinate (j) at (-1.3,-1.1);
+  \coordinate (k) at (3.3,1.1);  \coordinate (l) at (3.3,-1.1);
+  \draw[azul!55, line width=3.2pt, line cap=round, opacity=.55] ($(i)+(0,0.1)$) -- ($(u)+(0,0.1)$) -- ($(v)+(0,0.1)$) -- ($(k)+(0,0.1)$);
+  \draw[verde!70, line width=3.2pt, line cap=round, opacity=.55] ($(j)+(0,-0.1)$) -- ($(u)+(0,-0.1)$) -- ($(v)+(0,-0.1)$) -- ($(l)+(0,-0.1)$);
+  \draw[tinta, thick] (i) -- node[above left, etiqueta] {$a$} (u) -- (j) node[pos=0.5, below left, etiqueta] {$b$};
+  \draw[naranja, very thick] (u) -- node[above, etiqueta, text=naranja!80!black] {$e$} (v);
+  \draw[tinta, thick] (k) -- node[above right, etiqueta] {$c$} (v) -- (l) node[pos=0.5, below right, etiqueta] {$d$};
+  \foreach \p/\t/\a in {i/i/west,j/j/west,k/k/east,l/l/east} \node[circle, fill=tinta, text=white, inner sep=1.5pt, font=\sffamily\scriptsize\bfseries] at (\p) {\t};
+  \node[anchor=west, align=left, font=\sffamily\small] at (4.4,0) {%
+    $D_{ij}+D_{kl} = a+b+c+d$\\[3pt]
+    {\color{azul}$D_{ik}$}$+${\color{verde!60!black}$D_{jl}$}$\;= a+b+c+d+2e$\\[3pt]
+    $D_{il}+D_{jk} = a+b+c+d+2e$\\[6pt]
+    {\scriptsize\color{tinta2}las dos sumas mayores coinciden;}\\
+    {\scriptsize\color{tinta2}la menor identifica a los vecinos}};
+\end{tikzpicture}
+\caption[La condición de cuatro puntos]{La condición de cuatro puntos. En un cuarteto con topología $ij\,|\,kl$, los caminos $i\to k$ (azul) y $j\to l$ (verde) atraviesan ambos la rama interna $e$ (naranja), mientras que los caminos $i\to j$ y $k\to l$ no lo hacen. Por eso las dos sumas «cruzadas» son iguales y exceden a la tercera en $2e$. En la matriz del \cref{ej:nj}, para el cuarteto A, B, C, D, las sumas son $1{,}1$, $1{,}3$ y $1{,}3$: A y B son vecinos y la rama interna mide $0{,}1$.}
+\label{fig:05-cuatropuntos}
+\end{figure}
+
+\subsection{UPGMA: agrupar por promedios}
+
+El método de agrupamiento más antiguo que todavía se enseña es UPGMA (\ingles{unweighted pair group method with arithmetic mean}), introducido a finales de los años cincuenta en el contexto de la taxonomía numérica \parencite{c05-felsenstein2004}. Su lógica es la de cualquier agrupamiento jerárquico aglomerativo:
+
+\begin{enumerate}
+  \item Comience con cada taxón como un grupo de tamaño 1, situado a altura 0.
+  \item Encuentre el par de grupos $(A,B)$ con la menor distancia $D_{AB}$.
+  \item Únalos en un nuevo nodo situado a altura $h=D_{AB}/2$ (cada rama mide $h$ menos la altura del grupo hijo).
+  \item Calcule la distancia del nuevo grupo a cualquier otro grupo $K$ como el promedio ponderado por tamaño:
+  \begin{equation}\label{eq:05-upgma}
+  D_{(AB),K} = \frac{|A|\,D_{AK}+|B|\,D_{BK}}{|A|+|B|}.
+  \end{equation}
+  \item Repita desde el paso 2 hasta que quede un solo grupo, que será la raíz.
+\end{enumerate}
+
+\begin{simbolos}
+\simbolo{$A,\ B,\ K$}{Grupos (clados) formados hasta el momento.}
+\simbolo{$|A|$}{Número de taxones del grupo $A$.}
+\simbolo{$D_{(AB),K}$}{Distancia media entre los taxones de $A\cup B$ y los de $K$.}
+\end{simbolos}
+
+UPGMA produce siempre un árbol enraizado y ultramétrico, y su coste es $O(n^2)$ en memoria y $O(n^3)$ en tiempo en la versión directa. Su gran virtud es también su gran defecto: \emph{si $D$ es ultramétrica, UPGMA recupera exactamente el árbol verdadero}, pero si no lo es, porque los linajes evolucionan a ritmos distintos, puede unir taxones que no son vecinos. La razón es simple. UPGMA une el par más cercano, y en un árbol sin reloj el par más cercano no tiene por qué ser un par de hermanos: un taxón con una rama muy larga puede estar más lejos de su hermano que de un primo con ramas cortas. El \cref{ej:nj} y la \cref{fig:05-upgma} muestran exactamente esa situación.
+
+\subsection{Neighbor-Joining: corregir por la divergencia neta}
+
+\textcite{c05-saitou1987} propusieron una solución ingeniosa. En lugar de unir el par con la menor distancia, Neighbor-Joining (NJ) une el par con la menor distancia \emph{corregida por lo lejos que está cada uno de todos los demás}. Un taxón con una rama larga está lejos de todo el mundo; restando su divergencia total se elimina ese efecto.
+
+\begin{teorema}{Criterio y actualización de Neighbor-Joining}{nj}
+Con $n$ nodos activos, defina la divergencia neta $r_i=\sum_{k}D_{ik}$ y la matriz
+\begin{equation}\label{eq:05-njQ}
+Q_{ij} = (n-2)\,D_{ij} - r_i - r_j .
+\end{equation}
+Se unen los nodos $i,j$ que minimizan $Q_{ij}$ en un nuevo nodo $u$, con ramas
+\begin{equation}\label{eq:05-njramas}
+b_{iu} = \frac{D_{ij}}{2} + \frac{r_i - r_j}{2(n-2)},\qquad b_{ju} = D_{ij} - b_{iu},
+\end{equation}
+y las distancias del nuevo nodo a los demás se actualizan como
+\begin{equation}\label{eq:05-njupdate}
+D_{uk} = \tfrac12\left(D_{ik}+D_{jk}-D_{ij}\right).
+\end{equation}
+El proceso se repite hasta que quedan tres nodos, que se unen en una estrella. Si $D$ es aditiva, NJ recupera el árbol verdadero con sus longitudes de rama exactas.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$n$}{Número de nodos activos (hojas o nodos ya formados) en el paso actual.}
+\simbolo{$r_i$}{Divergencia neta de $i$: suma de sus distancias a todos los nodos activos.}
+\simbolo{$Q_{ij}$}{Criterio de selección; su mínimo identifica un par de vecinos.}
+\simbolo{$b_{iu}$}{Longitud de la rama que une $i$ con el nuevo nodo $u$.}
+\simbolo{$D_{uk}$}{Distancia del nuevo nodo a otro nodo $k$: lo que queda del camino $i\to k$ al descontar la rama $b_{iu}$, promediado con el de $j$.}
+\end{simbolos}
+
+¿De dónde sale la \cref{eq:05-njQ}? Saitou y Nei la derivaron desde el principio de \emph{evolución mínima}: partiendo de un árbol en estrella, unir $i$ y $j$ produce un árbol cuya longitud total $S_{ij}$ puede calcularse a partir de $D$, y el par elegido es el que minimiza esa longitud. \textcite{c05-studier1988} mostraron que minimizar $S_{ij}$ equivale a minimizar la expresión más simple de la \cref{eq:05-njQ} (ambas difieren en un factor positivo y una constante) y que el algoritmo completo corre en tiempo $O(n^3)$. La fórmula de las ramas (\cref{eq:05-njramas}) también se entiende: la rama de $i$ es la mitad de $D_{ij}$ más una corrección proporcional a cuánto más lejos de todos está $i$ que $j$. La \cref{eq:05-njupdate}, por su parte, es la condición de aditividad despejada: si $u$ está en el camino entre $i$ y $k$, entonces $D_{ik}=b_{iu}+D_{uk}$.
+
+\begin{profundizacion}[Lo que NJ optimiza realmente]
+Durante dos décadas se discutió qué criterio optimiza NJ, si es que optimiza alguno. \textcite{c05-gascuel2006} resumieron la respuesta: NJ es un algoritmo voraz (\ingles{greedy}) para el criterio de \emph{evolución mínima balanceada}, que estima la longitud total del árbol con una ponderación particular de las distancias. Esto explica tanto su robustez (tolera bastante bien el ruido en $D$) como sus límites: al ser voraz, una decisión temprana errónea no se corrige después. Programas como FastME aplican búsquedas locales sobre ese mismo criterio para mejorar el árbol de NJ.
+\end{profundizacion}
+
+\begin{ejemplo}{Neighbor-Joining paso a paso}{nj}
+La \cref{tab:05-njD} contiene las distancias de camino de un árbol \emph{aditivo pero no ultramétrico} con cinco taxones, en el que B tiene una rama larga (\cref{fig:05-upgma}, izquierda). Puede comprobarse que satisface la condición de cuatro puntos: para A, B, C, D, las sumas son $D_{AB}+D_{CD}=1{,}1$, $D_{AC}+D_{BD}=1{,}3$ y $D_{AD}+D_{BC}=1{,}3$.
+
+\medskip\noindent\textbf{Paso 1} ($n=5$). Las divergencias netas son $r=(2{,}0;\ 2{,}9;\ 2{,}2;\ 2{,}6;\ 2{,}3)$. Por ejemplo, $Q_{AB}=3\cdot0{,}5-2{,}0-2{,}9=-3{,}4$ y $Q_{AC}=3\cdot0{,}4-2{,}0-2{,}2=-3{,}0$. El mínimo, $-3{,}4$, se alcanza en dos pares, A--B y D--E, ambos vecinos genuinos; tomamos D--E (resaltado en la tabla). Observe que A--C, el par más cercano ($0{,}4$), \emph{no} gana. Las ramas son $b_{D}=0{,}25+(2{,}6-2{,}3)/6=0{,}30$ y $b_{E}=0{,}20$. El nuevo nodo $u_1$ queda a distancias $D_{u_1A}=\tfrac12(0{,}6+0{,}5-0{,}5)=0{,}3$, $D_{u_1B}=0{,}6$ y $D_{u_1C}=0{,}3$.
+
+\medskip\noindent\textbf{Paso 2} ($n=4$). Con los nodos A, B, C, $u_1$ resulta $r=(1{,}2;\ 1{,}8;\ 1{,}4;\ 1{,}2)$ y $Q_{AB}=2\cdot0{,}5-1{,}2-1{,}8=-2{,}0$, que empata con $Q_{Cu_1}$ (en un cuarteto, los dos pares vecinos siempre empatan). Unimos A y B: $b_A=0{,}25+(1{,}2-1{,}8)/4=0{,}10$ y $b_B=0{,}40$.
+
+\medskip\noindent\textbf{Paso 3} ($n=3$). Quedan C, $u_1$, $u_2$ con $D_{Cu_1}=0{,}3$, $D_{Cu_2}=0{,}3$ y $D_{u_1u_2}=0{,}2$; la estrella final da ramas $0{,}2$, $0{,}1$ y $0{,}1$.
+
+\medskip El árbol obtenido coincide exactamente, topología y longitudes, con el verdadero (\cref{fig:05-njpasos}).
+
+\begin{center}
+\small
+\begin{tabular}{@{}c@{\hspace{2em}}c@{}}
+\input{figuras/cap05/nj_D.tex}
+&
+\input{figuras/cap05/nj_Q.tex}
+\end{tabular}
+\captionof{table}{Matriz de distancias aditiva del ejemplo (izquierda) y matriz $Q$ del primer paso de NJ (derecha).}\label{tab:05-njD}
+\end{center}
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \tikzset{hoja/.style={font=\sffamily\small\bfseries, text=tinta}, lon/.style={etiqueta, text=azulprofundo, inner sep=1pt}}
+  % panel 1: estrella
+  \begin{scope}[shift={(1.7,0)}]
+    \coordinate (c) at (0,0);
+    \foreach \ang/\t in {90/A,162/B,234/C,306/D,18/E}{
+      \draw[tinta, thick] (c) -- (\ang:1.2) node[hoja, anchor=\ang+180] {\t};}
+    \fill[tinta] (c) circle (2pt);
+    \node[font=\sffamily\bfseries\small] at (0,1.95) {1. estrella inicial};
+    \node[etiqueta] at (0,-1.85) {$\min Q = Q_{DE} = -3{,}4$};
+  \end{scope}
+  % panel 2: D-E unidos
+  \begin{scope}[shift={(5.95,0)}]
+    \coordinate (c) at (-0.3,0); \coordinate (u1) at (0.55,-0.3);
+    \draw[tinta, thick] (c) -- (-0.3,1.2) node[hoja, anchor=south] {A};
+    \draw[tinta, thick] (c) -- (-1.4,0.2) node[hoja, anchor=east] {B};
+    \draw[tinta, thick] (c) -- (-1.0,-1.0) node[hoja, anchor=north east] {C};
+    \draw[naranja, very thick] (c) -- (u1);
+    \draw[naranja, very thick] (u1) -- node[lon, above left] {0,3} (1.55,0.45) node[hoja, anchor=south west] {D};
+    \draw[naranja, very thick] (u1) -- node[lon, left] {0,2} (1.3,-1.05) node[hoja, anchor=north west] {E};
+    \fill[tinta] (c) circle (2pt); \fill[naranja] (u1) circle (2.2pt);
+    \node[etiqueta, text=naranja!80!black, anchor=west] at (0.68,-0.3) {$u_1$};
+    \node[font=\sffamily\bfseries\small] at (0,1.95) {2. se unen D y E};
+    \node[etiqueta] at (0,-1.85) {$\min Q = Q_{AB} = -2{,}0$};
+  \end{scope}
+  % panel 3: árbol final
+  \begin{scope}[shift={(10.35,0)}]
+    \coordinate (c) at (0,0.1); \coordinate (u1) at (0.9,-0.25); \coordinate (u2) at (-0.9,-0.25);
+    \draw[tinta, thick] (c) -- node[lon, right] {0,2} (0,1.15) node[hoja, anchor=south] {C};
+    \draw[tinta, thick] (c) -- node[lon, below] {0,1} (u1);
+    \draw[tinta, thick] (c) -- node[lon, below] {0,1} (u2);
+    \draw[tinta, thick] (u1) -- node[lon, right] {0,3} (1.55,0.65) node[hoja, anchor=south west] {D};
+    \draw[tinta, thick] (u1) -- node[lon, right] {0,2} (1.35,-1.1) node[hoja, anchor=north west] {E};
+    \draw[naranja, very thick] (u2) -- node[lon, left] {0,1} (-1.35,0.3) node[hoja, anchor=south east] {A};
+    \draw[naranja, very thick] (u2) -- node[lon, left] {0,4} (-1.6,-1.45) node[hoja, anchor=north east] {B};
+    \foreach \p in {c,u1,u2} \fill[tinta] (\p) circle (2pt);
+    \node[font=\sffamily\bfseries\small] at (0,1.95) {3. árbol final};
+    \node[etiqueta] at (0.2,-1.85) {= árbol verdadero};
+  \end{scope}
+\end{tikzpicture}
+\caption[Los pasos de Neighbor-Joining]{Neighbor-Joining sobre la matriz de la \cref{tab:05-njD}. El algoritmo parte de una estrella en la que todos los taxones cuelgan de un único nodo y, en cada paso, «arranca» de la estrella el par que minimiza $Q_{ij}$ (\cref{eq:05-njQ}), creando un nodo nuevo (naranja). Con cinco taxones bastan dos uniones; los tres nodos restantes forman la estrella final. Las longitudes, calculadas con la \cref{eq:05-njramas}, reproducen exactamente las del árbol generador, incluida la rama larga de B.}
+\label{fig:05-njpasos}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, x=9mm]
+  \tikzset{hj/.style={anchor=west, font=\sffamily\small\bfseries, text=tinta}}
+  % árbol verdadero, dibujado desde el nodo central v
+  \begin{scope}
+    \draw[tinta, thick] (0,-0.3) -- (0,-2.1);
+    \draw[tinta, thick] (0,-0.3) -- (1,-0.3); \draw[tinta, thick] (1,0) -- (1,-0.6);
+    \draw[tinta, thick] (1,0) -- (2,0) node[hj] {A};
+    \draw[naranja, very thick] (1,-0.6) -- (5,-0.6) node[hj] {B};
+    \draw[tinta, thick] (0,-1.2) -- (2,-1.2) node[hj] {C};
+    \draw[tinta, thick] (0,-2.1) -- (1,-2.1); \draw[tinta, thick] (1,-1.8) -- (1,-2.4);
+    \draw[tinta, thick] (1,-1.8) -- (4,-1.8) node[hj] {D};
+    \draw[tinta, thick] (1,-2.4) -- (3,-2.4) node[hj] {E};
+    \draw[tinta2] (0,-3.0) -- (1,-3.0) node[midway, below, etiqueta] {0,1};
+    \node[font=\sffamily\bfseries\small] at (2.6,0.65) {(a) árbol verdadero = NJ};
+  \end{scope}
+  % UPGMA
+  \begin{scope}[shift={(7.4,0)}]
+    \draw[tinta, thick] (0,0) -- (0,-1.5);
+    \draw[naranja, very thick] (0,0) -- (3.2625,0) node[hj] {B};
+    \draw[tinta, thick] (0,-1.5) -- (0.7875,-1.5);
+    \draw[tinta, thick] (0.7875,-0.9) -- (0.7875,-2.1);
+    \draw[rojo, very thick] (0.7875,-0.9) -- (1.4625,-0.9);
+    \draw[rojo, very thick] (1.4625,-0.6) -- (1.4625,-1.2);
+    \draw[rojo, very thick] (1.4625,-0.6) -- (3.2625,-0.6) node[hj] {A};
+    \draw[rojo, very thick] (1.4625,-1.2) -- (3.2625,-1.2) node[hj] {C};
+    \draw[tinta, thick] (0.7875,-2.1) -- (1.0125,-2.1);
+    \draw[tinta, thick] (1.0125,-1.8) -- (1.0125,-2.4);
+    \draw[tinta, thick] (1.0125,-1.8) -- (3.2625,-1.8) node[hj] {D};
+    \draw[tinta, thick] (1.0125,-2.4) -- (3.2625,-2.4) node[hj] {E};
+    \node[etiqueta, text=rojooscuro, anchor=west] at (1.55,-0.9) {grupo falso};
+    \draw[tinta2] (0,-3.0) -- (1,-3.0) node[midway, below, etiqueta] {0,1};
+    \node[font=\sffamily\bfseries\small] at (1.9,0.65) {(b) UPGMA};
+  \end{scope}
+\end{tikzpicture}
+\caption[UPGMA frente a Neighbor-Joining sin reloj molecular]{Cuando falla el reloj. \textbf{(a)} Árbol generador del \cref{ej:nj}, dibujado desde su nodo central: B pertenece al linaje de A, pero su rama (naranja) es cuatro veces más larga. NJ lo recupera exactamente. \textbf{(b)} UPGMA sobre la misma matriz. Como $D_{AC}=0{,}4$ es la menor distancia, UPGMA une primero A con C (rojo), un grupo que no existe en el árbol verdadero, y relega a B a la posición más externa, porque su rama larga lo aleja de todos. La hipótesis de ultrametricidad fuerza además a que todas las hojas terminen alineadas.}
+\label{fig:05-upgma}
+\end{figure}
+
+Biopython implementa ambos métodos en su módulo de construcción de árboles,\\ \py{Bio.Phylo.TreeConstruction}. El siguiente fragmento reproduce el ejemplo; la matriz se pasa en forma triangular inferior. Al ejecutarlo, UPGMA devuelve las ramas A y C de longitud $0{,}200$ unidas en un clado, mientras que NJ devuelve las longitudes verdaderas ($0{,}1$ para A, $0{,}4$ para B, etc.).
+
+\begin{codigo}[arboles\_distancia.py]
+from Bio import Phylo
+from Bio.Phylo.TreeConstruction import (DistanceMatrix,
+                                        DistanceTreeConstructor)
+
+nombres = ["A", "B", "C", "D", "E"]
+tri = [[0],
+       [0.5, 0],
+       [0.4, 0.7, 0],
+       [0.6, 0.9, 0.6, 0],
+       [0.5, 0.8, 0.5, 0.5, 0]]           # triangular inferior
+dm = DistanceMatrix(nombres, tri)
+cons = DistanceTreeConstructor()
+for metodo in (cons.upgma, cons.nj):
+    arbol = metodo(dm)
+    print(metodo.__name__)
+    for clado in arbol.find_clades():
+        if clado.branch_length:
+            print(f"  {clado.name:8s} {clado.branch_length:.3f}")
+    Phylo.draw_ascii(arbol)
+\end{codigo}
+
+\begin{cuidado}[Tres advertencias sobre los métodos de distancias]
+\begin{enumerate}
+  \item \emph{Ramas negativas}: con datos reales, $D$ nunca es exactamente aditiva, y la \cref{eq:05-njramas} puede dar longitudes negativas. Se suelen truncar a cero, pero son un síntoma de ruido o de un modelo de distancia inadecuado.
+  \item \emph{La raíz no es un resultado}: el árbol de NJ es no enraizado. Dibujarlo con la raíz en el punto donde lo deja el programa sugiere relaciones ancestrales que el método no ha inferido.
+  \item \emph{Información perdida}: al resumir el alineamiento en $\binom{n}{2}$ números, se descarta qué sitios concretos difieren. Los métodos basados en caracteres (\cref{sec:05-ml}) usan toda esa información, y por eso son estadísticamente más eficientes.
+\end{enumerate}
+\end{cuidado}
+
+\begin{ideaclave}
+UPGMA supone un reloj; NJ solo supone aditividad.\\
+Cuando el reloj falla, el par más cercano no es necesariamente un par de hermanos.
+\end{ideaclave}
+
+% =====================================================================
+\section{Máxima verosimilitud y bootstrap}\label{sec:05-ml}
+% =====================================================================
+\enlacerepo{5.3 · Máxima verosimilitud y bootstrap}
+
+\begin{intuicion}[El detective que mide la sorpresa]
+Un buen detective no se pregunta primero «¿cuál es la historia más probable?», porque no tiene forma de asignar probabilidades a historias que nunca ha visto. Se pregunta algo más modesto y más poderoso: «si esta historia fuera cierta, ¿qué tan probable sería encontrar exactamente las huellas, las colillas y las coartadas que tengo delante?». La historia bajo la cual las pruebas resultan \emph{menos sorprendentes} es su mejor candidata. Y si varias historias explican las pruebas casi igual de bien, un detective honesto lo dice: su confianza depende de cuánto cambiaría la conclusión con un poco menos de evidencia.
+\end{intuicion}
+
+Esa es, en esencia, la filosofía de la máxima verosimilitud (ML, \ingles{maximum likelihood}), llevada a la filogenética por \textcite{c05-felsenstein1981}. Las «historias» son árboles con longitudes de rama y un modelo de sustitución; las «pruebas» son las columnas del alineamiento. A diferencia de los métodos de distancias, ML usa todos los sitios individualmente y dispone de un marco estadístico completo para estimar parámetros, comparar modelos y medir la incertidumbre. Los libros de \textcite{c05-felsenstein2004} y \textcite{c05-yang2014} desarrollan esta teoría con gran detalle.
+
+\subsection{La verosimilitud de un árbol}
+
+Sea $X$ un alineamiento de $n$ secuencias y $N$ sitios, y sea $x_h$ la columna $h$. Dado un árbol $T$ con longitudes de rama $\mathbf b$ y un modelo con parámetros $\boldsymbol\theta$ (por ejemplo, $\kappa$, $\pi$ y $\alpha$), la independencia entre sitios permite escribir:
+
+\begin{definicion}{Verosimilitud filogenética}{verosimilitud}
+\begin{equation}\label{eq:05-lik}
+\begin{aligned}
+L(T,\mathbf b,\boldsymbol\theta) &= \Prob(X\mid T,\mathbf b,\boldsymbol\theta) = \prod_{h=1}^{N}\Prob(x_h\mid T,\mathbf b,\boldsymbol\theta),\\
+\ell &= \ln L = \sum_{h=1}^{N}\ln\Prob(x_h\mid T,\mathbf b,\boldsymbol\theta).
+\end{aligned}
+\end{equation}
+El estimador de máxima verosimilitud es la terna $(\hat T,\hat{\mathbf b},\hat{\boldsymbol\theta})$ que maximiza $\ell$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$X,\ x_h$}{Alineamiento completo y su columna $h$ (el estado de cada hoja en ese sitio).}
+\simbolo{$N$}{Número de sitios del alineamiento.}
+\simbolo{$T,\ \mathbf b$}{Topología y vector de longitudes de rama ($2n-3$ ramas en un árbol no enraizado).}
+\simbolo{$\boldsymbol\theta$}{Parámetros del modelo de sustitución.}
+\simbolo{$\ell$}{Logaritmo de la verosimilitud, que se usa porque $L$ es un número diminuto.}
+\end{simbolos}
+
+Observe que la verosimilitud \emph{no} es la probabilidad de que el árbol sea correcto: es la probabilidad de los datos suponiendo que lo es. El trabajo consiste en calcular $\Prob(x_h\mid\cdot)$ para una columna. Tomemos el árbol de cuatro hojas de la \cref{fig:05-poda}, enraizado (arbitrariamente) en el nodo interno 5. Las hojas muestran los estados observados; los nodos internos 5 y 6 son ancestros cuyos estados desconocemos, así que sumamos sobre todas sus posibilidades:
+\begin{equation}\label{eq:05-sitio}
+\Prob(x_h) = \sum_{x_5}\sum_{x_6}\pi_{x_5}\,P_{x_5x_1}(b_1)\,P_{x_5x_2}(b_2)\,P_{x_5x_6}(b_5)\,P_{x_6x_3}(b_3)\,P_{x_6x_4}(b_4).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$x_1,\dots,x_4$}{Estados observados en las hojas para el sitio $h$.}
+\simbolo{$x_5,\ x_6$}{Estados desconocidos de los nodos internos; se suman los 16 casos.}
+\simbolo{$\pi_{x_5}$}{Probabilidad del estado en la raíz (frecuencia de equilibrio).}
+\simbolo{$P_{xy}(b)$}{Probabilidad de transición de $x$ a $y$ a lo largo de una rama de longitud $b$ (\cref{eq:05-expQ}).}
+\end{simbolos}
+
+Cada término es la probabilidad de una historia completa del sitio; sumarlos todos da la probabilidad de lo observado. El problema es que, con $n$ hojas, hay $n-2$ nodos internos en un árbol no enraizado y $4^{n-2}$ historias por sitio: para 50 secuencias, unas $10^{29}$. Necesitamos, otra vez, una idea más astuta que la fuerza bruta.
+
+\subsection{El algoritmo de poda de Felsenstein}
+
+La idea es la misma que en la programación dinámica del \cref{cap:03}: reordenar las sumas para no repetir cálculos. En la \cref{eq:05-sitio}, los factores que dependen de $x_6$ pueden agruparse en una suma interior, que se calcula una sola vez para cada valor de $x_6$. Generalizando este reordenamiento a cualquier árbol, \textcite{c05-felsenstein1981} obtuvo un recorrido desde las hojas hacia la raíz, denominado \emph{poda} (\ingles{pruning}) porque cada subárbol ya procesado se «corta» y se sustituye por un vector de cuatro números.
+
+\begin{teorema}{Algoritmo de poda}{poda}
+Para cada nodo $k$ y estado $x$, sea $L_k(x)$ la probabilidad de los estados observados en las hojas que descienden de $k$, condicionada a que $k$ esté en el estado $x$. Entonces
+\begin{equation}\label{eq:05-poda}
+L_k(x) = \begin{cases}
+\mathbb 1\left[x = x_k\right] & \text{si } k \text{ es una hoja},\\[4pt]
+\displaystyle\prod_{c\,\in\,\mathrm{hijos}(k)}\;\sum_{y} P_{xy}(b_c)\,L_c(y) & \text{si } k \text{ es interno},
+\end{cases}
+\end{equation}
+y la probabilidad del sitio es $\Prob(x_h) = \sum_x \pi_x\,L_{\text{raíz}}(x)$.
+El coste por sitio es $O(n\,s^2)$ en lugar de $O(s^{\,n-2})$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$L_k(x)$}{Verosimilitud parcial (o condicional) del subárbol que cuelga del nodo $k$.}
+\simbolo{$b_c$}{Longitud de la rama que une $k$ con su hijo $c$.}
+\simbolo{$s$}{Número de estados: 4 para ADN, 20 para proteínas, 61 para codones.}
+\simbolo{$\mathbb 1[\cdot]$}{Indicador; para una base ambigua (p.\,ej., \texttt{R} = \nuc{A} o \nuc{G}) o un hueco se usa 1 en todos los estados compatibles.}
+\end{simbolos}
+
+Dos observaciones completan el cuadro. Primero, bajo un modelo reversible la verosimilitud no depende de dónde se coloque la raíz: es el llamado \emph{principio de la polea} de Felsenstein, que justifica trabajar con árboles no enraizados. Segundo, los sitios con el mismo patrón de estados tienen la misma probabilidad, así que basta con calcularla una vez por patrón distinto y multiplicarla por su frecuencia. En el alineamiento simulado de 600 sitios que usaremos más adelante solo hay 118 patrones distintos.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \tikzset{vec/.style={draw=rejilla, fill=papel!55, rounded corners=2pt, font=\sffamily\scriptsize, inner sep=3pt}}
+  \coordinate (n5) at (2.4,3.1); \coordinate (n6) at (4.3,1.55);
+  \node[nt=A, minimum size=6.5mm] (h1) at (0.4,0) {A};
+  \node[nt=C, minimum size=6.5mm] (h2) at (2.0,0) {C};
+  \node[nt=G, minimum size=6.5mm] (h3) at (3.5,0) {G};
+  \node[nt=G, minimum size=6.5mm] (h4) at (5.1,0) {G};
+  \draw[tinta, thick] (n5) -- node[etiqueta, sloped, above, pos=0.5] {$b_1=0{,}1$} (h1.north);
+  \draw[tinta, thick] (n5) -- node[etiqueta, sloped, below, pos=0.5] {$b_2=0{,}2$} (h2.north);
+  \draw[violeta, very thick] (n5) -- node[etiqueta, above right, text=violeta] {$b_5=0{,}3$} (n6);
+  \draw[naranja, very thick] (n6) -- node[etiqueta, sloped, above, pos=0.5] {$b_3=0{,}1$} (h3.north);
+  \draw[naranja, very thick] (n6) -- node[etiqueta, sloped, above, pos=0.5] {$b_4=0{,}2$} (h4.north);
+  \node[circle, fill=violeta, text=white, inner sep=1.5pt, font=\sffamily\scriptsize\bfseries] at (n5) {5};
+  \node[circle, fill=naranja, text=white, inner sep=1.5pt, font=\sffamily\scriptsize\bfseries] at (n6) {6};
+  \foreach \h/\k in {h1/1,h2/2,h3/3,h4/4} \node[etiqueta, below=1pt of \h] {hoja \k};
+  % vectores
+  \node[vec, anchor=west] (v6) at (6.3,1.55) {%
+    \begin{tabular}{@{}l@{\;}cccc@{}}
+    & \nuc{A} & \nuc{C} & \nuc{G} & \nuc{T}\\
+    $L_6$ & 0,0018 & 0,0018 & \textbf{0,7473} & 0,0018
+    \end{tabular}};
+  \node[vec, anchor=west] (v5) at (6.3,3.1) {%
+    \begin{tabular}{@{}l@{\;}cccc@{}}
+    & \nuc{A} & \nuc{C} & \nuc{G} & \nuc{T}\\
+    $L_5\times10^{3}$ & \textbf{3,356} & 1,628 & 1,028 & 0,116
+    \end{tabular}};
+  \draw[-{Stealth[length=1.8mm]}, naranja, dashed, thick] ($(n6)+(0.2,0)$) -- (v6.west);
+  \draw[-{Stealth[length=1.8mm]}, violeta, dashed, thick] ($(n5)+(0.2,0)$) -- (v5.west);
+  \node[etiqueta, anchor=west, text=tinta, align=left] at (6.3,0.25) {%
+    $\Prob(x_h)=\tfrac14\sum_x L_5(x) = 1{,}532\times10^{-3}$\\ $\ln\Prob(x_h) = -6{,}481$};
+  \draw[flecha=gris] (-0.5,0.3) -- node[etiqueta, sloped, above] {de las hojas a la raíz} (-0.5,3.1);
+\end{tikzpicture}
+\caption[Verosimilitud de un sitio por poda]{El algoritmo de poda para un sitio con patrón \nuc{A}\nuc{C}\nuc{G}\nuc{G} bajo JC69. El vector $L_6$ (naranja) resume el subárbol de las hojas 3 y 4: como ambas muestran \nuc{G}, el estado \nuc{G} en el nodo 6 es unas 400 veces más verosímil que cualquier otro. El vector $L_5$ (violeta) combina las hojas 1 y 2 con el subárbol ya podado, y su suma ponderada por $\pi=1/4$ da la probabilidad del sitio. Todos los valores se calculan en \archivo{figuras/cap05/generar.py} y coinciden con la suma directa de las 16 historias de la \cref{eq:05-sitio}.}
+\label{fig:05-poda}
+\end{figure}
+
+\begin{ejemplo}{Verosimilitud de un sitio, paso a paso}{poda}
+Usemos JC69 con las ramas de la \cref{fig:05-poda}. Para JC, $P_{xx}(b)=\frac14+\frac34e^{-4b/3}$ y $P_{xy}(b)=\frac14-\frac14e^{-4b/3}$, de modo que la probabilidad de permanecer y la de cambiar a una base concreta valen $0{,}9064$ y $0{,}0312$ para $b=0{,}1$; $0{,}8245$ y $0{,}0585$ para $b=0{,}2$; y $0{,}7527$ y $0{,}0824$ para $b=0{,}3$.
+
+\medskip\noindent\textbf{Nodo 6.} Sus hijos son hojas con \nuc{G}, de modo que $L_6(x)=P_{x\text{G}}(0{,}1)\,P_{x\text{G}}(0{,}2)$. Para $x=\text{\nuc{G}}$: $0{,}9064\times0{,}8245=0{,}7473$; para cualquier otra base: $0{,}0312\times0{,}0585=0{,}0018$.
+
+\medskip\noindent\textbf{Nodo 5.} Para $x=\text{\nuc{A}}$, el factor de la rama hacia 6 es $\sum_y P_{\text{A}y}(0{,}3)L_6(y) = 0{,}7527\cdot0{,}0018 + 0{,}0824\cdot(0{,}0018+0{,}7473+0{,}0018) = 0{,}0633$. Multiplicando por $P_{\text{AA}}(0{,}1)=0{,}9064$ (hoja 1) y por $P_{\text{AC}}(0{,}2)=0{,}0585$ (hoja 2) se obtiene $L_5(\text{\nuc{A}}) = 3{,}356\times10^{-3}$. Análogamente, $L_5=(3{,}356;\ 1{,}628;\ 1{,}028;\ 0{,}116)\times10^{-3}$.
+
+\medskip\noindent\textbf{Raíz.} $\Prob(x_h)=\frac14\sum_x L_5(x)=1{,}532\times10^{-3}$, y $\ln\Prob(x_h)=-6{,}481$. El estado más verosímil del nodo 5 es \nuc{A}, apoyado por la hoja 1, que cuelga de la rama más corta: la verosimilitud «pondera» la evidencia de cada hoja según la longitud de su rama, algo que ningún conteo de diferencias hace.
+\end{ejemplo}
+
+\begin{codigo}[poda.py]
+import numpy as np
+
+def P_jc(t: float) -> np.ndarray:
+    """Matriz de transición de Jukes-Cantor para una rama t."""
+    e = np.exp(-4 * t / 3)
+    return np.full((4, 4), 0.25 - 0.25 * e) + e * np.eye(4)
+
+def parcial(nodo, sitio: dict) -> np.ndarray:
+    """Vector L_k(x) de verosimilitudes parciales (poda)."""
+    nombre, hijos = nodo
+    if not hijos:                             # hoja: indicador
+        v = np.zeros(4)
+        v["ACGT".index(sitio[nombre])] = 1.0
+        return v
+    v = np.ones(4)
+    for hijo, t in hijos:                     # producto sobre hijos
+        v *= P_jc(t) @ parcial(hijo, sitio)
+    return v
+
+hoja = lambda n: (n, [])
+arbol = ("5", [(hoja("1"), 0.1), (hoja("2"), 0.2),
+               (("6", [(hoja("3"), 0.1), (hoja("4"), 0.2)]), 0.3)])
+sitio = {"1": "A", "2": "C", "3": "G", "4": "G"}
+L = 0.25 * parcial(arbol, sitio).sum()        # pi = 1/4
+print(f"L = {L:.4e}   lnL = {np.log(L):.4f}")  # 1.5317e-03  -6.4814
+\end{codigo}
+
+\subsection{Optimizar ramas, parámetros y topologías}
+
+Calcular $\ell$ para un árbol dado es la parte fácil. Maximizarla exige resolver tres problemas anidados. Las \textbf{longitudes de rama} se optimizan de una en una: al variar solo $b_c$, la verosimilitud es una función suave de una variable, y unas pocas iteraciones de Newton-Raphson bastan. Los \textbf{parámetros del modelo} ($\kappa$, $\alpha$, $r_{ij}$) se optimizan de forma similar, alternando con las ramas. La \textbf{topología}, en cambio, es un objeto discreto que vive en el espacio astronómico de la \cref{tab:05-topologias}, y ahí solo cabe la búsqueda heurística: partir de un árbol razonable (a menudo, uno de NJ o de parsimonia) y mejorarlo con reordenamientos locales mientras la verosimilitud suba.
+
+Los reordenamientos más comunes se muestran en la \cref{fig:05-nni}. El \textbf{intercambio de vecinos más cercanos} (NNI, \ingles{nearest neighbor interchange}) toma una rama interna, que separa cuatro subárboles, y prueba las dos formas alternativas de conectarlos; un árbol con $n$ hojas tiene $n-3$ ramas internas y, por lo tanto, $2(n-3)$ vecinos NNI. La \textbf{poda y reinjerto} (SPR, \ingles{subtree pruning and regrafting}) corta un subárbol y lo vuelve a unir en cualquier otra rama, lo que permite saltos mucho mayores; la \textbf{bisección y reconexión} (TBR) generaliza SPR probando además todas las raíces posibles del subárbol cortado.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \tikzset{st/.style={circle, draw=#1!70!black, fill=#1!15, thick, minimum size=6mm, inner sep=0pt, font=\sffamily\small\bfseries}}
+  \newcommand{\capcincocuarteto}[5]{%
+    \begin{scope}[shift={#1}]
+      \draw[naranja, very thick] (0,0) -- (1,0);
+      \draw[tinta, thick] (0,0) -- (-0.55,0.55); \draw[tinta, thick] (0,0) -- (-0.55,-0.55);
+      \draw[tinta, thick] (1,0) -- (1.55,0.55); \draw[tinta, thick] (1,0) -- (1.55,-0.55);
+      \node[st=azul] at (-0.75,0.75) {#2}; \node[st=verde] at (-0.75,-0.75) {#3};
+      \node[st=magenta] at (1.75,0.75) {#4}; \node[st=amarillo] at (1.75,-0.75) {#5};
+    \end{scope}}
+  \capcincocuarteto{(0.8,0)}{A}{B}{C}{D}
+  \capcincocuarteto{(5.0,0)}{A}{C}{B}{D}
+  \capcincocuarteto{(9.2,0)}{A}{D}{C}{B}
+  \draw[flecha=naranja] (2.95,0.1) -- node[above, etiqueta] {NNI} (3.85,0.1);
+  \draw[flecha=naranja] (2.95,-0.3) .. controls (4.3,-2.1) and (7.9,-2.1) .. (8.2,-0.55);
+  \node[etiqueta, text=naranja!80!black] at (6.1,-1.75) {NNI};
+  \node[font=\sffamily\bfseries\small, anchor=west] at (-0.3,1.35) {(a) intercambio de vecinos (NNI)};
+  % SPR
+  \begin{scope}[shift={(0,-4.3)}]
+    \node[font=\sffamily\bfseries\small, anchor=west] at (-0.3,2.0) {(b) poda y reinjerto (SPR)};
+    \draw[tinta, thick] (0,0) -- (6,0);
+    \foreach \x/\t in {1/B,2.5/C,3.8/D,5/E}{
+      \draw[tinta, thick] (\x,0) -- (\x,-0.7) node[below, font=\sffamily\small\bfseries] {\t};}
+    \draw[tinta, thick] (0,0) -- (-0.5,0) node[left, font=\sffamily\small\bfseries] {A};
+    \draw[tinta, thick] (6,0) -- (6.5,0) node[right, font=\sffamily\small\bfseries] {F};
+    % subárbol podado
+    \draw[rojo, very thick] (1.7,0) -- (1.7,0.55);
+    \draw[rojo, very thick] (1.7,0.55) -- (1.35,0.95) node[above, font=\sffamily\small\bfseries] {S$_1$};
+    \draw[rojo, very thick] (1.7,0.55) -- (2.05,0.95) node[above, font=\sffamily\small\bfseries] {S$_2$};
+    \draw[rojo, thick] (1.5,0.25) -- (1.9,0.35);
+    \node[etiqueta, text=rojooscuro, anchor=east] at (1.45,0.3) {corte};
+    \draw[-{Stealth[length=2.4mm]}, rojo, thick, dashed] (2.2,0.8) .. controls (3.5,1.5) and (4.8,1.2) .. (5.45,0.12);
+    \node[etiqueta, text=rojooscuro, anchor=west] at (4.3,1.2) {reinjerto en otra rama};
+    \node[etiqueta, anchor=west, text=tinta2] at (7.3,0.1) {vecindario SPR: $O(n^2)$ árboles;\\vecindario NNI: $2(n-3)$ árboles};
+  \end{scope}
+\end{tikzpicture}
+\caption[Reordenamientos para la búsqueda de árboles]{Movimientos de búsqueda en el espacio de topologías. \textbf{(a)} Una rama interna (naranja) separa cuatro subárboles; NNI prueba las dos formas alternativas de agruparlos (AC\,|\,BD y AD\,|\,BC). Es un movimiento pequeño y barato, pero puede quedar atrapado en óptimos locales. \textbf{(b)} SPR corta un subárbol (rojo) y lo reinjerta en otra rama del árbol; su vecindario es mucho mayor y permite escapar de óptimos locales, a cambio de más evaluaciones de la verosimilitud.}
+\label{fig:05-nni}
+\end{figure}
+
+Los programas modernos combinan estas piezas con astucia. PhyML \parencite{c05-guindon2003} mostró que optimizar a la vez la topología (mediante NNI) y las longitudes de rama permitía analizar cientos de secuencias en minutos. RAxML \parencite{c05-stamatakis2014} se apoya en movimientos SPR con radio limitado y en implementaciones muy optimizadas para escalar a miles de taxones. IQ-TREE \parencite{c05-nguyen2015} introdujo una búsqueda estocástica que perturba aleatoriamente el mejor árbol encontrado y vuelve a optimizarlo con NNI, lo que ayuda a escapar de óptimos locales; su versión 2 \parencite{c05-minh2020} añadió modelos nuevos y métodos eficientes para datos genómicos. Ninguno garantiza encontrar el árbol de máxima verosimilitud global, y por eso se recomienda realizar varias búsquedas independientes y comparar sus resultados.
+
+\subsection{Selección de modelos: razón de verosimilitudes, AIC y BIC}
+
+¿Qué modelo usar? Un modelo con más parámetros siempre alcanza una verosimilitud igual o mayor, porque contiene a los más sencillos como casos particulares; la pregunta es si la mejora compensa la complejidad añadida. Para modelos anidados, como JC69 dentro de K80, la \emph{prueba de razón de verosimilitudes} compara $2\Delta\ell = 2(\ell_1-\ell_0)$ con una distribución $\chi^2$ con tantos grados de libertad como parámetros adicionales. Para comparar muchos modelos, anidados o no, se usan criterios de información:
+\begin{equation}\label{eq:05-aic}
+\mathrm{AIC} = 2k - 2\hat\ell,\qquad \mathrm{BIC} = k\ln N - 2\hat\ell,
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\hat\ell$}{Logaritmo de la verosimilitud maximizada del modelo.}
+\simbolo{$k$}{Número de parámetros libres, \emph{incluidas} las $2n-3$ longitudes de rama.}
+\simbolo{$N$}{Número de sitios del alineamiento (tamaño de la muestra).}
+\end{simbolos}
+
+\noindent y se elige el modelo con el valor más bajo. El AIC de \textcite{c05-akaike1974} estima la capacidad predictiva del modelo sobre datos nuevos; el BIC de \textcite{c05-schwarz1978} aproxima la probabilidad posterior del modelo y, como su penalización crece con $\ln N$, favorece modelos más sencillos cuando hay muchos sitios. ModelFinder \parencite{c05-kalyaanamoorthy2017}, integrado en IQ-TREE, automatiza este proceso sobre cientos de combinaciones de matrices, frecuencias y modelos de heterogeneidad (incluidos los de tasas libres) y, por defecto, elige según el BIC.
+
+\begin{table}[t]
+\centering
+\caption[Selección de modelos sobre datos simulados]{Selección de modelos para un alineamiento de $N=600$ sitios simulado bajo HKY85+$\Gamma$ ($\kappa=4$, $\alpha=0{,}5$) en el árbol de la \cref{fig:05-bootstrap}. Todos los modelos se ajustaron sobre la misma topología (la de NJ); $k$ incluye las 9 ramas. $\Delta$ es la diferencia con el mejor valor de cada criterio. Calculado con el motor de verosimilitud de \archivo{figuras/cap05/generar.py}.}
+\label{tab:05-modelos}
+\small
+\input{figuras/cap05/modelos.tex}
+\end{table}
+
+\begin{ejemplo}{Elegir el modelo con datos simulados}{modelos}
+La \cref{tab:05-modelos} permite seguir el razonamiento completo. Pasar de JC69 a K80 añade un parámetro ($\kappa$) y aumenta $\hat\ell$ en $39{,}5$ unidades: $2\Delta\ell=78{,}9$, con $p\approx6\times10^{-19}$ para una $\chi^2_1$. La relación transición/transversión es real. Pasar de HKY85 a HKY85+$\Gamma$ añade $\alpha$ y gana $19{,}95$ unidades ($2\Delta\ell=39{,}9$, $p\approx3\times10^{-10}$): la heterogeneidad de tasas también es real. En cambio, pasar de HKY85+$\Gamma$ a GTR+$\Gamma$ añade cuatro parámetros y apenas gana $1{,}81$ unidades ($2\Delta\ell=3{,}6$, $p=0{,}46$ para una $\chi^2_4$): las seis tasas libres no aportan nada que $\kappa$ no explique ya. Los dos criterios de información coinciden y eligen HKY85+$\Gamma$, precisamente el modelo con que se simularon los datos; el BIC penaliza a GTR+$\Gamma$ con más dureza ($\Delta\mathrm{BIC}=22{,}0$) que el AIC ($\Delta\mathrm{AIC}=4{,}4$), porque $\ln 600\approx 6{,}4>2$. Las estimaciones, $\hat\kappa=3{,}71$ y $\hat\alpha=0{,}57$, están cerca de los valores verdaderos (4 y 0,5).
+\end{ejemplo}
+
+\subsection{Un contraste: parsimonia y atracción de ramas largas}
+
+Antes de la verosimilitud, el criterio dominante para datos de caracteres era la \emph{máxima parsimonia}: preferir el árbol que explica los datos con el menor número de cambios. \textcite{c05-fitch1971} dio un algoritmo eficiente para contar ese mínimo en un árbol dado. En cada nodo interno se calcula un conjunto de estados posibles: si los conjuntos de los dos hijos se intersecan, el nodo recibe la intersección; si no, recibe su unión y se contabiliza un cambio. La parsimonia no necesita modelo, es rápida y funciona bien cuando las ramas son cortas. Pero precisamente por no tener modelo, no puede corregir los impactos múltiples.
+
+\textcite{c05-felsenstein1978} demostró que existen árboles para los que la parsimonia es \emph{estadísticamente inconsistente}: converge al árbol equivocado a medida que se añaden datos. El caso típico es el de la \cref{fig:05-lba}: dos ramas largas no hermanas (1 y 3) y ramas cortas en el resto. En las ramas largas se acumulan tantos cambios que, por puro azar, 1 y 3 coinciden a menudo en el mismo estado derivado. La parsimonia interpreta esas coincidencias como un único cambio compartido y agrupa a 1 con 3. Este fenómeno, la \emph{atracción de ramas largas}, sigue siendo uno de los errores sistemáticos más importantes de la filogenética. La verosimilitud con un modelo adecuado es consistente en esa misma región, porque «sabe» que en ramas largas son esperables las convergencias; pero un modelo inadecuado (por ejemplo, ignorar la heterogeneidad de tasas) puede reintroducir el problema.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \begin{scope}[shift={(0,0.3)}]
+    \draw[tinta, thick] (0,0) -- node[above, etiqueta] {interna} (0.6,0);
+    \draw[rojo, very thick] (0,0) -- (-1.5,1.8) node[above, font=\sffamily\small\bfseries, text=rojooscuro] {1};
+    \draw[tinta, thick] (0,0) -- (-0.35,-0.4) node[below left, font=\sffamily\small\bfseries, inner sep=1pt] {2};
+    \draw[rojo, very thick] (0.6,0) -- (2.1,1.8) node[above, font=\sffamily\small\bfseries, text=rojooscuro] {3};
+    \draw[tinta, thick] (0.6,0) -- (0.95,-0.4) node[below right, font=\sffamily\small\bfseries, inner sep=1pt] {4};
+    \draw[rojo, dashed, thick, {Stealth}-{Stealth}] (-1.1,1.95) .. controls (0.3,2.6) .. (1.7,1.95);
+    \node[etiqueta, text=rojooscuro] at (0.3,2.75) {convergencias por azar};
+    \node[etiqueta, align=center] at (0.3,-1.2) {árbol verdadero 12\,|\,34\\ramas largas: 1,0; cortas: 0,05};
+  \end{scope}
+  \begin{scope}[shift={(4.2,-1.3)}]
+  \begin{axis}[curso, width=8.6cm, height=5.4cm, xmode=log,
+     xlabel={longitud del alineamiento (sitios)}, ylabel={topología correcta (\%)},
+     ymin=-5, ymax=105, xmin=40, xmax=6000, legend style={at={(0.97,0.1)}, anchor=south east},
+     yticklabel={\pgfmathprintnumber{\tick}}]
+    \addplot[azul, very thick, mark=*, mark size=1.8pt] table[x=L, y expr=100*\thisrow{ml}] {figuras/cap05/lba.dat};
+    \addlegendentry{máxima verosimilitud (JC)}
+    \addplot[rojo, very thick, mark=square*, mark size=1.8pt] table[x=L, y expr=100*\thisrow{pars}] {figuras/cap05/lba.dat};
+    \addlegendentry{máxima parsimonia}
+    \addplot[gris, dashed, domain=40:6000, forget plot] {100/3};
+    \node[etiqueta, anchor=south west] at (axis cs:45,34) {azar (1 de 3)};
+  \end{axis}
+  \end{scope}
+\end{tikzpicture}
+\caption[Atracción de ramas largas]{La atracción de ramas largas en la «zona de Felsenstein». \textbf{Izquierda}: árbol generador con dos ramas largas no hermanas (rojo). \textbf{Derecha}: proporción de 60 réplicas simuladas bajo JC69 en que cada método recupera la topología correcta. Con más datos, la máxima verosimilitud converge al árbol verdadero (100\,\% con \num{5000} sitios), mientras que la parsimonia converge con seguridad creciente al árbol \emph{equivocado} 13\,|\,24, y lo hace por debajo incluso del 33\,\% que daría elegir al azar.}
+\label{fig:05-lba}
+\end{figure}
+
+\subsection{¿Cuánta confianza? El bootstrap}
+
+Un árbol de máxima verosimilitud es una estimación puntual; necesitamos saber qué partes de él son sólidas. La herramienta más usada es el \emph{bootstrap no paramétrico} de \textcite{c05-efron1979}, cuya idea es simular la variabilidad de muestreo usando los propios datos como sustituto de la población. \textcite{c05-felsenstein1985} lo llevó a la filogenética tratando las columnas del alineamiento como la muestra:
+
+\begin{enumerate}
+  \item Construya un alineamiento réplica eligiendo $N$ columnas \emph{con reemplazo} del original (algunas aparecerán repetidas y otras faltarán; \cref{fig:05-bootstrap-esquema}).
+  \item Infiera un árbol a partir de la réplica con el mismo método que usó para los datos originales.
+  \item Repita $B$ veces (típicamente entre 100 y 1000) y registre, para cada bipartición del árbol original, la fracción de réplicas en que aparece.
+\end{enumerate}
+
+\begin{definicion}{Soporte bootstrap}{bootstrap}
+El soporte bootstrap de una bipartición $S$ es
+\begin{equation}\label{eq:05-bootstrap}
+\mathrm{BS}(S) = \frac{1}{B}\sum_{b=1}^{B}\mathbb 1\left[S\in \hat T^{*}_{b}\right]\times 100\,\%.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$B$}{Número de réplicas bootstrap.}
+\simbolo{$\hat T^{*}_{b}$}{Árbol estimado a partir de la réplica $b$.}
+\simbolo{$S\in\hat T^*_b$}{La bipartición $S$ está presente en ese árbol.}
+\end{simbolos}
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap05/bootstrap_esquema.tex}\hspace{4mm}%
+\begin{tikzpicture}[font=\sffamily\scriptsize, baseline={(0,-0.6)}]
+  \foreach \y/\col/\res in {0.45/verde!70!black/sí, -0.55/verde!70!black/sí, -1.55/rojo/no}{
+    \begin{scope}[shift={(0,\y)}]
+      \draw[tinta, thick] (0,0.22) -- (0,-0.22);
+      \draw[\col, very thick] (0,0.22) -- (0.3,0.22); \draw[\col, very thick] (0.3,0.36) -- (0.3,0.08);
+      \draw[\col, very thick] (0.3,0.36) -- (0.8,0.36); \draw[\col, very thick] (0.3,0.08) -- (0.8,0.08);
+      \draw[tinta, thick] (0,-0.22) -- (0.3,-0.22); \draw[tinta, thick] (0.3,-0.08) -- (0.3,-0.36);
+      \draw[tinta, thick] (0.3,-0.08) -- (0.8,-0.08); \draw[tinta, thick] (0.3,-0.36) -- (0.8,-0.36);
+      \node[anchor=west, text=\col, font=\sffamily\scriptsize\bfseries] at (0.9,0) {\res};
+    \end{scope}}
+  \node[etiqueta, anchor=north, align=center] at (0.6,-2.05) {¿aparece el\\clado verde?\\$\Rightarrow$ 2/3};
+\end{tikzpicture}
+\caption[Esquema del bootstrap no paramétrico]{El bootstrap no paramétrico. Cada réplica se construye eligiendo columnas al azar, con reemplazo, del alineamiento original (los números indican qué columna se copió; las recuadradas en naranja aparecen más de una vez, y las columnas 4, 6 y 8 no aparecen). A partir de cada réplica se infiere un árbol, y el soporte de un clado es la fracción de réplicas en que ese clado reaparece (derecha: presente en dos de tres árboles). La variación entre réplicas imita la que habría entre alineamientos independientes del mismo tamaño.}
+\label{fig:05-bootstrap-esquema}
+\end{figure}
+
+La \cref{fig:05-bootstrap} muestra el resultado para el alineamiento simulado de seis primates de la \cref{tab:05-modelos}. Los soportes deben leerse con cuidado. Un valor del 95\,\% no significa que el clado tenga un 95\,\% de probabilidad de ser verdadero: el bootstrap mide cuán \emph{estable} es la inferencia frente a la variación de muestreo, y en la práctica suele ser conservador para clados verdaderos \parencite{c05-felsenstein2004}. Además, el bootstrap estándar exige repetir la búsqueda completa $B$ veces, lo que es prohibitivo para alineamientos grandes. El \emph{bootstrap ultrarrápido} (UFBoot) de IQ-TREE reutiliza los árboles visitados durante la búsqueda y evalúa las réplicas por remuestreo de las verosimilitudes de cada sitio (RELL), con un coste muy inferior \parencite{c05-hoang2018}. Sus valores no son equivalentes a los del bootstrap estándar: los autores recomiendan considerar fiables los clados con UFBoot $\ge 95\,\%$, mientras que para el bootstrap clásico suele usarse un umbral más bajo, del orden del 70\,\%.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap05/arbol_bootstrap.tex}
+\caption[Árbol con soporte bootstrap]{Árbol de seis primates inferido a partir de 600 sitios simulados bajo HKY85+$\Gamma$ sobre un árbol conocido. La topología es la de NJ (distancias JC) y coincide con la verdadera; las longitudes de rama se reoptimizaron por máxima verosimilitud con el modelo elegido (HKY85+$\Gamma$). Los números son soportes bootstrap sobre \num{1000} réplicas (verde: $\ge95$; naranja: 70–94). El clado humano-chimpancé recibe solo un 72\,\%: la rama que lo define mide $0{,}008$ sustituciones por sitio en el árbol verdadero, lo que equivale a unos 5 cambios esperados en todo el alineamiento, muy poca evidencia. El árbol se dibuja sin raíz explícita, con Macaco y Tití en la base.}
+\label{fig:05-bootstrap}
+\end{figure}
+
+\begin{ejemplo}{Leer el soporte de la \cref{fig:05-bootstrap}}{soporte}
+El clado humano-chimpancé-gorila aparece en el 100\,\% de las réplicas y el que añade al orangután, en el 95\,\%: sus ramas definitorias miden $0{,}03$ y $0{,}06$ sustituciones por sitio en el árbol generador, es decir, unas 18 y 36 sustituciones esperadas en 600 sitios. En cambio, el clado humano-chimpancé (72\,\%) se apoya en una rama de $0{,}008$: en un 28\,\% de las réplicas, el azar del remuestreo reúne a gorila con uno de los dos. Sin embargo, la topología estimada es correcta. La lección es general: un soporte moderado no indica que el clado sea falso, sino que \emph{estos datos} contienen poca información sobre él.
+\end{ejemplo}
+
+En la práctica, selección de modelo, búsqueda de ML y bootstrap se ejecutan con una sola orden: en IQ-TREE~2, \texttt{-m MFP} activa ModelFinder, \texttt{-B} pide réplicas UFBoot y \texttt{-alrt} añade la prueba SH-aLRT; en RAxML~8, \texttt{-f a} combina bootstrap rápido y búsqueda de ML.
+
+\begin{consola}[Inferencia de máxima verosimilitud en la terminal]
+# IQ-TREE 2: selección de modelo + árbol ML + UFBoot + SH-aLRT
+iqtree2 -s primates.fasta -m MFP -B 1000 -alrt 1000 -T AUTO
+# salida: primates.fasta.iqtree (informe), .treefile (árbol)
+
+# RAxML 8: 100 réplicas bootstrap rápidas + búsqueda ML (GTR+G)
+raxmlHPC -f a -s primates.phy -n prim -m GTRGAMMA \
+         -p 12345 -x 12345 -N 100
+\end{consola}
+
+\begin{cuidado}[Lo que el bootstrap no puede detectar]
+El bootstrap cuantifica el error \emph{aleatorio}, el que desaparece con más datos. No detecta el error \emph{sistemático}. En la zona de Felsenstein, la parsimonia agrupa las ramas largas con soporte cercano al 100\,\% (\cref{fig:05-lba}), y un modelo inadecuado puede hacer lo mismo con la verosimilitud.
+\end{cuidado}
+
+\begin{ideaclave}
+La verosimilitud pregunta qué tan probable es lo observado bajo cada árbol.\\
+El bootstrap pregunta cuánto cambiaría la respuesta con otra muestra de sitios.
+\end{ideaclave}
+
+\begin{resumen}
+\begin{itemize}
+  \item Un árbol filogenético no enraizado con $n$ hojas es una de $(2n-5)!!$ topologías posibles; para 50 taxones hay unas $10^{74}$, por lo que la inferencia exige algoritmos constructivos o búsquedas heurísticas.
+  \item La distancia $p$ se satura por los impactos múltiples. Los modelos de sustitución, cadenas de Márkov con $P(t)=e^{Qt}$, corrigen ese sesgo: JC69 da $d=-\frac34\ln(1-\frac43p)$; K80, F81, HKY85 y GTR añaden sesgo transición/transversión y composición desigual; $+\Gamma$ modela la variación de tasas entre sitios.
+  \item UPGMA supone un reloj molecular (distancias ultramétricas) y falla cuando los linajes evolucionan a ritmos distintos. Neighbor-Joining solo requiere aditividad (condición de cuatro puntos) y recupera exactamente el árbol cuando las distancias son aditivas.
+  \item La máxima verosimilitud evalúa cada árbol por la probabilidad de todo el alineamiento; el algoritmo de poda de Felsenstein la calcula en tiempo lineal en el número de taxones, y la búsqueda de topologías usa NNI, SPR o TBR.
+  \item Los modelos se comparan con razón de verosimilitudes, AIC y BIC. La parsimonia puede ser inconsistente (atracción de ramas largas); ML con un modelo adecuado no lo es. El bootstrap y UFBoot miden la estabilidad de cada clado, no los errores sistemáticos.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Dibuje las 15 topologías no enraizadas posibles para cinco taxones. Compruebe que su número coincide con la \cref{eq:05-topologias} y explique por qué cada una puede enraizarse de 7 formas.
+\ej{1} Dos secuencias de 300 pb difieren en 90 sitios. Calcule $\hat p$, $\hat d_{\text{JC}}$ y su error estándar. ¿Qué ocurre con la distancia si difieren en 230 sitios?
+\ej{1} Compruebe que la matriz de distancias de la \cref{tab:05-njD} \emph{no} es ultramétrica encontrando una terna que viole la \cref{eq:05-trespuntos}.
+\ej{2} A partir de la ecuación de Kolmogorov $P'(t)=P(t)Q$, derive $P_{ij}(t)$ para el modelo K80 y demuestre la \cref{eq:05-k80}. (Pista: considere por separado la probabilidad de terminar con una transición y con una transversión.)
+\ej{2} Verifique numéricamente con \py{scipy.linalg.expm} que, para una matriz GTR construida con la \cref{eq:05-gtr}, se cumplen $\pi P(t)=\pi$ y $\pi_iP_{ij}(t)=\pi_jP_{ji}(t)$ para cualquier $t$.
+\ej{2} Amplíe el programa \archivo{poda.py} para calcular el logaritmo de la verosimilitud de un alineamiento completo sumando sobre sitios, y optimice la longitud de una rama con \py{scipy.optimize.minimize_scalar}.
+\ej{3} Implemente el algoritmo de Fitch y úselo, junto con su función de verosimilitud del ejercicio anterior, para reproducir la \cref{fig:05-lba}. ¿A partir de qué cociente entre ramas largas y cortas empieza a fallar la parsimonia con \num{1000} sitios?
+\ej{3} Descargue 10–15 secuencias del gen mitocondrial \gen{COI} de especies de un mismo orden, alinéelas y ejecute IQ-TREE con \texttt{-m MFP -B 1000}. Compare el modelo elegido por el BIC con el elegido por el AIC y discuta qué clados reciben UFBoot $<95\,\%$ y por qué.
+\end{ejercicios}
+
+\referenciascapitulo

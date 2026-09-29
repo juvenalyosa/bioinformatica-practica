@@ -1,0 +1,4 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} Los fragmentos de código son breves, completos y ejecutables.}
+\PYG{n}{gc} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{base} \PYG{o+ow}{in} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{GC}\PYG{l+s+s2}{\PYGZdq{}} \PYG{k}{for} \PYG{n}{base} \PYG{o+ow}{in} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ATGCGC}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)} \PYG{o}{/} \PYG{l+m+mi}{6}
+\end{MintedVerbatim}

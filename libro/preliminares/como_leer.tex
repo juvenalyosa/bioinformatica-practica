@@ -1,0 +1,75 @@
+\chapter*{Cómo leer este libro}
+\addcontentsline{toc}{chapter}{Cómo leer este libro}
+\markboth{Cómo leer este libro}{Cómo leer este libro}
+
+Cada capítulo abre con una lista de objetivos y cierra con un resumen, una serie de ejercicios
+graduados y las referencias citadas. Entre medias, el texto se apoya en un pequeño repertorio de
+recuadros con funciones precisas. Conocerlos de antemano le ayudará a decidir qué leer con calma
+y qué puede saltarse en una primera lectura.
+
+\begin{intuicion}[Recuadros de intuición]
+Abren cada tema con una situación cotidiana que sirve de punto de apoyo. No sustituyen la teoría:
+preparan el terreno para ella.
+\end{intuicion}
+
+\begin{definicion*}{Definiciones}{}
+Enuncian con precisión los objetos matemáticos o biológicos con los que trabajaremos. Están
+numeradas por capítulo.
+\end{definicion*}
+
+\begin{teorema*}{Resultados}{}
+Recogen las ecuaciones y los resultados centrales de cada método, normalmente seguidos de una
+tabla de símbolos.
+\end{teorema*}
+
+\begin{simbolos}
+\simbolo{$x$}{Cada ecuación importante va acompañada de una tabla como esta, que explica el significado de todos sus símbolos.}
+\end{simbolos}
+
+\begin{ejemplo*}{Ejemplos resueltos}{}
+Aplican la teoría a números concretos, paso a paso, para que usted pueda reproducirlos con lápiz
+o con Python.
+\end{ejemplo*}
+
+\begin{codigo}[ejemplo.py]
+# Los fragmentos de código son breves, completos y ejecutables.
+gc = sum(base in "GC" for base in "ATGCGC") / 6
+\end{codigo}
+
+\begin{historia}[Notas históricas]
+Cuentan quién, cuándo y por qué se desarrolló una idea. La ciencia es una actividad humana.
+\end{historia}
+
+\begin{cuidado}[Advertencias]
+Señalan errores frecuentes, supuestos que se olvidan y trampas de interpretación.
+\end{cuidado}
+
+\begin{profundizacion}[Para profundizar]
+Material avanzado que puede omitirse en una primera lectura sin perder el hilo.
+\end{profundizacion}
+
+\enlacerepo{enlace al laboratorio de cada lección}
+
+\paragraph{Convenciones} Las explicaciones están en español; el código, los nombres de funciones
+y muchos términos técnicos se mantienen en inglés, como aparecen en la literatura y en la
+documentación de las herramientas; su primera aparición se marca en \ingles{cursiva}. Los
+decimales se escriben con coma. Las secuencias de ADN se colorean con el código de la
+\cref{tab:convenciones}, el mismo que se usa en los notebooks del curso.
+
+\begin{table}[h]
+\centering\small
+\caption{Colores de nucleótidos usados en todo el libro.}\label{tab:convenciones}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+\nuc{A} adenina & \nuc{C} citosina & \nuc{G} guanina & \nuc{T} timina (\nuc{U} uracilo)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Ejercicios} Están marcados según su dificultad:
+\dificultad{1}~básica, \dificultad{2}~intermedia y \dificultad{3}~avanzada. Los de nivel avanzado
+suelen requerir programación o una demostración.
+
+\paragraph{Requisitos} Se asume una familiaridad básica con cálculo, probabilidad y programación en
+Python. El \cref{cap:00} repasa las herramientas computacionales y el \cref{cap:01}, la biología
+molecular necesaria.

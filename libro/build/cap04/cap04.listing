@@ -1,0 +1,8 @@
+from Bio import SearchIO
+
+for q in SearchIO.parse("dominios.tbl", "hmmscan3-domtab"):
+    for hit in q:                              # una familia Pfam
+        for hsp in hit:                        # un dominio
+            print(f"{hit.id:15s} {hsp.bitscore:6.1f} bits  "
+                  f"E={hsp.evalue:.1e}  "
+                  f"{hsp.query_start + 1}-{hsp.query_end}")

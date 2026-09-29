@@ -1,0 +1,42 @@
+[
+ {
+  "key": "needleman1970",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "altschul1990",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "lander1988",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "fake",
+  "ok": false,
+  "msg": "DOI 10.9999/fake.12345 no existe (Crossref y DataCite)"
+ },
+ {
+  "key": "wrongtitle",
+  "ok": false,
+  "msg": "título no coincide (0.21): bib='Gapped BLAST and PSI-BLAST: a new generation' vs crossref='Basic local alignment search tool'"
+ },
+ {
+  "key": "durbin1998",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "fakebook",
+  "ok": false,
+  "msg": "ISBN 9780000000002 no encontrado (OpenLibrary/Google Books)"
+ },
+ {
+  "key": "biopython",
+  "ok": true,
+  "msg": "ok url (200)"
+ }
+]

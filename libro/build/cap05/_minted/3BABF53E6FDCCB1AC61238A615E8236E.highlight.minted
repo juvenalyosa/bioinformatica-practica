@@ -1,0 +1,28 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{k+kn}{import}\PYG{+w}{ }\PYG{n+nn}{numpy}\PYG{+w}{ }\PYG{k}{as}\PYG{+w}{ }\PYG{n+nn}{np}
+\PYG{k+kn}{from}\PYG{+w}{ }\PYG{n+nn}{scipy}\PYG{n+nn}{.}\PYG{n+nn}{linalg}\PYG{+w}{ }\PYG{k+kn}{import} \PYG{n}{expm}
+
+\PYG{n}{TS} \PYG{o}{=} \PYG{p}{\PYGZob{}}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{G}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{A}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{T}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{,} \PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{T}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{C}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{\PYGZcb{}}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{distancias}\PYG{p}{(}\PYG{n}{x}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{,} \PYG{n}{y}\PYG{p}{:} \PYG{n+nb}{str}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n+nb}{dict}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}Distancias p, JC69 y K80 entre dos secuencias alineadas.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{pares} \PYG{o}{=} \PYG{p}{[}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)} \PYG{k}{for} \PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n+nb}{zip}\PYG{p}{(}\PYG{n}{x}\PYG{p}{,} \PYG{n}{y}\PYG{p}{)} \PYG{k}{if} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{\PYGZhy{}}\PYG{l+s+s2}{\PYGZdq{}} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)}\PYG{p}{]}
+    \PYG{n}{L} \PYG{o}{=} \PYG{n+nb}{len}\PYG{p}{(}\PYG{n}{pares}\PYG{p}{)}
+    \PYG{n}{P} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)} \PYG{o+ow}{in} \PYG{n}{TS} \PYG{k}{for} \PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n}{pares}\PYG{p}{)} \PYG{o}{/} \PYG{n}{L}       \PYG{c+c1}{\PYGZsh{} transiciones}
+    \PYG{n}{Q} \PYG{o}{=} \PYG{n+nb}{sum}\PYG{p}{(}\PYG{n}{a} \PYG{o}{!=} \PYG{n}{b} \PYG{o+ow}{and} \PYG{p}{(}\PYG{n}{a}\PYG{p}{,} \PYG{n}{b}\PYG{p}{)} \PYG{o+ow}{not} \PYG{o+ow}{in} \PYG{n}{TS} \PYG{k}{for} \PYG{n}{a}\PYG{p}{,} \PYG{n}{b} \PYG{o+ow}{in} \PYG{n}{pares}\PYG{p}{)} \PYG{o}{/} \PYG{n}{L}
+    \PYG{n}{p} \PYG{o}{=} \PYG{n}{P} \PYG{o}{+} \PYG{n}{Q}
+    \PYG{n}{d\PYGZus{}jc} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.75} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{4} \PYG{o}{*} \PYG{n}{p} \PYG{o}{/} \PYG{l+m+mi}{3}\PYG{p}{)}
+    \PYG{n}{d\PYGZus{}k80} \PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{l+m+mf}{0.5} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{P} \PYG{o}{\PYGZhy{}} \PYG{n}{Q}\PYG{p}{)} \PYG{o}{\PYGZhy{}} \PYG{l+m+mf}{0.25} \PYG{o}{*} \PYG{n}{np}\PYG{o}{.}\PYG{n}{log}\PYG{p}{(}\PYG{l+m+mi}{1} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{2} \PYG{o}{*} \PYG{n}{Q}\PYG{p}{)}
+    \PYG{k}{return} \PYG{n+nb}{dict}\PYG{p}{(}\PYG{n}{p}\PYG{o}{=}\PYG{n}{p}\PYG{p}{,} \PYG{n}{jc}\PYG{o}{=}\PYG{n}{d\PYGZus{}jc}\PYG{p}{,} \PYG{n}{k80}\PYG{o}{=}\PYG{n}{d\PYGZus{}k80}\PYG{p}{)}
+
+\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{matriz\PYGZus{}P\PYGZus{}k80}\PYG{p}{(}\PYG{n}{d}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{,} \PYG{n}{kappa}\PYG{p}{:} \PYG{n+nb}{float}\PYG{p}{)} \PYG{o}{\PYGZhy{}}\PYG{o}{\PYGZgt{}} \PYG{n}{np}\PYG{o}{.}\PYG{n}{ndarray}\PYG{p}{:}
+\PYG{+w}{    }\PYG{l+s+sd}{\PYGZdq{}\PYGZdq{}\PYGZdq{}P(t) = exp(Qt) para K80 normalizado a d sustituciones.\PYGZdq{}\PYGZdq{}\PYGZdq{}}
+    \PYG{n}{Q} \PYG{o}{=} \PYG{n}{np}\PYG{o}{.}\PYG{n}{array}\PYG{p}{(}\PYG{p}{[}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{kappa}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{kappa}\PYG{p}{]}\PYG{p}{,}
+                  \PYG{p}{[}\PYG{n}{kappa}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{]}\PYG{p}{,} \PYG{p}{[}\PYG{l+m+mi}{1}\PYG{p}{,} \PYG{n}{kappa}\PYG{p}{,} \PYG{l+m+mi}{1}\PYG{p}{,} \PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{]}\PYG{p}{,} \PYG{n+nb}{float}\PYG{p}{)}
+    \PYG{n}{np}\PYG{o}{.}\PYG{n}{fill\PYGZus{}diagonal}\PYG{p}{(}\PYG{n}{Q}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{n}{Q}\PYG{o}{.}\PYG{n}{sum}\PYG{p}{(}\PYG{l+m+mi}{1}\PYG{p}{)}\PYG{p}{)}
+    \PYG{n}{Q} \PYG{o}{/}\PYG{o}{=} \PYG{o}{\PYGZhy{}}\PYG{n}{np}\PYG{o}{.}\PYG{n}{mean}\PYG{p}{(}\PYG{n}{np}\PYG{o}{.}\PYG{n}{diag}\PYG{p}{(}\PYG{n}{Q}\PYG{p}{)}\PYG{p}{)}            \PYG{c+c1}{\PYGZsh{} tasa media = 1}
+    \PYG{k}{return} \PYG{n}{expm}\PYG{p}{(}\PYG{n}{Q} \PYG{o}{*} \PYG{n}{d}\PYG{p}{)}                   \PYG{c+c1}{\PYGZsh{} orden A, C, G, T}
+
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{distancias}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ATGGCTAAGCTTACGG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{,} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+s2}{ATGACTAAACTTACTG}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}\PYG{p}{)}
+\PYG{n+nb}{print}\PYG{p}{(}\PYG{n}{matriz\PYGZus{}P\PYGZus{}k80}\PYG{p}{(}\PYG{l+m+mf}{0.3}\PYG{p}{,} \PYG{n}{kappa}\PYG{o}{=}\PYG{l+m+mi}{4}\PYG{p}{)}\PYG{o}{.}\PYG{n}{round}\PYG{p}{(}\PYG{l+m+mi}{4}\PYG{p}{)}\PYG{p}{[}\PYG{l+m+mi}{0}\PYG{p}{]}\PYG{p}{)}   \PYG{c+c1}{\PYGZsh{} fila de A}
+\end{MintedVerbatim}

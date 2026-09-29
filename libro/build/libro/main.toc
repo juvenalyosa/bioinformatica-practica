@@ -1,0 +1,34 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {chapter}{Prólogo}{iii}{chapter*.1}%
+\contentsline {chapter}{Cómo leer este libro}{v}{chapter*.2}%
+\contentsline {paragraph}{Convenciones}{vi}{paragraph*.3}%
+\contentsline {paragraph}{Ejercicios}{vii}{paragraph*.5}%
+\contentsline {paragraph}{Requisitos}{vii}{paragraph*.6}%
+\contentsline {part}{\numberline {I}Fundamentos}{1}{part.1}%
+\contentsline {part}{\numberline {II}Comparar secuencias}{3}{part.2}%
+\contentsline {chapter}{\numberline {0}Alineamiento de secuencias}{5}{chapter.0}%
+\contentsline {section}{\numberline {0.1}Dot plots: mirar antes de calcular}{6}{section.0.1}%
+\contentsline {subsection}{\numberline {0.1.1}Definición formal}{7}{subsection.0.1.1}%
+\contentsline {subsection}{\numberline {0.1.2}Cómo se lee un dot plot}{7}{subsection.0.1.2}%
+\contentsline {section}{\numberline {0.2}Programación dinámica: Needleman-Wunsch y Smith-Waterman}{9}{section.0.2}%
+\contentsline {subsection}{\numberline {0.2.1}¿Qué es un alineamiento?}{10}{subsection.0.2.1}%
+\contentsline {subsection}{\numberline {0.2.2}El principio de optimalidad}{10}{subsection.0.2.2}%
+\contentsline {subsection}{\numberline {0.2.3}Needleman-Wunsch: alineamiento global}{11}{subsection.0.2.3}%
+\contentsline {subsection}{\numberline {0.2.4}Smith-Waterman: alineamiento local}{13}{subsection.0.2.4}%
+\contentsline {subsection}{\numberline {0.2.5}Huecos afines y el algoritmo de Gotoh}{14}{subsection.0.2.5}%
+\contentsline {section}{\numberline {0.3}Matrices de sustitución y penalización de gaps}{15}{section.0.3}%
+\contentsline {subsection}{\numberline {0.3.1}Puntuaciones como razones de verosimilitud}{15}{subsection.0.3.1}%
+\contentsline {subsection}{\numberline {0.3.2}PAM: extrapolar la evolución}{16}{subsection.0.3.2}%
+\contentsline {subsection}{\numberline {0.3.3}BLOSUM: observar directamente}{16}{subsection.0.3.3}%
+\contentsline {subsection}{\numberline {0.3.4}Elegir la matriz y los huecos}{18}{subsection.0.3.4}%
+\contentsline {section}{\numberline {0.4}BLAST y la estadística de Karlin-Altschul}{18}{section.0.4}%
+\contentsline {subsection}{\numberline {0.4.1}El problema de escala}{18}{subsection.0.4.1}%
+\contentsline {subsection}{\numberline {0.4.2}¿Cuándo un parecido es significativo?}{19}{subsection.0.4.2}%
+\contentsline {subsection}{\numberline {0.4.3}Puntuación en bits}{21}{subsection.0.4.3}%
+\contentsline {subsection}{\numberline {0.4.4}Los supuestos, y cuándo fallan}{22}{subsection.0.4.4}%
+\contentsline {section}{Ejercicios}{23}{Item.6}%
+\contentsline {section}{Referencias del capítulo}{24}{Item.13}%
+\contentsline {part}{\numberline {III}Del secuenciador al genoma}{27}{part.3}%
+\contentsline {part}{\numberline {IV}Genomas en acción}{29}{part.4}%
+\contentsline {part}{\numberline {V}Estructura, sistemas e inteligencia}{31}{part.5}%
+\contentsfinish 

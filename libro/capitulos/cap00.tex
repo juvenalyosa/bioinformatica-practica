@@ -1,0 +1,923 @@
+% =====================================================================
+%  Capítulo 0 · Preparación del laboratorio digital
+% =====================================================================
+\chapter{Preparación del laboratorio digital}\label{cap:00}
+
+\epigrafe{Un artículo sobre ciencia computacional en una publicación científica no es la obra académica en sí misma; es solo la publicidad de esa obra. La verdadera obra es el entorno completo de desarrollo de software y el conjunto completo de instrucciones que generaron las figuras.}{\textcite{c00-buckheit1995}, resumiendo una idea de Jon Claerbout}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Representar secuencias biológicas como arreglos en memoria, estimar el costo de un cálculo con notación asintótica y explicar por qué la vectorización con \py{numpy} es órdenes de magnitud más rápida que un bucle.
+  \item Reconocer los límites de la aritmética de punto flotante y usar el espacio logarítmico para trabajar con probabilidades diminutas.
+  \item Organizar datos en tablas ordenadas (\ingles{tidy}) con \py{pandas} y construir figuras que respeten los principios de la percepción visual.
+  \item Leer, traducir y verificar un genoma real con Biopython y combinar Python con herramientas de línea de comandos como BLAST+.
+  \item Explicar cómo funcionan un generador de números pseudoaleatorios, una función \ingles{hash} y un repositorio de Git, y usar los tres para que un análisis sea reproducible.
+\end{itemize}
+\end{objetivos}
+
+Un biólogo molecular no empieza su primer experimento sin saber calibrar una micropipeta, preparar un tampón o anotar un protocolo en su cuaderno. El bioinformático tampoco. Su mesa de trabajo es una computadora; sus reactivos, archivos de secuencias; sus instrumentos, bibliotecas de programación y programas de línea de comandos. Y, como en cualquier laboratorio, los resultados solo valen si los instrumentos están bien calibrados y si otra persona puede repetir el experimento siguiendo nuestras notas.
+
+Este capítulo prepara ese laboratorio. No es un tutorial de programación: queremos entender \emph{qué ocurre dentro de la máquina} cuando analizamos datos biológicos, porque de ello dependen la velocidad, la exactitud y la credibilidad de todo lo que haremos en el resto del libro. Avanzaremos en tres pasos. Primero convertiremos el cuaderno de Colab en un instrumento de medida: veremos cómo se representan las secuencias en memoria, cuánto cuesta un cálculo, qué precisión tienen los números de la máquina y cómo se organiza y se muestra un conjunto de datos (\cref{sec:00-colab}). Después incorporaremos las herramientas de la disciplina: Biopython, las bases de datos del NCBI y la línea de comandos, con un genoma real, el de SARS-CoV-2, como material de trabajo (\cref{sec:00-biopython}). Por último, estudiaremos la maquinaria de la reproducibilidad: los números aleatorios que no lo son, las huellas digitales de los archivos, el control de versiones y los principios que la comunidad ha acordado para que un análisis pueda verificarse (\cref{sec:00-reproducibilidad}).
+
+% ---------------------------------------------------------------------
+\section{Colab como laboratorio: Python, numpy, pandas y la visualización científica}\label{sec:00-colab}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-00-preparacion/0.1_colab_laboratorio.ipynb}{0.1 · Colab como laboratorio}
+
+\begin{intuicion}[Un cuaderno que se ejecuta solo]
+En el laboratorio húmedo, el cuaderno contiene tres cosas mezcladas: el protocolo (lo que pensábamos hacer), las notas (lo que hicimos de verdad) y los resultados pegados con cinta adhesiva (la foto del gel, la curva de crecimiento). Si seis meses después alguien pregunta cómo se obtuvo una banda, la respuesta está en el cuaderno, junto a la banda. Ahora imagine un cuaderno en el que el protocolo \emph{es} el experimento: cada vez que alguien lo lee de principio a fin, el experimento vuelve a ocurrir y la foto del gel se regenera ante sus ojos. Eso es un \ingles{notebook} computacional.
+\end{intuicion}
+
+\subsection{La computación como instrumento de laboratorio}
+
+Un \ingles{notebook} de Jupyter, y su variante alojada en la nube, Google Colab, es un documento formado por \emph{celdas}. Las celdas de texto contienen la narración, con ecuaciones y enlaces; las celdas de código contienen instrucciones que se envían a un proceso independiente, el \emph{núcleo} (\ingles{kernel}), que las ejecuta y devuelve el resultado para que se muestre debajo de la celda. \textcite{c00-kluyver2016} describen este diseño como un formato de publicación para flujos de trabajo computacionales reproducibles: el mismo archivo documenta, ejecuta y muestra.
+
+La separación entre documento y núcleo tiene una consecuencia que conviene comprender desde el principio. El núcleo guarda en memoria un \emph{estado}: todas las variables, funciones y módulos que se han definido hasta el momento. Ese estado depende del \emph{orden en que se ejecutaron} las celdas, no del orden en que aparecen en la página. Si ejecuta la celda 5, luego corrige la celda 2 y la vuelve a ejecutar, el núcleo contiene una mezcla que no corresponde a ninguna lectura lineal del documento (\cref{fig:00-cuaderno}). Los números entre corchetes a la izquierda de cada celda, \texttt{[1]}, \texttt{[2]}, \ldots, registran precisamente ese orden de ejecución.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small,
+  celda/.style={draw=rejilla, fill=white, rounded corners=2pt, minimum width=5.6cm,
+     minimum height=0.72cm, anchor=west, align=left, inner sep=4pt},
+  cont/.style={font=\ttfamily\scriptsize, text=gris, anchor=east}]
+  % documento
+  \node[etiqueta, font=\sffamily\small\bfseries, text=azulprofundo] at (2.8,3.35) {Documento (\texttt{.ipynb})};
+  \fill[papel!60, rounded corners=4pt] (-0.9,-2.1) rectangle (6.1,3.0);
+  \node[celda, fill=amarillo!8] (t1) at (0,2.45) {\sffamily\scriptsize \textbf{Texto:} objetivo y método};
+  \node[celda] (c1) at (0,1.55) {\ttfamily\scriptsize seq = leer("virus.fasta")};
+  \node[celda] (c2) at (0,0.65) {\ttfamily\scriptsize seq = seq.upper()};
+  \node[celda] (c3) at (0,-0.25) {\ttfamily\scriptsize gc = contar\_gc(seq)};
+  \node[celda, fill=azulpalido!40] (o3) at (0,-1.2) {\sffamily\scriptsize \textbf{Salida:} tabla, figura, número};
+  \node[cont] at (-0.05,1.55) {[1]};
+  \node[cont] at (-0.05,0.65) {[4]};
+  \node[cont] at (-0.05,-0.25) {[3]};
+  % núcleo
+  \node[caja=violeta, minimum width=3.3cm, minimum height=3.1cm, align=left, anchor=west] (k) at (8.0,0.6)
+     {\textbf{Núcleo (Python)}\\[4pt]\scriptsize memoria:\\ \ttfamily\scriptsize seq $\to$ \texttt{"ACGT\ldots"}\\ \ttfamily\scriptsize gc \,$\to$ 0.0\\[3pt]\sffamily\scriptsize estado = historia\\ \sffamily\scriptsize de ejecuciones};
+  \draw[flecha=azul] (c1.east) to[out=0,in=165] node[above,etiqueta,text=azul,pos=0.45]{código} (k.west|-0,1.3);
+  \draw[flecha=naranja] (k.west|-0,-0.4) to[out=195,in=0] node[below,etiqueta,text=naranja,pos=0.55]{resultado} (o3.east);
+  \node[etiqueta, text=rojooscuro, anchor=north, text width=6.8cm] at (2.6,-2.25)
+    {el orden de ejecución [1]\,$\to$\,[3]\,$\to$\,[4] no coincide con el orden de lectura:\\ \texttt{gc} se calculó sobre minúsculas y vale 0.0};
+\end{tikzpicture}
+\caption[Documento y núcleo de un notebook]{Anatomía de un \ingles{notebook}. El documento (izquierda) alterna celdas de texto, de código y de salida; el núcleo (derecha) ejecuta el código y conserva en memoria todas las variables. Los contadores \texttt{[1]}, \texttt{[3]}, \texttt{[4]} revelan un \emph{estado oculto}: la celda que calcula \texttt{gc} se ejecutó antes que la que convierte la secuencia a mayúsculas, así que contó cero bases \texttt{G} o \texttt{C} en un archivo escrito en minúsculas. La memoria contiene ya la secuencia corregida, pero \texttt{gc} conserva el valor erróneo, distinto del que obtendría un lector que ejecutara el cuaderno de arriba abajo. La única garantía es reiniciar el núcleo y ejecutar todo en orden.}
+\label{fig:00-cuaderno}
+\end{figure}
+
+Colab añade una segunda capa: el núcleo corre en una máquina virtual prestada que se destruye tras un rato de inactividad, llevándose consigo todo lo no guardado y las bibliotecas instaladas. Esa fragilidad obliga a escribir cuadernos que reconstruyan su entorno desde cero, que es justo lo que exige la reproducibilidad (\cref{sec:00-reproducibilidad}).
+
+\begin{cuidado}[El estado oculto]
+Antes de compartir un cuaderno o de confiar en sus resultados, use \emph{Entorno de ejecución $\to$ Reiniciar y ejecutar todo}. Si el cuaderno falla o produce otros números, el resultado anterior dependía de un estado que no está escrito en ninguna parte. Es el equivalente computacional de un tubo sin rotular en la gradilla.
+\end{cuidado}
+
+\subsection{Una secuencia es un arreglo de símbolos}
+
+La información genética de una molécula de ADN depende solo del orden de sus bases. Para la computadora, por lo tanto, una secuencia es una cadena finita de símbolos.
+
+\begin{definicion}{Alfabeto, secuencia y codificación}{00-secuencia}
+Un \emph{alfabeto} $\Sigma$ es un conjunto finito de símbolos; para el ADN, $\Sigma=\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$ y para las proteínas, los 20 aminoácidos. Una \emph{secuencia} de longitud $n$ es una función $x:\{0,1,\ldots,n-1\}\to\Sigma$, que escribimos $x=x_0x_1\cdots x_{n-1}$. Una \emph{codificación} es una función inyectiva $c:\Sigma\to\{0,1\}^b$ que asigna a cada símbolo una palabra de $b$ bits.
+\end{definicion}
+
+Hemos numerado las posiciones desde cero, como Python, y no desde uno, como los biólogos. Esta diferencia es fuente de incontables errores, y conviene fijar la regla de conversión. En Python, el corte \py{x[i:j]} contiene las posiciones $i, i+1, \ldots, j-1$: es un intervalo \emph{semiabierto} $[i,j)$ cuya longitud es simplemente $j-i$. Un gen anotado en las posiciones biológicas $a..b$ (ambas incluidas, numeradas desde 1) se extrae así:
+\begin{equation}\label{eq:00-indices}
+\text{posiciones biológicas } [a,\,b] \;\longleftrightarrow\; \text{\py{x[a-1:b]}}, \qquad \text{longitud} = b-a+1.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$a,\ b$}{Primera y última posición del segmento en la numeración biológica (base 1, extremos incluidos).}
+\simbolo{\texttt{x[a-1:b]}}{Corte de Python equivalente: empieza en el índice $a-1$ y se detiene \emph{antes} del índice $b$.}
+\end{simbolos}
+
+¿Cuánta memoria ocupa una secuencia? Si cada símbolo se codifica con $b$ bits, una secuencia de $n$ símbolos ocupa
+\begin{equation}\label{eq:00-memoria}
+M(n) = \frac{n\,b}{8}\ \text{bytes}, \qquad b \ge \lceil \log_2 |\Sigma| \rceil .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$M(n)$}{Memoria necesaria, en bytes (1 byte = 8 bits).}
+\simbolo{$b$}{Bits por símbolo de la codificación elegida.}
+\simbolo{$|\Sigma|$}{Tamaño del alfabeto; $\lceil\log_2|\Sigma|\rceil$ es el mínimo número de bits que distingue todos sus símbolos.}
+\end{simbolos}
+
+Con cuatro bases bastan $\log_2 4 = 2$ bits, pero el texto ASCII usa 8. Para un genoma humano de $3{,}1\times10^9$ bases, la \cref{eq:00-memoria} da \SI{775}{MB} empaquetado a 2 bits (formato \texttt{.2bit}), \SI{3,1}{GB} como texto (\py{str} o \py{np.uint8}), \SI{24,8}{GB} como lista de Python (un puntero de 8 bytes por base) y \SI{99,2}{GB} como codificación \ingles{one-hot} en \py{float64}, habitual en aprendizaje automático: la misma información, con un factor de 128 de diferencia.
+
+\subsection{Cuánto cuesta un cálculo: complejidad asintótica}
+
+Antes de ejecutar un análisis sobre un genoma completo conviene saber si tardará un segundo o un año. La herramienta para responder sin medir es la notación asintótica, que describe cómo crece el costo de un algoritmo cuando crece el tamaño $n$ de la entrada, sin preocuparse por las constantes que dependen de la máquina.
+
+\begin{definicion}{Notación $O$ grande}{00-ogrande}
+Sean $f$ y $g$ funciones positivas de $n$. Decimos que $f(n)=O(g(n))$ si existen constantes $c>0$ y $n_0$ tales que
+\begin{equation}\label{eq:00-ogrande}
+f(n) \le c\,g(n) \qquad \text{para todo } n\ge n_0 .
+\end{equation}
+Si además $f(n)\ge c'\,g(n)$ para alguna $c'>0$, escribimos $f(n)=\Theta(g(n))$: $f$ y $g$ crecen al mismo ritmo.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$f(n)$}{Costo real del algoritmo (operaciones o segundos) para una entrada de tamaño $n$.}
+\simbolo{$g(n)$}{Función de referencia sencilla: $n$, $n\log n$, $n^2$, $2^n$\ldots}
+\simbolo{$c,\ c',\ n_0$}{Constantes que no dependen de $n$; absorben la velocidad de la máquina y los detalles de implementación.}
+\end{simbolos}
+
+\textcite{c00-knuth1976} propuso fijar este uso de $O$, $\Omega$ y $\Theta$ precisamente para distinguir cotas superiores de órdenes de crecimiento exactos. La intuición es sencilla: $O(g)$ ignora las constantes y se queda con la \emph{forma} del crecimiento. Contar el contenido GC recorre la secuencia una vez: es $\Theta(n)$. Comparar todas las posiciones de una secuencia con todas las de otra, como en el alineamiento del \cref{cap:03}, es $\Theta(n^2)$. Ordenar $n$ lecturas es $\Theta(n\log n)$. A $10^9$ operaciones por segundo, un algoritmo $\Theta(n^2)$ tarda menos de un segundo sobre el genoma de SARS-CoV-2 ($3\times10^4$ bases), unas siete horas sobre el de \especie{E.~coli} ($5\times10^6$) y casi tres siglos sobre el humano ($3\times10^9$), mientras que uno lineal tarda, respectivamente, microsegundos, milisegundos y segundos.
+
+\subsection{Vectorización: la misma operación sobre millones de datos}
+
+Python es un lenguaje \emph{interpretado}: en un bucle \py{for}, el intérprete vuelve a averiguar en cada vuelta qué tipo de objeto tiene delante, dónde está su método de comparación y cómo sumar el resultado. Cada iteración cuesta decenas de nanosegundos, aunque la operación útil (comparar un byte) cueste menos de uno. Llenar una placa de 96 pozos con una micropipeta monocanal, pozo por pozo, se parece mucho a eso.
+
+La biblioteca NumPy resuelve el problema con una estructura de datos, el arreglo \py{ndarray}, y un estilo de programación, la \emph{vectorización} \parencite{c00-harris2020}. Un arreglo es un bloque contiguo de memoria descrito por cuatro atributos: un puntero al primer byte, un tipo de dato (\py{dtype}) común a todos los elementos, una forma (\py{shape}) y unos pasos (\py{strides}) que indican cuántos bytes hay que avanzar para moverse una posición en cada eje. La dirección del elemento $(i,j)$ de una matriz es
+\begin{equation}\label{eq:00-strides}
+\operatorname{dir}(i,j) = \operatorname{dir}_0 + i\,s_0 + j\,s_1 .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\operatorname{dir}_0$}{Dirección de memoria del primer elemento.}
+\simbolo{$s_0,\ s_1$}{Pasos (\texttt{strides}) en bytes: cuánto avanzar para cambiar de fila y de columna.}
+\simbolo{$i,\ j$}{Índices de fila y columna (desde 0).}
+\end{simbolos}
+
+Como todos los elementos tienen el mismo tipo y están uno tras otro, una operación como \py{a == 71} (¿es esta base una \texttt{G}, cuyo código ASCII es 71?) puede ejecutarse en un bucle escrito en C, compilado, que el procesador además puede paralelizar con instrucciones vectoriales (SIMD). La \cref{eq:00-strides} explica también un truco muy útil: transponer una matriz o tomar una de cada tres bases (\py{a[::3]}, las primeras posiciones de los codones) no copia datos, solo cambia los pasos. Esas \emph{vistas} son gratuitas.
+
+\begin{codigo}[gc\_vectorizado.py]
+import numpy as np
+
+def gc_loop(seq: str) -> float:
+    n = 0
+    for b in seq:                      # una vuelta del intérprete por base
+        if b == "G" or b == "C":
+            n += 1
+    return n / len(seq)
+
+def gc_numpy(seq: str) -> float:
+    a = np.frombuffer(seq.encode("ascii"), dtype=np.uint8)
+    is_gc = (a == ord("G")) | (a == ord("C"))   # máscara booleana
+    return np.count_nonzero(is_gc) / a.size
+\end{codigo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.0cm,
+   xmode=log, ymode=log, xlabel={longitud de la secuencia $n$ (bases)},
+   ylabel={tiempo (s)}, xmin=6e2, xmax=1.6e7, ymin=1e-6, ymax=2,
+   legend pos=north west, legend style={font=\sffamily\scriptsize}]
+  \addplot[azul, mark=*, mark size=1.8pt] table[x=n, y=loop] {figuras/cap00/tiempos.dat};
+  \addlegendentry{bucle \texttt{for} de Python}
+  \addplot[naranja, mark=square*, mark size=1.6pt] table[x=n, y=count] {figuras/cap00/tiempos.dat};
+  \addlegendentry{\texttt{str.count} (C, dos pasadas)}
+  \addplot[aqua, mark=triangle*, mark size=2pt] table[x=n, y=numpy] {figuras/cap00/tiempos.dat};
+  \addlegendentry{\texttt{numpy} vectorizado}
+  \draw[{Stealth}-{Stealth}, tinta2] (axis cs:1.25e7,5.0e-1) -- node[left, etiqueta, align=right]{$\approx 180\times$} (axis cs:1.25e7,3.0e-3);
+\end{axis}
+\end{tikzpicture}
+\caption[Bucle frente a vectorización]{Tiempo para calcular el contenido GC de secuencias aleatorias de $10^3$ a $10^7$ bases (mejor de tres repeticiones, medido con \archivo{figuras/cap00/generar.py}). En escala doble logarítmica, un algoritmo $\Theta(n)$ es una recta de pendiente 1: los tres métodos son lineales, como predice el análisis asintótico. Lo que cambia es la constante $c$ de la \cref{eq:00-ogrande}: el bucle interpretado gasta unos \SI{50}{ns} por base y la versión vectorizada unos \SI{0,3}{ns}. En secuencias cortas la ventaja se diluye porque domina el costo fijo de preparar el arreglo.}
+\label{fig:00-tiempos}
+\end{figure}
+
+Extrapolada al genoma humano, la diferencia es de unos 160 segundos frente a menos de uno. Observe que ambas versiones siguen siendo $\Theta(n)$: la vectorización cambia la constante, no la complejidad.
+
+La vectorización se completa con la \emph{difusión} (\ingles{broadcasting}): cuando se combinan arreglos de formas distintas, NumPy repite virtualmente las dimensiones de tamaño 1 sin copiar datos. La expresión \py{X[:, None] == Y[None, :]}, que compara cada base de una secuencia con cada base de otra y construye la matriz de un \ingles{dot plot} en una línea, es el ejemplo que usaremos en el \cref{cap:03}.
+
+\subsection{Números en la máquina: enteros y punto flotante}
+
+Los enteros de la máquina tienen un tamaño fijo: un \py{np.uint8} solo guarda valores de 0 a 255, y $255+1$ da $0$ sin aviso, como un cuentakilómetros que da la vuelta. Los \py{int} de Python crecen según haga falta, pero los arreglos de NumPy no.
+
+Los números reales plantean un problema más sutil. Una computadora no puede almacenar $\pi$, ni siquiera $0{,}1$, con infinitos decimales. El estándar IEEE 754, que siguen prácticamente todos los procesadores, representa un número de doble precisión (\py{float64}) con 64 bits: uno de signo, once de exponente y 52 de fracción \parencite{c00-goldberg1991}:
+\begin{equation}\label{eq:00-ieee}
+x = (-1)^{s}\times\left(1 + \sum_{k=1}^{52} f_k\,2^{-k}\right)\times 2^{\,e-1023}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$s$}{Bit de signo (0 positivo, 1 negativo).}
+\simbolo{$f_k$}{Bits de la fracción o mantisa; el 1 inicial está implícito (``bit escondido'').}
+\simbolo{$e$}{Exponente almacenado, un entero de 11 bits; se le resta el sesgo 1023.}
+\end{simbolos}
+
+La consecuencia fundamental de la \cref{eq:00-ieee} es que los números representables no están distribuidos uniformemente: entre dos potencias de 2 consecutivas hay siempre el mismo número de ellos ($2^{52}$), así que su separación \emph{absoluta} crece con la magnitud mientras su separación \emph{relativa} se mantiene casi constante: entre 1 y 2 los números vecinos distan $2^{-52}$, entre $2^{52}$ y $2^{53}$ distan exactamente 1, y $2^{53}+1$ ya no es representable. El número que mide esa separación relativa es el \emph{épsilon de la máquina}, $\varepsilon = 2^{-52}\approx 2{,}22\times10^{-16}$, y de él se deriva el modelo estándar del error de redondeo:
+\begin{equation}\label{eq:00-redondeo}
+\operatorname{fl}(x \circ y) = (x\circ y)(1+\delta), \qquad |\delta| \le u = \frac{\varepsilon}{2}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\operatorname{fl}(\cdot)$}{Resultado que devuelve la máquina: el número representable más cercano al valor exacto.}
+\simbolo{$\circ$}{Cualquiera de las operaciones $+,\ -,\ \times,\ \div$.}
+\simbolo{$\delta,\ u$}{Error relativo cometido y su cota, la unidad de redondeo ($\approx 1{,}1\times10^{-16}$).}
+\end{simbolos}
+
+
+La \cref{eq:00-redondeo} parece inocente, porque un error de $10^{-16}$ rara vez importa. Hay, sin embargo, tres situaciones en las que muerde. La primera es la comparación exacta: \py{0.1 + 0.2 == 0.3} es \py{False}, porque ni $0{,}1$ ni $0{,}2$ tienen representación binaria finita y sus errores de redondeo no se cancelan; por eso se compara con una tolerancia (\py{np.isclose}). La segunda es la \emph{cancelación catastrófica}: al restar dos números casi iguales, los dígitos correctos se anulan y queda el error, de modo que \py{1e16 + 1 - 1e16} devuelve $0$. La tercera, la más importante en bioinformática, es el \emph{subdesbordamiento} (\ingles{underflow}) al multiplicar muchas probabilidades.
+
+\subsubsection{Probabilidades diminutas y el espacio logarítmico}
+
+La probabilidad de observar una secuencia concreta de 1000 bases bajo un modelo uniforme es $0{,}25^{1000}\approx 10^{-602}$. El número positivo más pequeño que admite un \py{float64} es del orden de $5\times10^{-324}$, así que el producto se redondea a cero exacto, y con él cualquier razón de verosimilitudes que dependa de él. Los modelos de Márkov, los HMM y la inferencia filogenética del resto del libro multiplican miles de probabilidades; sin un remedio, serían inutilizables.
+
+El remedio es trabajar con logaritmos: $\log\prod_i p_i = \sum_i \log p_i$, y la suma de 1000 términos de $\ln 0{,}25$ es simplemente $-1386{,}29$, un número perfectamente ordinario. La dificultad aparece cuando hay que \emph{sumar} probabilidades (por ejemplo, para marginalizar sobre estados ocultos) que solo conocemos por sus logaritmos. La solución es un pequeño teorema que se usa en todas partes.
+
+\begin{teorema}{Log-suma-exp}{00-lse}
+Sean $a_1,\ldots,a_k$ números reales (logaritmos de probabilidades) y $m=\max_i a_i$. Entonces
+\begin{equation}\label{eq:00-lse}
+\log\sum_{i=1}^{k} e^{a_i} \;=\; m + \log\sum_{i=1}^{k} e^{\,a_i - m},
+\end{equation}
+y el lado derecho puede evaluarse sin desbordamiento ni subdesbordamiento, porque todos los exponentes son $\le 0$ y al menos uno vale exactamente $0$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$a_i$}{Logaritmo de la $i$-ésima probabilidad, $a_i=\log p_i$.}
+\simbolo{$m$}{El mayor de los $a_i$; se ``factoriza'' fuera de la suma.}
+\end{simbolos}
+
+La demostración es una línea: $\sum_i e^{a_i} = e^{m}\sum_i e^{a_i-m}$, y se toma el logaritmo. El truco está en que la suma de la derecha vale entre 1 y $k$, un número que la máquina maneja sin problemas.
+
+Por ejemplo, con $\log p_1=-1000$ y $\log p_2=-1001$, la evaluación directa \py{np.log(np.exp(-1000) + np.exp(-1001))} devuelve $-\infty$, mientras que la \cref{eq:00-lse} da $-1000+\log(1+e^{-1})=-999{,}68674$; NumPy y SciPy la ofrecen como \py{np.logaddexp} y \py{scipy.special.logsumexp}.
+
+\subsection{Un primer modelo: el contenido GC y la distribución binomial}
+
+Con las herramientas anteriores podemos formular nuestra primera medida bioinformática. Los pares G--C se unen con tres puentes de hidrógeno y los pares A--T con dos, de modo que la proporción de G y C influye en la estabilidad térmica del ADN, en el diseño de cebadores y en la eficiencia de la secuenciación. Además, varía mucho entre especies y dentro de un mismo genoma. El \emph{contenido GC} de una secuencia $x$ es
+\begin{equation}\label{eq:00-gc}
+\mathrm{GC}(x) = \frac{n_G + n_C}{n_A + n_C + n_G + n_T}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$n_A,\ldots,n_T$}{Número de apariciones de cada base en $x$; las ambigüedades como \texttt{N} no cuentan en el denominador.}
+\end{simbolos}
+
+Al calcular el GC en ventanas deslizantes a lo largo de un genoma, los valores fluctúan. ¿Cuánto de esa fluctuación es biología y cuánto es puro azar de muestreo? Para responder necesitamos un \emph{modelo nulo}. Supongamos que cada base es G o C con probabilidad $p$, independientemente de las demás. El número de bases GC en una ventana de $W$ posiciones sigue entonces una distribución binomial, y la proporción observada tiene media y varianza
+\begin{equation}\label{eq:00-binomial}
+K\sim\mathrm{Bin}(W,p),\qquad \E\!\left[\frac{K}{W}\right]=p,\qquad \Var\!\left[\frac{K}{W}\right]=\frac{p(1-p)}{W}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$K$}{Número de bases G o C en la ventana (variable aleatoria).}
+\simbolo{$W$}{Tamaño de la ventana, en bases.}
+\simbolo{$p$}{Probabilidad de que una base sea G o C; se estima con el GC del genoma completo.}
+\end{simbolos}
+
+La desviación estándar $\sqrt{p(1-p)/W}$ decrece como $1/\sqrt{W}$: ventanas cuatro veces más grandes reducen el ruido a la mitad, a costa de perder resolución espacial. Por el teorema central del límite, alrededor del 95\,\% de las ventanas deberían caer dentro de $p\pm 2\sqrt{p(1-p)/W}$ si el modelo nulo fuera cierto.
+
+\begin{ejemplo}{El GC de SARS-CoV-2 frente a su modelo nulo}{00-gc}
+El genoma de referencia de SARS-CoV-2 (NC\_045512.2) tiene \num{29903} bases, de las cuales \num{11355} son G o C: $p=0{,}3797$. Con ventanas de $W=500$ bases,
+\[
+\sigma = \sqrt{\frac{0{,}3797\times0{,}6203}{500}} = 0{,}0217,
+\]
+de modo que el modelo binomial predice que casi todas las ventanas tendrán un GC entre $0{,}336$ y $0{,}423$. En el genoma real (\cref{fig:00-gc}), el GC por ventana oscila entre $0{,}310$ y $0{,}498$, y el 14{,}4\,\% de las ventanas cae fuera de la banda de $\pm2\sigma$, casi el triple de lo esperado. El exceso de variación (\emph{sobredispersión}) nos dice que el genoma no es una sucesión de monedas idénticas: su composición cambia de una región a otra.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=4.9cm, xmin=0, xmax=30, ymin=0.28, ymax=0.52,
+   xlabel={posición en el genoma (kb)}, ylabel={contenido GC},
+   yticklabel style={/pgf/number format/.cd, fixed, precision=2, use comma}]
+  \fill[azulpalido!70] (axis cs:0,0.33633) rectangle (axis cs:30,0.42314);
+  \addplot[azulprofundo, thin, no marks] table[x=kb, y=gc] {figuras/cap00/gc_ventana.dat};
+  \addplot[naranja, dashed, thick, domain=0:30] {0.37973};
+  \node[etiqueta, anchor=north west, align=left, fill=fondo, fill opacity=.85, text opacity=1] at (axis cs:4,0.515) {{\color{naranja}-\,-\,-} media genómica $p=0{,}380$\\ {\color{azulclaro}\rule{8pt}{5pt}} banda binomial $p\pm2\sigma$};
+  % genes
+  \fill[violeta!60] (axis cs:0.266,0.285) rectangle (axis cs:21.555,0.295);
+  \fill[rojo!70] (axis cs:21.563,0.285) rectangle (axis cs:25.384,0.295);
+  \fill[violeta!60] (axis cs:25.393,0.285) rectangle (axis cs:29.674,0.295);
+  \node[etiqueta, anchor=south] at (axis cs:10.9,0.296) {ORF1ab};
+  \node[etiqueta, anchor=south, text=rojooscuro] at (axis cs:23.5,0.296) {S};
+  \node[etiqueta, anchor=south] at (axis cs:27.6,0.296) {3a--N};
+\end{axis}
+\end{tikzpicture}
+\caption[Contenido GC a lo largo de SARS-CoV-2]{Contenido GC en ventanas de 500 bases (paso de 50) a lo largo del genoma de referencia de SARS-CoV-2. La banda azul es la región $p\pm2\sigma$ que predice el modelo binomial (\cref{eq:00-binomial}); si el genoma fuera homogéneo, solo un 5\,\% de las ventanas escaparía de ella. Escapa casi el triple. Los extremos, sobre todo hacia el final del genoma (genes estructurales y regiones no traducidas), revelan heterogeneidad biológica real. Barras inferiores: genes anotados (en rojo, el de la espícula S).}
+\label{fig:00-gc}
+\end{figure}
+
+Calcular el GC de cada ventana por separado costaría $\Theta(nW)$. Un truco clásico lo reduce a $\Theta(n)$: se calcula una vez la suma acumulada $S_i=\sum_{k<i}g_k$ del indicador $g_k$ (1 si la base $k$ es G o C) y el GC de la ventana $[i,i+W)$ es simplemente $(S_{i+W}-S_i)/W$.
+
+\begin{codigo}[gc\_ventanas.py]
+import numpy as np
+from Bio import SeqIO
+
+rec = SeqIO.read("NC_045512.2.gb", "genbank")
+a = np.frombuffer(bytes(rec.seq), dtype=np.uint8)
+g = ((a == ord("G")) | (a == ord("C"))).astype(float)
+S = np.concatenate([[0.0], np.cumsum(g)])        # sumas acumuladas
+W, step = 500, 50
+starts = np.arange(0, a.size - W + 1, step)
+gc = (S[starts + W] - S[starts]) / W             # Theta(n), no Theta(nW)
+p = g.mean(); sd = np.sqrt(p * (1 - p) / W)
+print(f"p={p:.4f}  fuera de 2 sd: {np.mean(abs(gc - p) > 2*sd):.1%}")
+\end{codigo}
+
+\subsection{Datos tabulares: pandas y el formato ordenado}
+
+Casi todo resultado bioinformático termina en una tabla: genes con sus coordenadas, muestras con sus metadatos, resultados de BLAST con sus puntuaciones. La biblioteca pandas introdujo en Python el \py{DataFrame}, una tabla bidimensional cuyas columnas pueden tener tipos distintos y cuyas filas y columnas llevan etiquetas, con operaciones de agrupación, unión y remodelado inspiradas en las bases de datos relacionales y en R \parencite{c00-mckinney2010}.
+
+Tener la herramienta no basta; hay que decidir la \emph{forma} de la tabla. Una misma información puede escribirse de muchas maneras, y algunas facilitan el análisis mientras que otras lo entorpecen. \textcite{c00-wickham2014} formalizó la forma más conveniente con el nombre de datos \emph{ordenados} (\ingles{tidy data}).
+
+\begin{definicion}{Datos ordenados}{00-tidy}
+Un conjunto de datos está ordenado si (1) cada variable forma una columna, (2) cada observación forma una fila y (3) cada tipo de unidad observacional forma una tabla.
+\end{definicion}
+
+Las hojas de cálculo del laboratorio casi nunca cumplen la definición: suelen usar la forma ``ancha'' de la \cref{fig:00-tidy}, con la variable \emph{muestra} escondida en los encabezados. Para agrupar, filtrar o graficar conviene la forma ``larga'', una medición por fila; en pandas se pasa de una a otra con \py{melt} y \py{pivot}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+  cab/.style={fill=azulprofundo, text=white, font=\sffamily\scriptsize\bfseries, minimum height=0.5cm, inner sep=2pt},
+  cel/.style={fill=papel!70, minimum height=0.48cm, inner sep=2pt},
+  hi/.style={fill=amarillo!30, minimum height=0.48cm, inner sep=2pt}]
+  \matrix (A) [matrix of nodes, nodes in empty cells, column sep=1pt, row sep=1pt,
+     column 1/.style={nodes={minimum width=1.3cm}}, column 2/.style={nodes={minimum width=1.2cm}},
+     column 3/.style={nodes={minimum width=1.2cm}}, column 4/.style={nodes={minimum width=1.2cm}}] at (0,0) {
+    |[cab]| gen & |[cab, fill=naranja]| ctrl\_1 & |[cab, fill=naranja]| ctrl\_2 & |[cab, fill=naranja]| trat\_1 \\
+    |[cel]| \textit{TP53} & |[cel]| 812 & |[cel]| 790 & |[cel]| 1530 \\
+    |[cel]| \textit{MYC} & |[cel]| 244 & |[cel]| 260 & |[cel]| 98 \\
+  };
+  \node[above=3pt of A, font=\sffamily\small\bfseries, text=tinta2] {forma ancha (una columna por muestra)};
+  \node[below=3pt of A, etiqueta, text=naranja!80!black, text width=5cm] {la variable \emph{muestra} está escondida en los encabezados};
+  \matrix (B) [matrix of nodes, nodes in empty cells, column sep=1pt, row sep=1pt,
+     column 1/.style={nodes={minimum width=1.1cm}}, column 2/.style={nodes={minimum width=1.3cm}},
+     column 3/.style={nodes={minimum width=1.2cm}}, column 4/.style={nodes={minimum width=1.0cm}}] at (8.1,0) {
+    |[cab]| gen & |[cab, fill=naranja]| muestra & |[cab]| condición & |[cab]| conteo \\
+    |[cel]| \textit{TP53} & |[hi]| ctrl\_1 & |[cel]| ctrl & |[cel]| 812 \\
+    |[cel]| \textit{TP53} & |[hi]| ctrl\_2 & |[cel]| ctrl & |[cel]| 790 \\
+    |[cel]| \textit{TP53} & |[hi]| trat\_1 & |[cel]| trat & |[cel]| 1530 \\
+    |[cel]| \textit{MYC} & |[hi]| ctrl\_1 & |[cel]| ctrl & |[cel]| 244 \\
+    |[cel]| \textit{MYC} & |[hi]| ctrl\_2 & |[cel]| ctrl & |[cel]| 260 \\
+    |[cel]| \textit{MYC} & |[hi]| trat\_1 & |[cel]| trat & |[cel]| 98 \\
+  };
+  \node[above=3pt of B, font=\sffamily\small\bfseries, text=tinta2] {forma larga u ordenada};
+  \draw[flecha=azul, very thick] ($(A.east)+(0.15,0.25)$) -- node[above, etiqueta, text=azul]{\texttt{melt}} ($(B.west)+(-0.15,0.25)$);
+  \draw[flecha=gris, very thick] ($(B.west)+(-0.15,-0.35)$) -- node[below, etiqueta, text=gris]{\texttt{pivot}} ($(A.east)+(0.15,-0.35)$);
+\end{tikzpicture}
+\caption[De la forma ancha a la forma ordenada]{La misma tabla de conteos de expresión en dos formas. En la forma ancha (izquierda) los nombres de las muestras son encabezados; en la forma ordenada (derecha) son valores de una columna, cada fila es una observación y aparece una variable nueva, la condición, derivada de la muestra. Todas las operaciones de agrupación y de gráficas de pandas, seaborn o plotly esperan la forma ordenada.}
+\label{fig:00-tidy}
+\end{figure}
+
+
+Una advertencia: al abrir una lista de genes, Excel convierte por defecto símbolos como \gen{SEPT2} o \gen{MARCH1} en fechas, y \textcite{c00-ziemann2016} hallaron que alrededor de una quinta parte de los artículos de genómica con listas de genes en Excel contenían estas conversiones erróneas. Lea y escriba las tablas con código y trate los archivos originales como de solo lectura.
+
+\subsection{Principios de visualización científica}
+
+Una figura es un instrumento de medida para el ojo. Como cualquier instrumento, tiene una resolución, y esa resolución no es la misma para todas las magnitudes visuales. \textcite{c00-cleveland1984} lo midieron experimentalmente: pidieron a observadores que estimaran proporciones codificadas de distintas maneras y ordenaron las codificaciones según la exactitud de los juicios. De más a menos precisas: posición sobre una escala común; posición en escalas no alineadas; longitud, dirección y ángulo; área; volumen y curvatura; y, por último, sombreado y saturación del color.
+
+La jerarquía justifica reglas prácticas que usaremos en todo el libro: preferir barras o puntos a gráficas de pastel (que codifican con ángulos y áreas), reservar el color para distinguir categorías o para magnitudes secundarias, y comparar lo que importa comparar sobre un eje común. \textcite{c00-tufte2001} añadió un principio de economía: la \emph{razón datos-tinta},
+\begin{equation}\label{eq:00-tinta}
+R = \frac{\text{tinta dedicada a los datos}}{\text{tinta total de la figura}},
+\end{equation}
+debe ser tan alta como sea razonable. Rejillas gruesas, fondos sombreados, efectos tridimensionales y leyendas redundantes consumen tinta sin aportar información; Tufte los llamó \ingles{chartjunk}. En la práctica, esto se traduce en rotular directamente las series en lugar de usar leyendas, en rejillas tenues y en títulos que enuncian la conclusión.
+
+\subsubsection{El color como dato}
+
+Cuando el color codifica una magnitud continua (una matriz de expresión, un mapa de contactos), el mapa de color debe ser \emph{perceptualmente uniforme}: pasos iguales en el dato deben producir pasos iguales en la sensación visual. La luminosidad $L^\ast$ del espacio CIELAB es una buena medida de esa sensación. El mapa arcoíris \texttt{jet}, durante años el predeterminado de muchos programas, viola esta condición: su luminosidad sube y baja de forma irregular, de modo que crea bordes donde el dato es suave y oculta cambios donde el dato varía (\cref{fig:00-color}). Además, es ilegible para las personas con deficiencias en la visión del color, que confunden sus rojos y verdes. \textcite{c00-crameri2020} documentaron lo extendido de este mal uso y recomiendan mapas derivados científicamente, como \texttt{viridis} o \texttt{cividis}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, scale only axis, width=10cm, height=3.3cm, xmin=0, xmax=1, ymin=0, ymax=100, name=ax,
+   xlabel={valor del dato (normalizado)}, ylabel={luminosidad $L^\ast$},
+   xticklabel style={/pgf/number format/.cd, fixed, precision=1, use comma},
+   legend pos=south east]
+  \addplot[azulprofundo, no marks] table[x=t, y=viridis] {figuras/cap00/luminosidad.dat};
+  \addlegendentry{\texttt{viridis}: monótona}
+  \addplot[rojo, no marks] table[x=t, y=jet] {figuras/cap00/luminosidad.dat};
+  \addlegendentry{\texttt{jet}: sube y baja}
+  \node[etiqueta, text=rojooscuro, anchor=south] at (axis cs:0.63,91) {falso ``borde'' amarillo};
+\end{axis}
+\begin{scope}[shift={($(ax.south west)+(0,-1.75)$)}, x=10cm, y=0.32cm]
+  \input{figuras/cap00/franjas.tex}
+  \node[etiqueta, anchor=east] at (0,0.4) {\texttt{jet}};
+  \node[etiqueta, anchor=east] at (0,1.4) {\texttt{viridis}};
+\end{scope}
+\end{tikzpicture}
+\caption[Luminosidad de dos mapas de color]{Luminosidad perceptual $L^\ast$ (CIELAB) a lo largo de dos mapas de color, calculada a partir de sus valores RGB. En \texttt{viridis} (azul) crece de forma monótona y casi lineal: el ojo lee un orden correcto incluso en escala de grises. En \texttt{jet} (rojo) sube hasta el cian y el amarillo y vuelve a caer: dos datos distintos pueden verse igual de claros, y la franja amarilla central aparece como un borde que no existe en los datos. Abajo, los dos mapas.}
+\label{fig:00-color}
+\end{figure}
+
+Todas las figuras de este libro, y las del curso en Colab, se construyen con estos criterios. En Python la herramienta básica es matplotlib \parencite{c00-hunter2007}, sobre la que se apoyan bibliotecas de más alto nivel; para figuras interactivas usaremos plotly en los cuadernos.
+
+
+% ---------------------------------------------------------------------
+\section{Biopython y herramientas de línea de comandos}\label{sec:00-biopython}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-00-preparacion/0.2_biopython_herramientas.ipynb}{0.2 · Biopython y herramientas}
+
+\begin{intuicion}[Instrumentos calibrados por otros]
+Nadie fabrica su propia micropipeta antes de cada experimento. Se compra un instrumento calibrado, probado por miles de usuarios, y se dedica el esfuerzo a la pregunta biológica. En la sección anterior escribimos a mano funciones para contar bases; fue útil para entender qué ocurre por dentro. A partir de aquí usaremos dos tipos de instrumentos ya calibrados: las bibliotecas de Python, que son como la gaveta de pipetas, puntas y gradillas de la mesa de trabajo, y los programas de línea de comandos, que son los equipos grandes del laboratorio (el termociclador, el secuenciador), especializados, muy rápidos y controlados mediante instrucciones escritas.
+\end{intuicion}
+
+Biopython es la biblioteca de referencia para biología molecular en Python: un conjunto de herramientas libres, desarrollado por una comunidad internacional, que va de la manipulación de secuencias y la lectura de decenas de formatos al acceso programático a bases de datos \parencite{c00-cock2009}. Aquí la usaremos para ir del ADN a la proteína, descargar y verificar un genoma real y conectar Python con programas externos.
+
+\subsection{El objeto \texttt{Seq}: complemento y complemento reverso}
+
+Un objeto \py{Seq} se comporta como una cadena de texto, pero ``conoce'' la biología: sabe complementar, transcribir y traducir. La operación más frecuente, y la que más errores provoca, es el complemento reverso. Las dos hebras de la doble hélice son \emph{antiparalelas}: una corre en sentido $5'\to3'$ y la otra en sentido $3'\to5'$. Como por convención toda secuencia se escribe de $5'$ a $3'$, leer la hebra opuesta exige complementar cada base \emph{e} invertir el orden.
+
+\begin{definicion}{Complemento reverso}{00-rc}
+Sea $\kappa:\Sigma\to\Sigma$ el complemento de Watson y Crick, $\kappa(\texttt{A})=\texttt{T}$, $\kappa(\texttt{T})=\texttt{A}$, $\kappa(\texttt{C})=\texttt{G}$, $\kappa(\texttt{G})=\texttt{C}$. El complemento reverso de $x=x_0\cdots x_{n-1}$ es la secuencia $\bar x$ de la misma longitud con
+\begin{equation}\label{eq:00-rc}
+\bar x_i = \kappa\!\left(x_{\,n-1-i}\right), \qquad i=0,\ldots,n-1 .
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\kappa$}{Función de complemento base a base.}
+\simbolo{$\bar x_i$}{Base en la posición $i$ del complemento reverso; se toma de la posición simétrica $n-1-i$ de $x$.}
+\end{simbolos}
+
+De la definición se sigue que el complemento reverso es una \emph{involución}: aplicado dos veces devuelve la secuencia original, $\bar{\bar x}=x$, porque tanto $\kappa$ como la inversión del orden lo son. Esta propiedad es una prueba sencilla, y muy recomendable, para cualquier implementación propia. Una secuencia que coincide con su complemento reverso, $\bar x = x$, se llama \emph{palindrómica}; muchos sitios de restricción lo son, como \secuencia{GAATTC} (EcoRI), porque las enzimas que los cortan actúan como dímeros simétricos.
+
+
+\subsection{El código genético como función}
+
+La traducción es una función que lee la secuencia de tres en tres. ¿Por qué tres? Porque con palabras de $k$ letras sobre un alfabeto de cuatro se pueden escribir $4^k$ palabras distintas, y hacen falta al menos 21 (veinte aminoácidos y una señal de parada): $4^1=4$ y $4^2=16$ no alcanzan, mientras que $4^3=64$ sobran. El código genético estándar es, por lo tanto, una función sobreyectiva
+\begin{equation}\label{eq:00-codigo}
+\tau:\ \{\texttt{A},\texttt{C},\texttt{G},\texttt{U}\}^3 \longrightarrow \{\text{20 aminoácidos}\}\cup\{\ast\},\qquad |\text{dominio}|=64,\quad |\text{imagen}|=21 .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\tau$}{Tabla de traducción; Biopython la guarda en \texttt{Bio.Data.CodonTable} (la estándar es la tabla 1 del NCBI).}
+\simbolo{$\{\ldots\}^3$}{Conjunto de todos los codones, palabras de tres nucleótidos.}
+\simbolo{$\ast$}{Señal de parada (\texttt{UAA}, \texttt{UAG}, \texttt{UGA}).}
+\end{simbolos}
+
+Como hay más codones que significados, el código es \emph{degenerado}: varios codones sinónimos codifican el mismo aminoácido. La \cref{fig:00-codigo} muestra que la degeneración no es aleatoria. Los sinónimos suelen diferir solo en la tercera base, de modo que muchas mutaciones en esa posición son silenciosas, y los aminoácidos químicamente parecidos ocupan casillas vecinas, lo que amortigua el efecto de los errores de lectura. Leucina, serina y arginina tienen seis codones cada una; metionina y triptófano, uno solo. \texttt{AUG}, el codón de la metionina, es además la señal de inicio más común.
+
+\begin{figure}[t]
+\centering
+\resizebox{\linewidth}{!}{\input{figuras/cap00/codigo_genetico.tex}}
+\caption[El código genético estándar]{El código genético estándar (tabla 1 del NCBI), generado a partir de \texttt{Bio.Data.CodonTable}. Cada bloque corresponde a una primera base (filas) y una segunda base (columnas); dentro del bloque, la tercera base recorre \texttt{U}, \texttt{C}, \texttt{A}, \texttt{G}. Colores: hidrofóbicos (amarillo), polares sin carga (verde azulado), con carga positiva (azul), con carga negativa (rojo), especiales G, P y C (violeta) y paradas (gris). Los bloques casi monocromáticos de la columna \texttt{U} (hidrofóbicos) y la vecindad de D y E muestran que el código agrupa los aminoácidos por química. Recuadro verde: \texttt{AUG}, inicio y metionina.}
+\label{fig:00-codigo}
+\end{figure}
+
+\subsection{Seis marcos de lectura y la estadística de los ORF}
+
+El ADN no tiene espacios entre codones. Una secuencia puede leerse empezando en la primera, la segunda o la tercera base, y lo mismo en su complemento reverso: hay seis \emph{marcos de lectura}. En general solo uno de ellos, en cada región, corresponde a la proteína real. Un \emph{marco abierto de lectura} (ORF, \ingles{open reading frame}) es un tramo de codones sin paradas; los genes que codifican proteínas son ORF largos, y buscar ORF largos fue durante décadas la primera estrategia de anotación de genomas.
+
+¿Qué significa ``largo''? Una vez más, necesitamos un modelo nulo. Si las bases fueran independientes con frecuencias $p_A,p_C,p_G,p_T$, la probabilidad de que un codón cualquiera sea de parada sería
+\begin{equation}\label{eq:00-pstop}
+\pi = p_T\,p_A\,p_A + p_T\,p_A\,p_G + p_T\,p_G\,p_A = p_T\,p_A\,(p_A + 2p_G),
+\end{equation}
+sumando las probabilidades de \texttt{TAA}, \texttt{TAG} y \texttt{TGA}. El número $L$ de codones consecutivos sin parada sigue entonces una distribución geométrica: cada codón es un ``intento'' que termina el ORF con probabilidad $\pi$. Así,
+\begin{equation}\label{eq:00-geom}
+\Prob(L \ge k) = (1-\pi)^{k}, \qquad \E[L] = \frac{1-\pi}{\pi}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$p_A,\ldots,p_T$}{Frecuencias de las bases en el genoma (modelo de bases independientes).}
+\simbolo{$\pi$}{Probabilidad de que un codón al azar sea de parada.}
+\simbolo{$L$}{Número de codones de un tramo abierto antes de encontrar una parada.}
+\simbolo{$k$}{Longitud umbral, en codones.}
+\end{simbolos}
+
+\begin{ejemplo}{¿Cuántos ORF largos produce el azar?}{00-orf}
+Con bases equiprobables, $\pi=3/64$ y un ORF aleatorio tiene en promedio $\E[L]=61/3\approx20$ codones; la probabilidad de superar 100 codones es $(61/64)^{100}=0{,}0082$. El genoma de SARS-CoV-2, sin embargo, es rico en A y T ($p_A=0{,}299$, $p_T=0{,}321$, $p_G=0{,}196$), lo que hace las paradas más frecuentes: la \cref{eq:00-pstop} da $\pi=0{,}0664$, es decir, unas $\num{9968}\times0{,}0664\approx662$ paradas esperadas por marco, y un ORF aleatorio medio de solo 14 codones. La probabilidad de que un tramo aleatorio supere 100 codones cae a $(1-0{,}0664)^{100}=0{,}0010$, así que en todo un marco esperaríamos $662\times0{,}0010\approx0{,}7$ ORF así de largos por puro azar. Los más de 7000 codones de ORF1ab son inexplicables por azar.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap00/orfs.tex}
+\caption[Los seis marcos de lectura de SARS-CoV-2]{Los seis marcos de lectura del genoma de SARS-CoV-2. Cada raya gris es un codón de parada; los bloques de color son ORF de al menos 100 codones (azul, hebra directa; naranja, hebra complementaria). Arriba, los genes anotados en el GenBank. El marco $+2$ tiene solo 255 paradas, frente a las $\sim$660 que predice la \cref{eq:00-pstop}, porque contiene los más de 13\,000 nucleótidos abiertos de ORF1a. En la hebra complementaria aparecen algunos ORF largos que no codifican nada, más de los que predice el modelo independiente: la longitud es una pista, no una prueba.}
+\label{fig:00-orfs}
+\end{figure}
+
+
+\subsection{Archivos y registros: \texttt{SeqRecord} y \texttt{SeqIO}}
+
+Una secuencia aislada rara vez basta; necesitamos su identificador, su descripción y sus anotaciones. Biopython agrupa todo ello en un objeto \py{SeqRecord}, y el módulo \py{SeqIO} traduce entre registros y archivos en decenas de formatos. Los dos formatos que usaremos desde el primer día son FASTA, mínimo (una línea de encabezado que empieza con \texttt{>} seguida de la secuencia), y GenBank, rico en metadatos. Estudiaremos los formatos con detalle en el \cref{cap:02}; aquí basta con saber que el encabezado de un GenBank se convierte en los atributos \py{.id}, \py{.description} y \py{.annotations}; su tabla de características, en una lista de objetos \py{SeqFeature} (con tipo, localización y calificadores), y su sección \texttt{ORIGIN}, en el atributo \py{.seq}.
+
+
+\py{SeqIO} ofrece dos funciones de lectura con una diferencia importante. \py{SeqIO.read} espera un archivo con \emph{exactamente} un registro y falla si hay más, lo que protege contra errores silenciosos. \py{SeqIO.parse} devuelve un \emph{iterador}: un objeto que produce los registros uno por uno, a medida que se le piden, sin cargar el archivo completo en memoria. Si un archivo contiene $N$ registros de tamaño medio $\ell$, leerlo todo en una lista necesita memoria $\Theta(N\ell)$, mientras que recorrerlo con el iterador necesita solo $\Theta(\ell)$, la del registro actual. Con un archivo FASTQ de 50 millones de lecturas, la diferencia es la que hay entre un análisis que funciona en Colab y otro que agota la memoria de la máquina.
+
+
+\subsection{Bases de datos programables: Entrez y el genoma de SARS-CoV-2}
+
+El Centro Nacional de Información Biotecnológica de Estados Unidos (NCBI) mantiene decenas de bases de datos enlazadas, desde GenBank y RefSeq hasta PubMed, y las expone mediante una interfaz programática, las E-utilities, que el sistema Entrez unifica \parencite{c00-sayers2022}. El módulo \py{Bio.Entrez} traduce esas llamadas a funciones de Python: \py{esearch} busca identificadores que satisfacen una consulta, \py{efetch} descarga los registros y \py{elink} navega entre bases de datos. El NCBI exige identificarse con un correo y limita las solicitudes por segundo.
+
+\begin{codigo}[descargar\_genoma.py]
+from Bio import Entrez, SeqIO
+
+Entrez.email = "su.correo@universidad.edu"      # obligatorio
+acc = "NC_045512.2"
+with Entrez.efetch(db="nuccore", id=acc, rettype="gbwithparts",
+                   retmode="text") as handle:
+    rec = SeqIO.read(handle, "genbank")
+cds = [f for f in rec.features if f.type == "CDS"]
+print(rec.description, len(rec), "nt,", len(cds), "CDS")
+\end{codigo}
+
+El registro que descargamos es la secuencia de referencia del aislado Wuhan-Hu-1. \textcite{c00-wu2020} lo obtuvieron por secuenciación metagenómica de ARN a partir del lavado broncoalveolar de un paciente hospitalizado en Wuhan en diciembre de 2019; el genoma completo mide \num{29903} nucleótidos, y su análisis filogenético mostró que el nuevo virus estaba estrechamente emparentado (89,1\,\% de similitud nucleotídica) con un grupo de coronavirus similares al del SARS hallados en murciélagos. Es un excelente material de prácticas: cualquier resultado puede contrastarse con una literatura enorme.
+
+\begin{ejemplo}{Verificar una anotación y descubrir un salto de marco}{00-frameshift}
+El GenBank anota 12 regiones codificantes (CDS) en 11 genes. Una prueba de consistencia natural es traducir cada CDS y comparar el resultado con la proteína que el propio archivo registra en el calificador \texttt{/translation}. Si extraemos cada región ingenuamente, desde su inicio hasta su final (\py{seq[start:end].translate(to_stop=True)}), 11 de las 12 traducciones coinciden. La excepción es la poliproteína ORF1ab, de \num{7096} aminoácidos: la traducción ingenua se detiene mucho antes. Si en cambio usamos \py{feature.extract(seq)}, que respeta la localización compuesta \texttt{join(266..13468,13468..21555)}, la traducción coincide residuo a residuo. La base 13\,468 aparece en los dos intervalos: se lee dos veces. Es la huella de un \emph{desplazamiento ribosómico del marco} en $-1$: una estructura de ARN en forma de pseudonudo hace que, en una fracción de las traducciones, el ribosoma retroceda un nucleótido y continúe en otro marco. Así, un mismo ARN produce la poliproteína corta pp1a (sin salto, termina en la parada del marco original) y la larga pp1ab (con salto). La verificación computacional no solo detectó una ``anomalía'': redescubrió un mecanismo biológico.
+\end{ejemplo}
+
+
+\subsection{La línea de comandos y la filosofía Unix}
+
+Buena parte de las herramientas bioinformáticas más usadas (BLAST, BWA, samtools, SPAdes, IQ-TREE) son programas de línea de comandos escritos en C o C\texttt{++}. No tienen interfaz gráfica: se invocan escribiendo su nombre y sus opciones en una terminal, leen archivos o flujos de texto y escriben archivos o flujos de texto. Esta forma de trabajar se remonta al sistema operativo Unix. En su descripción original, \textcite{c00-ritchie1974} presentaron, entre otras ideas, la \emph{tubería} (\ingles{pipe}): un canal que conecta la salida de un programa con la entrada del siguiente, de modo que programas pequeños, cada uno especializado en una tarea, se combinan para resolver problemas grandes.
+
+Todo proceso de Unix tiene tres flujos estándar: la entrada (\texttt{stdin}), la salida (\texttt{stdout}) y el canal de errores (\texttt{stderr}), además de un \emph{código de salida}, un entero que vale 0 si el programa terminó bien. Si vemos cada programa como una función que transforma texto en texto, una tubería es una composición de funciones:
+\begin{equation}\label{eq:00-tuberia}
+\texttt{p}_1 \,|\, \texttt{p}_2 \,|\, \cdots \,|\, \texttt{p}_k \;\equiv\; f_k\circ\cdots\circ f_2\circ f_1 .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\texttt{p}_i$}{El $i$-ésimo programa de la tubería, con sus opciones.}
+\simbolo{$|$}{Operador de tubería del intérprete de comandos: conecta \texttt{stdout} de la izquierda con \texttt{stdin} de la derecha.}
+\simbolo{$f_i$}{Transformación de texto que realiza $\texttt{p}_i$; la composición se lee de derecha a izquierda.}
+\end{simbolos}
+
+Los programas de una tubería se ejecutan \emph{simultáneamente}: el segundo empieza a procesar las primeras líneas mientras el primero todavía está leyendo el archivo. Igual que el iterador de \py{SeqIO.parse}, una tubería procesa archivos mucho más grandes que la memoria disponible. La \cref{fig:00-tuberia} muestra una tubería típica, que cuenta los tipos de anotación de un archivo GFF.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=0.55cm,
+  prog/.style={caja=#1, minimum width=1.85cm, minimum height=0.95cm, font=\ttfamily\small},
+  dato/.style={font=\ttfamily\tiny, text=tinta2, align=left, anchor=north}]
+  \node[draw=base, fill=papel, minimum width=1.5cm, minimum height=0.95cm, font=\ttfamily\scriptsize, align=center] (f) {anot.gff};
+  \node[prog=azul, right=of f] (p1) {grep -v};
+  \node[prog=azul, right=of p1] (p2) {cut -f3};
+  \node[prog=azul, right=of p2] (p3) {sort};
+  \node[prog=azul, right=of p3] (p4) {uniq -c};
+  \node[draw=base, fill=papel, right=of p4, minimum height=0.95cm, font=\ttfamily\scriptsize] (o) {pantalla};
+  \foreach \a/\b in {f/p1,p1/p2,p2/p3,p3/p4,p4/o} \draw[flecha=naranja] (\a) -- (\b);
+  \node[dato] at ($(p1.south)+(0,-0.15)$) {quita las\\ líneas \#};
+  \node[dato] at ($(p2.south)+(0,-0.15)$) {3.ª columna:\\ gene, CDS,\\ gene, exon\ldots};
+  \node[dato] at ($(p3.south)+(0,-0.15)$) {CDS\\ CDS\\ exon\\ gene\ldots};
+  \node[dato] at ($(p4.south)+(0,-0.15)$) {\ 4 CDS\\ \ 3 exon\\ \ 2 gene\ldots};
+  \draw[rojo, dashed, thick] ($(p1.north)+(0,0.1)$) -- ++(0,0.45) -| ($(p4.north)+(0,0.1)$);
+  \node[etiqueta, text=rojooscuro, fill=white] at ($(p2.north)!0.5!(p3.north)+(0,0.55)$) {\texttt{stderr}: los errores no entran en la tubería};
+\end{tikzpicture}
+\caption[Una tubería de Unix]{La tubería \texttt{grep -v '\^{}\#' anot.gff | cut -f3 | sort | uniq -c}. Cada programa lee el flujo de texto que le entrega el anterior (flechas naranjas, \texttt{stdout}$\to$\texttt{stdin}), lo transforma y lo pasa al siguiente; debajo de cada uno, un fragmento de lo que produce. Los cuatro procesos corren a la vez y ninguno necesita cargar el archivo completo. Los mensajes de error viajan por un tercer canal, \texttt{stderr}, y llegan a la pantalla sin contaminar los datos.}
+\label{fig:00-tuberia}
+\end{figure}
+
+
+\subsection{BLAST+ desde Python}
+
+BLAST es el ejemplo arquetípico de herramienta de línea de comandos: el conjunto BLAST+ reorganizó el código original en C\texttt{++} y lo dividió en programas especializados, \cmd{makeblastdb} para indexar una base de datos y \cmd{blastn}, \cmd{blastp} y compañía para buscar en ella \parencite{c00-camacho2009}. Estudiaremos su algoritmo y su estadística en el \cref{cap:03}. Aquí nos interesa como instrumento: cómo se instala, cómo se invoca desde Python y cómo se lee lo que produce.
+
+En Colab, BLAST+ se instala desde los repositorios del sistema (\texttt{apt-get install ncbi-blast+}); en un equipo propio conviene usar un gestor de entornos como conda, que veremos en la \cref{sec:00-reproducibilidad}. Para llamarlo desde Python se usa el módulo estándar \py{subprocess}, pasando los argumentos como una lista y pidiendo \py{check=True} para que un código de salida distinto de cero se convierta en una excepción. El formato tabular \texttt{-outfmt 6} produce una fila por alineamiento, lista para \py{pandas}.
+
+\begin{codigo}[blast\_subprocess.py]
+import subprocess
+import pandas as pd
+
+subprocess.run(["makeblastdb", "-in", "sarscov2.fasta",
+                "-dbtype", "nucl", "-out", "sarscov2_db"], check=True)
+cols = ("qseqid sseqid pident length mismatch gapopen "
+        "qstart qend sstart send evalue bitscore").split()
+subprocess.run(["blastn", "-query", "consulta.fasta",
+                "-db", "sarscov2_db", "-out", "hits.tsv",
+                "-outfmt", "6 " + " ".join(cols)], check=True)
+hits = pd.read_csv("hits.tsv", sep="\t", names=cols)
+print(hits.sort_values("bitscore", ascending=False).head())
+\end{codigo}
+
+\subsubsection{¿Cuándo encuentra BLAST una secuencia mutada?}
+
+El cuaderno de la lección propone un experimento: tomar un fragmento de 300 nucleótidos del genoma, introducirle mutaciones al azar y comprobar si \cmd{blastn} lo encuentra. La respuesta depende de la estrategia de BLAST, que solo empieza a alinear donde encuentra una \emph{semilla}: una palabra de $w$ nucleótidos idéntica en la consulta y en la base de datos ($w=28$ en el modo predeterminado de \cmd{blastn}, llamado \texttt{megablast}, y $w=11$ con la opción \texttt{-task blastn}). Si cada posición conserva su base con probabilidad $q$ (la identidad) de forma independiente, una palabra concreta sobrevive intacta con probabilidad $q^w$, y el número esperado de semillas en un fragmento de longitud $\ell$ es
+\begin{equation}\label{eq:00-semillas}
+\E[\text{semillas}] = (\ell - w + 1)\,q^{w}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\ell$}{Longitud del fragmento de consulta.}
+\simbolo{$w$}{Longitud de palabra de la semilla (\texttt{-word\_size}).}
+\simbolo{$q$}{Identidad por posición entre la consulta y su origen, $q = 1 - \text{tasa de mutación}$.}
+\end{simbolos}
+
+\begin{ejemplo}{Quince mutaciones en trescientas bases}{00-semillas}
+Con 15 mutaciones en 300 nucleótidos la identidad es $q=0{,}95$. Con palabras de 11 bases, cada una sobrevive con probabilidad $0{,}95^{11}=0{,}569$; hay $300-11+1=290$ palabras, así que esperamos unas $290\times0{,}569\approx165$ semillas. Con el modo predeterminado ($w=28$) la supervivencia cae a $0{,}95^{28}=0{,}238$, pero sobre 273 palabras aún quedan unas 65 semillas: BLAST encontrará el fragmento en ambos casos. El panorama cambia con $q=0{,}80$ (60 mutaciones): con $w=11$ esperamos todavía $290\times0{,}80^{11}\approx25$ semillas, mientras que con $w=28$ solo $273\times0{,}80^{28}\approx0{,}5$. Es muy probable que \texttt{megablast} no encuentre nada. Para homólogos aún más lejanos, la búsqueda de ADN pierde sensibilidad incluso con palabras cortas y conviene comparar proteínas.
+\end{ejemplo}
+
+
+El ejemplo resume el compromiso: el tamaño de palabra regula el equilibrio entre velocidad y sensibilidad, y es uno de los parámetros que conviene registrar siempre junto con los resultados. Que las mutaciones se distribuyan al azar es, a su vez, un supuesto: en genes reales las mutaciones se concentran en las terceras posiciones de los codones, y eso favorece a las semillas ``discontinuas'' que ignoran esas posiciones, una idea que retomaremos en el \cref{cap:03}.
+
+% ---------------------------------------------------------------------
+\section{Reproducibilidad: semillas, versiones, hashes y Git}\label{sec:00-reproducibilidad}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-00-preparacion/0.3_reproducibilidad.ipynb}{0.3 · Reproducibilidad}
+
+\begin{intuicion}[La receta de la abuela]
+``Agregue un poco de harina, una pizca de sal y hornee hasta que esté listo''. La receta funciona para quien la escribió, que sabe cuánto es ``un poco'' y reconoce el punto exacto del horno, pero nadie más obtiene el mismo pastel. Un análisis bioinformático sin semillas aleatorias registradas, sin versiones de los programas y sin una huella de los datos de entrada es esa receta: funcionó una vez, en una computadora, un día concreto, y nadie, ni siquiera su autor seis meses después, puede garantizar que volverá a obtener lo mismo.
+\end{intuicion}
+
+\subsection{¿Qué significa reproducir un análisis?}
+
+La palabra ``reproducibilidad'' se usa con sentidos distintos, y conviene separarlos. Hablaremos de \emph{repetibilidad} cuando el mismo investigador, con los mismos datos, el mismo código y el mismo entorno, obtiene el mismo resultado; de \emph{reproducibilidad computacional} cuando lo obtiene otra persona a partir de los datos y el código publicados; y de \emph{replicabilidad} cuando un estudio independiente, con datos nuevos, llega a la misma conclusión. La reproducibilidad computacional es el requisito mínimo: sin ella, una discrepancia con otro estudio no puede atribuirse ni a la biología ni a un error.
+
+El problema no es hipotético. En una encuesta de \emph{Nature} a \num{1576} investigadores, más del 70\,\% declaró haber intentado sin éxito reproducir un experimento de otro grupo, y más de la mitad, uno propio \parencite{c00-baker2016}. En bioinformática la evidencia es más directa. \textcite{c00-ioannidis2009} encargaron a dos equipos independientes reproducir una tabla o figura de 18 análisis de expresión con micromatrices publicados en \emph{Nature Genetics}: lograron reproducir dos en principio y seis de forma parcial o con discrepancias; los diez restantes no pudieron reproducirse. La causa principal fue la falta de disponibilidad de los datos, y las discrepancias se debieron sobre todo a descripciones incompletas del procesamiento.
+
+
+Un análisis computacional puede dejar de ser reproducible por cuatro vías: porque depende de \emph{números aleatorios} no registrados, porque sus \emph{datos} cambiaron sin que nadie lo notara, porque su \emph{código} se modificó después de producir los resultados, o porque su \emph{entorno} (versiones de bibliotecas, del sistema operativo) ya no es el mismo. El resto del capítulo presenta un instrumento para cada vía.
+
+\subsection{El azar determinista: generadores pseudoaleatorios}
+
+Simulaciones, remuestreos \ingles{bootstrap}, inicializaciones de algoritmos de agrupamiento, divisiones de datos para entrenar un modelo: la bioinformática consume cantidades enormes de números aleatorios. Pero una computadora es una máquina determinista y no puede lanzar una moneda. Lo que hace es calcular una sucesión que \emph{parece} aleatoria.
+
+\begin{definicion}{Generador pseudoaleatorio}{00-prng}
+Un generador de números pseudoaleatorios es una tupla $(\mathcal{S}, f, g, s_0)$ formada por un conjunto finito de estados $\mathcal{S}$, una función de transición $f:\mathcal{S}\to\mathcal{S}$, una función de salida $g:\mathcal{S}\to[0,1)$ y un estado inicial $s_0$, la \emph{semilla}. El generador produce $u_n = g(s_n)$ con $s_{n+1}=f(s_n)$. Como $\mathcal{S}$ es finito, la sucesión es tarde o temprano periódica; el menor $P$ tal que $s_{n+P}=s_n$ para todo $n$ grande es su \emph{período}.
+\end{definicion}
+
+La definición contiene la clave de la reproducibilidad: toda la sucesión queda determinada por la semilla. Es como una baraja gigantesca que alguien mezcló de antemano; pedir un número aleatorio es voltear la carta siguiente, y la semilla dice en qué carta empezar. Misma semilla, mismas cartas.
+
+El generador más antiguo y más estudiado es el \emph{congruencial lineal} (LCG), cuyo estado es un único entero:
+\begin{equation}\label{eq:00-lcg}
+x_{n+1} = (a\,x_n + c) \bmod m, \qquad u_n = \frac{x_n}{m}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$x_n$}{Estado del generador, un entero entre $0$ y $m-1$; $x_0$ es la semilla.}
+\simbolo{$a,\ c,\ m$}{Multiplicador, incremento y módulo: constantes que definen el generador.}
+\simbolo{$u_n$}{Número pseudoaleatorio en $[0,1)$ que se entrega al usuario.}
+\end{simbolos}
+
+El período de un LCG no puede superar $m$, y alcanzar ese máximo exige elegir bien las constantes. El resultado clásico, que \textcite{c00-knuth1997} demuestra con detalle, es el siguiente.
+
+\begin{teorema}{Período completo de un LCG (Hull--Dobell)}{00-hulldobell}
+Si $c\neq0$, el generador de la \cref{eq:00-lcg} tiene período $m$ para toda semilla si y solo si: (i) $c$ y $m$ son primos entre sí; (ii) $a-1$ es divisible por todos los factores primos de $m$; y (iii) $a-1$ es divisible por 4 si $m$ lo es.
+\end{teorema}
+
+\begin{ejemplo}{Un generador de juguete con período completo}{00-lcg}
+Tome $m=16$, $a=5$, $c=3$. Las condiciones se cumplen: $\operatorname{mcd}(3,16)=1$; el único primo de $16$ es 2, que divide a $a-1=4$; y como $4\mid16$, también $4\mid(a-1)$. Con semilla $x_0=7$, la sucesión es
+\[
+7\to6\to1\to8\to11\to10\to5\to12\to15\to14\to9\to0\to3\to2\to13\to4\to7\to\cdots
+\]
+que recorre los 16 estados antes de repetirse. Con $a=3$, en cambio, la condición (ii) se cumple pero la (iii) no, y el período se acorta. Observe también que los bits bajos son pésimos: $x_n \bmod 2$ alterna 1, 0, 1, 0\ldots, un defecto general de los LCG con módulo potencia de 2.
+\end{ejemplo}
+
+\subsection{Cuando el azar tiene estructura: RANDU}
+
+Período largo no significa buena calidad. El caso más famoso es RANDU, el generador de la biblioteca científica de IBM en los años sesenta, con $a=65\,539$, $c=0$ y $m=2^{31}$, usado durante años en simulaciones publicadas. Su multiplicador tiene una forma especial, $a = 2^{16}+3$, y eso basta para arruinarlo. Elevando al cuadrado,
+\begin{equation}\label{eq:00-randu}
+a^2 = 2^{32} + 6\cdot 2^{16} + 9 \equiv 6\cdot2^{16} + 9 = 6\left(2^{16}+3\right) - 9 = 6a - 9 \pmod{2^{31}},
+\end{equation}
+porque $2^{32}$ es múltiplo de $2^{31}$. Multiplicando por $x_n$ y usando $x_{n+1}\equiv a x_n$ y $x_{n+2}\equiv a^2 x_n$, obtenemos una relación lineal entre tres valores consecutivos:
+\begin{equation}\label{eq:00-randu-planos}
+x_{n+2} \equiv 6\,x_{n+1} - 9\,x_n \pmod{2^{31}} \quad\Longrightarrow\quad 9u_n - 6u_{n+1} + u_{n+2} = k\in\mathbb{Z}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$u_n$}{Salida normalizada $x_n/2^{31}\in[0,1)$.}
+\simbolo{$k$}{Entero; como $9u_n-6u_{n+1}+u_{n+2}$ está entre $-6$ y $10$, solo puede tomar 15 valores ($-5,\ldots,9$).}
+\end{simbolos}
+
+La \cref{eq:00-randu-planos} dice que todos los tripletes $(u_n,u_{n+1},u_{n+2})$ caen sobre 15 planos paralelos, con vector normal $(9,-6,1)$. Una simulación tridimensional con RANDU explora solo 15 láminas del cubo y deja vacío todo lo demás. \textcite{c00-marsaglia1968} demostró que el defecto es inherente a todos los generadores congruenciales multiplicativos, aunque en grado muy distinto: los puntos de $d$ valores consecutivos caen siempre sobre una familia de hiperplanos paralelos, cuyo número no puede superar $(d!\,m)^{1/d}$. Para $m=2^{31}$ y $d=3$ esa cota es de unos \num{2344} planos; RANDU se queda con 15.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.1cm, y descriptions at=edge left},
+   curso, width=0.52\linewidth, height=4.6cm, grid=none, xmin=-1.05, xmax=0.75, ymin=-6.3, ymax=10.3,
+   xlabel={dirección dentro de los planos}, xtick=\empty,
+   ytick={-5,0,5,9}]
+\nextgroupplot[title={RANDU: 15 planos}, ylabel={$9u_n-6u_{n+1}+u_{n+2}$}]
+  \addplot[only marks, mark=*, mark size=0.35pt, azul, opacity=0.6] table[x=a, y=b] {figuras/cap00/randu.dat};
+\nextgroupplot[title={PCG64 (\texttt{numpy}): sin estructura}]
+  \addplot[only marks, mark=*, mark size=0.35pt, naranja, opacity=0.6] table[x=a, y=b] {figuras/cap00/pcg.dat};
+\end{groupplot}
+\end{tikzpicture}
+\caption[RANDU cae en planos]{\num{2500} tripletes consecutivos $(u_n,u_{n+1},u_{n+2})$ proyectados sobre dos direcciones: el eje vertical es la combinación $9u_n-6u_{n+1}+u_{n+2}$ de la \cref{eq:00-randu-planos} y el horizontal, una dirección perpendicular a ella. Los tripletes de RANDU (izquierda) solo toman 15 valores enteros en el eje vertical: son 15 planos vistos de canto. Los de PCG64, el generador predeterminado de NumPy (derecha), llenan el espacio de forma homogénea. Visto desde cualquier otro ángulo, RANDU parece una nube uniforme; el cuaderno de la lección incluye un cubo interactivo para comprobarlo.}
+\label{fig:00-randu}
+\end{figure}
+
+\subsection{Generadores modernos: Mersenne Twister y PCG}
+
+Los generadores actuales se diseñan con pruebas teóricas de uniformidad en muchas dimensiones y se someten a baterías de pruebas estadísticas. El Mersenne Twister (MT19937) de \textcite{c00-matsumoto1998}, el generador del módulo \py{random} de Python y durante años el de NumPy, tiene un período de $2^{19937}-1$ y está equidistribuido en 623 dimensiones: una garantía que RANDU no cumple ni en tres. Pero es lineal sobre el cuerpo de dos elementos: unas cuantas salidas consecutivas bastan para reconstruir su estado, así que sirve para simular, nunca para criptografía.
+
+Desde la versión 1.17, NumPy usa por defecto PCG64, un generador de la familia de congruenciales permutados propuesta por Melissa O'Neill: un LCG de 128 bits cuyo estado no se entrega directamente, sino a través de una permutación que mezcla sus bits (se combinan sus dos mitades con un o exclusivo y el resultado se rota un número de posiciones que dictan sus bits altos), lo que elimina las regularidades de los bits bajos que vimos en el \cref{ej:00-lcg}. Tiene período $2^{128}$, un estado pequeño y puede ``saltar'' hacia adelante en la sucesión de forma eficiente, lo que permite crear flujos independientes para cálculos en paralelo \parencite{c00-numpypcg}.
+
+La forma moderna de usarlo es crear un generador propio con una semilla explícita y pasarlo a las funciones que lo necesitan, en lugar de fijar el estado global con \py{np.random.seed}, que cualquier biblioteca importada puede alterar sin aviso.
+
+\begin{codigo}[semillas.py]
+import numpy as np
+
+rng = np.random.default_rng(20240517)          # semilla explícita
+reads = rng.choice(list("ACGT"), size=(3, 12))
+print(["".join(r) for r in reads])             # idéntico en cada ejecución
+
+# flujos independientes para 4 procesos en paralelo
+children = np.random.SeedSequence(20240517).spawn(4)
+streams = [np.random.default_rng(s) for s in children]
+\end{codigo}
+
+La misma semilla solo reproduce la misma sucesión con el mismo generador y la misma versión del código; por eso se registra junto con las versiones del software.
+
+\subsection{Monte Carlo y su error}
+
+Una simulación Monte Carlo estima una cantidad (una probabilidad, una media) promediando muchas repeticiones aleatorias. Si $X_1,\ldots,X_N$ son repeticiones independientes de una variable con media $\mu$ y desviación estándar $\sigma$, el estimador es la media muestral $\hat\mu_N$, y su precisión obedece a un resultado fundamental.
+
+\begin{teorema}{Error estándar de Monte Carlo}{00-mc}
+El estimador $\hat\mu_N = \frac1N\sum_{i=1}^{N}X_i$ es insesgado, $\E[\hat\mu_N]=\mu$, y su error estándar es
+\begin{equation}\label{eq:00-mc}
+\operatorname{EE}(\hat\mu_N) = \sqrt{\Var(\hat\mu_N)} = \frac{\sigma}{\sqrt{N}} .
+\end{equation}
+Por el teorema central del límite, $\hat\mu_N \pm 2\,\sigma/\sqrt N$ contiene a $\mu$ con probabilidad cercana al 95\,\%.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$X_i$}{Resultado de la $i$-ésima repetición (por ejemplo, 1 si una lectura simulada no tiene errores y 0 si los tiene).}
+\simbolo{$\mu,\ \sigma$}{Media y desviación estándar verdaderas de $X$; para una variable de Bernoulli, $\sigma=\sqrt{p(1-p)}$.}
+\simbolo{$N$}{Número de repeticiones de la simulación.}
+\end{simbolos}
+
+La demostración es directa: por independencia, $\Var(\sum X_i)=N\sigma^2$, y dividir entre $N$ divide la varianza entre $N^2$. La consecuencia práctica es la ley de la raíz cuadrada: \emph{para ganar un decimal de precisión hay que multiplicar el trabajo por cien}. Invirtiendo la \cref{eq:00-mc}, el número de repeticiones necesario para un error estándar $\epsilon$ es $N=\sigma^2/\epsilon^2$.
+
+\begin{ejemplo}{Lecturas sin errores}{00-mc}
+Un secuenciador comete un error en cada base con probabilidad $e=0{,}01$, de forma independiente. ¿Qué fracción de las lecturas de 150 bases no tiene ningún error? La respuesta exacta es $p=(1-e)^{150}=0{,}99^{150}=0{,}2215$; se parece a $e^{-1{,}5}=0{,}2231$, la aproximación de Poisson. Si no conociéramos la fórmula, podríamos simular $N=\num{10000}$ lecturas y contar las perfectas. El error estándar sería $\sqrt{0{,}2215\times0{,}7785/\num{10000}}=0{,}0042$, y las cuatro simulaciones de la \cref{fig:00-montecarlo} terminan en $0{,}2195$, $0{,}2240$, $0{,}2204$ y $0{,}2223$ tras $10^5$ lecturas: todas dentro de la banda teórica. Para obtener la tercera cifra decimal con seguridad ($\epsilon=0{,}0005$) harían falta unas $0{,}17/0{,}0005^2\approx\num{690000}$ lecturas simuladas.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=4.8cm, xmode=log, xmin=10, xmax=1e5, ymin=0, ymax=0.5,
+   xlabel={número de lecturas simuladas $N$}, ylabel={estimación de $p$},
+   yticklabel style={/pgf/number format/.cd, fixed, precision=1, use comma}]
+  \addplot[name path=sup, draw=none, domain=10:1e5, samples=100] {0.22145+2*sqrt(0.22145*0.77855/x)};
+  \addplot[name path=inf, draw=none, domain=10:1e5, samples=100] {max(0,0.22145-2*sqrt(0.22145*0.77855/x))};
+  \addplot[azulpalido!80] fill between[of=sup and inf];
+  \addplot[tinta2, dashed, domain=10:1e5] {0.22145};
+  \addplot[azul, thick, no marks] table[x=N, y=s1] {figuras/cap00/montecarlo.dat};
+  \addplot[naranja, thick, no marks] table[x=N, y=s2] {figuras/cap00/montecarlo.dat};
+  \addplot[aqua, thick, no marks] table[x=N, y=s3] {figuras/cap00/montecarlo.dat};
+  \addplot[magenta, thick, no marks] table[x=N, y=s4] {figuras/cap00/montecarlo.dat};
+  \node[etiqueta, anchor=south west] at (axis cs:2e3,0.23) {$p = 0{,}99^{150} = 0{,}2215$};
+  \node[etiqueta, anchor=north east, text=azulprofundo] at (axis cs:9e4,0.48) {banda $p\pm2\sqrt{p(1-p)/N}$};
+  \node[etiqueta, anchor=north east] at (axis cs:9e4,0.43) {cuatro semillas distintas};
+\end{axis}
+\end{tikzpicture}
+\caption[Convergencia de una estimación Monte Carlo]{Estimación Monte Carlo de la fracción de lecturas de 150 bases sin errores de secuenciación ($e=0{,}01$), con cuatro semillas distintas (líneas de color). Al principio las estimaciones difieren mucho; a medida que crece $N$ convergen hacia el valor exacto (línea discontinua) y se mantienen dentro de la banda de $\pm2$ errores estándar, cuyo ancho se reduce como $1/\sqrt N$: en escala logarítmica, cada década de $N$ estrecha la banda en un factor $\sqrt{10}\approx3{,}2$. Cada curva es reproducible exactamente con su semilla.}
+\label{fig:00-montecarlo}
+\end{figure}
+
+\subsection{Huellas digitales: funciones \ingles{hash}}
+
+Los datos también cambian sin avisar. Un archivo se trunca durante una descarga, una base de datos publica una nueva versión con el mismo nombre de archivo, un colaborador ``limpia'' una tabla y la guarda encima de la original. Para detectar cualquier cambio, por pequeño que sea, se usa la huella digital del archivo, el resultado de una función \ingles{hash} criptográfica.
+
+\begin{definicion}{Función \ingles{hash} criptográfica}{00-hash}
+Una función $h:\{0,1\}^\ast\to\{0,1\}^{n}$ que asigna a cualquier mensaje, de cualquier longitud, un resumen de $n$ bits, y que satisface tres propiedades: (1) \emph{resistencia a la preimagen}: dado un resumen $y$, es inviable encontrar un mensaje $x$ con $h(x)=y$; (2) \emph{resistencia a la segunda preimagen}: dado $x$, es inviable encontrar $x'\ne x$ con $h(x')=h(x)$; (3) \emph{resistencia a colisiones}: es inviable encontrar cualquier par $x\ne x'$ con $h(x)=h(x')$.
+\end{definicion}
+
+SHA-256, definida en el estándar federal estadounidense de \ingles{hash} seguro \parencite{c00-nist2015}, produce resúmenes de $n=256$ bits, que se escriben como 64 dígitos hexadecimales. Procesa el mensaje en bloques de 512 bits, cada uno mediante 64 rondas de sumas modulares, rotaciones y funciones lógicas, diseñadas para que cada bit de la salida dependa de todos los bits de la entrada. El resultado es el \emph{efecto avalancha}: cambiar un solo bit de la entrada cambia, en promedio, la mitad de los bits de la salida, y el resumen modificado no guarda ninguna relación visible con el original.
+
+\begin{ejemplo}{Una base de diferencia}{00-sha}
+Las secuencias \secuencia{GATTACA} y \secuencia{GATTACC} difieren en una sola base. Sus resúmenes SHA-256 son
+\begin{center}
+\small\ttfamily
+\begin{tabular}{@{}l@{}}
+d74f6c423e80cbf69d76149048e458a10c96f927c896ea9ff4f44616b643eb22\\
+60bcfb9d965bb9c40959b91781d457c8801eca61d70fee26377d612d205eecb7
+\end{tabular}
+\end{center}
+y difieren en 129 de sus 256 bits. Si la salida fuera una sucesión de bits aleatorios e independientes, el número de bits distintos seguiría una binomial $\mathrm{Bin}(256,\tfrac12)$, con media 128 y desviación estándar 8. La \cref{fig:00-avalancha} muestra que eso es exactamente lo que ocurre.
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=4.5cm, xmin=98, xmax=158, ymin=0, ymax=0.055,
+   xlabel={bits distintos entre los dos resúmenes (de 256)}, ylabel={frecuencia relativa},
+   yticklabel style={/pgf/number format/.cd, fixed, precision=2, use comma},
+   ybar, bar width=2.6pt, legend pos=north east, legend style={font=\sffamily\scriptsize}]
+  \addplot[fill=azul!70, draw=none] table[x=k, y=freq] {figuras/cap00/avalancha.dat};
+  \addlegendentry{\num{10000} mutaciones puntuales}
+  \addplot[sharp plot, naranja, very thick, mark=none, ybar=0pt] table[x=k, y=binom] {figuras/cap00/avalancha.dat};
+  \addlegendentry{$\mathrm{Bin}(256, 1/2)$}
+\end{axis}
+\end{tikzpicture}
+\caption[Efecto avalancha de SHA-256]{Efecto avalancha. Se tomó una secuencia aleatoria de 1000 bases y se le aplicaron \num{10000} mutaciones puntuales independientes; para cada una se contaron los bits que difieren entre el SHA-256 de la secuencia original y el de la mutada (media observada 128,2; desviación estándar 8,2). La distribución coincide con la de 256 monedas justas (naranja): un cambio mínimo en los datos produce una huella completamente distinta, y nada en la huella delata dónde estuvo el cambio.}
+\label{fig:00-avalancha}
+\end{figure}
+
+\subsubsection{¿Pueden dos archivos distintos tener la misma huella?}
+
+Sí, necesariamente: hay infinitos mensajes y solo $2^{256}$ resúmenes. La pregunta relevante es con qué probabilidad ocurrirá \emph{por accidente}. Es el problema del cumpleaños: si $k$ archivos reciben resúmenes que se comportan como uniformes e independientes sobre $M=2^n$ valores, la probabilidad de que no haya ninguna coincidencia es
+\begin{equation}\label{eq:00-cumple}
+\Prob(\text{sin colisión}) = \prod_{i=1}^{k-1}\left(1-\frac{i}{M}\right) \approx \exp\!\left(-\frac{k(k-1)}{2M}\right),
+\end{equation}
+usando $1-x\approx e^{-x}$ para $x$ pequeño y $\sum_{i=1}^{k-1} i = k(k-1)/2$.
+
+\begin{simbolos}
+\simbolo{$k$}{Número de archivos a los que se calcula la huella.}
+\simbolo{$M=2^n$}{Número de resúmenes posibles; $n=256$ para SHA-256.}
+\end{simbolos}
+
+La probabilidad de colisión se vuelve apreciable solo cuando $k$ se acerca a $\sqrt{M}=2^{n/2}$. Para SHA-256 eso significa $2^{128}\approx3\times10^{38}$ archivos. Con un billón ($10^{12}$) de archivos, la probabilidad de alguna colisión accidental es del orden de $10^{24}/2^{257}\approx4\times10^{-54}$. Para efectos prácticos, dos archivos con el mismo SHA-256 son el mismo archivo.
+
+\begin{consola}[Verificar la integridad de los datos]
+# calcular y guardar las huellas de los datos crudos
+sha256sum datos/*.fastq.gz > datos/SHA256SUMS
+# meses después, u otra persona: ¿son los mismos archivos?
+sha256sum -c datos/SHA256SUMS
+# lecturas_R1.fastq.gz: OK
+# lecturas_R2.fastq.gz: FAILED     <- el archivo cambió
+\end{consola}
+
+
+\subsection{Git: el historial como grafo}
+
+La tercera vía de pérdida de reproducibilidad es el código. Carpetas llenas de \archivo{analisis\_final.py}, \archivo{analisis\_final\_v2.py} y \archivo{analisis\_final\_DEFINITIVO.py} son la versión computacional del cuaderno de laboratorio con páginas arrancadas. Un sistema de control de versiones registra cada estado del proyecto, quién lo produjo, cuándo y por qué, y permite volver a cualquiera de ellos. Git, el sistema dominante, tiene un modelo interno sorprendentemente sencillo, y entenderlo evita la mayoría de los sustos.
+
+\begin{definicion}{Historial de Git}{00-git}
+Un \emph{commit} es una instantánea completa de los archivos del proyecto, acompañada de metadatos (autor, fecha, mensaje) y de la referencia a uno o más commits \emph{padres}. Cada commit se identifica por el \ingles{hash} de todo su contenido, incluidos los identificadores de sus padres. El historial es un \emph{grafo acíclico dirigido} (DAG) $G=(V,E)$: los vértices $V$ son commits y hay una arista $(c\to p)\in E$ si $p$ es padre de $c$.
+\end{definicion}
+
+Que el identificador sea un \ingles{hash} del contenido tiene dos consecuencias profundas. La primera es la integridad: modificar un archivo antiguo cambia el \ingles{hash} de ese commit, que forma parte del contenido de su hijo, cuyo \ingles{hash} cambia también, y así hasta el último. Es imposible alterar el pasado en silencio: el identificador del commit más reciente certifica todo el historial, igual que una cadena de huellas digitales. La segunda es que el grafo es necesariamente acíclico: para que un commit fuera su propio antepasado, su \ingles{hash} tendría que aparecer dentro de su propio contenido, lo que exigiría resolver una ecuación que la resistencia a la preimagen hace inviable.
+
+Sobre ese grafo, los conceptos de Git se vuelven simples. Una \emph{rama} no es una copia del proyecto: es un puntero móvil, un nombre que apunta a un commit y avanza con cada commit nuevo. \texttt{HEAD} es el puntero que indica en qué rama estamos. Una \emph{fusión} (\ingles{merge}) crea un commit con dos padres, que reúne dos líneas de trabajo (\cref{fig:00-git}).
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+  commit/.style={circle, draw=#1!80!black, fill=#1!25, thick, minimum size=0.72cm, inner sep=0pt, font=\ttfamily\tiny},
+  ptr/.style={rounded corners=2pt, fill=#1, text=white, font=\sffamily\scriptsize\bfseries, inner sep=3pt},
+  padre/.style={-{Stealth[length=2mm]}, thick, tinta2}]
+  \node[commit=azul] (c1) at (0,0) {a1f3};
+  \node[commit=azul] (c2) at (1.8,0) {7c0e};
+  \node[commit=azul] (c3) at (3.6,0) {e94b};
+  \node[commit=naranja] (b1) at (5.4,-1.5) {2d8a};
+  \node[commit=naranja] (b2) at (7.2,-1.5) {b56f};
+  \node[commit=azul] (c4) at (5.4,0) {90c2};
+  \node[commit=violeta] (m) at (9.0,0) {f07d};
+  \foreach \a/\b in {c2/c1,c3/c2,c4/c3,b1/c3,b2/b1,m/c4,m/b2} \draw[padre] (\a) -- (\b);
+  \node[ptr=azulprofundo, above=0.35cm of m] (main) {main};
+  \node[ptr=tinta, above=0.25cm of main] {HEAD};
+  \draw[-{Stealth}, azulprofundo, thick] (main) -- (m);
+  \node[ptr=naranja, below=0.35cm of b2] (feat) {filtro-calidad};
+  \draw[-{Stealth}, naranja, thick] (feat) -- (b2);
+  \node[etiqueta, below=0.2cm of c1] {``datos crudos\\ + SHA256SUMS''};
+  \node[etiqueta, below=0.2cm of c2] {``script de\\ conteo''};
+  \node[etiqueta, above=0.2cm of c3] {``figura 1''};
+  \node[etiqueta, above=0.2cm of c4] {``corrige eje''};
+  \node[etiqueta, right=0.08cm of b2, anchor=west, yshift=-0.1cm] {};
+  \node[etiqueta, below=0.2cm of m, text=violeta] {fusión:\\ dos padres};
+  \node[etiqueta, text width=3.2cm, anchor=north west] at (0,-1.35) {cada flecha apunta al padre;\\ el identificador de un commit\\ es el \emph{hash} de su contenido\\ \emph{y} del de sus padres};
+\end{tikzpicture}
+\caption[El historial de Git como grafo]{El historial de un proyecto como grafo acíclico dirigido. Cada nodo es un commit, identificado por los primeros caracteres de su \ingles{hash}; las flechas apuntan a los padres. La rama \texttt{filtro-calidad} (naranja) se separó en \texttt{e94b} para probar un nuevo filtro sin tocar la línea principal; al terminar, se fusionó con \texttt{main} en el commit \texttt{f07d}, que tiene dos padres. Las ramas son solo punteros (rectángulos) y \texttt{HEAD} indica dónde está trabajando el usuario. Cualquier resultado puede asociarse al identificador exacto del commit que lo produjo.}
+\label{fig:00-git}
+\end{figure}
+
+
+\textcite{c00-perezriverol2016} resumen en diez reglas cómo aprovechar Git y la plataforma GitHub en la investigación, entre ellas usar ramas y bifurcaciones para desarrollar funciones nuevas sin romper lo que funciona, etiquetar las versiones con números semánticos, automatizar las pruebas, hacer el código citable y usar la plataforma para que la investigación sea más reproducible. Una regla práctica: incluya el identificador del commit en cada figura o tabla generada, y guarde los datos grandes fuera de Git, referenciados por su huella.
+
+\subsection{Entornos, versiones y contenedores}
+
+La cuarta vía es el entorno. El mismo código puede producir resultados distintos con otra versión de NumPy, de Biopython o de BLAST, y un análisis que hoy funciona puede fallar mañana porque Colab actualizó una biblioteca. La defensa tiene varias capas, de menor a mayor aislamiento, y un análisis es tan reproducible como la capa más débil que haya quedado sin registrar.
+
+
+La capa mínima es \emph{registrar}: guardar junto con los resultados la lista exacta de versiones (\cmd{pip freeze}, \py{Bio.__version__}, \cmd{blastn -version}), por ejemplo en la primera celda de cada cuaderno. La siguiente es \emph{fijar}: declarar esas versiones en un archivo (\archivo{requirements.txt} o \archivo{environment.yml}) a partir del cual cualquiera pueda recrear el entorno. Con versionado semántico (\texttt{MAYOR.MENOR.PARCHE}), fijar la versión mayor (\texttt{numpy>=1.26,<2}) evita rupturas, y fijar la exacta (\texttt{numpy==1.26.4}) garantiza además los mismos resultados numéricos.
+
+La capa más robusta es el \emph{contenedor}, una imagen que empaqueta el programa con todas las bibliotecas del sistema de las que depende y que se ejecuta igual en cualquier computadora con el motor adecuado. \textcite{c00-gruning2018} describen cómo combinar estas capas en la práctica: gestores de paquetes como conda y su canal Bioconda para instalar software bioinformático con versiones exactas, contenedores generados automáticamente a partir de esos paquetes, y sistemas de gestión de flujos de trabajo que registran cada paso.
+
+
+\subsection{Reglas y principios: de Sandve a FAIR}
+
+Las herramientas de esta sección responden a un conjunto de principios que la comunidad ha ido formulando. \textcite{c00-sandve2013} los condensaron en diez reglas simples para la investigación computacional reproducible, que la \cref{tab:00-sandve} relaciona con los instrumentos de este capítulo. En paralelo, \textcite{c00-wilson2014} reunieron las \emph{mejores prácticas} de la computación científica (escribir programas para personas, automatizar lo repetitivo, hacer cambios pequeños y versionarlos, planear para los errores), y \textcite{c00-wilson2017} propusieron un conjunto ``suficientemente bueno'' al alcance de cualquier grupo: guardar los datos crudos sin modificar, dar a cada proyecto una estructura predecible, versionar el código y documentar cómo se ejecuta.
+
+\begin{table}[t]
+\centering
+\caption[Las diez reglas de Sandve et al.]{Las diez reglas de \textcite{c00-sandve2013} para la investigación computacional reproducible (traducción libre) y el instrumento del capítulo que ayuda a cumplirlas.}
+\label{tab:00-sandve}
+\small
+\begin{tabularx}{\linewidth}{@{}rXl@{}}
+\toprule
+& \textbf{Regla} & \textbf{Instrumento}\\
+\midrule
+1 & Registre cómo se produjo cada resultado. & cuaderno, commit\\
+2 & Evite los pasos manuales de manipulación de datos. & código, \texttt{pandas}\\
+3 & Archive las versiones exactas de los programas externos. & \cmd{pip freeze}, conda\\
+4 & Ponga bajo control de versiones todos sus \ingles{scripts}. & Git\\
+5 & Registre los resultados intermedios, en formatos estándar si es posible. & CSV, FASTA\\
+6 & En los análisis con aleatoriedad, anote las semillas. & \texttt{default\_rng}\\
+7 & Guarde siempre los datos crudos detrás de cada gráfica. & \archivo{.dat}, \archivo{.csv}\\
+8 & Genere salidas jerárquicas, que permitan inspeccionar niveles de detalle. & tablas y figuras\\
+9 & Conecte las afirmaciones del texto con los resultados que las sustentan. & cuaderno\\
+10 & Dé acceso público a los \ingles{scripts}, las ejecuciones y los resultados. & GitHub\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Los principios FAIR amplían la mirada de los análisis a los \emph{datos}. \textcite{c00-wilkinson2016} propusieron que los datos científicos sean \emph{localizables} (\ingles{Findable}: con identificadores persistentes y metadatos ricos, registrados en recursos donde se puedan buscar), \emph{accesibles} (\ingles{Accessible}: recuperables mediante protocolos abiertos y estandarizados, con metadatos que persisten aunque los datos dejen de estar disponibles), \emph{interoperables} (\ingles{Interoperable}: descritos con vocabularios y formatos compartidos) y \emph{reutilizables} (\ingles{Reusable}: con licencia clara, procedencia documentada y conformes a los estándares de su comunidad). Una idea central del artículo es que los datos deben ser legibles no solo por personas sino también por máquinas. Un número de acceso como \texttt{NC\_045512.2}, con su versión explícita, es un buen ejemplo: identifica sin ambigüedad una secuencia concreta, y el sufijo \texttt{.2} garantiza que un cambio futuro recibirá un identificador nuevo en lugar de sustituir silenciosamente al anterior.
+
+\begin{ideaclave}
+Semilla, huella, commit y entorno:\\ cuatro registros baratos que convierten una receta en un protocolo.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\begin{resumen}
+\begin{itemize}
+  \item Un \ingles{notebook} separa el documento del núcleo que lo ejecuta; el estado del núcleo depende del orden de ejecución, y solo ``reiniciar y ejecutar todo'' garantiza que el documento y sus resultados coinciden.
+  \item Una secuencia es un arreglo de símbolos; su costo en memoria depende de la codificación ($n b/8$ bytes) y el costo de un algoritmo se resume con la notación $O$. La vectorización con NumPy no cambia la complejidad, pero reduce la constante en dos órdenes de magnitud.
+  \item Los números de punto flotante tienen error relativo acotado ($\approx10^{-16}$), no admiten comparaciones exactas y se desbordan por abajo al multiplicar probabilidades: se trabaja en espacio logarítmico con log-suma-exp.
+  \item Los datos ordenados (una variable por columna, una observación por fila) y las figuras diseñadas según la percepción (posición antes que área o color; mapas de color perceptualmente uniformes) son parte del método, no de la estética.
+  \item Biopython representa secuencias (\py{Seq}), registros (\py{SeqRecord}) y archivos (\py{SeqIO}); \py{Entrez} descarga datos del NCBI; las herramientas de línea de comandos se combinan con tuberías y se llaman desde Python con \py{subprocess}.
+  \item Un generador pseudoaleatorio es una máquina determinista cuya salida fija la semilla; RANDU muestra que un mal generador introduce estructura (15 planos), y los modernos (Mersenne Twister, PCG64) se diseñan para evitarla. El error Monte Carlo decrece como $\sigma/\sqrt N$.
+  \item SHA-256 da a cada archivo una huella de 256 bits con efecto avalancha y colisiones accidentales prácticamente imposibles; Git encadena huellas en un grafo acíclico dirigido de commits.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Un gen está anotado en las posiciones 21\,563..25\,384 de un genoma (numeración de GenBank). Escriba el corte de Python que lo extrae y calcule su longitud en nucleótidos y en codones. ¿Qué error se comete si se escribe \py{seq[21563:25384]}?
+\ej{1} Calcule cuánta memoria ocupa el genoma de \especie{Escherichia coli} ($4{,}6\times10^6$ pb) en cada una de las representaciones descritas tras la \cref{eq:00-memoria}. ¿Cuál elegiría para calcular un \ingles{dot plot} contra otro genoma del mismo tamaño?
+\ej{2} Implemente \py{logsumexp(a)} a partir de la \cref{eq:00-lse} y compárela con \py{scipy.special.logsumexp} para \py{a = [-1000, -1001, -1002]} y para \py{a = [1000, 1001]}. ¿Por qué falla la evaluación directa en cada caso?
+\ej{2} Repita el \cref{ej:00-gc} con ventanas de 100, 500 y 2000 bases. ¿Cómo cambia la fracción de ventanas fuera de la banda binomial? Interprete el resultado en términos de ruido de muestreo y de heterogeneidad biológica.
+\ej{3} Demuestre la aproximación de la \cref{eq:00-cumple} y úsela para calcular cuántos archivos harían falta para tener un 50\,\% de probabilidad de colisión con MD5 (128 bits) y con SHA-256. Compare con el número estimado de archivos almacenados en el mundo (del orden de $10^{15}$).
+\ej{3} Escriba una función que reciba una semilla, simule $N$ lecturas de 150 bases con una tasa de error por base $e$ y devuelva la estimación de la fracción de lecturas sin errores con su error estándar. Determine empíricamente el $N$ necesario para que el intervalo de $\pm2$ errores estándar tenga un ancho menor que $0{,}001$ y compárelo con la predicción de la \cref{eq:00-mc}.
+\ej{3} Tome un análisis propio (o el cuaderno de la \cref{sec:00-biopython}) y evalúelo frente a las diez reglas de la \cref{tab:00-sandve}. Para cada regla incumplida, proponga el cambio concreto (un archivo, una línea de código, un comando) que la haría cumplir.
+\end{ejercicios}
+
+\referenciascapitulo

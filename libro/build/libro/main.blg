@@ -1,0 +1,34 @@
+[0] Config.pm:308> INFO - This is Biber 2.20
+[0] Config.pm:311> INFO - Logfile is 'build/libro/main.blg'
+[47] biber-darwin:340> INFO - === Tue Sep 29, 2026, 21:57:19
+[56] Biber.pm:420> INFO - Reading 'build/libro/main.bcf'
+[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 1
+[129] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 2
+[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 3
+[130] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[132] Biber.pm:994> INFO - Found 24 citekeys in bib section 4
+[132] Biber.pm:994> INFO - Found 0 citekeys in bib section 0
+[189] Biber.pm:4463> INFO - Processing section 4
+[197] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap00.bib' for section 4
+[199] bibtex.pm:1713> INFO - LaTeX decoding ...
+[232] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap00.bib'
+[235] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap01.bib' for section 4
+[238] bibtex.pm:1713> INFO - LaTeX decoding ...
+[271] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap01.bib'
+[274] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap02.bib' for section 4
+[275] bibtex.pm:1713> INFO - LaTeX decoding ...
+[299] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap02.bib'
+[300] Biber.pm:4654> INFO - Looking for bibtex file 'bib/cap03.bib' for section 4
+[301] bibtex.pm:1713> INFO - LaTeX decoding ...
+[331] bibtex.pm:1519> INFO - Found BibTeX data source 'bib/cap03.bib'
+[577] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[577] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[577] Biber.pm:4283> INFO - Sorting list 'apa/apasortcite//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[632] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[633] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[633] Biber.pm:4283> INFO - Sorting list 'apa/global//global/global/global' of type 'entry' with template 'apa' and locale 'es-ES'
+[665] bbl.pm:676> INFO - Writing 'build/libro/main.bbl' with encoding 'UTF-8'
+[693] bbl.pm:779> INFO - Output to build/libro/main.bbl

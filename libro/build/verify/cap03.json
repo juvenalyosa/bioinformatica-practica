@@ -1,0 +1,122 @@
+[
+ {
+  "key": "c03-gibbs1970",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-maizel1981",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-needleman1970",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-smith1981",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-gotoh1982",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-bellman1954",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-eddy2004dp",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-hirschberg1975",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-henikoff1992",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-altschul1991",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-eddy2004blosum",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-styczynski2008",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-karlin1990",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-altschul1990",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-altschul1997",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-camacho2009",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-pearson1988",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-pearson2013",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-cock2009",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-durbin1998",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-sellers1974",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-dayhoff1978",
+  "ok": true,
+  "msg": "ok isbn (título 1.00)"
+ },
+ {
+  "key": "c03-karlin1990b",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c03-dobzhansky1973",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ }
+]

@@ -1,0 +1,971 @@
+% =====================================================================
+%  Capítulo 2 · Secuencias, formatos y bases de datos
+% =====================================================================
+\chapter{Secuencias, formatos y bases de datos}\label{cap:02}
+
+\epigrafe{La buena gestión de los datos no es un fin en sí misma, sino el conducto clave que lleva al descubrimiento y la innovación, y a la posterior integración y reutilización de datos y conocimiento por parte de la comunidad.}{\textcite{c02-wilkinson2016}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Reconocer la pregunta que responde cada formato (FASTA, FASTQ, GenBank, GFF3/GTF, BED, SAM/BAM/CRAM y VCF) y ubicarlo en el flujo de un análisis genómico.
+  \item Convertir entre calidades Phred, probabilidades de error y caracteres ASCII, y calcular los errores esperados de una lectura.
+  \item Traducir sin errores entre coordenadas 1-based cerradas y 0-based semiabiertas, en ambas hebras.
+  \item Interpretar una CIGAR, descomponer una FLAG bit a bit y explicar cómo BGZF y los índices permiten el acceso aleatorio a archivos de cientos de gigabytes.
+  \item Consultar NCBI, Ensembl, UniProt y PDB desde Python mediante APIs REST, respetando límites de tasa, registrando versiones e identificadores estables y aplicando los principios FAIR.
+\end{itemize}
+\end{objetivos}
+
+Una secuencia de ADN, por sí sola, es apenas una cadena de letras. Lo que la convierte en un \emph{dato científico} es todo lo que la acompaña: de qué organismo proviene, con qué confianza se leyó cada base, en qué lugar del genoma cae, qué genes la atraviesan y en qué se diferencia de la referencia. Cada una de esas capas de información se guarda en un formato de archivo distinto, y cada formato se deposita en alguna de las grandes bases de datos públicas que, desde los años ochenta, sostienen la biología moderna. Quien no domina ese ecosistema pierde horas (o semanas) persiguiendo errores que no son biológicos sino tipográficos: una coordenada desplazada en una posición, una codificación de calidad mal interpretada, un identificador sin versión.
+
+Este capítulo tiene dos partes. En la primera (\cref{sec:02-formatos}) estudiaremos los formatos como lo que realmente son: \emph{contratos} entre programas, con una gramática precisa y, detrás de ella, un poco de matemática (logaritmos para la calidad, álgebra de intervalos para las coordenadas, aritmética binaria para las banderas, un índice jerárquico para el acceso aleatorio). En la segunda (\cref{sec:02-bases}) saldremos a buscar datos reales: seguiremos al gen humano \gen{TP53}, el llamado ``guardián del genoma'', a través de NCBI, Ensembl, UniProt y PDB, y aprenderemos a hacerlo de forma reproducible, respetuosa con los servidores y trazable.
+
+% ---------------------------------------------------------------------
+\section{El idioma de los archivos}\label{sec:02-formatos}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-02-formatos-bases-datos/2.1_formatos_archivos.ipynb}{2.1 · Formatos de archivo}
+
+\begin{intuicion}[Una cocina profesional]
+En la cocina de un buen restaurante, la receta está escrita en un cuaderno, los ingredientes llegan en cajas etiquetadas con fecha de vencimiento y grado de frescura, el plan de la noche está en una pizarra y los comentarios de los comensales se anotan en un libro aparte. Nadie mezclaría todo en una sola hoja: cada soporte responde a una pregunta distinta y lo leen personas distintas. Pero todos comparten un vocabulario (el nombre del plato, el número de mesa) que permite cruzarlos. Los formatos bioinformáticos funcionan igual: uno guarda la receta (la secuencia de referencia), otro los ingredientes con su frescura (las lecturas y su calidad), otro el plan (las anotaciones), otro dónde terminó cada ingrediente (los alineamientos) y otro las quejas (las variantes). El vocabulario común son los nombres de cromosomas y las coordenadas.
+\end{intuicion}
+
+\subsection{Por qué hay tantos formatos}
+
+La \cref{fig:02-flujo} resume la vida de los datos en un análisis típico de resecuenciación. El único archivo que ``sale de la máquina'' es el FASTQ; todo lo demás es el producto de un cálculo (alinear, comparar, anotar) o conocimiento previo (el genoma de referencia y sus genes). De esa observación se desprende una regla práctica: los archivos intermedios se pueden regenerar, los FASTQ crudos no. Por eso se archivan en repositorios públicos como el \ingles{Sequence Read Archive} \parencite{c02-leinonen2011}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=6mm and 9mm]
+  \node[caja=naranja, minimum width=2.3cm, minimum height=1.05cm] (seq) {secuenciador};
+  \node[caja=azul, right=of seq, minimum width=2.3cm, minimum height=1.05cm] (fq) {\textbf{FASTQ}\\[-1pt]{\scriptsize lecturas + calidad}};
+  \node[caja=azul, right=of fq, minimum width=2.3cm, minimum height=1.05cm] (bam) {\textbf{SAM/BAM/CRAM}\\[-1pt]{\scriptsize alineamientos}};
+  \node[caja=azul, right=of bam, minimum width=2.0cm, minimum height=1.05cm] (vcf) {\textbf{VCF/BCF}\\[-1pt]{\scriptsize variantes}};
+  \node[caja=aqua, below=11mm of fq, minimum width=2.3cm, minimum height=1.05cm] (fa) {\textbf{FASTA}\\[-1pt]{\scriptsize genoma de referencia}};
+  \node[caja=aqua, below=11mm of bam, minimum width=2.3cm, minimum height=1.05cm] (gff) {\textbf{GenBank · GFF3/GTF}\\[-1pt]{\scriptsize anotaciones}};
+  \node[caja=violeta, below=11mm of vcf, minimum width=2.0cm, minimum height=1.05cm] (bed) {\textbf{BED}\\[-1pt]{\scriptsize intervalos}};
+  \draw[flecha=naranja] (seq) -- (fq);
+  \draw[flecha] (fq) -- node[above,etiqueta]{alinear} (bam);
+  \draw[flecha] (bam) -- node[above,etiqueta]{llamar} (vcf);
+  \draw[flecha=aqua] (fa) -- (bam);
+  \draw[flecha=aqua] (fa.north east) to[bend left=10] ($(vcf.south west)+(0.1,0)$);
+  \draw[flecha=aqua] (gff) -- (bed);
+  \draw[flecha=violeta, dashed] (bed) -- node[right,etiqueta]{anotar /\\filtrar} (vcf);
+  \node[etiqueta, anchor=north, text=naranja!80!black] at ($(seq.south)+(0,-0.15)$) {dato crudo:\\irrecuperable};
+  \node[etiqueta, anchor=north] at ($(fa.south)+(0,-0.1)$) {conocimiento previo};
+\end{tikzpicture}
+\caption[La vida de los datos en un análisis]{La vida de los datos en un análisis de resecuenciación. En azul, los archivos que el propio análisis produce, de izquierda a derecha cada vez más resumidos: de cientos de gigabytes de lecturas a unos pocos megabytes de variantes. En verde, el conocimiento previo (la referencia y sus anotaciones), que se descarga de las bases de datos de la \cref{sec:02-bases}. BED es el formato ``comodín'' para describir regiones con las que filtrar o anotar. Todo el sistema depende de que los nombres de cromosoma y las coordenadas signifiquen lo mismo en cada archivo.}
+\label{fig:02-flujo}
+\end{figure}
+
+Casi todos estos formatos son \emph{de texto delimitado}: una línea por registro, campos separados por tabuladores, encabezados que empiezan con un carácter especial. Esa elección, heredada de la filosofía de Unix, tiene un precio (archivos grandes) y una enorme ventaja: se pueden inspeccionar con \cmd{head}, filtrar con \cmd{grep} y procesar con \cmd{awk} sin ningún programa especializado, como defiende \textcite{c02-buffalo2015}. Cuando el tamaño se vuelve inmanejable, cada formato de texto tiene un gemelo binario comprimido e indexado (BAM para SAM, BCF para VCF), cuya lectura y escritura están implementadas en una biblioteca común, HTSlib \parencite{c02-bonfield2021}.
+
+\subsection{FASTA: la secuencia desnuda}
+
+El formato FASTA nació como el formato de entrada del programa de búsqueda de similitud del mismo nombre \parencite{c02-lipman1985,c02-pearson1988}, y sobrevivió al programa porque es casi imposible de simplificar más:
+
+\begin{consola}[genoma.fasta]
+>NC_045512.2 Severe acute respiratory syndrome coronavirus 2
+ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
+GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
+\end{consola}
+
+\begin{definicion}{Registro FASTA}{fasta}
+Un archivo FASTA es una sucesión de registros. Cada registro comienza con una línea de encabezado que empieza por \texttt{>}; la primera palabra tras el \texttt{>} (hasta el primer espacio) es el \emph{identificador} y el resto es una descripción libre. Las líneas siguientes, hasta el próximo \texttt{>} o el fin del archivo, se concatenan para formar la secuencia, escrita con el alfabeto IUPAC de nucleótidos o de aminoácidos.
+\end{definicion}
+
+Dos detalles de esta definición causan más errores de los que parece. El primero es que muchas herramientas cortan el identificador en el primer espacio: si el encabezado es \texttt{>chr1 Homo sapiens}, el cromosoma se llamará \texttt{chr1} en el BAM, y un archivo de anotaciones que diga \texttt{1} (la convención de Ensembl) no casará con él. El segundo es que el FASTA no tiene un ancho de línea obligatorio, pero los índices (\archivo{.fai}) que permiten extraer una región sin leer el archivo completo sí exigen que todas las líneas de un registro tengan la misma longitud. Con líneas de $w$ caracteres, la base $x$ (0-based) de un registro cuya secuencia empieza en el byte $o$ se encuentra en el byte
+\begin{equation}\label{eq:02-fai}
+b(x) = o + \left\lfloor \frac{x}{w} \right\rfloor (w+1) + (x \bmod w),
+\end{equation}
+\begin{simbolos}
+\simbolo{$b(x)$}{Posición en bytes, dentro del archivo, del carácter que codifica la base $x$.}
+\simbolo{$o$}{Desplazamiento (en bytes) donde empieza la primera línea de secuencia del registro; se guarda en el \archivo{.fai}.}
+\simbolo{$w$}{Número de bases por línea; el $+1$ cuenta el salto de línea \texttt{\textbackslash n}.}
+\simbolo{$x$}{Posición de la base dentro de la secuencia, contando desde 0.}
+\end{simbolos}
+Es decir: saltamos $\lfloor x/w\rfloor$ líneas completas, cada una de $w+1$ bytes, y avanzamos $x \bmod w$ caracteres dentro de la última. Si una sola línea tiene otra longitud, la fórmula apunta al lugar equivocado; por eso \cmd{samtools faidx} se niega a indexar archivos irregulares. El genoma de SARS-CoV-2 (\num{29903} nt) escrito con $w=60$ ocupa $\lceil \num{29903}/60\rceil = 499$ líneas de secuencia.
+
+\subsection{FASTQ: la secuencia con su nivel de confianza}
+
+Un secuenciador no solo dice \emph{qué} base leyó, sino \emph{cuán seguro está}. Esa segunda información es la que nos permite, más adelante, distinguir una mutación real de un error de la máquina. El formato FASTQ, documentado formalmente por \textcite{c02-cock2010} mucho después de volverse ubicuo, guarda cada lectura en exactamente cuatro líneas (\cref{fig:02-fastq}): el nombre precedido de \texttt{@}, la secuencia, un separador \texttt{+} y una cadena de calidades con \emph{un carácter por base}.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap02/fastq_registro.tex}
+\caption[Anatomía de un registro FASTQ]{Anatomía de un registro FASTQ: las primeras 30 bases del gen S de SARS-CoV-2 leídas por un secuenciador simulado. Cada carácter de la línea 4 codifica la calidad de la base que tiene encima; las barras muestran el valor Phred decodificado ($Q=\text{código ASCII}-33$). La calidad cae lentamente a lo largo de la lectura, como en un Illumina real. La base 23 tiene $Q=8$ (carácter \texttt{)}): el secuenciador ``avisa'' que se equivoca con probabilidad $10^{-0{,}8}\approx0{,}16$, y en efecto leyó \nuc{G} donde la referencia tiene \nuc{T}. Generada con \archivo{figuras/cap02/generar.py}.}
+\label{fig:02-fastq}
+\end{figure}
+
+\subsubsection{La escala Phred}
+
+La calidad no se guarda como probabilidad, sino en una escala logarítmica introducida por el programa \cmd{phred}, que asignaba bases y calidades a las trazas de los secuenciadores capilares del Proyecto Genoma Humano \parencite{c02-ewing1998a,c02-ewing1998b}.
+
+\begin{definicion}{Calidad Phred}{phred}
+Si $p$ es la probabilidad de que la base asignada sea incorrecta, su calidad Phred es
+\begin{equation}\label{eq:02-phred}
+Q = -10\,\log_{10} p \qquad\Longleftrightarrow\qquad p = 10^{-Q/10}.
+\end{equation}
+\end{definicion}
+\begin{simbolos}
+\simbolo{$p$}{Probabilidad estimada de error de la base (entre 0 y 1).}
+\simbolo{$Q$}{Calidad Phred; se redondea a un entero. Más alta significa más confiable.}
+\simbolo{$-10$}{Factor de escala: 10 unidades de $Q$ equivalen a un factor 10 en $p$ (como los decibelios).}
+\end{simbolos}
+
+¿Por qué un logaritmo? Porque lo que importa de una probabilidad de error es su \emph{orden de magnitud}. Pasar de $p=10^{-2}$ a $p=10^{-3}$ es una mejora tan importante como pasar de $10^{-3}$ a $10^{-4}$, y la escala Phred convierte ambas en el mismo salto de 10 puntos. Así, $Q=20$ significa un error en 100 bases, $Q=30$ uno en mil y $Q=40$ uno en diez mil. Hay además una razón estadística más profunda: $-\log p$ es la \emph{sorpresa} (en unidades de información) de observar un error, de modo que las calidades de bases independientes se combinan sumando logaritmos, como las puntuaciones de alineamiento del \cref{cap:03}.
+
+\textcite{c02-ewing1998b} no se limitaron a definir la escala: la \emph{calibraron}. Compararon millones de bases asignadas por \cmd{phred} con secuencias de referencia de alta calidad y verificaron que, entre todas las bases con calidad $Q$, la fracción de errores observada era, en efecto, cercana a $10^{-Q/10}$. Esta calibración es la que da sentido a todo lo que sigue: una calidad Phred no es un ``puntaje'' arbitrario, sino una predicción probabilística verificable.
+
+\paragraph{Solexa: la otra escala.} Los primeros secuenciadores Solexa (luego Illumina) usaron una escala distinta, basada en la razón de probabilidades (\ingles{odds}) en lugar de la probabilidad \parencite{c02-cock2010}:
+\begin{equation}\label{eq:02-solexa}
+Q_{\text{Sol}} = -10\,\log_{10}\frac{p}{1-p}.
+\end{equation}
+donde $Q_{\text{Sol}}$ puede ser negativa (hasta $-5$ en la práctica). Despejando $p$ en ambas definiciones y eliminándola se obtiene la conversión exacta
+\begin{equation}\label{eq:02-conversion}
+Q_{\text{Phred}} = 10\,\log_{10}\!\left(10^{Q_{\text{Sol}}/10} + 1\right).
+\end{equation}
+\begin{simbolos}
+\simbolo{$Q_{\text{Sol}}$}{Calidad Solexa; $p/(1-p)$ es la razón de probabilidades de error frente a acierto (\ingles{odds}).}
+\simbolo{$Q_{\text{Phred}}$}{Calidad Phred equivalente (\cref{eq:02-phred}); siempre $\ge 0$.}
+\end{simbolos}
+Para calidades altas, $p\ll 1$ y $p/(1-p)\approx p$, de modo que ambas escalas coinciden: $Q_{\text{Phred}}=20$ corresponde a $Q_{\text{Sol}}=10\log_{10}99=19{,}96$. Solo divergen cuando la base es muy dudosa (\cref{fig:02-phred}): $Q_{\text{Phred}}=3$ equivale a $Q_{\text{Sol}}\approx 0$, y el mínimo Solexa, $-5$, corresponde a $p = 10^{0{,}5}/(1+10^{0{,}5}) \approx 0{,}76$, una base peor que una elección al azar entre cuatro.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.78\linewidth, height=4.7cm,
+   xlabel={calidad $Q$}, ylabel={probabilidad de error $p$},
+   ymode=log, xmin=-5, xmax=42, ymin=5e-5, ymax=1.2,
+   ytick={1e-4,1e-3,1e-2,1e-1,1}, legend pos=south west]
+  \addplot[azul, domain=0:42, samples=80] {10^(-x/10)};
+  \addlegendentry{Phred}
+  \addplot[naranja, dashed, domain=-5:42, samples=80] {10^(-x/10)/(1+10^(-x/10))};
+  \addlegendentry{Solexa}
+  \addplot[only marks, mark=*, mark size=1.8pt, azulprofundo] coordinates {(10,0.1)(20,0.01)(30,0.001)(40,0.0001)};
+  \node[etiqueta, anchor=west] at (axis cs:20.5,0.012) {Q20: 1 en 100};
+  \node[etiqueta, anchor=west] at (axis cs:30.5,0.0012) {Q30: 1 en 1000};
+  \node[etiqueta, anchor=west, text=naranja!80!black] at (axis cs:-4,0.02) {Solexa admite $Q<0$};
+\end{axis}
+\end{tikzpicture}
+\caption[Escalas Phred y Solexa]{La \cref{eq:02-phred} es una recta en escala logarítmica; cada 10 puntos de $Q$ la probabilidad de error se divide entre 10. La escala Solexa (\cref{eq:02-solexa}) se superpone a Phred para calidades altas ($Q\gtrsim15$) y solo diverge cuando $p$ se acerca a 1, donde admite valores negativos. Por eso confundir las escalas apenas afecta a las bases buenas, pero sí a las dudosas, precisamente las que un filtro de calidad debe descartar.}
+\label{fig:02-phred}
+\end{figure}
+
+\subsubsection{De número a carácter}
+
+Para que la línea de calidades tenga la misma longitud que la secuencia, cada $Q$ se escribe como un único carácter ASCII. Los primeros 32 códigos ASCII son invisibles (tabuladores, saltos de línea), así que se suma un desplazamiento: el estándar actual, heredado del Instituto Sanger, es \emph{Phred+33}, de modo que $Q=0$ se escribe \texttt{!} (código 33), $Q=30$ se escribe \texttt{?} (63) y $Q=40$ se escribe \texttt{I} (73). La \cref{fig:02-ascii} muestra la tabla completa para el rango usual.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap02/ascii_phred.tex}
+\caption[Codificación ASCII de las calidades]{Arriba: la codificación Phred+33, carácter por carácter, coloreada desde calidades bajas (claro) hasta altas (oscuro). Abajo: los tres ``dialectos'' históricos de FASTQ \parencite{c02-cock2010}. La banda clara es el rango permitido por cada codificación; la banda oscura, el rango que aparece en la práctica. Los rangos típicos se solapan entre los códigos 64 y 74 (\texttt{@}–\texttt{J}): un archivo cuyas calidades caen todas ahí es ambiguo, pero basta un solo carácter por debajo de \texttt{;} (código 59) para concluir que es Phred+33.}
+\label{fig:02-ascii}
+\end{figure}
+
+\begin{cuidado}[Adivinar la codificación]
+El FASTQ no declara su codificación. Los archivos de Illumina anteriores a 2011 (versiones 1.3 a 1.7 de su programa) usan Phred+64, y todavía circulan en repositorios. Si se lee un archivo Phred+64 como Phred+33, todas las calidades aparecen infladas en 31 puntos: una base con $p=0{,}1$ parece tener $p\approx 10^{-4}$, y ningún filtro de calidad la eliminará. Antes de analizar datos antiguos, compruebe el rango de caracteres presentes (\cref{fig:02-ascii}); herramientas como FastQC lo hacen automáticamente.
+\end{cuidado}
+
+\subsubsection{Errores esperados de una lectura}
+
+¿Cuántos errores tiene una lectura? No lo sabemos, pero podemos calcular cuántos \emph{esperamos}. Sea $X_i$ la variable indicadora de que la base $i$ es errónea; entonces $\E[X_i]=p_i$ y, por la linealidad de la esperanza (que no exige independencia),
+\begin{equation}\label{eq:02-ee}
+\mathrm{EE} = \E\!\left[\sum_{i=1}^{\ell} X_i\right] = \sum_{i=1}^{\ell} p_i = \sum_{i=1}^{\ell} 10^{-Q_i/10}.
+\end{equation}
+Si además suponemos que los errores ocurren de forma independiente, la probabilidad de que la lectura esté completamente libre de errores es
+\begin{equation}\label{eq:02-p0}
+\Prob(\text{sin errores}) = \prod_{i=1}^{\ell}\left(1-p_i\right) \approx e^{-\mathrm{EE}},
+\end{equation}
+\begin{simbolos}
+\simbolo{$\ell$}{Longitud de la lectura (número de bases).}
+\simbolo{$X_i$}{Indicadora del evento ``la base $i$ es incorrecta'' (vale 0 o 1).}
+\simbolo{$p_i,\ Q_i$}{Probabilidad de error y calidad Phred de la base $i$.}
+\simbolo{$\mathrm{EE}$}{Errores esperados (\ingles{expected errors}) de la lectura.}
+\end{simbolos}
+donde la aproximación usa $\ln(1-p)\approx -p$ para $p$ pequeño: el número de errores es aproximadamente una variable de Poisson de media EE. Esta cantidad resume una lectura mucho mejor que la calidad \emph{media}, porque la media de $Q$ es la media de logaritmos y esconde las pocas bases malas que dominan la suma de probabilidades.
+
+\begin{ejemplo}{Errores esperados, a mano y en la \cref{fig:02-fastq}}{ee}
+Una lectura corta tiene calidades $Q=(40,30,20,20,10)$. Sus probabilidades de error son $(10^{-4},10^{-3},10^{-2},10^{-2},10^{-1})$ y
+\[
+\mathrm{EE} = 0{,}0001+0{,}001+0{,}01+0{,}01+0{,}1 = 0{,}1211.
+\]
+Casi todo el valor procede de la única base con $Q=10$. Su calidad media es $24$, que ``parece'' buena, y sin embargo la probabilidad de que la lectura sea perfecta es solo $\prod(1-p_i)=0{,}8811$ (la aproximación $e^{-0{,}1211}=0{,}8859$ es buena).
+
+En la lectura de 30 bases de la \cref{fig:02-fastq} la calidad media es $32{,}5$, pero $\mathrm{EE}=0{,}183$ y $\Prob(\text{sin errores})=0{,}821$: la base 23 ($Q=8$, $p=0{,}158$) aporta por sí sola el 87\,\% de los errores esperados.
+\end{ejemplo}
+
+
+La \cref{fig:02-calidad} aplica estas ideas a una corrida simulada de \num{4000} lecturas de 150 nt, generada con el mismo modelo del notebook: una calidad media que cae de $36{,}9$ en el primer ciclo a $24{,}1$ en el último, más un 6\,\% de \ingles{clusters} defectuosos cuya calidad se desploma en la cola. Los errores se introdujeron exactamente con la probabilidad que dicta su calidad, así que conocemos la verdad: la tasa real de error resultó ser de $0{,}20\,\%$ ($0{,}304$ errores por lectura) y la media de EE, $0{,}296$. El panel derecho muestra que los errores esperados predicen los observados, lo que solo ocurre si las calidades están bien calibradas. En datos reales no siempre es así, y por eso existen métodos de recalibración de calidades que estudiaremos junto con la llamada de variantes.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=15mm},
+   curso, height=4.9cm]
+\nextgroupplot[width=0.6\linewidth, xlabel={ciclo (posición en la lectura)}, ylabel={calidad Phred $Q$},
+   xmin=1, xmax=150, ymin=10, ymax=42, title={calidad por posición}]
+  \fill[aqua!8] (axis cs:1,28) rectangle (axis cs:150,42);
+  \fill[amarillo!10] (axis cs:1,20) rectangle (axis cs:150,28);
+  \fill[rojo!7] (axis cs:1,10) rectangle (axis cs:150,20);
+  \addplot[name path=p10, draw=none, forget plot] table[x=ciclo, y=p10] {figuras/cap02/calidad_ciclo.dat};
+  \addplot[name path=p90, draw=none, forget plot] table[x=ciclo, y=p90] {figuras/cap02/calidad_ciclo.dat};
+  \addplot[azulclaro!60, forget plot] fill between[of=p10 and p90];
+  \addplot[name path=p25, draw=none, forget plot] table[x=ciclo, y=p25] {figuras/cap02/calidad_ciclo.dat};
+  \addplot[name path=p75, draw=none, forget plot] table[x=ciclo, y=p75] {figuras/cap02/calidad_ciclo.dat};
+  \addplot[azulmedio!55, forget plot] fill between[of=p25 and p75];
+  \addplot[azulprofundo, thick] table[x=ciclo, y=p50] {figuras/cap02/calidad_ciclo.dat};
+  \node[etiqueta, anchor=west] at (axis cs:4,40.5) {buena ($\ge 28$)};
+  \node[etiqueta, anchor=west] at (axis cs:4,21.5) {aceptable};
+  \node[etiqueta, anchor=west] at (axis cs:4,11.5) {mala ($<20$)};
+\nextgroupplot[width=0.43\linewidth, xlabel={EE medio del grupo}, ylabel={errores observados},
+   xmin=0, xmax=2.2, ymin=0, ymax=2.2, title={calibración}]
+  \addplot[base, thin, domain=0:2.2] {x};
+  \addplot[only marks, mark=*, mark size=2pt, naranja] table[x=ee, y=obs] {figuras/cap02/ee_calib.dat};
+  \node[etiqueta, anchor=south east] at (axis cs:2.1,0.2) {línea: $y=x$};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Control de calidad de una corrida simulada]{Izquierda: calidad por ciclo de \num{4000} lecturas simuladas, al estilo de FastQC. La línea es la mediana; la banda oscura contiene el 50\,\% central de las lecturas y la clara el 80\,\%. La caída hacia el final refleja el desfase progresivo de las moléculas dentro de cada \ingles{cluster}; el ensanchamiento de la banda inferior se debe a los \ingles{clusters} defectuosos. Esta forma es la que justifica recortar las colas antes de alinear. Derecha: las lecturas se agrupan por su EE (\cref{eq:02-ee}) y se compara el EE medio de cada grupo con el número medio de errores realmente introducidos. Los puntos caen sobre la diagonal: con calidades calibradas, EE es un predictor insesgado del número de errores.}
+\label{fig:02-calidad}
+\end{figure}
+
+\begin{codigo}[fastq\_ee.py]
+import math
+from Bio import SeqIO                            # Biopython >= 1.83
+
+def expected_errors(quals):
+    return sum(10 ** (-q / 10) for q in quals)
+
+kept = []
+for rec in SeqIO.parse("lecturas.fastq", "fastq"):  # Phred+33
+    q = rec.letter_annotations["phred_quality"]
+    ee = expected_errors(q)
+    if ee <= 1.0:                                  # filtro por EE
+        kept.append(rec)
+    p0 = math.prod(1 - 10 ** (-x / 10) for x in q)
+print(len(kept), "lecturas con EE <= 1")
+SeqIO.write(kept, "filtradas.fastq", "fastq")
+\end{codigo}
+
+Biopython \parencite{c02-cock2009} decodifica las calidades según el nombre del formato: \texttt{"fastq"} (o \texttt{"fastq-sanger"}) para Phred+33, \texttt{"fastq-illumina"} para Phred+64 y \texttt{"fastq-solexa"} para Solexa+64, y convierte entre ellos con la \cref{eq:02-conversion} al escribir.
+
+\subsection{GenBank y el sistema INSDC}
+
+Un FASTA dice \emph{qué} es la secuencia; un registro GenBank dice además \emph{qué hay en ella}. El formato, con su encabezado (\texttt{LOCUS}, \texttt{DEFINITION}, \texttt{ACCESSION}, \texttt{VERSION}, \texttt{SOURCE}, referencias bibliográficas), su tabla de características (\texttt{FEATURES}: genes, CDS, UTR, péptidos maduros, con sus coordenadas y calificadores) y la secuencia al final (\texttt{ORIGIN}), es el formato nativo de GenBank, la base de datos pública de secuencias del NCBI \parencite{c02-sayers2025genbank}. GenBank intercambia sus datos diariamente con el \ingles{European Nucleotide Archive} (ENA) y con el \ingles{DNA Data Bank of Japan} (DDBJ): las tres forman la \ingles{International Nucleotide Sequence Database Collaboration} (INSDC), de modo que una secuencia depositada en cualquiera de ellas aparece en las tres con el mismo número de acceso \parencite{c02-arita2021}.
+
+\begin{consola}[fragmento de NC\_045512.2.gb]
+     gene            21563..25384
+                     /gene="S"
+     CDS             21563..25384
+                     /gene="S"
+                     /codon_start=1
+                     /product="surface glycoprotein"
+                     /protein_id="YP_009724390.1"
+\end{consola}
+
+Las coordenadas de GenBank son \emph{1-based e inclusivas}: el gen S ocupa las bases 21\,563 a 25\,384, ambas incluidas, es decir, $25\,384-21\,563+1=3822$ nucleótidos (1273 codones más el de terminación). Las localizaciones admiten una pequeña gramática: \texttt{complement(100..200)} para la hebra negativa, \texttt{join(1..50,80..120)} para exones separados, \texttt{<1..300} para un extremo incompleto. Biopython la traduce a objetos \texttt{SimpleLocation} y \texttt{CompoundLocation}, que, como veremos enseguida, usan internamente coordenadas 0-based.
+
+\subsection{Coordenadas: el error de uno}
+
+Aquí está la fuente de errores más famosa de la bioinformática. Existen dos convenciones para numerar posiciones en una secuencia, y ambas son correctas a su manera (\cref{fig:02-coordenadas}).
+
+\begin{definicion}{Sistemas de coordenadas}{coordenadas}
+En el sistema \emph{1-based cerrado}, las posiciones numeran \emph{bases}: la primera base es la 1 y un intervalo $[s_1, e_1]$ incluye ambos extremos. Lo usan GenBank, GFF3/GTF, SAM (columna POS), VCF y los navegadores genómicos.
+En el sistema \emph{0-based semiabierto}, las posiciones numeran los \emph{bordes entre bases}, como las marcas de una regla: el primer borde es el 0 y un intervalo $[s_0, e_0)$ va del borde $s_0$ al borde $e_0$, incluyendo la base que sigue a $s_0$ pero no la que sigue a $e_0$. Lo usan BED, el formato binario BAM, Python (\py{seq[s:e]}) y la mayoría de las bibliotecas.
+\end{definicion}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=9mm, y=1cm]
+  \foreach \b [count=\i] in {A,T,G,C,G,T,A,C,C,A}{
+    \node[nt=\b, minimum size=6.5mm] at (\i-0.5,0) {\b};
+    \node[font=\sffamily\small\bfseries, text=azulprofundo] at (\i-0.5,0.62) {\i};
+  }
+  \foreach \k in {0,...,10}{
+    \draw[naranja, thick] (\k,-0.42) -- (\k,-0.62);
+    \node[font=\sffamily\small\bfseries, text=naranja!85!black] at (\k,-0.88) {\k};
+  }
+  \draw[naranja] (0,-0.52) -- (10,-0.52);
+  \node[etiqueta, anchor=east, text=azulprofundo] at (-0.25,0.62) {1-based\\(bases)};
+  \node[etiqueta, anchor=east, text=naranja!85!black] at (-0.25,-0.75) {0-based\\(bordes)};
+  \begin{scope}[on background layer]
+    \fill[amarillo!30, rounded corners=2pt] (2.05,-0.42) rectangle (6.95,0.95);
+  \end{scope}
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}, tinta2] (2,-1.15) -- (7,-1.15);
+  \node[etiqueta, align=left, anchor=north west] at (0,-1.45) {%
+    \textbf{GFF, SAM, VCF:} \texttt{3\ \ 7} \quad (bases 3 a 7, inclusivas)\\[1pt]
+    \textbf{BED:} \texttt{2\ \ 7} \quad (del borde 2 al borde 7)\\[1pt]
+    \textbf{Python:} \texttt{seq[2:7]} $\;\to\;$ \texttt{GCGTA}\\[1pt]
+    longitud $= 7-3+1 = 7-2 = 5$};
+  \node[etiqueta, align=left, anchor=north west] at (6.7,-1.45) {%
+    \textbf{Hebra $-$} (largo $L=10$):\\[1pt]
+    base $x_1 \mapsto L-x_1+1$\\[1pt]
+    borde $x_0 \mapsto L-x_0$\\[1pt]
+    $[2,7) \mapsto [3,8)$};
+\end{tikzpicture}
+\caption[Coordenadas 1-based y 0-based]{Las dos convenciones de coordenadas sobre la misma secuencia. Arriba, en azul, se numeran las bases (1-based); abajo, en naranja, los bordes entre bases, como en una regla (0-based). El intervalo resaltado, \texttt{GCGTA}, se escribe \texttt{3 7} en GFF y \texttt{2 7} en BED: el inicio cambia en una unidad, el final no. A la derecha, la regla para pasar a la hebra complementaria: en el sistema de bordes basta reflejar ($x_0 \mapsto L-x_0$) e intercambiar los extremos.}
+\label{fig:02-coordenadas}
+\end{figure}
+
+La conversión entre ambos sistemas se deduce de la figura. La base número $s_1$ (1-based) está a la derecha del borde $s_1-1$, y la última base del intervalo, $e_1$, termina en el borde $e_1$:
+\begin{equation}\label{eq:02-coord}
+s_0 = s_1 - 1, \qquad e_0 = e_1, \qquad \text{longitud} = e_0 - s_0 = e_1 - s_1 + 1.
+\end{equation}
+\begin{simbolos}
+\simbolo{$s_1,\ e_1$}{Primera y última base del intervalo en el sistema 1-based cerrado (GFF, VCF, SAM).}
+\simbolo{$s_0,\ e_0$}{Bordes inicial y final del intervalo en el sistema 0-based semiabierto (BED, Python).}
+\end{simbolos}
+
+¿Por qué los programadores prefieren el sistema semiabierto? Porque su álgebra es más limpia. La longitud es una resta directa, sin el $+1$ que tantas veces se olvida; dos intervalos contiguos comparten el borde ($[0,5)$ y $[5,10)$ ni se solapan ni dejan hueco); un intervalo vacío se representa naturalmente como $[s,s)$, lo que permite describir el \emph{punto} donde ocurre una inserción; y la condición de solapamiento es simétrica:
+\begin{gather}
+[a,b) \cap [c,d) \neq \varnothing \iff \max(a,c) < \min(b,d), \label{eq:02-solape}\\
+\bigl|[a,b)\cap[c,d)\bigr| = \max\bigl(0,\ \min(b,d)-\max(a,c)\bigr). \label{eq:02-solape-long}
+\end{gather}
+\begin{simbolos}
+\simbolo{$[a,b),\ [c,d)$}{Dos intervalos semiabiertos en el mismo cromosoma.}
+\simbolo{$|\cdot|$}{Longitud (número de bases) de la intersección.}
+\end{simbolos}
+Esta es la operación elemental de herramientas como BEDTools \parencite{c02-quinlan2010}, que responden preguntas como ``¿qué variantes caen en exones?'' o ``¿qué picos de ChIP-seq solapan promotores?''. Con un índice ordenado por inicio, la búsqueda de todos los intervalos que solapan una consulta cuesta $O(\log n + k)$ en lugar de $O(n)$, donde $k$ es el número de resultados.
+
+Finalmente, la hebra negativa. Si una secuencia tiene longitud $L$, el borde $x_0$ de la hebra positiva corresponde al borde $L-x_0$ de su reverso complementario, de modo que $[s_0,e_0) \mapsto [L-e_0,\ L-s_0)$. En el sistema 1-based, la base $x_1$ corresponde a la base $L-x_1+1$. Los formatos de anotación \emph{no} aplican esa transformación: GFF, BED y VCF expresan siempre las coordenadas sobre la hebra positiva y guardan la hebra en una columna aparte (\texttt{+}/\texttt{-}). Para obtener la secuencia de un gen en la hebra negativa se extrae el intervalo de la hebra positiva y luego se toma su reverso complementario.
+
+\begin{ejemplo}{El gen S en tres sistemas}{coordS}
+GenBank dice que el gen S de SARS-CoV-2 ocupa \texttt{21563..25384}. En BED se escribe \texttt{NC\_045512.2\quad 21562\quad 25384}, y en Python la secuencia es \py{ref[21562:25384]}, cuyas tres primeras letras son \secuencia{ATG}. Si por descuido escribimos \py{ref[21563:25384]}, obtenemos una secuencia que empieza en \secuencia{TGT}: el marco de lectura se desplaza y la traducción es basura. La longitud es $25384-21562=3822$ en ambos sistemas.
+
+En la otra dirección, el servicio \texttt{esummary} del NCBI informa para \gen{TP53} humano (hebra negativa del cromosoma 17) \texttt{chrstart = 7687489} y \texttt{chrstop = 7668420}, en coordenadas 0-based y en el sentido de lectura del gen. Sumando 1 a cada extremo y ordenándolos se obtiene $7\,668\,421$–$7\,687\,490$, que es exactamente lo que reporta Ensembl, en 1-based, para el transcrito canónico (\cref{sec:02-bases}).
+\end{ejemplo}
+
+\begin{cuidado}[Tres síntomas del error de uno]
+\begin{enumerate}
+  \item \emph{Traducciones sin sentido}: una proteína llena de codones de parada suele indicar un marco desplazado en una base.
+  \item \emph{Alelos de referencia que no coinciden}: en un VCF correcto, la columna REF debe ser igual a la base de la referencia en POS. Si casi ninguna coincide, alguien convirtió mal las coordenadas. Es la prueba más barata y eficaz que existe.
+  \item \emph{Intervalos de longitud cero o negativa}: un BED con \texttt{start = end} tras una conversión suele venir de restar 1 al final en lugar de al inicio.
+\end{enumerate}
+\end{cuidado}
+
+\subsection{GFF3, GTF y BED: anotaciones e intervalos}
+
+El GenBank es riquísimo, pero su estructura depende de sangrías y es incómodo de procesar. Para intercambiar anotaciones se usa el \emph{General Feature Format}, cuya versión 3 (GFF3) es un archivo tabular de nueve columnas: \texttt{seqid}, \texttt{source}, \texttt{type}, \texttt{start}, \texttt{end}, \texttt{score}, \texttt{strand}, \texttt{phase} y \texttt{attributes}. La columna \texttt{type} no es texto libre: debe ser un término de la \ingles{Sequence Ontology} (\texttt{gene}, \texttt{mRNA}, \texttt{exon}, \texttt{CDS}, \texttt{five\_prime\_UTR}\ldots), un vocabulario controlado creado precisamente para que las anotaciones de distintos proyectos significaran lo mismo \parencite{c02-eilbeck2005}. Los atributos \texttt{ID} y \texttt{Parent} enlazan las filas y forman un árbol: un gen es padre de sus transcritos, cada transcrito es padre de sus exones y CDS.
+
+\begin{consola}[sars.gff3]
+##gff-version 3
+NC_045512.2  RefSeq  gene  21563  25384  .  +  .  ID=gene-S;Name=S
+NC_045512.2  RefSeq  CDS   21563  25384  .  +  0  ID=cds-S;Parent=gene-S
+\end{consola}
+
+El GTF (\ingles{Gene Transfer Format}, a veces llamado GFF2.5) usa las mismas nueve columnas pero con atributos obligatorios \texttt{gene\_id} y \texttt{transcript\_id} y una sintaxis distinta (\texttt{gene\_id "TP53";}). Ensembl y GENCODE lo distribuyen porque es la entrada estándar de los programas de cuantificación de RNA-seq.
+
+La columna \texttt{phase} merece una explicación, porque es la menos intuitiva. Un CDS partido en exones no tiene por qué empezar cada fragmento al inicio de un codón. La fase de un fragmento es el número de bases que hay que saltar desde su inicio para llegar al primer codón completo. Si antes de ese fragmento ya se recorrieron $d$ bases codificantes,
+\begin{equation}\label{eq:02-fase}
+\phi = (3 - d \bmod 3) \bmod 3 \in \{0, 1, 2\}.
+\end{equation}
+\begin{simbolos}
+\simbolo{$\phi$}{Fase del fragmento de CDS (columna 8 del GFF3).}
+\simbolo{$d$}{Número de bases codificantes contenidas en los fragmentos anteriores, en el sentido de la traducción.}
+\end{simbolos}
+Por ejemplo, si el primer exón codificante tiene 100 bases, $d=100$, $100 \bmod 3 = 1$ y el segundo fragmento tiene fase $\phi=2$: sus dos primeras bases completan el codón que quedó abierto.
+
+El formato BED, creado para el navegador genómico de la Universidad de California en Santa Cruz \parencite{c02-kent2002}, es aún más sencillo: tres columnas obligatorias (\texttt{chrom}, \texttt{chromStart}, \texttt{chromEnd}) en coordenadas 0-based semiabiertas, y hasta nueve opcionales (nombre, puntuación, hebra, colores, bloques). Es el formato de las \emph{regiones}: exones de un panel de captura, picos de ChIP-seq, regiones de baja complejidad que se deben excluir. Convertir de GFF3 a BED consiste, sencillamente, en aplicar la \cref{eq:02-coord}: restar 1 al inicio y dejar el final.
+
+\subsection{SAM, BAM y CRAM: dónde cayó cada lectura}
+
+Tras la secuenciación, un alineador (\cref{cap:03}) busca en qué lugar de la referencia encaja cada lectura. El resultado se escribe en el formato \ingles{Sequence Alignment/Map} (SAM), propuesto por \textcite{c02-li2009} en el contexto del Proyecto 1000 Genomas para poner fin a la proliferación de formatos propios de cada alineador. Un SAM tiene un encabezado (líneas que empiezan con \texttt{@}: \texttt{@SQ} para cada secuencia de referencia con su longitud, \texttt{@RG} para los grupos de lecturas, \texttt{@PG} para los programas que lo procesaron) y una fila por alineamiento con once campos obligatorios, resumidos en la \cref{tab:02-sam}.
+
+\begin{table}[t]
+\centering\small
+\caption{Los once campos obligatorios de una línea de alineamiento SAM.}
+\label{tab:02-sam}
+\begin{tabularx}{\linewidth}{@{}clllX@{}}
+\toprule
+\textbf{\#} & \textbf{Campo} & \textbf{Tipo} & \textbf{Ejemplo} & \textbf{Significado}\\
+\midrule
+1 & QNAME & texto & \texttt{r2} & nombre de la lectura (el mismo para las dos del par)\\
+2 & FLAG & entero & \texttt{99} & doce banderas codificadas en bits (\cref{fig:02-flag})\\
+3 & RNAME & texto & \texttt{NC\_045512.2} & secuencia de referencia\\
+4 & POS & entero & \texttt{21608} & primera base alineada, \emph{1-based}\\
+5 & MAPQ & entero & \texttt{60} & confianza en la posición, en escala Phred\\
+6 & CIGAR & texto & \texttt{3S9M2I8M} & cómo encaja la lectura (\cref{fig:02-cigar})\\
+7--9 & RNEXT, PNEXT, TLEN & & \texttt{= 21790 332} & posición de la pareja y longitud del fragmento\\
+10 & SEQ & texto & \texttt{TGTTT\ldots} & bases, en la orientación de la referencia\\
+11 & QUAL & texto & \texttt{FEFHI\ldots} & calidades Phred+33\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+La columna MAPQ reutiliza la escala Phred para otra probabilidad, la de que la \emph{posición} sea incorrecta: $\mathrm{MAPQ} = -10\log_{10}\Prob(\text{posición errónea})$. Un MAPQ de 60 corresponde a una probabilidad de error de $10^{-6}$; un MAPQ de 0 significa que la lectura encaja igual de bien en al menos otro lugar del genoma (una repetición), y no debe usarse para llamar variantes. Cada alineador estima esta probabilidad a su manera, por lo que los valores de MAPQ no son comparables entre programas.
+
+\subsubsection{La CIGAR: instrucciones para colocar la lectura}
+
+La CIGAR (\ingles{Compact Idiosyncratic Gapped Alignment Report}) codifica el alineamiento como una sucesión de pares $(n_k, o_k)$: una longitud y una operación. La clave para leerla es saber qué operaciones \emph{consumen} bases de la lectura, de la referencia o de ambas (\cref{tab:02-cigar}).
+
+\begin{table}[t]
+\centering\small
+\caption{Operaciones de la CIGAR y qué secuencia consume cada una.}
+\label{tab:02-cigar}
+\begin{tabularx}{\linewidth}{@{}clccX@{}}
+\toprule
+\textbf{Op.} & \textbf{Nombre} & \textbf{Lect.} & \textbf{Ref.} & \textbf{Uso típico}\\
+\midrule
+\texttt{M} & alineada (coincida o no) & sí & sí & base frente a base\\
+\texttt{=} / \texttt{X} & coincidencia / sustitución & sí & sí & versión explícita de \texttt{M}\\
+\texttt{I} & inserción & sí & no & bases que la referencia no tiene\\
+\texttt{D} & deleción & no & sí & bases de la referencia ausentes en la lectura\\
+\texttt{N} & salto & no & sí & intrón en RNA-seq\\
+\texttt{S} & recorte suave & sí & no & extremo no alineado, presente en SEQ\\
+\texttt{H} & recorte duro & no & no & extremo no alineado, ausente de SEQ\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{teorema}{Longitudes implícitas en una CIGAR}{cigar}
+Sea una CIGAR $C = (n_1,o_1)\cdots(n_K,o_K)$. La longitud de la lectura almacenada en SEQ, el tramo de referencia cubierto y la última posición alineada son
+\begin{align}
+\ell_q &= \sum_{k:\ o_k \in \{\texttt{M},\texttt{I},\texttt{S},\texttt{=},\texttt{X}\}} n_k, \label{eq:02-lq}\\
+\ell_r &= \sum_{k:\ o_k \in \{\texttt{M},\texttt{D},\texttt{N},\texttt{=},\texttt{X}\}} n_k, \label{eq:02-lr}\\
+\mathrm{END} &= \mathrm{POS} + \ell_r - 1. \label{eq:02-end}
+\end{align}
+\end{teorema}
+\begin{simbolos}
+\simbolo{$n_k,\ o_k$}{Longitud y operación del $k$-ésimo elemento de la CIGAR.}
+\simbolo{$\ell_q$}{Número de bases de la lectura guardadas en SEQ; debe coincidir con la longitud de SEQ.}
+\simbolo{$\ell_r$}{Número de bases de la referencia que abarca el alineamiento.}
+\simbolo{POS, END}{Primera y última posición de la referencia cubiertas (1-based, inclusivas).}
+\end{simbolos}
+La demostración es inmediata: al recorrer la CIGAR, un puntero avanza sobre la lectura y otro sobre la referencia, cada uno según la tabla. Lo importante es la consecuencia práctica: los recortes suaves \emph{no} desplazan POS, que siempre apunta a la primera base \emph{alineada}. En 0-based semiabierto, el alineamiento ocupa $[\mathrm{POS}-1,\ \mathrm{POS}-1+\ell_r)$, que es lo que devuelve \cmd{pysam} como \texttt{reference\_start} y \texttt{reference\_end}.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap02/cigar.tex}
+\caption[Cuatro CIGAR sobre la referencia]{Cuatro lecturas alineadas contra el inicio del gen S de SARS-CoV-2 (posiciones 1-based arriba). \textbf{r1}: coincidencia completa con una sustitución (recuadro), que la CIGAR \texttt{M} no distingue. \textbf{r2}: tres bases recortadas (en minúscula, a la izquierda de POS), luego una inserción de dos bases, marcada entre dos posiciones porque no ocupa lugar en la referencia; la lectura mide 22 bases pero cubre solo 17 de la referencia. \textbf{r3}: una deleción de tres bases, que sí ocupa referencia. \textbf{r4}: una lectura de RNA-seq que salta un intrón de 14 bases (\texttt{N}). A la derecha, $\ell_q$ y $\ell_r$ según las \cref{eq:02-lq,eq:02-lr}.}
+\label{fig:02-cigar}
+\end{figure}
+
+\begin{ejemplo}{Leer una CIGAR}{cigar}
+Una lectura tiene \texttt{POS = 1000} y \texttt{CIGAR = 3S40M1I20M5D30M2S}. Según las \cref{eq:02-lq,eq:02-lr},
+\[
+\ell_q = 3+40+1+20+30+2 = 96,\qquad \ell_r = 40+20+5+30 = 95,
+\]
+de modo que SEQ debe tener 96 caracteres y el alineamiento termina en $\mathrm{END}=1000+95-1=1094$. Las bases 1 a 3 de la lectura (recorte suave) no están alineadas; la base 4 de la lectura está frente a la posición 1000 de la referencia; la inserción aparece entre las posiciones 1039 y 1040; la deleción elimina las posiciones 1060 a 1064.
+\end{ejemplo}
+
+
+
+\subsubsection{La FLAG: doce preguntas en un número}
+
+La columna FLAG guarda doce respuestas de sí o no en un único entero. Cada respuesta es un bit $b_k\in\{0,1\}$ y el número es
+\begin{equation}\label{eq:02-flag}
+F = \sum_{k=0}^{11} b_k\, 2^k, \qquad b_k = \left\lfloor F / 2^k \right\rfloor \bmod 2.
+\end{equation}
+\begin{simbolos}
+\simbolo{$F$}{Valor de la columna FLAG (entero entre 0 y 4095).}
+\simbolo{$b_k$}{Bit $k$: 1 si la condición $k$ se cumple (p.\,ej., $b_4$: la lectura está en la hebra reversa).}
+\simbolo{$2^k$}{Valor decimal del bit $k$: 1, 2, 4, \ldots, 2048.}
+\end{simbolos}
+Como la representación binaria de un entero es única, la descomposición también lo es: cada FLAG corresponde exactamente a una combinación de condiciones. En código, la pregunta ``¿está encendido el bit de valor 16?'' se formula con el Y binario: \py{flag & 16 != 0}. La \cref{fig:02-flag} muestra las banderas más frecuentes.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap02/flag.tex}
+\caption[La FLAG bit a bit]{Siete valores de FLAG frecuentes, descompuestos en sus doce bits (el de menor valor a la derecha, como en la escritura binaria). \texttt{99} y \texttt{147} son la pareja canónica de un par bien alineado: R1 en la hebra directa con su pareja en la reversa, y viceversa. \texttt{83}/\texttt{163} es la configuración espejo. \texttt{4} es una lectura sin alinear. \texttt{1171} es la R2 anterior marcada como duplicado de PCR. \texttt{2064} es un alineamiento suplementario: un trozo de una lectura quimérica que cae en otro lugar del genoma, señal típica de reordenamientos estructurales.}
+\label{fig:02-flag}
+\end{figure}
+
+\begin{ejemplo}{Construir y descomponer una FLAG}{flag}
+¿Qué FLAG tiene la segunda lectura de un par, bien emparejada, alineada en la hebra reversa y marcada como duplicado? Encendemos los bits de valor 1 (pareada), 2 (par correcto), 16 (hebra reversa), 128 (R2) y 1024 (duplicado): $F = 1+2+16+128+1024 = 1171$.
+
+A la inversa, $F=83$: la mayor potencia de 2 que cabe es 64 (resta 19), luego 16 (resta 3), luego 2 (resta 1) y 1. Así, $83 = 64+16+2+1$: primera lectura del par, en la hebra reversa, par correcto. Su pareja típica es $163=128+32+2+1$.
+\end{ejemplo}
+
+\subsubsection{BAM, BGZF e índices: comprimir sin perder el acceso}
+
+Un SAM de un genoma humano a $30\times$ pesa cientos de gigabytes. El formato BAM, su versión binaria, resuelve dos problemas a la vez. El primero es el tamaño: los campos numéricos se guardan como enteros binarios, las bases se empaquetan en 4 bits y el resultado se comprime. El segundo, más sutil, es el \emph{acceso aleatorio}. Un archivo gzip ordinario es un único flujo comprimido: para leer el último megabyte hay que descomprimir todo lo anterior. BAM usa en cambio BGZF (\ingles{Blocked GNU Zip Format}): una concatenación de bloques gzip independientes, cada uno con a lo sumo \SI{64}{KiB} de datos sin comprimir \parencite{c02-li2009}. Cualquier programa que entienda gzip puede leerlo, pero uno que conozca la estructura puede saltar directamente a un bloque.
+
+Para ello, cada posición del archivo se describe con un \emph{desplazamiento virtual} de 64 bits:
+\begin{equation}\label{eq:02-voffset}
+v = c \cdot 2^{16} + u, \qquad 0 \le u < 2^{16},
+\end{equation}
+\begin{simbolos}
+\simbolo{$v$}{Desplazamiento virtual, el número que se guarda en el índice.}
+\simbolo{$c$}{Desplazamiento en bytes, dentro del archivo \emph{comprimido}, del inicio del bloque BGZF (48 bits).}
+\simbolo{$u$}{Desplazamiento dentro del bloque, una vez \emph{descomprimido} (16 bits, pues el bloque mide a lo sumo \SI{64}{KiB}).}
+\end{simbolos}
+Leer en $v$ significa: saltar al byte $c$, descomprimir un solo bloque y avanzar $u$ bytes. Como los desplazamientos virtuales conservan el orden del archivo, se pueden comparar como enteros ordinarios.
+
+Falta saber \emph{qué} $v$ corresponde a una región del genoma. Si el BAM está ordenado por coordenada, el índice \archivo{.bai} lo responde con un esquema de \emph{casillas} (\ingles{bins}) heredado del navegador de UCSC \parencite{c02-kent2002}: el cromosoma se divide en una jerarquía de seis niveles, y cada alineamiento se asigna a la casilla más pequeña que lo contiene por completo (\cref{fig:02-bgzf}).
+
+\begin{teorema}{Esquema de casillas del índice BAI}{bins}
+En el nivel $l\in\{0,\dots,5\}$ hay $8^l$ casillas, cada una de $2^{29-3l}$ pares de bases, numeradas consecutivamente a partir de
+\begin{equation}\label{eq:02-bin}
+\mathrm{off}(l) = \frac{8^l-1}{7} \in \{0,\,1,\,9,\,73,\,585,\,4681\}.
+\end{equation}
+Un intervalo $[s,e)$ se asigna a la casilla $\mathrm{off}(l^*) + \lfloor s/2^{29-3l^*}\rfloor$, donde $l^*$ es el nivel más profundo en el que $\lfloor s/2^{29-3l}\rfloor = \lfloor (e-1)/2^{29-3l}\rfloor$. En total hay $\sum_{l=0}^{5}8^l = \num{37449}$ casillas.
+\end{teorema}
+\begin{simbolos}
+\simbolo{$l$}{Nivel de la jerarquía: 0 es una casilla de \SI{512}{Mb}; 5 son casillas de \SI{16}{kb}.}
+\simbolo{$2^{29-3l}$}{Tamaño de cada casilla del nivel $l$ ($2^{29}\approx 5{,}4\times10^8$ pb en el nivel 0).}
+\simbolo{$\mathrm{off}(l)$}{Número de la primera casilla del nivel $l$ (suma de las casillas de los niveles anteriores).}
+\simbolo{$[s,e)$}{Intervalo 0-based semiabierto que ocupa el alineamiento.}
+\end{simbolos}
+
+Para cada casilla, el índice guarda los intervalos de desplazamientos virtuales (\ingles{chunks}) donde se encuentran sus alineamientos. Para consultar una región se calculan las casillas que la solapan (a lo sumo una por nivel más las vecinas; unas pocas decenas en total), se leen solo los bloques correspondientes y se descartan los alineamientos que no solapan de verdad. Un índice lineal adicional, con una entrada por ventana de \SI{16}{kb}, permite saltarse los \ingles{chunks} de casillas grandes que terminan antes de la región. El formato tabix generaliza exactamente este mecanismo a cualquier archivo de texto tabular ordenado y comprimido con BGZF, como VCF, BED o GFF \parencite{c02-li2011}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[x=1cm, y=1cm, font=\sffamily\small]
+  % archivo BGZF
+  \node[etiqueta, anchor=east] at (-0.15,3.55) {archivo\\BGZF};
+  \foreach \x/\w/\c in {0/1.5/azul, 1.55/1.3/azulmedio, 2.9/1.7/azul, 4.65/1.2/azulmedio, 5.9/1.5/azul, 7.45/1.4/azulmedio}{
+    \fill[\c!25, draw=\c, rounded corners=1pt] (\x,3.3) rectangle ++(\w,0.5);
+  }
+  \node[etiqueta] at (0.75,3.55) {bloque 1};
+  \node[etiqueta] at (2.2,3.55) {bloque 2};
+  \node[etiqueta] at (3.75,3.55) {\ldots};
+  \fill[amarillo!60, draw=amarillo!80!black] (6.15,3.3) rectangle (6.35,3.8);
+  \draw[flecha=amarillo!80!black] (5.9,4.25) node[above, etiqueta, text=tinta]{$c$: inicio del bloque} -- (5.9,3.85);
+  \draw[amarillo!80!black, thick, {Bar}-{Stealth}] (5.9,3.15) -- node[below, etiqueta]{$u$} (6.15,3.15);
+  \node[etiqueta, anchor=west, align=left] at (9.0,3.55) {$v=c\cdot 2^{16}+u$\\(\cref{eq:02-voffset})};
+  % niveles de bins
+  \foreach \l/\n/\lab in {0/1/{512 Mb}, 1/8/{64 Mb}, 2/16/{8 Mb}, 3/32/{1 Mb}}{
+    \pgfmathsetmacro{\y}{2.2-0.48*\l}
+    \pgfmathsetmacro{\w}{8.85/\n}
+    \foreach \k in {1,...,\n}{
+      \draw[rejilla, fill=papel!60] ({(\k-1)*\w},\y) rectangle ++(\w,0.36);
+    }
+    \node[etiqueta, anchor=east] at (-0.15,\y+0.18) {nivel \l};
+    \node[etiqueta, anchor=west] at (8.95,\y+0.18) {casillas de \lab};
+  }
+  \node[etiqueta, anchor=west] at (8.95,0.05) {\ldots\ hasta 16 kb (nivel 5)};
+  % alineamientos
+  \fill[naranja] (2.93,0.02) rectangle (3.18,0.14);
+  \fill[violeta] (4.47,0.02) rectangle (4.66,0.14);
+  \node[etiqueta, anchor=north] at (3.0,-0.02) {lectura A};
+  \node[etiqueta, anchor=north] at (4.55,-0.02) {lectura B};
+  % casilla asignada
+  \draw[naranja, very thick] (2.7656,0.76) rectangle ++(0.2766,0.36);
+  \draw[naranja, very thick] (3.0422,0.76) rectangle ++(0.2766,0.36);
+  \draw[naranja, very thick, fill=naranja!30] (2.7656,1.24) rectangle ++(0.5531,0.36);
+  \draw[violeta, very thick, fill=violeta!25] (4.4250,0.76) rectangle ++(0.2766,0.36);
+  \draw[naranja!80!black, densely dotted] (3.055,0.14) -- (3.04,0.76);
+  \draw[violeta, densely dotted] (4.565,0.14) -- (4.565,0.76);
+\end{tikzpicture}
+\caption[BGZF y casillas del índice BAI]{Arriba: un archivo BGZF es una cadena de bloques gzip independientes. Un desplazamiento virtual combina el byte $c$ donde empieza un bloque comprimido con la posición $u$ dentro del bloque descomprimido. Abajo: los primeros niveles de la jerarquía de casillas (dibujados a escala solo en su número relativo). La lectura B cabe dentro de una casilla de \SI{1}{Mb} y se asigna a ella; la lectura A cruza la frontera entre dos casillas de nivel 3 y sube a la casilla de \SI{8}{Mb} que las contiene. Consultar una región implica leer unas pocas casillas por nivel, nunca el archivo completo.}
+\label{fig:02-bgzf}
+\end{figure}
+
+\begin{ejemplo}{¿En qué casilla cae \gen{TP53}?}{bin}
+El transcrito canónico de \gen{TP53} ocupa $[\num{7668420}, \num{7687490})$ del cromosoma 17. En el nivel 5 sus extremos caen en casillas distintas ($\lfloor s/2^{14}\rfloor = 468$, $\lfloor (e-1)/2^{14}\rfloor = 469$); en el nivel 4 ambos dan $58$, así que su casilla es $\mathrm{off}(4)+58=585+58 = 643$. Una lectura de 150 nt en $[\num{7674219},\num{7674369})$ cabe en la casilla de nivel 5 número $4681+468 = 5149$.
+\end{ejemplo}
+
+La última vuelta de tuerca es CRAM \parencite{c02-hsiyangfritz2011}. Su idea es que la inmensa mayoría de las bases de una lectura coinciden con la referencia, así que basta guardar la posición y las \emph{diferencias}: una lectura perfecta de 150 nt se reduce a unos pocos números. Combinado con modelos estadísticos para las calidades y los nombres, CRAM ocupa típicamente entre un 40 y un 60\,\% menos que BAM; a cambio, descomprimirlo exige disponer \emph{exactamente} de la misma referencia con la que se creó (de ahí la importancia de versionar los ensamblajes, \cref{sec:02-bases}). HTSlib lee y escribe SAM, BAM y CRAM de forma transparente \parencite{c02-bonfield2021}, y \cmd{samtools} expone esas capacidades en la línea de órdenes \parencite{c02-danecek2021}.
+
+
+
+\subsection{VCF: las diferencias con la referencia}
+
+Si el BAM contiene todas las lecturas, el \ingles{Variant Call Format} \parencite{c02-danecek2011} contiene solo sus conclusiones: las posiciones donde una o más muestras difieren de la referencia. Un VCF tiene metadatos (\texttt{\#\#}) que declaran cada campo, una línea de encabezado (\texttt{\#CHROM}) y una fila por variante con ocho columnas fijas (\texttt{CHROM}, \texttt{POS}, \texttt{ID}, \texttt{REF}, \texttt{ALT}, \texttt{QUAL}, \texttt{FILTER}, \texttt{INFO}), seguidas de una columna \texttt{FORMAT} y una columna por muestra.
+
+\begin{consola}[variantes.vcf]
+##fileformat=VCFv4.2
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotipo">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Verosimilitudes">
+#CHROM POS ID REF ALT QUAL FILTER INFO   FORMAT S1        S2
+chr17  101 .  C   T   50   PASS   AC=3   GT:PL  0/1:50,0,90 1/1:.
+chr17  102 .  CAG C   38   PASS   AC=1   GT:PL  0/1:.       0/0:.
+\end{consola}
+
+POS es 1-based. El genotipo \texttt{GT} de un diploide lista dos alelos (0 = REF, 1 = primer ALT, 2 = segundo ALT\ldots): \texttt{0/1} es heterocigoto y \texttt{1/1} homocigoto alternativo; con \texttt{|} en lugar de \texttt{/} el genotipo está \emph{fasado}, es decir, se sabe qué alelo está en cada cromosoma homólogo.
+
+\subsubsection{Verosimilitudes de genotipo}
+
+El campo \texttt{PL} resume la evidencia que llevó al genotipo, y es otra aplicación de la escala Phred. Supongamos que en una posición cubierta por $n$ lecturas observamos $a$ con el alelo alternativo y $n-a$ con el de referencia, y que cada base se lee mal con probabilidad $\varepsilon$ (su calidad Phred). Bajo cada genotipo diploide $G$, cada lectura muestrea uno de los dos cromosomas al azar, de modo que
+\begin{equation}\label{eq:02-glik}
+\Prob(D \mid G) = \prod_{j=1}^{n} \left[\tfrac{1}{2}\Prob(d_j\mid A_1) + \tfrac{1}{2}\Prob(d_j\mid A_2)\right],
+\qquad
+\mathrm{PL}_G = -10\log_{10}\frac{\Prob(D\mid G)}{\max_{G'}\Prob(D\mid G')},
+\end{equation}
+\begin{simbolos}
+\simbolo{$D = (d_1,\ldots,d_n)$}{Bases observadas en las $n$ lecturas que cubren la posición.}
+\simbolo{$G = A_1/A_2$}{Genotipo diploide candidato (0/0, 0/1 o 1/1).}
+\simbolo{$\Prob(d_j\mid A)$}{Probabilidad de leer $d_j$ si el alelo verdadero es $A$: $1-\varepsilon$ si coinciden, $\varepsilon$ si no.}
+\simbolo{$\mathrm{PL}_G$}{Verosimilitud del genotipo en escala Phred, normalizada para que el más verosímil valga 0.}
+\end{simbolos}
+
+\begin{ejemplo}{Del recuento de lecturas al campo PL}{pl}
+Diez lecturas cubren la posición 101: seis dicen \nuc{C} (REF) y cuatro \nuc{T} (ALT), con $\varepsilon = 0{,}01$ ($Q=20$). Entonces
+\begin{align*}
+\Prob(D\mid 0/0) &= 0{,}99^{6}\,0{,}01^{4} = 9{,}41\times10^{-9},\\
+\Prob(D\mid 0/1) &= 0{,}5^{10} = 9{,}77\times10^{-4},\\
+\Prob(D\mid 1/1) &= 0{,}01^{6}\,0{,}99^{4} = 9{,}61\times10^{-13}.
+\end{align*}
+El heterocigoto es el más verosímil ($\mathrm{PL}=0$); para los otros, $-10\log_{10}(9{,}41\times10^{-9}/9{,}77\times10^{-4}) = 50$ y $-10\log_{10}(9{,}61\times10^{-13}/9{,}77\times10^{-4})=90$. El VCF guarda \texttt{PL=50,0,90}: el homocigoto de referencia es $10^{5}$ veces menos verosímil que el heterocigoto.
+\end{ejemplo}
+
+A partir de los genotipos de $N$ individuos diploides se estima la frecuencia del alelo alternativo, $\widehat{\mathrm{AF}} = \sum_i g_i/(2N)$, donde $g_i\in\{0,1,2\}$ es el número de copias del alelo alternativo del individuo $i$; los campos \texttt{AC} y \texttt{AN} de INFO guardan precisamente el numerador y el denominador. Volveremos a esta cantidad al estudiar genética de poblaciones.
+
+\subsubsection{Una variante, muchas escrituras}
+
+Las inserciones y deleciones se escriben con una \emph{base ancla}: la base anterior al evento, para que ni REF ni ALT queden vacíos. Pero en regiones repetitivas la misma variante admite varias escrituras. Si la referencia es \secuencia{GCAGAGT} (posiciones 101 a 107) y la muestra perdió una copia de \secuencia{AG}, tanto \texttt{POS=102 REF=CAG ALT=C} como \texttt{POS=104 REF=GAG ALT=G} producen la misma secuencia \secuencia{GCAGT}. Dos VCF que describen la misma variante de maneras distintas no ``casan'' al compararlos. \textcite{c02-tan2015} demostraron que toda variante tiene una única representación \emph{normalizada}: la más parsimoniosa (sin bases redundantes a ambos lados) y alineada a la izquierda, en este caso la de \texttt{POS=102}. Normalizar (\cmd{bcftools norm}) antes de comparar o anotar variantes es una práctica obligatoria.
+
+
+
+
+% ---------------------------------------------------------------------
+\section{Bases de datos biológicas desde Python}\label{sec:02-bases}
+% ---------------------------------------------------------------------
+\enlacecolab{modulo-02-formatos-bases-datos/2.2_bases_de_datos.ipynb}{2.2 · Bases de datos}
+
+\begin{intuicion}[Un sistema de bibliotecas]
+Una ciudad con buenas bibliotecas no guarda cada libro en un solo edificio. Hay un archivo nacional que conserva, sin tocarlos, todos los manuscritos depositados; hay bibliotecas especializadas cuyos bibliotecarios escogen la mejor edición de cada obra y le añaden notas; y hay catálogos que no guardan libros, sino fichas que dicen dónde está cada uno y qué otros libros lo citan. Todo el sistema funciona porque cada libro tiene un número de catálogo que nunca cambia, y porque las nuevas ediciones reciben un número de edición en lugar de borrar la anterior. Las bases de datos biológicas están organizadas exactamente así.
+\end{intuicion}
+
+\subsection{Primarias, curadas e integradoras}
+
+Cada día, laboratorios de todo el mundo producen secuencias, estructuras y mediciones. Desde los años ochenta, la comunidad acordó depositarlas en repositorios públicos, gratuitos y sincronizados. Conviene distinguir tres niveles (\cref{fig:02-ecosistema}):
+
+\begin{itemize}
+  \item \textbf{Archivos primarios}: guardan lo que los autores depositaron, tal cual, con su número de acceso. Son GenBank, ENA y DDBJ para secuencias \parencite{c02-arita2021}, el SRA para lecturas crudas \parencite{c02-leinonen2011} y el \ingles{Protein Data Bank} para estructuras. Nadie ``corrige'' un registro ajeno: si hay diez depósitos de la misma proteína, hay diez registros.
+  \item \textbf{Bases curadas}: expertos (o procesos automáticos con reglas explícitas) eligen una secuencia representativa por entidad biológica y la anotan con evidencia. Es el caso de RefSeq, del NCBI \parencite{c02-oleary2016}, y de UniProtKB/Swiss-Prot \parencite{c02-uniprot2025}.
+  \item \textbf{Recursos integradores}: combinan ensamblajes, anotaciones, variantes y comparaciones entre especies, y enlazan con todo lo demás. Ensembl \parencite{c02-dyer2025} y el conjunto de bases del NCBI (Gene, dbSNP, ClinVar, PubMed\ldots) \parencite{c02-sayers2025ncbi} son los ejemplos más usados.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, node distance=4mm]
+  \node[font=\sffamily\bfseries\small, text=naranja!80!black] at (0,3.6) {primarias};
+  \node[font=\sffamily\bfseries\small, text=azulprofundo] at (4.4,3.6) {curadas};
+  \node[font=\sffamily\bfseries\small, text=aqua!60!black] at (8.8,3.6) {integradoras};
+  \node[caja=naranja, minimum width=2.9cm] (insdc) at (0,2.6) {INSDC\\{\scriptsize GenBank · ENA · DDBJ}};
+  \node[caja=naranja, minimum width=2.9cm] (sra) at (0,1.3) {SRA / ENA reads\\{\scriptsize lecturas crudas}};
+  \node[caja=naranja, minimum width=2.9cm] (pdb) at (0,0) {wwPDB\\{\scriptsize estructuras 3D}};
+  \node[caja=azul, minimum width=2.9cm] (refseq) at (4.4,2.6) {RefSeq\\{\scriptsize \texttt{NM\_}, \texttt{NP\_}, \texttt{NC\_}}};
+  \node[caja=azul, minimum width=2.9cm] (sprot) at (4.4,1.3) {UniProtKB\\{\scriptsize Swiss-Prot · TrEMBL}};
+  \node[caja=azul, minimum width=2.9cm] (grc) at (4.4,0) {ensamblajes GRC\\{\scriptsize GRCh37, GRCh38}};
+  \node[caja=aqua, minimum width=2.9cm] (ens) at (8.8,2.6) {Ensembl\\{\scriptsize \texttt{ENSG}, \texttt{ENST}, \texttt{ENSP}}};
+  \node[caja=aqua, minimum width=2.9cm] (gene) at (8.8,1.3) {NCBI Gene\\{\scriptsize dbSNP · ClinVar}};
+  \node[caja=aqua, minimum width=2.9cm] (pub) at (8.8,0) {PubMed\\{\scriptsize literatura}};
+  \draw[flecha] (insdc) -- (refseq);
+  \draw[flecha] (insdc) -- (sprot);
+  \draw[flecha] (pdb) -- (sprot);
+  \draw[flecha] (refseq) -- (gene);
+  \draw[flecha] (refseq) -- (ens);
+  \draw[flecha] (grc) -- (ens);
+  \draw[flecha] (grc) -- (gene);
+  \draw[flecha] (sprot) -- (ens);
+  \draw[flecha] (sra) -- (grc);
+  \draw[tinta2, dashed, thick, {Stealth}-{Stealth}] (gene) -- node[right, etiqueta, xshift=3pt]{xrefs} (ens);
+  \draw[tinta2, dashed, thick, {Stealth}-{Stealth}] (gene) -- (pub);
+  \draw[decorate, decoration={brace, amplitude=5pt, mirror}, tinta2] (-1.45,-0.6) -- (10.25,-0.6);
+  \node[etiqueta] at (4.4,-1.0) {hacia la derecha: más interpretación y más dependencia de la versión};
+\end{tikzpicture}
+\caption[El ecosistema de bases de datos]{El ecosistema de bases de datos organizado por nivel de interpretación. Las flechas indican de dónde toma cada recurso sus datos; las líneas discontinuas, referencias cruzadas (\ingles{xrefs}) mantenidas entre recursos. Los archivos primarios nunca reescriben lo depositado; las bases curadas eligen y anotan una secuencia por entidad; los recursos integradores la sitúan en un genoma y la conectan con variantes, literatura y otras especies. Un mismo gen tiene un identificador distinto en cada caja.}
+\label{fig:02-ecosistema}
+\end{figure}
+
+\subsection{Identificadores estables y versiones}
+
+Si hay una lección que llevarse de esta sección es esta: \emph{un nombre de gen no es un identificador}. ``\gen{TP53}'' designa, según el contexto, un locus del cromosoma 17, cualquiera de sus decenas de transcritos, varias isoformas proteicas, el gen ortólogo de otra especie o la proteína p53 en general. Los identificadores de las bases de datos, en cambio, tienen dos propiedades que los hacen útiles:
+
+\begin{definicion}{Identificador estable versionado}{acceso}
+Un identificador estable es una cadena que designa siempre la misma entidad, que nunca se reasigna a otra y que se sigue resolviendo aunque la entidad quede obsoleta. Cuando el contenido de la entidad cambia, el identificador conserva su parte estable y se incrementa un número de versión: \texttt{acceso.versión}.
+\end{definicion}
+
+Así, \texttt{NM\_000546} es el ARNm de referencia de \gen{TP53} en RefSeq, y \texttt{NM\_000546.6} es su sexta versión; cualquier cambio en la secuencia, por pequeño que sea, genera la \texttt{.7}. Ensembl sigue la misma lógica (\texttt{ENST00000269305.9}). UniProt separa dos contadores: la entrada P04637 va por la versión 315 de su \emph{anotación}, pero por la versión 4 de su \emph{secuencia}, que no cambia desde el 24 de noviembre de 2009. En un artículo o en un cuaderno de laboratorio hay que registrar el identificador \emph{con} su versión, y la versión de la base de datos consultada.
+
+Los identificadores tienen además una sintaxis reconocible: \texttt{ENSG}, \texttt{ENST} y \texttt{ENSP} seguidos de once dígitos en Ensembl; \texttt{NM\_}, \texttt{NP\_} o \texttt{NC\_} en RefSeq; seis o diez caracteres alfanuméricos en UniProt; cuatro caracteres en el PDB. Esa regularidad permite validarlos con expresiones regulares antes de enviarlos a un servidor. Los de \gen{TP53} se reúnen en la \cref{fig:02-pasaporte}.
+
+
+
+\subsubsection{El ensamblaje también tiene versión}
+
+Las coordenadas genómicas solo tienen sentido respecto de un ensamblaje. Entre GRCh37 (2009) y GRCh38 (2013) se corrigieron errores, se cerraron huecos y se añadieron secuencias, de modo que casi todas las coordenadas cambiaron. \gen{TP53} está en \texttt{17:7565097-7590856} en GRCh37 y en \texttt{17:7661779-7687546} en GRCh38, unos \num{96682} pb más adelante; su identificador de gen es el mismo, pero su versión pasó de 11 a 21, y la del transcrito canónico, de 4 a 9. Mezclar un VCF en GRCh37 con una anotación en GRCh38 no produce ningún error de ejecución: produce resultados silenciosamente equivocados. La traslación de coordenadas entre ensamblajes (\ingles{liftover}) es posible, pero no es trivial, porque algunas regiones no tienen equivalente.
+
+\begin{historia}[De un libro de proteínas a millones de secuencias]
+El primer ``banco de datos'' de secuencias fue un libro: el \emph{Atlas of Protein Sequence and Structure} que Margaret Dayhoff publicó desde 1965 y que, en el \cref{cap:03}, dio origen a las matrices PAM. GenBank se fundó en 1982 en Los Álamos y pasó al NCBI a finales de esa década; el \ingles{Protein Data Bank} se creó en 1971 con apenas siete estructuras \parencite{c02-berman2000}. En 2003 los centros que lo gestionaban en Estados Unidos, Europa y Japón formalizaron el \ingles{worldwide} PDB, un único archivo global mantenido en colaboración \parencite{c02-berman2003}, siguiendo el modelo que la INSDC ya aplicaba a las secuencias.
+\end{historia}
+
+\subsection{APIs REST: preguntarle a un servidor}
+
+Casi todas las bases de datos modernas ofrecen, además de su página web, una \emph{API REST}: una forma de consultar sus datos mediante direcciones web que devuelven texto estructurado (JSON, XML, FASTA) en lugar de páginas para humanos. Una petición tiene cuatro partes (\cref{fig:02-rest}): el protocolo y el servidor, el \emph{endpoint} (qué tipo de pregunta hacemos), el recurso (sobre qué entidad) y los parámetros (cómo queremos la respuesta). El servidor responde con un \emph{código de estado} de tres dígitos y un cuerpo.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  \node[fill=gris!18, text=tinta, inner sep=2.5pt, font=\ttfamily\footnotesize] (p) at (0,0) {https://};
+  \node[fill=azul!20, text=tinta, inner sep=2.5pt, font=\ttfamily\footnotesize, anchor=west] (s) at (p.east) {rest.ensembl.org};
+  \node[fill=naranja!22, text=tinta, inner sep=2.5pt, font=\ttfamily\footnotesize, anchor=west] (e) at (s.east) {/lookup/id/};
+  \node[fill=aqua!22, text=tinta, inner sep=2.5pt, font=\ttfamily\footnotesize, anchor=west] (i) at (e.east) {ENSG00000141510};
+  \node[fill=violeta!18, text=tinta, inner sep=2.5pt, font=\ttfamily\footnotesize, anchor=west] (q) at (i.east) {?expand=1};
+  \node[etiqueta, below=1mm of p] {protocolo};
+  \node[etiqueta, below=1mm of s, text=azulprofundo] {servidor};
+  \node[etiqueta, below=1mm of e, text=naranja!80!black] {endpoint};
+  \node[etiqueta, below=1mm of i, text=aqua!60!black] {identificador};
+  \node[etiqueta, below=1mm of q, text=violeta] {parámetros};
+  % ciclo
+  \node[caja=azul, minimum width=2.4cm] (cli) at (0.6,-2.3) {cliente\\{\scriptsize Python + \texttt{requests}}};
+  \node[caja=aqua, minimum width=2.4cm] (srv) at (8.4,-2.3) {servidor\\{\scriptsize Ensembl, NCBI\ldots}};
+  \draw[flecha=azul] ([yshift=3mm]cli.east) -- node[above, etiqueta]{GET + cabeceras (\texttt{Accept: application/json})} ([yshift=3mm]srv.west);
+  \draw[flecha=aqua] ([yshift=-3mm]srv.west) -- node[below, etiqueta]{código de estado + cuerpo JSON} ([yshift=-3mm]cli.east);
+  \node[anchor=north, align=left, text width=12.4cm, font=\sffamily\scriptsize, text=tinta2] at (4.6,-3.3) {%
+    \textcolor{aqua!60!black}{\textbf{200}} OK: leer el cuerpo.\quad
+    \textcolor{naranja!80!black}{\textbf{400/404}} pregunta mal formada o recurso inexistente: no reintentar.\\[1pt]
+    \textcolor{rojooscuro}{\textbf{429}} demasiadas peticiones: esperar (\texttt{Retry-After}) y reintentar.\quad
+    \textcolor{violeta}{\textbf{5xx}} fallo del servidor: reintentar con espera creciente.};
+\end{tikzpicture}
+\caption[Anatomía de una petición REST]{Arriba: anatomía de una URL de la API REST de Ensembl \parencite{c02-yates2015}, que pide el gen \gen{TP53} con sus transcritos y exones (\texttt{expand=1}). Abajo: el ciclo petición-respuesta y la interpretación de los códigos de estado más frecuentes. La distinción importante es entre errores del cliente (4xx: repetir la petición no servirá, salvo el 429) y errores transitorios (429 y 5xx: vale la pena esperar y reintentar).}
+\label{fig:02-rest}
+\end{figure}
+
+La respuesta JSON se convierte directamente en diccionarios y listas de Python. En el caso de Ensembl, un gen contiene una lista \texttt{Transcript}; cada transcrito, una lista \texttt{Exon} y, si codifica proteína, un diccionario \texttt{Translation}.
+
+
+
+\subsubsection{Límites de tasa}
+
+Los servidores públicos atienden a millones de usuarios y protegen su capacidad con \emph{límites de tasa}. Las E-utilities del NCBI admiten 3 peticiones por segundo sin registro y 10 con una clave de API gratuita; Ensembl admite en promedio unas 15 por segundo. Quien los excede recibe respuestas \texttt{429} y, si insiste, puede ver bloqueada su dirección IP (y la de todo su laboratorio, que comparte la misma).
+
+Un límite de $r$ peticiones por segundo impone una cota inferior al tiempo de una descarga de $N$ peticiones:
+\begin{equation}\label{eq:02-tasa}
+T \;\ge\; \frac{N}{r}.
+\end{equation}
+\begin{simbolos}
+\simbolo{$T$}{Tiempo total de la descarga, en segundos.}
+\simbolo{$N$}{Número de peticiones necesarias.}
+\simbolo{$r$}{Tasa máxima admitida por el servidor (peticiones por segundo).}
+\end{simbolos}
+La consecuencia práctica es que el único modo de acelerar una descarga grande es reducir $N$: pedir muchos registros por petición. Las E-utilities lo permiten a través de su \ingles{History server}: \texttt{esearch} con \texttt{usehistory=y} guarda la lista de resultados en el servidor y devuelve dos claves (\texttt{WebEnv} y \texttt{query\_key}), con las que \texttt{efetch} descarga los registros en lotes de hasta varios cientos.
+
+
+
+\begin{ejemplo}{Descargar \num{5000} proteínas}{descarga}
+Queremos las secuencias FASTA de \num{5000} proteínas del NCBI. Pidiéndolas de una en una ($N=5000$) sin clave de API ($r=3$), la \cref{eq:02-tasa} da $T\ge \num{1667}$\,s, casi media hora; con clave ($r=10$), 500\,s. Si en cambio usamos el \ingles{History server} y lotes de 500 registros, bastan una petición \texttt{esearch} y $\lceil 5000/500\rceil=10$ peticiones \texttt{efetch}: $N=11$ y $T \ge 3{,}7$\,s. El cuello de botella deja de ser el límite de tasa y pasa a ser el volumen de datos transferido.
+\end{ejemplo}
+
+\subsubsection{Reintentos con espera exponencial}
+
+Los errores transitorios (\texttt{429}, \texttt{5xx}, cortes de red) se tratan reintentando, pero no inmediatamente: si mil clientes reintentan a la vez tras una caída, la provocan de nuevo. La estrategia estándar es la \emph{espera exponencial con variación aleatoria}:
+\begin{equation}\label{eq:02-backoff}
+t_k = \min\!\left(t_{\max},\ t_0\, 2^{k}\right) + U_k, \qquad U_k \sim \mathrm{Uniforme}(0, t_0),
+\end{equation}
+\begin{simbolos}
+\simbolo{$t_k$}{Tiempo de espera antes del reintento $k$ ($k=0,1,2,\ldots$).}
+\simbolo{$t_0$}{Espera inicial (típicamente 1\,s o el valor de la cabecera \texttt{Retry-After}).}
+\simbolo{$t_{\max}$}{Espera máxima, para no esperar indefinidamente.}
+\simbolo{$U_k$}{Variación aleatoria (\ingles{jitter}) que desincroniza a los clientes.}
+\end{simbolos}
+Con $t_0=1$\,s y cinco reintentos, la espera determinista total es $1+2+4+8+16=31$\,s. Si cada intento falla de forma independiente con probabilidad $q=0{,}2$, la probabilidad de que fallen los seis (el original y los cinco reintentos) es $q^6 = 6{,}4\times10^{-5}$: la espera exponencial convierte un servicio poco fiable en uno casi perfecto a cambio de latencia ocasional.
+
+Un cliente robusto combina estas ideas con una \emph{caché} (no preguntar dos veces lo mismo) y un \emph{registro de procedencia} (qué se pidió, a quién, cuándo, y si la respuesta vino del servidor o de la caché). El notebook de esta lección construye la función \py{fetch()} que usaremos en el resto del curso; su núcleo es el siguiente:
+
+\begin{codigo}[cliente.py]
+import time, random, requests
+
+def get_json(url, params=None, t0=1.0, tmax=30, tries=6):
+    for k in range(tries):
+        r = requests.get(url, params=params, timeout=30,
+                         headers={"Accept": "application/json"})
+        if r.status_code == 200:
+            return r.json()
+        if r.status_code not in (429, 500, 502, 503, 504):
+            r.raise_for_status()           # error del cliente
+        wait = float(r.headers.get("Retry-After", 0))
+        wait = max(wait, min(tmax, t0 * 2 ** k))
+        time.sleep(wait + random.uniform(0, t0))
+    raise RuntimeError(f"sin respuesta tras {tries} intentos")
+\end{codigo}
+
+\subsection{NCBI y las E-utilities}
+
+El NCBI agrupa más de treinta bases de datos (Nucleotide, Protein, Gene, PubMed, SRA, dbSNP, ClinVar, Taxonomy\ldots) bajo un sistema de búsqueda común llamado Entrez \parencite{c02-sayers2025ncbi}. Sus \ingles{Entrez Programming Utilities} son una familia de servicios que se combinan como piezas:
+
+\begin{center}
+\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+\textbf{Utilidad} & \textbf{Pregunta que responde} & \textbf{Devuelve}\\
+\midrule
+\texttt{esearch} & ¿qué registros cumplen esta búsqueda? & identificadores (UID) y recuento\\
+\texttt{esummary} & ¿qué dice el resumen de estos registros? & metadatos\\
+\texttt{elink} & ¿qué registros de otra base están ligados a estos? & UID relacionados\\
+\texttt{efetch} & dame el registro completo & FASTA, GenBank, XML\ldots\\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+El flujo típico es \texttt{esearch} $\to$ \texttt{esummary}/\texttt{elink} $\to$ \texttt{efetch}: primero se encuentra, luego se mira, al final se descarga. Para \gen{TP53}, \texttt{esearch} en la base Gene con la consulta \texttt{TP53[sym] AND human[orgn]} devuelve el UID \texttt{7157}; \texttt{esummary} devuelve su localización (\cref{ej:coordS}); \texttt{elink} con \texttt{linkname=gene\_protein\_refseq} lleva a sus proteínas RefSeq, y \texttt{efetch} descarga \texttt{NP\_000537.3} en FASTA, una proteína de 393 aminoácidos. Biopython envuelve estas llamadas en el módulo \texttt{Bio.Entrez}, que además respeta automáticamente el límite de tasa \parencite{c02-cock2009}.
+
+\begin{codigo}[entrez\_tp53.py]
+from Bio import Entrez, SeqIO
+
+Entrez.email = "usted@universidad.edu"       # obligatorio
+# Entrez.api_key = "..."                      # opcional: 10/s
+h = Entrez.esearch(db="gene", term="TP53[sym] AND human[orgn]")
+gene_id = Entrez.read(h)["IdList"][0]        # '7157'
+h = Entrez.elink(dbfrom="gene", db="protein", id=gene_id,
+                 linkname="gene_protein_refseq")
+links = Entrez.read(h)[0]["LinkSetDb"][0]["Link"]
+h = Entrez.efetch(db="protein", id="NP_000537.3",
+                  rettype="fasta", retmode="text")
+p53 = SeqIO.read(h, "fasta")
+print(gene_id, len(links), p53.id, len(p53))
+\end{codigo}
+
+Con el parámetro \texttt{rettype=count}, \texttt{esearch} devuelve solo el número de registros que cumplen una búsqueda, lo que permite medir, por ejemplo, cuántos artículos por año indexa PubMed sobre un tema; el notebook de la lección usa esa consulta para estimar el tiempo de duplicación de la literatura sobre CRISPR (menos de dos años entre 2013 y 2020).
+
+\subsection{Ensembl: el gen en su genoma}
+
+Ensembl anota automáticamente los genomas de cientos de especies de vertebrados y, en su versión actual, integra además los resultados del proyecto GENCODE para el ser humano y el ratón \parencite{c02-dyer2025}. Su API REST \parencite{c02-yates2015} expone casi todo su contenido; el endpoint \texttt{lookup/id} con \texttt{expand=1} devuelve el gen con todos sus transcritos y exones.
+
+Para \gen{TP53} en GRCh38, Ensembl informa un gen de \num{25768} pb en la hebra negativa del cromosoma 17, con 40 transcritos anotados: distintos sitios de inicio, combinaciones de exones por \ingles{splicing} alternativo y transcritos que no codifican proteína. Entre ellos, uno se marca como \emph{canónico}: \texttt{ENST00000269305.9}, que corresponde al ARNm de referencia \texttt{NM\_000546.6} de RefSeq. La \cref{fig:02-tp53} lo dibuja a partir de la respuesta de la API.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap02/tp53_gen.tex}
+\caption[El transcrito canónico de \gen{TP53}]{Modelo del transcrito canónico de \gen{TP53} dibujado directamente a partir de la respuesta de la API de Ensembl. Los bloques gruesos son región codificante (CDS), los delgados son regiones no traducidas (UTR) y la línea con flechas son intrones; el gen se transcribe de derecha a izquierda porque está en la hebra negativa, así que el exón 1 es el de la derecha. El exón 1 es completamente no codificante: la proteína empieza en el exón 2. Los 11 exones suman \num{2512} nt, apenas un 13\,\% de los \num{19070} pb del transcrito; el resto son intrones.}
+\label{fig:02-tp53}
+\end{figure}
+
+\begin{cuidado}[«La proteína de \gen{TP53}» no existe]
+Con 40 transcritos anotados, la frase ``la secuencia de \gen{TP53}'' es ambigua. Hay que especificar el transcrito (\texttt{ENST00000269305.9} o \texttt{NM\_000546.6}) \emph{y} el ensamblaje. Las herramientas de anotación de variantes pueden describir la misma mutación con posiciones proteicas distintas según el transcrito elegido; por eso las recomendaciones clínicas exigen el transcrito de referencia versionado.
+\end{cuidado}
+
+\subsection{UniProt: la proteína y su conocimiento}
+
+UniProt es el recurso central para las proteínas \parencite{c02-uniprot2025}. Su base de conocimiento, UniProtKB, tiene dos secciones: Swiss-Prot, revisada manualmente por curadores que resumen la literatura con evidencia explícita, y TrEMBL, anotada automáticamente y órdenes de magnitud mayor. La entrada revisada P04637 (p53 humana, 393 aminoácidos) describe sus dominios, sitios de modificación, interacciones, isoformas, estructuras y más de mil variantes naturales, casi todas mutaciones somáticas halladas en tumores. La API REST las devuelve en JSON desde \texttt{https://rest.uniprot.org/uniprotkb/P04637.json}, como una lista \texttt{features} con su tipo y localización.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.95\linewidth, height=4.4cm, ybar, bar width=0.6pt,
+   xlabel={posición en la proteína (residuo)}, ylabel={variantes distintas},
+   xmin=0, xmax=394, ymin=-2.6, ymax=13, ytick={0,2,...,12}, grid=none,
+   axis x line*=bottom]
+  \fill[azul!8] (axis cs:102,0) rectangle (axis cs:292,13);
+  \addplot[draw=azulprofundo, fill=azulprofundo] table[x=pos, y=n] {figuras/cap02/p53_variantes.dat};
+  \fill[naranja] (axis cs:1,-2.3) rectangle (axis cs:44,-1.1);
+  \fill[azul] (axis cs:102,-2.3) rectangle (axis cs:292,-1.1);
+  \fill[violeta] (axis cs:305,-2.3) rectangle (axis cs:321,-1.1);
+  \fill[aqua] (axis cs:325,-2.3) rectangle (axis cs:356,-1.1);
+  \node[etiqueta, font=\sffamily\tiny, text=white] at (axis cs:22,-1.7) {TAD};
+  \node[etiqueta, font=\sffamily\tiny, text=white] at (axis cs:197,-1.7) {dominio de unión al ADN (102--292)};
+  \node[etiqueta, font=\sffamily\tiny, text=white] at (axis cs:340,-1.7) {tetr.};
+  \node[etiqueta, anchor=south] at (axis cs:245,11.1) {G245};
+  \node[etiqueta, anchor=west] at (axis cs:253,9.6) {R249};
+  \node[etiqueta, anchor=south] at (axis cs:313,-1.0) {\textcolor{violeta}{NLS}};
+\end{axis}
+\end{tikzpicture}
+\caption[Variantes naturales de p53 en UniProt]{Número de variantes de un aminoácido distintas registradas en UniProtKB (P04637) en cada posición de p53. Abajo, las regiones funcionales anotadas en la misma entrada: dominio de transactivación (TAD, 1--44), dominio de unión al ADN (102--292), señal de localización nuclear bipartita (NLS) y dominio de oligomerización o tetramerización (325--356). Las variantes se concentran de forma abrumadora en el dominio de unión al ADN (fondo azul), donde están las posiciones con más variantes distintas, como G245 y R249.}
+\label{fig:02-p53var}
+\end{figure}
+
+La \cref{fig:02-p53var} sugiere que las variantes no están repartidas al azar. Podemos cuantificarlo con una prueba binomial, un buen ejemplo de cómo los datos de una base de datos se convierten en una afirmación estadística.
+
+\begin{ejemplo}{¿Se concentran las variantes en el dominio de unión al ADN?}{binomial}
+La entrada registra $N=1363$ variantes naturales en 332 posiciones distintas. El dominio de unión al ADN abarca 191 de los 393 residuos, una fracción $\pi_0=191/393=0{,}486$. Si las variantes cayeran al azar a lo largo de la proteína, el número dentro del dominio, $K$, seguiría una distribución $\mathrm{Bin}(N,\pi_0)$, con media $N\pi_0 = 662{,}4$ y desviación típica $\sqrt{N\pi_0(1-\pi_0)}=18{,}5$. Se observan $K=1052$ (el 77\,\%), lo que da
+\[
+z = \frac{1052 - 662{,}4}{18{,}5} = 21{,}1,
+\]
+y una probabilidad exacta $\Prob(K\ge 1052)\approx 8\times10^{-104}$. La concentración es incuestionable. Pero cuidado con la interpretación: el resultado mezcla biología (las mutaciones que destruyen la unión al ADN son las seleccionadas en los tumores) con un \emph{sesgo de verificación}, porque durante años muchos estudios secuenciaron solo los exones 5 a 8, que codifican ese dominio. Los datos de una base de datos reflejan también cómo se recolectaron.
+\end{ejemplo}
+
+\subsection{PDB: la estructura}
+
+El \ingles{Protein Data Bank} archiva las estructuras tridimensionales de macromoléculas determinadas experimentalmente \parencite{c02-berman2000}. Cada entrada tiene un identificador de cuatro caracteres, las coordenadas atómicas (en los formatos PDB clásico o mmCIF) y los metadatos del experimento: método, resolución, cadenas, ligandos. El portal estadounidense, RCSB PDB, ofrece además APIs de búsqueda y de datos (esta última en GraphQL), y desde 2022 muestra, junto a las estructuras experimentales, modelos computacionales predichos por inteligencia artificial, claramente separados \parencite{c02-burley2025}.
+
+Una búsqueda de todas las entradas cuyas cadenas remiten al acceso UniProt P04637 devuelve 323 estructuras de p53 humana. La \cref{fig:02-pdb} resume su historia: 275 por difracción de rayos X, 30 por resonancia magnética nuclear y 16 por criomicroscopía electrónica. La resolución mediana es de \SI{1,8}{\angstrom} para rayos X y de \SI{3,83}{\angstrom} para criomicroscopía; la mejor alcanza \SI{1,01}{\angstrom}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=4.1cm, ybar stacked, bar width=4.2pt,
+   xlabel={año de publicación de la entrada}, ylabel={entradas del PDB},
+   xmin=1994, xmax=2027, ymin=0, legend columns=4,
+   legend style={at={(0.5,1.03)}, anchor=south},
+   x tick label style={/pgf/number format/.cd, set thousands separator={}},
+   xtick={1995,2000,...,2025}]
+  \addplot[fill=azul, draw=none] table[x=anio, y=xray] {figuras/cap02/pdb_anual.dat};
+  \addlegendentry{difracción de rayos X}
+  \addplot[fill=naranja, draw=none] table[x=anio, y=nmr] {figuras/cap02/pdb_anual.dat};
+  \addlegendentry{RMN en solución}
+  \addplot[fill=aqua, draw=none] table[x=anio, y=em] {figuras/cap02/pdb_anual.dat};
+  \addlegendentry{criomicroscopía electrónica}
+  \addplot[fill=gris, draw=none] table[x=anio, y=otro] {figuras/cap02/pdb_anual.dat};
+  \addlegendentry{otros}
+\end{axis}
+\end{tikzpicture}
+\caption[Estructuras de p53 en el PDB]{Entradas del PDB que contienen p53 humana (acceso UniProt P04637), por año de publicación y método experimental, obtenidas de la API de RCSB PDB en septiembre de 2026 (el último año está incompleto). Las primeras estructuras de mediados de los noventa, como 1TSR, resolvieron el dominio de unión al ADN; la mayoría de las posteriores son variantes de ese dominio con fármacos candidatos a ``rescatar'' la p53 mutada. La criomicroscopía aparece solo en los últimos años, típicamente con complejos grandes y resoluciones más modestas.}
+\label{fig:02-pdb}
+\end{figure}
+
+La entrada \texttt{1TSR} (publicada en el PDB en enero de 1996, \SI{2,2}{\angstrom}) contiene tres copias del dominio de unión al ADN de p53 (cadenas A, B y C) unidas a una doble hélice de ADN (cadenas E y F). Su publicación \parencite{c02-cho1994} fue un hito, porque mostró por qué los ``puntos calientes'' de mutación en cáncer son los que son: residuos como R248 y R273 contactan directamente el ADN, y otros como R175, G245 y R249 sostienen la superficie de contacto. Una sola sustitución en esos lugares basta para que p53 suelte el ADN o pierda su forma. Acabamos de encadenar tres bases de datos (la variante en UniProt, la posición en el genoma de Ensembl y la estructura en el PDB) para explicar un fenotipo.
+
+\subsection{El pasaporte de un gen y los principios FAIR}
+
+Los recursos que hemos visitado no son islas: cada uno mantiene referencias cruzadas hacia los demás. El endpoint \texttt{xrefs/id} de Ensembl, por ejemplo, devuelve para \texttt{ENSG00000141510} su identificador HGNC, su UID de NCBI Gene y su número OMIM, y para la proteína \texttt{ENSP00000269305} su acceso de UniProt, su proteína RefSeq y la lista de estructuras del PDB. Con esas referencias se construye el ``pasaporte'' de la \cref{fig:02-pasaporte}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small, x=1cm, y=1cm]
+  \foreach \x/\lab/\col in {0/Gen/naranja, 3.4/Transcrito/azul, 6.8/Proteína/violeta, 10.2/Estructura/aqua}{
+    \node[font=\sffamily\bfseries\small, text=\col!80!black] at (\x+1.2,3.1) {\lab};
+  }
+  \node[caja=naranja, minimum width=2.6cm, font=\ttfamily\scriptsize] (g1) at (1.2,2.3) {HGNC:11998};
+  \node[caja=naranja, minimum width=2.6cm, font=\ttfamily\scriptsize] (g2) at (1.2,1.5) {NCBI Gene 7157};
+  \node[caja=naranja, minimum width=2.6cm, font=\ttfamily\scriptsize] (g3) at (1.2,0.7) {ENSG00000141510};
+  \node[caja=azul, minimum width=2.6cm, font=\ttfamily\scriptsize] (t1) at (4.6,1.9) {ENST00000269305.9};
+  \node[caja=azul, minimum width=2.6cm, font=\ttfamily\scriptsize] (t2) at (4.6,1.1) {NM\_000546.6};
+  \node[caja=violeta, minimum width=2.6cm, font=\ttfamily\scriptsize] (p1) at (8.0,2.3) {ENSP00000269305};
+  \node[caja=violeta, minimum width=2.6cm, font=\ttfamily\scriptsize] (p2) at (8.0,1.5) {NP\_000537.3};
+  \node[caja=violeta, minimum width=2.6cm, font=\ttfamily\scriptsize] (p3) at (8.0,0.7) {UniProt P04637};
+  \node[caja=aqua, minimum width=2.2cm, font=\ttfamily\scriptsize] (s1) at (11.4,1.9) {PDB 1TSR};
+  \node[caja=aqua, minimum width=2.2cm, font=\ttfamily\scriptsize] (s2) at (11.4,1.1) {\ldots\ 323 entradas};
+  \draw[flecha] (g3) -- (t1);
+  \draw[flecha] (g2) -- (t2);
+  \draw[flecha] (t1) -- (p1);
+  \draw[flecha] (t2) -- (p2);
+  \draw[flecha] (p3) -- (s1);
+  \draw[flecha] (p3) -- (s2);
+  \draw[gris, dashed, {Stealth}-{Stealth}] (t1) -- (t2);
+  \draw[gris, dashed, {Stealth}-{Stealth}] (p2) -- (p3);
+  \node[etiqueta, anchor=north, text width=12.6cm, align=center] at (6.3,0.05) {cada flecha es una referencia cruzada consultable por API; las discontinuas unen equivalentes entre recursos};
+\end{tikzpicture}
+\caption[El pasaporte de \gen{TP53}]{El ``pasaporte'' de \gen{TP53}, construido con los identificadores obtenidos en esta sección. El nivel de detalle crece de izquierda a derecha, como en el dogma central: un gen, uno de sus transcritos, la proteína que codifica y una de sus estructuras. Cada identificador de transcrito y proteína lleva su versión; los de gen y estructura designan entidades cuyo contenido puede actualizarse sin cambiar de nombre, por lo que conviene registrar también la versión de la base de datos consultada.}
+\label{fig:02-pasaporte}
+\end{figure}
+
+Esta capacidad de pasar de un recurso a otro sin intervención humana no es casual. \textcite{c02-wilkinson2016} la formularon como cuatro principios que deberían cumplir todos los datos científicos, resumidos en el acrónimo FAIR:
+
+\begin{itemize}
+  \item \textbf{F}\,(\ingles{Findable}, localizables): los datos tienen identificadores globales y persistentes, y metadatos ricos indexados en un recurso consultable.
+  \item \textbf{A}\,(\ingles{Accessible}, accesibles): se recuperan por su identificador mediante un protocolo abierto y estandarizado (como HTTP), y los metadatos siguen disponibles aunque los datos dejen de estarlo.
+  \item \textbf{I}\,(\ingles{Interoperable}, interoperables): usan lenguajes y vocabularios formales y compartidos (como la \ingles{Sequence Ontology}) e incluyen referencias a otros datos.
+  \item \textbf{R}\,(\ingles{Reusable}, reutilizables): tienen una licencia clara, una procedencia detallada y cumplen los estándares de su comunidad.
+\end{itemize}
+
+Todo lo que hemos visto en este capítulo es una implementación concreta de esos principios: identificadores versionados (F), APIs REST (A), formatos y ontologías estándar (I). El cuarto principio, la reutilización, depende de nosotros: de que registremos \emph{qué} pedimos, \emph{a quién}, \emph{cuándo} y en qué \emph{versión}.
+
+\begin{ideaclave}
+Identificador + versión + fecha + versión de la base.\\
+Sin esos cuatro datos, un análisis no es reproducible.
+\end{ideaclave}
+
+
+\begin{resumen}
+\begin{itemize}
+  \item FASTA guarda secuencias; FASTQ añade una calidad Phred por base, $Q=-10\log_{10}p$, codificada como \texttt{chr(Q+33)}. Los errores esperados, $\mathrm{EE}=\sum 10^{-Q_i/10}$, resumen una lectura mejor que su calidad media.
+  \item GenBank, GFF3, GTF y SAM/VCF usan coordenadas 1-based cerradas; BED, BAM y Python, 0-based semiabiertas. La conversión es $s_0=s_1-1$, $e_0=e_1$, y el REF de un VCF es la prueba de fuego.
+  \item En SAM, la CIGAR determina la longitud de la lectura y el tramo de referencia según qué operaciones consumen cada secuencia; la FLAG codifica doce condiciones como suma de potencias de 2; MAPQ es la calidad Phred de la posición.
+  \item BAM y CRAM comprimen en bloques BGZF; un índice jerárquico de \num{37449} casillas y desplazamientos virtuales $v=c\cdot2^{16}+u$ permite leer una región sin descomprimir todo el archivo. VCF describe variantes con genotipos y verosimilitudes (PL) en escala Phred, y debe normalizarse.
+  \item Las bases de datos se organizan en primarias (INSDC, SRA, PDB), curadas (RefSeq, Swiss-Prot) e integradoras (Ensembl, NCBI Gene). Se consultan mediante APIs REST, respetando límites de tasa ($T\ge N/r$), reintentando con espera exponencial y guardando caché y procedencia.
+  \item Un gen se identifica con identificadores estables \emph{versionados} y en un ensamblaje concreto; las referencias cruzadas entre recursos materializan los principios FAIR.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} (a) ¿Qué calidad Phred corresponde a una probabilidad de error de $0{,}0005$? (b) ¿Con qué carácter se escribe en Phred+33? (c) Decodifique la cadena \texttt{5?I+} a calidades y probabilidades de error.
+\ej{1} Descomponga las FLAG \texttt{83}, \texttt{2064} y \texttt{3844}. ¿Qué filtro \texttt{-F} de \cmd{samtools view} excluye a la vez lecturas no alineadas, secundarias, duplicadas y suplementarias?
+\ej{2} Para la CIGAR \texttt{3S40M1I20M5D30M2S} con \texttt{POS=1000}: (a) ¿qué posición de la referencia queda frente a la base 50 de la lectura? (b) ¿Qué intervalo 0-based semiabierto devuelve \py{reference_start, reference_end} en \cmd{pysam}? Escriba una función que, dada una CIGAR y POS, devuelva el par de listas de posiciones alineadas.
+\ej{2} Usando la \cref{eq:02-p0}, calcule la calidad Phred uniforme mínima que debe tener una lectura de 150 nt para que la probabilidad de estar libre de errores sea al menos 0,9. Compare la aproximación de Poisson con el cálculo exacto.
+\ej{2} Implemente la función \py{reg2bin(beg, end)} del \cref{teo:bins} y verifique los resultados del \cref{ej:bin}. ¿Cuántas casillas hay que examinar como máximo para una región de \SI{100}{kb}?
+\ej{2} Escriba un cliente que obtenga para \gen{BRCA1} humano su UID de NCBI Gene (\texttt{esearch}), su identificador de Ensembl (endpoint \texttt{lookup/symbol}), su transcrito canónico y su acceso de UniProt (\texttt{xrefs}), respetando el límite de tasa de cada servicio y registrando la fecha y la versión de cada respuesta.
+\ej{3} Repita el \cref{ej:pl} para 20 lecturas con 3 alternativas y $\varepsilon=0{,}01$, y luego con $\varepsilon=0{,}05$. ¿Cómo cambia la decisión entre 0/0 y 0/1? Explique por qué una calidad mal calibrada (\cref{fig:02-calidad}) produce falsos heterocigotos.
+\end{ejercicios}
+
+\referenciascapitulo

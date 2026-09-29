@@ -1,0 +1,98 @@
+% =====================================================================
+%  libro.sty — elementos exclusivos del volumen completo (partes, portada)
+% =====================================================================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{libro}[2026/09/29]
+
+% ---------------------------------------------------------------------
+% Páginas de parte
+% ---------------------------------------------------------------------
+\renewcommand{\thepart}{\Roman{part}}
+\NewDocumentCommand{\parte}{m m m}{%
+  \cleardoublepage
+  \refstepcounter{part}%
+  \addcontentsline{toc}{part}{\protect\numberline{\thepart}#1}%
+  \markboth{}{}%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[top color=nocturno, bottom color=azulnoche!85!black]
+      (current page.north west) rectangle (current page.south east);
+    % textura de secuencia
+    \pgfmathsetseed{\numexpr 7*\value{part}\relax}
+    \begin{scope}[shift={(current page.north west)}]
+      \foreach \fila in {0,...,46}{
+        \foreach \col in {0,...,33}{
+          \pgfmathrandominteger{\b}{0}{3}
+          \ifcase\b \def\L{A}\def\C{nucA}\or\def\L{C}\def\C{nucC}\or\def\L{G}\def\C{nucG}\else\def\L{T}\def\C{nucT}\fi
+          \node[font=\ttfamily\fontsize{6}{6}\selectfont, text=\C, opacity=.10, inner sep=0pt]
+            at (0.25+\col*0.5, -0.25-\fila*0.5) {\L};
+        }}
+      \node[anchor=north west, font=\lightfont\fontsize{150}{150}\selectfont,
+        text=white, opacity=.95, inner sep=0pt] at (1.8,-3.2) {\thepart};
+      \node[anchor=north west, font=\sffamily\bfseries\small, text=amarillo,
+        inner sep=0pt] at (1.9,-2.6) {\addfontfeatures{LetterSpace=18}PARTE};
+      \fill[amarillo] (1.9,-9.4) rectangle (5.4,-9.52);
+      \node[anchor=north west, text width=12.4cm, align=left, inner sep=0pt,
+        font=\titlefont\fontsize{32}{36}\selectfont, text=white] at (1.9,-10.1) {#1};
+      \node[anchor=north west, text width=12.4cm, align=left, inner sep=0pt,
+        font=\titlefont\itshape\fontsize{15}{19}\selectfont, text=azulclaro] at (1.9,-12.6) {#2};
+      \node[anchor=north west, text width=11.2cm, align=justify, inner sep=0pt,
+        font=\liningserif\fontsize{11}{15.5}\selectfont, text=white!88!azulclaro] at (1.9,-14.6) {#3};
+    \end{scope}
+  \end{tikzpicture}%
+  \null\cleardoublepage}
+
+\titlecontents{part}[0pt]{\addvspace{18pt}\titlefont\large\color{azulnoche}}
+  {\makebox[2.2em][l]{\color{amarillo!80!black}\blackfont\thecontentslabel}}{}
+  {}[\addvspace{2pt}{\color{rejilla}\titlerule[0.5pt]}\addvspace{2pt}]
+
+% ---------------------------------------------------------------------
+% Portada
+% ---------------------------------------------------------------------
+\newcommand{\portada}{%
+  \thispagestyle{empty}%
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[top color=nocturno, bottom color=azulprofundo]
+      (current page.north west) rectangle (current page.south east);
+    \begin{scope}[shift={(current page.north west)}]
+      % textura de secuencia (mapa de lecturas)
+      \pgfmathsetseed{1953}
+      \foreach \fila in {0,...,58}{
+        \pgfmathrandominteger{\ini}{0}{12}
+        \pgfmathrandominteger{\lon}{8}{22}
+        \foreach \col in {\ini,...,\numexpr\ini+\lon\relax}{
+          \pgfmathrandominteger{\b}{0}{3}
+          \ifcase\b \def\C{nucA}\or\def\C{nucC}\or\def\C{nucG}\else\def\C{nucT}\fi
+          \fill[\C, opacity=.16] (\col*0.5+0.05, -\fila*0.41) rectangle ++(0.42,-0.30);
+        }}
+      % doble hélice diagonal
+      \begin{scope}[shift={(-1,-23.5)}, rotate=38]
+        \foreach \x in {0,0.3,...,36}{%
+          \pgfmathsetmacro{\ya}{1.45*sin(\x*30)}%
+          \pgfmathtruncatemacro{\k}{mod(round(\x*3.3),4)}%
+          \ifcase\k \def\cc{nucA}\or\def\cc{nucC}\or\def\cc{nucG}\else\def\cc{nucT}\fi
+          \draw[\cc, line width=2.2pt, opacity=.8] (\x,\ya) -- (\x,-\ya);}
+        \draw[white, line width=3pt, domain=0:36, samples=300, smooth] plot (\x,{1.45*sin(\x*30)});
+        \draw[azulclaro, line width=3pt, domain=0:36, samples=300, smooth] plot (\x,{-1.45*sin(\x*30)});
+      \end{scope}
+      % velo para legibilidad del título
+      \fill[nocturno, opacity=.78] (0,-2.2) rectangle (17,-10.6);
+      \fill[amarillo] (1.9,-3.1) rectangle (5.6,-3.24);
+      \node[anchor=north west, font=\sffamily\bfseries\small, text=amarillo, inner sep=0pt]
+        at (1.9,-3.6) {\addfontfeatures{LetterSpace=16}TEXTO PARA MAESTRÍA};
+      \node[anchor=north west, font=\titlefont\fontsize{50}{52}\selectfont, text=white,
+        inner sep=0pt] at (1.8,-4.4) {Bioinformática};
+      \node[anchor=north west, font=\blackfont\fontsize{50}{52}\selectfont, text=white,
+        inner sep=0pt] at (1.8,-6.3) {Práctica};
+      \node[anchor=north west, text width=12.6cm, font=\titlefont\itshape\fontsize{15}{19}\selectfont,
+        text=azulclaro, inner sep=0pt] at (1.9,-8.5)
+        {De la secuencia al sistema: fundamentos, algoritmos\\ y laboratorio computacional};
+      % autor
+      \fill[nocturno, opacity=.85] (0,-20.6) rectangle (17,-24);
+      \node[anchor=north west, font=\titlefont\fontsize{20}{24}\selectfont, text=white,
+        inner sep=0pt] at (1.9,-21.3) {Juvenal Yosa, PhD};
+      \node[anchor=north west, font=\sffamily\small, text=azulclaro, inner sep=0pt]
+        at (1.9,-22.4) {con Claude (Anthropic) como copiloto};
+    \end{scope}
+  \end{tikzpicture}\null\clearpage}
+\endinput

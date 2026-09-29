@@ -1,0 +1,132 @@
+[
+ {
+  "key": "c05-darwin2009",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-zuckerkandl1965",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-jukes1969",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-kimura1980",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-felsenstein1981",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-hasegawa1985",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-rodriguez1990",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-yang1994",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-buneman1974",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-saitou1987",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-studier1988",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-gascuel2006",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-fitch1971",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-felsenstein1978",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-guindon2003",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-akaike1974",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-schwarz1978",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-kalyaanamoorthy2017",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-nguyen2015",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-minh2020",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-stamatakis2014",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-efron1979",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-felsenstein1985",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-hoang2018",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ },
+ {
+  "key": "c05-felsenstein2004",
+  "ok": true,
+  "msg": "ok isbn (título 1.00)"
+ },
+ {
+  "key": "c05-yang2014",
+  "ok": true,
+  "msg": "ok crossref (título 1.00)"
+ }
+]

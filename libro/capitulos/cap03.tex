@@ -1,0 +1,472 @@
+% =====================================================================
+%  Capítulo 3 · Alineamiento de secuencias
+%  (Capítulo piloto: referencia de estilo para todo el libro)
+% =====================================================================
+\chapter{Alineamiento de secuencias}\label{cap:03}
+
+\epigrafe{Nada tiene sentido en biología si no es a la luz de la evolución.}{\textcite{c03-dobzhansky1973}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Leer un \ingles{dot plot} e identificar en él identidad, repeticiones, inversiones e inserciones.
+  \item Formular el alineamiento global y local como problemas de optimización y resolverlos por programación dinámica (Needleman-Wunsch y Smith-Waterman).
+  \item Explicar de dónde salen las matrices PAM y BLOSUM como razones de verosimilitud logarítmicas, y justificar las penalizaciones afines de \ingles{gaps}.
+  \item Interpretar un resultado de BLAST: puntuación en bits, valor $E$ y los supuestos de la estadística de Karlin-Altschul.
+\end{itemize}
+\end{objetivos}
+
+Comparar es la operación más antigua de la biología. Linneo comparó flores; Darwin comparó picos de pinzones; nosotros comparamos cadenas de letras. Cuando dos secuencias se parecen más de lo que el azar permitiría, la explicación más sencilla es que comparten un ancestro, y de esa inferencia (la \emph{homología}) depende casi todo lo que haremos en el resto del libro: anotar genes, predecir funciones, reconstruir árboles, mapear lecturas o llamar variantes. Este capítulo construye, desde cero, la herramienta que hace posible esa comparación: el \emph{alineamiento}.
+
+Avanzaremos en cuatro pasos. Primero miraremos las secuencias con los ojos, mediante una matriz de puntos (\cref{sec:03-dotplot}). Luego convertiremos esa intuición visual en un algoritmo exacto, la programación dinámica (\cref{sec:03-dp}). Después nos preguntaremos cuánto debe valer cada coincidencia, cada sustitución y cada hueco, lo que nos llevará a las matrices de sustitución (\cref{sec:03-matrices}). Por último, escalaremos el problema a bases de datos con millones de secuencias y aprenderemos a distinguir un parecido significativo de uno casual con BLAST y la estadística de Karlin-Altschul (\cref{sec:03-blast}).
+
+% ---------------------------------------------------------------------
+\section{Dot plots: mirar antes de calcular}\label{sec:03-dotplot}
+% ---------------------------------------------------------------------
+\enlacerepo{3.1 · Dot plots}
+
+\begin{intuicion}[Dos manuscritos sobre la mesa]
+Imagine que recibe dos copias manuscritas de un mismo poema, copiadas por escribas distintos con siglos de diferencia. Para compararlas, podría escribir una copia a lo largo del borde superior de una hoja cuadriculada y la otra a lo largo del borde izquierdo, y marcar con un punto cada casilla donde las dos letras coinciden. Allí donde los escribas copiaron fielmente, aparecerá una línea diagonal limpia; donde uno de ellos saltó un verso, la diagonal se desplazará; donde repitió una estrofa, aparecerá una segunda diagonal paralela. Sin hacer una sola cuenta, la hoja le habrá contado la historia de las copias.
+\end{intuicion}
+
+Esa hoja cuadriculada es exactamente un \ingles{dot plot} (matriz de puntos), la representación propuesta por \textcite{c03-gibbs1970} cuando las secuencias de proteínas empezaban a acumularse y aún no existían algoritmos para compararlas. Su gran virtud es que no impone ninguna hipótesis: muestra \emph{todas} las coincidencias a la vez, y deja al ojo humano, un detector de patrones extraordinario, la tarea de interpretarlas.
+
+\subsection{Definición formal}
+
+Sean $x = x_1x_2\cdots x_n$ e $y = y_1y_2\cdots y_m$ dos secuencias sobre un alfabeto $\mathcal{A}$ (por ejemplo, $\mathcal{A}=\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$).
+
+\begin{definicion}{Dot plot con ventana}{dotplot}
+Dada una ventana de longitud impar $w$ y un umbral $t \le w$, el \ingles{dot plot} de $x$ contra $y$ es la matriz binaria $D \in \{0,1\}^{n\times m}$ con
+\begin{equation}\label{eq:03-dotplot}
+D_{ij} = \mathbb{1}\!\left[\;\sum_{k=-h}^{h} \mathbb{1}\left[x_{i+k} = y_{j+k}\right] \;\ge\; t\;\right],\qquad h=\frac{w-1}{2}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$D_{ij}$}{Celda de la fila $i$ (posición en $x$) y la columna $j$ (posición en $y$); vale 1 si se dibuja un punto.}
+\simbolo{$\mathbb{1}[\cdot]$}{Función indicadora: 1 si la condición es verdadera, 0 si no.}
+\simbolo{$w,\ h$}{Longitud de la ventana deslizante y su semiancho.}
+\simbolo{$t$}{Número mínimo de coincidencias dentro de la ventana para marcar la celda.}
+\end{simbolos}
+
+Con $w=1$ y $t=1$ recuperamos la versión más ingenua: un punto por cada par de letras idénticas. En ADN esto es casi inútil, porque con cuatro letras la probabilidad de que dos posiciones al azar coincidan es $1/4$: una cuarta parte de la matriz se llenaría de ruido. La ventana resuelve el problema. Si las bases fueran independientes y equiprobables, el número de coincidencias en una ventana seguiría una distribución binomial $\mathrm{Bin}(w, 1/4)$, y la probabilidad de un punto espurio sería
+\begin{equation}\label{eq:03-ruido}
+p_{\text{ruido}} = \sum_{k=t}^{w}\binom{w}{k}\left(\tfrac14\right)^k\left(\tfrac34\right)^{w-k}.
+\end{equation}
+Para $w=11$, $t=7$, esta probabilidad es de apenas $\num{0.0076}$: menos de un punto espurio por cada cien celdas. Esta es la idea de filtrado que \textcite{c03-maizel1981} popularizaron y que, como veremos, reaparece en el corazón de BLAST.
+
+\subsection{Cómo se lee un dot plot}
+
+La \cref{fig:03-dotplot} muestra un ejemplo construido a propósito: la secuencia $y$ es una copia de $x$ en la que un segmento central fue invertido y complementado. Aparecen los motivos que conviene aprender a reconocer:
+
+\begin{itemize}
+  \item \textbf{Diagonal principal}: regiones idénticas u homólogas en el mismo orden.
+  \item \textbf{Diagonales paralelas desplazadas}: repeticiones, pues un mismo segmento de $x$ se parece a dos lugares de $y$.
+  \item \textbf{Saltos laterales de la diagonal}: inserciones o deleciones (\ingles{indels}); la diagonal continúa, pero desplazada una fila o una columna.
+  \item \textbf{Antidiagonales}: inversiones; se detectan comparando $x$ con el \emph{reverso complementario} de $y$ (puntos naranjas).
+  \item \textbf{Bloques cuadrados}: regiones de baja complejidad (p.\,ej., \secuencia{ATATATAT}), que coinciden consigo mismas en cualquier desfase.
+\end{itemize}
+
+\begin{figure}[t]
+  \centering
+  \input{figuras/cap03/dotplot.tex}
+  \caption[Anatomía de un dot plot]{Anatomía de un \ingles{dot plot} ($w=3$, $t=3$). Las filas corresponden a $x$ y las columnas a $y$. En azul, coincidencias directas: la diagonal principal y dos diagonales paralelas producidas por un segmento repetido. En naranja, coincidencias con el reverso complementario, que revelan el segmento invertido como una antidiagonal. Figura generada con \archivo{figuras/cap03/generar.py}.}
+  \label{fig:03-dotplot}
+\end{figure}
+
+\begin{ejemplo}{Un dot plot en diez líneas}{dotplot-codigo}
+El siguiente fragmento calcula la matriz de la \cref{eq:03-dotplot} de forma vectorizada: en lugar de recorrer ventanas, se suman diagonales desplazadas de la matriz de identidad.
+\begin{codigo}[dotplot.py]
+import numpy as np
+
+def dotplot(x: str, y: str, w: int = 11, t: int = 7) -> np.ndarray:
+    """Matriz binaria D (n x m) con ventana w y umbral t."""
+    X = np.frombuffer(x.encode(), dtype=np.uint8)
+    Y = np.frombuffer(y.encode(), dtype=np.uint8)
+    eq = (X[:, None] == Y[None, :]).astype(np.int16)   # identidad letra a letra
+    h = w // 2
+    acc = np.zeros_like(eq)
+    for k in range(-h, h + 1):                          # suma a lo largo de la diagonal
+        acc += np.roll(np.roll(eq, k, axis=0), k, axis=1)
+    return acc >= t
+\end{codigo}
+Con dos genomas de \SI{30}{kb} la matriz tiene $9\times10^8$ celdas; por eso las herramientas reales, como \cmd{dotter} o \cmd{minimap2 -X}, calculan solo semillas de $k$-mers exactos en lugar de la matriz completa.
+\end{ejemplo}
+
+\begin{cuidado}[Lo que un dot plot no hace]
+Un \ingles{dot plot} no produce un alineamiento ni una puntuación. Es una herramienta de \emph{exploración}: sugiere hipótesis (``aquí hay una duplicación en tándem'') que luego deben cuantificarse. Tampoco escala: su coste en memoria es $O(nm)$.
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{Programación dinámica: Needleman-Wunsch y Smith-Waterman}\label{sec:03-dp}
+% ---------------------------------------------------------------------
+\enlacerepo{3.2 · Programación dinámica}
+
+\subsection{¿Qué es un alineamiento?}
+
+Un \emph{alineamiento} de $x$ e $y$ es una forma de escribir una secuencia encima de la otra, insertando huecos (\ingles{gaps}, representados con ``\texttt{-}'') para que las posiciones que creemos que descienden de un mismo ancestro queden en la misma columna. Cada columna es de uno de tres tipos:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Columna} & \textbf{Ejemplo} & \textbf{Interpretación evolutiva}\\
+\midrule
+Coincidencia (\ingles{match}) & $\binom{\texttt{A}}{\texttt{A}}$ & la posición se conservó\\[2pt]
+Sustitución (\ingles{mismatch}) & $\binom{\texttt{A}}{\texttt{G}}$ & hubo una mutación puntual\\[2pt]
+Hueco (\ingles{gap}) & $\binom{\texttt{A}}{\texttt{-}}$, $\binom{\texttt{-}}{\texttt{A}}$ & inserción en una rama o deleción en la otra\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Un alineamiento es, por lo tanto, una \emph{hipótesis evolutiva} escrita en forma de tabla. Y como toda hipótesis, puede ser mejor o peor. Para compararlas asignamos a cada columna una puntuación: $s(a,b)$ para un par de letras y $-d$ por cada posición con hueco. La puntuación del alineamiento es la suma de sus columnas, y el \emph{alineamiento óptimo} es el de puntuación máxima.
+
+\begin{intuicion}[El problema de contar caminos]
+¿Por qué no probar todos los alineamientos y quedarnos con el mejor? Porque son astronómicamente muchos. El número de alineamientos globales de dos secuencias de longitud $n$ crece aproximadamente como
+\[
+\binom{2n}{n} \approx \frac{2^{2n}}{\sqrt{\pi n}},
+\]
+de modo que para dos proteínas modestas de 300 residuos hay unos $10^{179}$ alineamientos, muchísimos más que átomos en el universo observable (unos $10^{80}$). Necesitamos una idea más astuta que la fuerza bruta.
+\end{intuicion}
+
+\subsection{El principio de optimalidad}
+
+La idea astuta proviene de la investigación de operaciones. \textcite{c03-bellman1954} observó que muchos problemas de decisión secuencial satisfacen un \emph{principio de optimalidad}: la mejor solución global contiene, como piezas, las mejores soluciones de subproblemas más pequeños. En el alineamiento, esto se traduce en una observación casi evidente una vez que se enuncia: la última columna de un alineamiento óptimo solo puede ser de tres tipos, y lo que queda a su izquierda debe ser, a su vez, un alineamiento óptimo de los prefijos correspondientes. Si no lo fuera, podríamos sustituirlo por uno mejor y mejorar el total, lo que contradice la optimalidad. \textcite{c03-eddy2004dp} ofrece una introducción breve y muy clara a esta forma de pensar.
+
+\subsection{Needleman-Wunsch: alineamiento global}
+
+Sea $F(i,j)$ la puntuación del mejor alineamiento entre los prefijos $x_{1..i}$ e $y_{1..j}$. \textcite{c03-needleman1970} mostraron que $F$ se puede llenar como una tabla, fila por fila, con la recurrencia
+
+\begin{teorema}{Recurrencia de Needleman-Wunsch}{nw}
+Con penalización lineal $d>0$ por posición de hueco,
+\begin{equation}\label{eq:03-nw}
+F(i,j) = \max\begin{cases}
+F(i-1,\,j-1) + s(x_i, y_j) & \text{(alinear } x_i \text{ con } y_j\text{)}\\[2pt]
+F(i-1,\,j) - d & \text{(} x_i \text{ frente a un hueco)}\\[2pt]
+F(i,\,j-1) - d & \text{(} y_j \text{ frente a un hueco)}
+\end{cases}
+\end{equation}
+con condiciones de frontera $F(0,0)=0$, $F(i,0)=-id$ y $F(0,j)=-jd$. La puntuación óptima es $F(n,m)$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$F(i,j)$}{Mejor puntuación posible alineando los primeros $i$ símbolos de $x$ con los primeros $j$ de $y$.}
+\simbolo{$s(a,b)$}{Puntuación de sustitución de la letra $a$ por la $b$ (positiva si se parecen).}
+\simbolo{$d$}{Costo de cada posición alineada contra un hueco.}
+\simbolo{$n,\ m$}{Longitudes de $x$ e $y$.}
+\end{simbolos}
+
+La tabla se llena en $O(nm)$ operaciones, ya que cada celda consulta tres vecinas. Para recuperar el alineamiento, y no solo su puntuación, se recorre la tabla en sentido inverso (\ingles{traceback}) desde $(n,m)$, preguntando en cada celda cuál de los tres casos produjo el máximo. Una diagonal equivale a una columna de pares; un paso vertical, a una letra de $x$ frente a un hueco; uno horizontal, a una letra de $y$ frente a un hueco.
+
+\begin{figure}[t]
+  \centering
+  \input{figuras/cap03/nw_matriz.tex}
+  \caption[Matriz de Needleman-Wunsch]{Matriz de programación dinámica para $x=\texttt{GATTACA}$ (filas) e $y=\texttt{GTTAGCA}$ (columnas), con $s=+1$ para coincidencias, $-1$ para sustituciones y $d=2$. Las celdas resaltadas y las flechas naranjas marcan el \ingles{traceback} desde la esquina inferior derecha. Los valores negativos aparecen en rojo.}
+  \label{fig:03-nw}
+\end{figure}
+
+\begin{ejemplo}{Leyendo la matriz de la \cref{fig:03-nw}}{nw}
+La puntuación óptima es $F(7,7)=2$. Siguiendo las flechas desde la esquina se obtiene
+\begin{center}
+\ttfamily\large
+\begin{tabular}{@{}*{8}{c}@{}}
+G & A & T & T & A & - & C & A\\
+| &   & | & | & | &   & | & |\\
+G & - & T & T & A & G & C & A
+\end{tabular}
+\end{center}
+Seis coincidencias ($+6$) y dos huecos ($-4$) dan $6-4=2$, lo que confirma el valor de la esquina. Observe el primer paso vertical tras la \texttt{G}: el algoritmo ``decidió'' que era mejor pagar un hueco que forzar una \texttt{A} contra una \texttt{T}, porque el hueco permite que el bloque \texttt{TTA} quede perfectamente alineado.
+\end{ejemplo}
+
+\begin{codigo}[needleman\_wunsch.py]
+def needleman_wunsch(x, y, match=1, mismatch=-1, gap=2):
+    n, m = len(x), len(y)
+    F = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1): F[i][0] = -i * gap        # frontera: solo huecos
+    for j in range(1, m + 1): F[0][j] = -j * gap
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            s = match if x[i - 1] == y[j - 1] else mismatch
+            F[i][j] = max(F[i - 1][j - 1] + s,          # diagonal
+                          F[i - 1][j] - gap,            # hueco en y
+                          F[i][j - 1] - gap)            # hueco en x
+    return F[n][m], F
+\end{codigo}
+
+\subsection{Smith-Waterman: alineamiento local}
+
+El alineamiento global asume que las dos secuencias son homólogas de extremo a extremo. Muchas veces no es así: dos proteínas pueden compartir un único dominio en medio de regiones sin relación, o una lectura corta de secuenciación puede provenir de un pequeño trozo de un cromosoma. En esos casos queremos el \emph{par de subcadenas} más parecido. \textcite{c03-smith1981} lo consiguieron con un cambio mínimo pero profundo: permitir que un alineamiento ``vuelva a empezar'' en cualquier celda.
+
+\begin{teorema}{Recurrencia de Smith-Waterman}{sw}
+\begin{equation}\label{eq:03-sw}
+H(i,j) = \max\begin{cases}
+0 & \text{(empezar de nuevo)}\\
+H(i-1,\,j-1) + s(x_i, y_j)\\
+H(i-1,\,j) - d\\
+H(i,\,j-1) - d
+\end{cases}
+\end{equation}
+con $H(i,0)=H(0,j)=0$. La puntuación local óptima es $\max_{i,j} H(i,j)$ y el \ingles{traceback} termina al encontrar un $0$.
+\end{teorema}
+
+El cero cumple un papel decisivo. Un prefijo que acumula puntuación negativa nunca ayuda a una extensión posterior, así que la recurrencia lo ``olvida''. Para que esto funcione, la puntuación esperada de un par aleatorio debe ser negativa, $\sum_{a,b} p_a p_b\, s(a,b) < 0$; de lo contrario, los alineamientos locales crecerían indefinidamente y se volverían, en la práctica, globales. Esta condición reaparecerá como supuesto central de la estadística de BLAST.
+
+\begin{historia}[Sellers, Waterman y la métrica evolutiva]
+Entre Needleman-Wunsch (1970) y Smith-Waterman (1981) media una década de formalización matemática. \textcite{c03-sellers1974} demostró que, bajo ciertas condiciones, la distancia de edición entre secuencias es una métrica genuina, lo que dio al alineamiento un fundamento geométrico. Temple Smith y Michael Waterman, un físico y un matemático, trabajaban en Los Álamos cuando publicaron su algoritmo en un artículo de apenas tres páginas, hoy uno de los más citados de la biología computacional.
+\end{historia}
+
+\subsection{Huecos afines y el algoritmo de Gotoh}
+
+Con una penalización lineal, un hueco de 10 posiciones cuesta lo mismo que diez huecos de 1 posición dispersos. Biológicamente esto es absurdo: un único evento de inserción o deleción suele afectar a varias bases contiguas, y abrir un hueco es mucho más raro que alargarlo. La solución estándar es la \emph{penalización afín}:
+\begin{equation}\label{eq:03-afin}
+\gamma(g) = -\left(d_o + (g-1)\,d_e\right), \qquad d_o > d_e > 0,
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$g$}{Longitud del hueco (número de posiciones consecutivas).}
+\simbolo{$d_o$}{Costo de \emph{abrir} el hueco (primer símbolo).}
+\simbolo{$d_e$}{Costo de \emph{extender} el hueco en cada posición adicional.}
+\end{simbolos}
+
+Una función afín rompe la recurrencia simple, porque el costo de una celda depende de si el hueco ya estaba abierto. \textcite{c03-gotoh1982} resolvió el problema usando tres matrices acopladas, una por cada ``estado'' en el que puede terminar un alineamiento:
+\begin{align}
+M(i,j)   &= s(x_i,y_j) + \max\{M,\; I_x,\; I_y\}(i{-}1,\,j{-}1),\label{eq:03-gotoh-m}\\
+I_x(i,j) &= \max\{M(i{-}1,j) - d_o,\;\; I_x(i{-}1,j) - d_e\},\\
+I_y(i,j) &= \max\{M(i,j{-}1) - d_o,\;\; I_y(i,j{-}1) - d_e\}.
+\end{align}
+El coste sigue siendo $O(nm)$ en tiempo. Esta arquitectura de tres estados no es un truco aislado: es exactamente un \emph{modelo oculto de Márkov de pares}, como mostraron \textcite{c03-durbin1998}, y la retomaremos en el \cref{cap:04} al estudiar perfiles y HMMER.
+
+\begin{profundizacion}[Memoria lineal: el truco de Hirschberg]
+Para alinear dos cromosomas bacterianos de \SI{5}{Mb}, una matriz $n\times m$ necesitaría $2{,}5\times10^{13}$ celdas. \textcite{c03-hirschberg1975} mostró que el alineamiento óptimo puede recuperarse en espacio $O(n+m)$: se calcula la fila central de la matriz hacia adelante y hacia atrás, se localiza la celda por la que pasa el camino óptimo y se resuelven recursivamente las dos mitades. El tiempo apenas se duplica, pero la memoria se reduce en órdenes de magnitud.
+\end{profundizacion}
+
+% ---------------------------------------------------------------------
+\section{Matrices de sustitución y penalización de gaps}\label{sec:03-matrices}
+% ---------------------------------------------------------------------
+\enlacerepo{3.3 · Matrices de sustitución}
+
+Hasta ahora hemos usado puntuaciones arbitrarias: $+1$ para coincidencias, $-1$ para sustituciones. En ADN esa simplificación es tolerable; en proteínas, no. Cambiar una leucina por una isoleucina (ambas hidrofóbicas, casi del mismo tamaño) apenas altera una proteína, mientras que cambiar un triptófano por una glicina puede destruir su plegamiento. Necesitamos puntuaciones que reflejen la química y la evolución.
+
+\subsection{Puntuaciones como razones de verosimilitud}
+
+La pregunta correcta es estadística. Frente a un par alineado $(a,b)$, comparamos dos hipótesis:
+\begin{itemize}
+  \item $\mathcal{H}_1$ (\emph{homología}): $a$ y $b$ descienden de un ancestro común y aparecen juntos con probabilidad $q_{ab}$, estimada a partir de alineamientos confiables.
+  \item $\mathcal{H}_0$ (\emph{azar}): $a$ y $b$ se eligieron de forma independiente, con probabilidad $p_a p_b$ según sus frecuencias de fondo.
+\end{itemize}
+La puntuación natural es el logaritmo de la razón de verosimilitudes:
+\begin{equation}\label{eq:03-logodds}
+s(a,b) = \frac{1}{\lambda}\,\log\frac{q_{ab}}{p_a\,p_b}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$q_{ab}$}{Frecuencia con que $a$ y $b$ aparecen alineados en secuencias homólogas.}
+\simbolo{$p_a,\ p_b$}{Frecuencias de fondo de cada aminoácido en las proteínas.}
+\simbolo{$\lambda$}{Factor de escala; con $\lambda=\ln 2/2$ las puntuaciones quedan en medios bits.}
+\end{simbolos}
+
+Esta forma tiene una consecuencia elegante: como el logaritmo convierte productos en sumas, sumar las puntuaciones de las columnas equivale a multiplicar probabilidades, siempre que las columnas se consideren independientes. La puntuación de un alineamiento completo es, por lo tanto, el logaritmo de la razón de verosimilitudes de la hipótesis de homología frente a la de azar. \textcite{c03-altschul1991} demostró además que \emph{cualquier} matriz de puntuación con esperanza negativa y al menos un valor positivo es implícitamente una matriz de este tipo, para algún conjunto de frecuencias $q_{ab}$ ``objetivo''.
+
+\subsection{PAM: extrapolar la evolución}
+
+Margaret Dayhoff y sus colaboradores construyeron las primeras matrices a partir de 71 familias de proteínas muy similares, con al menos 85\,\% de identidad \parencite{c03-dayhoff1978}. Contaron las sustituciones observadas en árboles filogenéticos y las normalizaron para obtener una matriz de transición $P^{(1)}$ que representa \emph{1 PAM}: la divergencia en la que, en promedio, ha cambiado un 1\,\% de los aminoácidos (\ingles{point accepted mutation}). Suponiendo que la evolución es un proceso de Márkov, la matriz para distancias mayores se obtiene elevando a potencias:
+\begin{equation}\label{eq:03-pam}
+P^{(k)} = \left(P^{(1)}\right)^{k}, \qquad s_k(a,b) = \frac{1}{\lambda}\log\frac{p_a\,P^{(k)}_{ab}}{p_a\,p_b} = \frac{1}{\lambda}\log\frac{P^{(k)}_{ab}}{p_b}.
+\end{equation}
+La PAM250, muy usada en su época, corresponde a una distancia en la que sobreviven solo alrededor del 20\,\% de las identidades. El punto débil del método es precisamente la extrapolación: los errores de estimación de $P^{(1)}$ se amplifican al elevarla a la potencia 250.
+
+\subsection{BLOSUM: observar directamente}
+
+\textcite{c03-henikoff1992} tomaron el camino opuesto. En lugar de extrapolar desde secuencias cercanas, usaron la base de datos BLOCKS: unos 2000 segmentos conservados, sin huecos, de más de 500 familias de proteínas. Para construir la BLOSUM$L$ agruparon las secuencias de cada bloque con más de $L\,\%$ de identidad, con el fin de que las familias muy representadas no dominaran los conteos, y estimaron $q_{ab}$ directamente de los pares observados. Así, la BLOSUM62 se basa en secuencias con a lo sumo 62\,\% de identidad, y la BLOSUM45 en otras aún más divergentes.
+
+\begin{figure}[t]
+  \centering
+  \input{figuras/cap03/blosum62.tex}
+  \caption[La matriz BLOSUM62]{La matriz BLOSUM62, en medios bits, con los aminoácidos ordenados por propiedades fisicoquímicas. Los bloques recuadrados en la diagonal muestran que las sustituciones \emph{dentro} de un grupo (p.\,ej., I$\leftrightarrow$L$\leftrightarrow$V) reciben puntuaciones positivas o cercanas a cero, mientras que las sustituciones entre grupos son penalizadas. El valor de W–W ($+11$) refleja que el triptófano es raro y muy conservado. Valores tomados de Biopython \parencite{c03-cock2009}.}
+  \label{fig:03-blosum}
+\end{figure}
+
+\begin{ideaclave}
+Número alto en PAM $\Rightarrow$ secuencias más divergentes.\\
+Número alto en BLOSUM $\Rightarrow$ secuencias más cercanas.
+\end{ideaclave}
+
+\begin{historia}[Un error afortunado]
+Una década y media después de su publicación, \textcite{c03-styczynski2008} descubrieron que el programa original que generó las BLOSUM contenía un error en el agrupamiento de secuencias. Paradójicamente, la matriz ``incorrecta'' encuentra homólogos remotos \emph{mejor} que la versión corregida, y por eso la BLOSUM62 original sigue siendo la matriz por defecto de BLAST. \textcite{c03-eddy2004blosum} explica, en dos páginas, cómo reconstruirla desde los datos.
+\end{historia}
+
+\subsection{Elegir la matriz y los huecos}
+
+No existe una matriz universalmente óptima. Cada una está calibrada para un nivel de divergencia: una matriz ``profunda'' (BLOSUM45, PAM250) detecta homólogos lejanos pero puntúa en exceso los parecidos casuales en alineamientos cortos, mientras que una matriz ``superficial'' (BLOSUM80, PAM30) hace lo contrario. En la práctica, BLOSUM62 con apertura $d_o=11$ y extensión $d_e=1$ es el punto de partida de \cmd{blastp}; para péptidos cortos se recomienda PAM30 \parencite{c03-pearson2013}.
+
+\begin{cuidado}[Parámetros que no se pueden mezclar]
+Las penalizaciones de hueco no son independientes de la matriz: ambas deben estar en la misma escala y, para búsquedas en bases de datos, calibradas conjuntamente, porque de ellas dependen los parámetros $\lambda$ y $K$ de la sección siguiente. Cambiar $d_o$ sin recalibrar invalida los valores $E$.
+\end{cuidado}
+
+% ---------------------------------------------------------------------
+\section{BLAST y la estadística de Karlin-Altschul}\label{sec:03-blast}
+% ---------------------------------------------------------------------
+\enlacerepo{3.4 · BLAST y valores $E$}
+
+\subsection{El problema de escala}
+
+Smith-Waterman es exacto, pero comparar una proteína de 300 residuos contra UniProt (unos $10^{11}$ residuos) requeriría $3\times10^{13}$ celdas por consulta. A finales de los ochenta, FASTA \parencite{c03-pearson1988} mostró que se podía ganar velocidad buscando primero palabras cortas idénticas. BLAST \parencite{c03-altschul1990} llevó esa idea más lejos con una estrategia de tres pasos, conocida como \ingles{seed-and-extend}:
+
+\begin{enumerate}
+  \item \textbf{Siembra}. Se divide la consulta en palabras de longitud $w$ (3 para proteínas, 11 o más para ADN) y, para cada una, se genera la \emph{vecindad} de palabras que puntúan al menos $T$ contra ella con la matriz de sustitución.
+  \item \textbf{Búsqueda}. Un índice precalculado de la base de datos localiza en tiempo casi constante todas las apariciones de esas palabras (\ingles{hits}).
+  \item \textbf{Extensión}. Cada \ingles{hit} se extiende en ambas direcciones y se detiene cuando la puntuación cae más de $X$ unidades por debajo del máximo alcanzado (\ingles{X-drop}). Los segmentos resultantes son los \ingles{high-scoring segment pairs} (HSP).
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\small]
+  % consulta
+  \node[anchor=east,etiqueta] at (-0.2,1.6) {consulta};
+  \node[anchor=east,etiqueta] at (-0.2,0) {sujeto};
+  \foreach \i/\b in {0/M,1/K,2/V,3/L,4/A,5/W,6/E,7/R,8/L,9/G,10/D,11/K}{
+    \node[draw=rejilla,fill=papel!50,minimum size=5.5mm,inner sep=0pt,font=\ttfamily\small] (q\i) at (\i*0.62,1.6) {\b};}
+  \foreach \i/\b in {0/Q,1/R,2/I,3/L,4/A,5/W,6/E,7/K,8/L,9/S,10/N,11/P}{
+    \node[draw=rejilla,fill=papel!50,minimum size=5.5mm,inner sep=0pt,font=\ttfamily\small] (s\i) at (\i*0.62,0) {\b};}
+  % semilla
+  \begin{scope}[on background layer]
+  \fill[amarillo!45,rounded corners=2pt] ($(q4.north west)+(-0.05,0.08)$) rectangle ($(q6.south east)+(0.05,-0.08)$);
+  \fill[amarillo!45,rounded corners=2pt] ($(s4.north west)+(-0.05,0.08)$) rectangle ($(s6.south east)+(0.05,-0.08)$);
+  \fill[azul!15,rounded corners=2pt] ($(q2.north west)+(-0.08,0.14)$) rectangle ($(q8.south east)+(0.08,-0.14)$);
+  \fill[azul!15,rounded corners=2pt] ($(s2.north west)+(-0.08,0.14)$) rectangle ($(s8.south east)+(0.08,-0.14)$);
+  \end{scope}
+  \foreach \i in {4,5,6}{\draw[thick,amarillo!70!black] (q\i.south) -- (s\i.north);}
+  \foreach \i in {2,3,7,8}{\draw[thick,azul,dashed] (q\i.south) -- (s\i.north);}
+  \node[etiqueta,text=amarillo!40!black] at (3.1,2.4) {1. semilla \texttt{AWE} (puntuación $\ge T$)};
+  \draw[flecha=azul] (1.4,-0.6) -- node[below,etiqueta,text=azul]{2. extensión} (0.9,-0.6);
+  \draw[flecha=azul] (4.9,-0.6) -- node[below,etiqueta,text=azul]{extensión} (5.5,-0.6);
+  % perfil X-drop
+  \begin{scope}[shift={(8.2,-0.4)}]
+  \begin{axis}[curso, width=5.2cm, height=3.6cm, xlabel={posición}, ylabel={puntuación},
+     xtick=\empty, ytick=\empty, grid=none, ymin=0, ymax=30, xmin=0, xmax=12]
+    \addplot[azul, very thick, mark=*, mark size=1.2pt] coordinates
+      {(0,0)(1,5)(2,11)(3,19)(4,23)(5,20)(6,24)(7,26)(8,21)(9,17)(10,14)(11,12)};
+    \addplot[naranja, dashed, thick] coordinates {(7,26)(12,26)};
+    \addplot[rojo, dashed, thick] coordinates {(7,16)(12,16)};
+    \draw[{Stealth}-{Stealth},tinta2] (axis cs:11.3,26) -- node[right,etiqueta]{$X$} (axis cs:11.3,16);
+    \node[etiqueta,anchor=south] at (axis cs:7,26) {máx.};
+  \end{axis}
+  \end{scope}
+\end{tikzpicture}
+\caption[Siembra y extensión en BLAST]{La estrategia \ingles{seed-and-extend}. \textbf{Izquierda}: una palabra de la consulta (\texttt{AWE}) encuentra una semilla en el sujeto; la extensión sin huecos añade pares vecinos mientras la puntuación acumulada lo justifique. \textbf{Derecha}: perfil de puntuación durante la extensión; se abandona cuando la puntuación cae $X$ unidades por debajo del máximo, y el HSP se recorta en ese máximo.}
+\label{fig:03-blast}
+\end{figure}
+
+La versión de 1997 \parencite{c03-altschul1997} añadió dos mejoras decisivas: la heurística de ``dos \ingles{hits}'', que exige dos semillas cercanas en la misma diagonal antes de extender y reduce el trabajo a la mitad, y la extensión \emph{con} huecos mediante programación dinámica restringida a una banda. La implementación moderna, BLAST+ \parencite{c03-camacho2009}, reorganizó el código en C++ y es la que usaremos en el laboratorio.
+
+\subsection{¿Cuándo un parecido es significativo?}
+
+Toda búsqueda produce un mejor resultado, incluso si la consulta es una secuencia aleatoria. La pregunta crucial es: \emph{¿qué puntuación esperaríamos por puro azar?} La respuesta, obtenida por \textcite{c03-karlin1990}, es uno de los resultados más bellos de la bioinformática.
+
+Consideremos la puntuación máxima $S$ de un alineamiento local \emph{sin huecos} entre dos secuencias aleatorias de longitudes $m$ y $n$. La suma de puntuaciones a lo largo de una diagonal es un paseo aleatorio con deriva negativa (porque $\E[s]<0$). Los segmentos de alta puntuación son \emph{excursiones} excepcionales de ese paseo, y la teoría de valores extremos predice que su máximo sigue una distribución de Gumbel.
+
+\begin{teorema}{Karlin-Altschul}{ka}
+Si $\sum_{a,b}p_a p_b\,s(a,b) < 0$ y existe al menos un par con $s(a,b)>0$, el número esperado de HSP distintos con puntuación $\ge S$ es, asintóticamente,
+\begin{equation}\label{eq:03-evalue}
+E = K\,m\,n\,e^{-\lambda S},
+\end{equation}
+donde $\lambda>0$ es la única raíz positiva de
+\begin{equation}\label{eq:03-lambda}
+\sum_{a,b} p_a\,p_b\,e^{\lambda\,s(a,b)} = 1.
+\end{equation}
+El número de HSP con puntuación $\ge S$ sigue una distribución de Poisson de media $E$, de modo que $\Prob(\text{al menos uno}) = 1-e^{-E}$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$E$}{Valor $E$ (\ingles{expect value}): cuántos resultados tan buenos esperaríamos \emph{por azar} en esta búsqueda.}
+\simbolo{$m,\ n$}{Longitud de la consulta y tamaño total de la base de datos, en residuos.}
+\simbolo{$S$}{Puntuación bruta del alineamiento, en las unidades de la matriz.}
+\simbolo{$\lambda$}{Escala natural de la matriz; convierte puntuaciones en unidades de información.}
+\simbolo{$K$}{Constante que corrige por la dependencia entre HSP solapados (típicamente $\approx 0{,}1$).}
+\end{simbolos}
+
+La \cref{eq:03-lambda} merece una pausa. Si comparamos con la \cref{eq:03-logodds}, vemos que $e^{\lambda s(a,b)} = q_{ab}/(p_ap_b)$, de modo que la condición dice simplemente que las frecuencias objetivo $q_{ab}$ suman 1. El mismo $\lambda$ que define la matriz como razón de verosimilitudes gobierna la estadística de sus máximos. Teoría de la información y teoría de valores extremos se encuentran en una sola ecuación.
+
+\subsection{Puntuación en bits}
+
+Como $\lambda$ y $K$ dependen de la matriz, las puntuaciones brutas no son comparables entre búsquedas. BLAST las normaliza a \emph{bits}:
+\begin{equation}\label{eq:03-bits}
+S' = \frac{\lambda S - \ln K}{\ln 2}, \qquad\text{de modo que}\qquad E = m\,n\,2^{-S'}.
+\end{equation}
+Esta forma es muy práctica: cada bit adicional de puntuación reduce a la mitad el número esperado de falsos positivos, y para saber si un resultado es significativo basta comparar $S'$ con $\log_2(mn)$, que es el número de bits necesarios para ``destacar'' en un espacio de búsqueda de tamaño $mn$.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.84\linewidth, height=5.6cm,
+   xlabel={puntuación en bits $S'$}, ylabel={valor $E$ (escala log)},
+   ymode=log, xmin=20, xmax=80, ymin=1e-12, ymax=1e3,
+   ytick={1e-12,1e-9,1e-6,1e-3,1,1e3},
+   legend pos=south west]
+  \addplot[azul, domain=20:80, samples=60] {3e2*1e8*2^(-x)};
+  \addlegendentry{$mn=3\times10^{10}$ (consulta de 300 aa contra \num{1e8} aa)}
+  \addplot[naranja, domain=20:80, samples=60] {3e2*1e11*2^(-x)};
+  \addlegendentry{$mn=3\times10^{13}$ (contra \num{1e11} aa)}
+  \addplot[rojo, dashed, thick, domain=20:80] {1e-3};
+  \node[etiqueta, anchor=south west, text=rojooscuro] at (axis cs:21,1.5e-3) {umbral usual $E=10^{-3}$};
+\end{axis}
+\end{tikzpicture}
+\caption[Valor $E$ frente a puntuación en bits]{El valor $E$ decrece exponencialmente con la puntuación en bits (\cref{eq:03-bits}). La misma puntuación que es muy significativa contra una base de datos pequeña (azul) puede no serlo contra una mil veces mayor (naranja): el tamaño del espacio de búsqueda forma parte de la evidencia.}
+\label{fig:03-evalue}
+\end{figure}
+
+\begin{ejemplo}{Interpretar un resultado real}{blast}
+Una búsqueda \cmd{blastp} de una proteína de 350 aminoácidos contra una base de datos de $2\times10^{11}$ residuos devuelve un resultado con puntuación de 85 bits. El valor esperado es
+\[
+E = 350\times 2\times10^{11}\times 2^{-85} \approx 7\times10^{13}\times 2{,}6\times10^{-26} \approx 1{,}8\times10^{-12}.
+\]
+Esperaríamos encontrar por azar un resultado así una vez en cada medio billón de búsquedas: la homología es muy probable. En cambio, un resultado de 40 bits en la misma búsqueda tendría $E\approx 64$: decenas de resultados tan buenos aparecerían por azar, así que no debe interpretarse como evidencia de homología.
+\end{ejemplo}
+
+\begin{codigo}[blast\_local.py]
+import subprocess
+from Bio import Blast                                       # Biopython >= 1.83
+
+subprocess.run(["blastp", "-query", "consulta.fasta", "-db", "swissprot",
+                "-evalue", "1e-3", "-matrix", "BLOSUM62",
+                "-gapopen", "11", "-gapextend", "1",
+                "-outfmt", "5", "-out", "resultado.xml"], check=True)
+with open("resultado.xml", "rb") as fh:
+    for hit in Blast.read(fh):                              # un Hit por secuencia sujeto
+        hsp = hit[0]                                        # mejor HSP
+        print(f"{hit.target.description[:40]:40s} "
+              f"{hsp.annotations['bit score']:6.1f} bits  "
+              f"E={hsp.annotations['evalue']:.1e}")
+\end{codigo}
+
+\subsection{Los supuestos, y cuándo fallan}
+
+La elegancia de la \cref{eq:03-evalue} no debe ocultar sus supuestos. La teoría es exacta solo para alineamientos \emph{sin huecos} entre secuencias \emph{largas} de composición \emph{aleatoria e independiente}. Para alineamientos con huecos no existe una fórmula cerrada: $\lambda$ y $K$ se estiman por simulación para cada combinación de matriz y penalizaciones, y las secuencias cortas requieren una corrección de ``longitud efectiva'' \parencite{c03-karlin1990b,c03-altschul1997}. Además, las regiones de baja complejidad y los sesgos de composición violan la independencia; por eso BLAST enmascara esas regiones (con SEG o DUST) y aplica ajustes de composición a la matriz.
+
+\begin{cuidado}[Tres errores frecuentes al leer un valor $E$]
+\begin{enumerate}
+  \item \emph{Tratarlo como una probabilidad.} $E$ es un número esperado y puede ser mayor que 1. Solo cuando $E<0{,}01$ se cumple que $E\approx p$.
+  \item \emph{Compararlo entre bases de datos.} Crece linealmente con $n$: la misma búsqueda contra una base de datos diez veces mayor produce un $E$ diez veces mayor.
+  \item \emph{Confundir significancia con homología global.} Un $E$ minúsculo indica que \emph{algún segmento} es homólogo; puede tratarse de un único dominio compartido entre proteínas por lo demás distintas.
+\end{enumerate}
+\end{cuidado}
+
+\begin{resumen}
+\begin{itemize}
+  \item Un \ingles{dot plot} muestra todas las similitudes entre dos secuencias; las ventanas con umbral filtran el ruido y permiten ver identidades, repeticiones, inversiones e \ingles{indels}.
+  \item El principio de optimalidad de Bellman reduce la búsqueda del mejor alineamiento, entre $\sim\!10^{179}$ posibles, a llenar una tabla en $O(nm)$. Needleman-Wunsch alinea globalmente; Smith-Waterman, localmente, gracias al cero de la recurrencia.
+  \item Los huecos afines modelan \ingles{indels} de varias bases y requieren tres matrices (Gotoh), equivalentes a un HMM de pares.
+  \item Las matrices PAM y BLOSUM son razones de verosimilitud logarítmicas: PAM extrapola desde secuencias cercanas; BLOSUM observa directamente bloques divergentes.
+  \item BLAST acelera la búsqueda con semillas y extensiones; su valor $E=Kmn\,e^{-\lambda S}$ cuantifica cuántos resultados así esperaríamos por azar, y la puntuación en bits lo hace comparable entre búsquedas.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Dibuje a mano el \ingles{dot plot} ($w=1$) de \secuencia{ACGTACGT} contra sí misma. ¿Cuántas diagonales aparecen y qué representa cada una?
+\ej{1} Usando la \cref{eq:03-ruido}, calcule la probabilidad de un punto espurio con $w=15$, $t=10$ para ADN y para proteínas (suponga 20 aminoácidos equiprobables). ¿Por qué los \ingles{dot plots} de proteínas pueden usar ventanas más cortas?
+\ej{2} Complete a mano la matriz de Needleman-Wunsch para \texttt{GAATTC} contra \texttt{GATTA} con $+2/-1$ y $d=2$. Encuentre \emph{todos} los alineamientos óptimos. ¿Por qué puede haber más de uno?
+\ej{2} Modifique la función \py{needleman_wunsch} para implementar Smith-Waterman, devolviendo la puntuación máxima y la posición donde se alcanza.
+\ej{2} Demuestre que, si $\E[s]>0$, la puntuación de Smith-Waterman entre dos secuencias aleatorias crece linealmente con su longitud. ¿Qué implica esto para el uso de matrices de puntuación de identidad pura ($+1/0$)?
+\ej{3} Para ADN con $s=+1$ (coincidencia) y $s=-1$ (sustitución), y bases equiprobables, resuelva la \cref{eq:03-lambda} para $\lambda$. Compruebe su resultado numéricamente con \py{scipy.optimize.brentq}.
+\ej{3} Simule \num{10000} pares de secuencias aleatorias de 200 aminoácidos, calcule la puntuación local máxima sin huecos con BLOSUM62 y ajuste una distribución de Gumbel. Compare el $\lambda$ estimado con el teórico (0,318 en unidades naturales).
+\end{ejercicios}
+
+\referenciascapitulo

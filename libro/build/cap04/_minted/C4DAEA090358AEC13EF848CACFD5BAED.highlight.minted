@@ -1,0 +1,9 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} 1. HMM a partir de un MSA (Stockholm o FASTA alineado)}
+hmmbuild\PYG{+w}{ }globinas.hmm\PYG{+w}{ }globinas.sto
+\PYG{c+c1}{\PYGZsh{} 2. Buscar el perfil en una base de datos de proteínas}
+hmmsearch\PYG{+w}{ }\PYGZhy{}\PYGZhy{}tblout\PYG{+w}{ }aciertos.tbl\PYG{+w}{ }\PYGZhy{}E\PYG{+w}{ }1e\PYGZhy{}5\PYG{+w}{ }globinas.hmm\PYG{+w}{ }uniprot\PYGZus{}sprot.fasta
+\PYG{c+c1}{\PYGZsh{} 3. Anotar dominios de una proteína contra todo Pfam}
+hmmpress\PYG{+w}{ }Pfam\PYGZhy{}A.hmm\PYG{+w}{                       }\PYG{c+c1}{\PYGZsh{} indexa la base (una vez)}
+hmmscan\PYG{+w}{ }\PYGZhy{}\PYGZhy{}domtblout\PYG{+w}{ }dominios.tbl\PYG{+w}{ }Pfam\PYGZhy{}A.hmm\PYG{+w}{ }consulta.fasta
+\end{MintedVerbatim}

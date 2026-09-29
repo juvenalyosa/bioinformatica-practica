@@ -1,0 +1,6 @@
+# calcular y guardar las huellas de los datos crudos
+sha256sum datos/*.fastq.gz > datos/SHA256SUMS
+# meses después, u otra persona: ¿son los mismos archivos?
+sha256sum -c datos/SHA256SUMS
+# lecturas_R1.fastq.gz: OK
+# lecturas_R2.fastq.gz: FAILED     <- el archivo cambió

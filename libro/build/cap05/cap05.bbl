@@ -1,0 +1,2215 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{1}
+  \datalist[entry]{apa/apasortcite//global/global/global}
+    \entry{c05-akaike1974}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9482d81bf0654208860e574639f7bf0}{%
+           family={Akaike},
+           familyi={A\bibinitperiod},
+           given={Hirotugu},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{fullhash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{fullhashraw}{a9482d81bf0654208860e574639f7bf0}
+      \strng{bibnamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorbibnamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authornamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorfullhash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorfullhashraw}{a9482d81bf0654208860e574639f7bf0}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Automatic Control}
+      \field{number}{6}
+      \field{title}{A new look at the statistical model identification}
+      \field{volume}{19}
+      \field{year}{1974}
+      \field{dateera}{ce}
+      \field{pages}{716\bibrangedash 723}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/TAC.1974.1100705
+      \endverb
+    \endentry
+    \entry{c05-buneman1974}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=0e2b444d9d3a80f70ca5eb50e7596a60}{%
+           family={Buneman},
+           familyi={B\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{fullhash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{fullhashraw}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{bibnamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorbibnamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authornamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorfullhash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorfullhashraw}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+      \field{number}{1}
+      \field{title}{A note on the metric properties of trees}
+      \field{volume}{17}
+      \field{year}{1974}
+      \field{dateera}{ce}
+      \field{pages}{48\bibrangedash 50}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1016/0095-8956(74)90047-1
+      \endverb
+    \endentry
+    \entry{c05-darwin2009}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=d0e4f38206db228a7b870a49f6f52db2}{%
+           family={Darwin},
+           familyi={D\bibinitperiod},
+           given={Charles},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{fullhash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{fullhashraw}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{bibnamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorbibnamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authornamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorfullhash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorfullhashraw}{d0e4f38206db228a7b870a49f6f52db2}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{origyear}{1859}
+      \field{title}{The Origin of Species}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{origdateera}{ce}
+      \verb{doi}
+      \verb 10.1017/CBO9780511694295
+      \endverb
+    \endentry
+    \entry{c05-efron1979}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=5470455fc7dceb3ccf6db38cb22a113d}{%
+           family={Efron},
+           familyi={E\bibinitperiod},
+           given={Bradley},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{fullhash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{fullhashraw}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{bibnamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorbibnamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authornamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorfullhash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorfullhashraw}{5470455fc7dceb3ccf6db38cb22a113d}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{1}
+      \field{title}{Bootstrap methods: Another look at the jackknife}
+      \field{volume}{7}
+      \field{year}{1979}
+      \field{dateera}{ce}
+      \field{pages}{1\bibrangedash 26}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.1214/aos/1176344552
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1978}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{1}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Zoology}
+      \field{number}{4}
+      \field{title}{Cases in which parsimony or compatibility methods will be positively misleading}
+      \field{volume}{27}
+      \field{year}{1978}
+      \field{dateera}{ce}
+      \field{pages}{401\bibrangedash 410}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.2307/2412923
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1981}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{2}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{6}
+      \field{title}{Evolutionary trees from {DNA} sequences: A maximum likelihood approach}
+      \field{volume}{17}
+      \field{year}{1981}
+      \field{dateera}{ce}
+      \field{pages}{368\bibrangedash 376}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/BF01734359
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1985}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{3}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Evolution}
+      \field{number}{4}
+      \field{title}{Confidence limits on phylogenies: An approach using the bootstrap}
+      \field{volume}{39}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{783\bibrangedash 791}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1111/j.1558-5646.1985.tb00420.x
+      \endverb
+    \endentry
+    \entry{c05-felsenstein2004}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Sunderland, MA}%
+      }
+      \list{publisher}{1}{%
+        {Sinauer Associates}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{4}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9780878931774}
+      \field{title}{Inferring Phylogenies}
+      \field{year}{2004}
+      \field{dateera}{ce}
+    \endentry
+    \entry{c05-fitch1971}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=461de48442afec6574b574456724ba50}{%
+           family={Fitch},
+           familyi={F\bibinitperiod},
+           given={Walter\bibnamedelima M.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{461de48442afec6574b574456724ba50}
+      \strng{fullhash}{461de48442afec6574b574456724ba50}
+      \strng{fullhashraw}{461de48442afec6574b574456724ba50}
+      \strng{bibnamehash}{461de48442afec6574b574456724ba50}
+      \strng{authorbibnamehash}{461de48442afec6574b574456724ba50}
+      \strng{authornamehash}{461de48442afec6574b574456724ba50}
+      \strng{authorfullhash}{461de48442afec6574b574456724ba50}
+      \strng{authorfullhashraw}{461de48442afec6574b574456724ba50}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Zoology}
+      \field{number}{4}
+      \field{title}{Toward defining the course of evolution: Minimum change for a specific tree topology}
+      \field{volume}{20}
+      \field{year}{1971}
+      \field{dateera}{ce}
+      \field{pages}{406\bibrangedash 416}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.2307/2412116
+      \endverb
+    \endentry
+    \entry{c05-gascuel2006}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9ac0403b5ef77ed84fcc4065eb407340}{%
+           family={Gascuel},
+           familyi={G\bibinitperiod},
+           given={Olivier},
+           giveni={O\bibinitperiod}}}%
+        {{hash=5d30f1613015984b38a2f60dfac80640}{%
+           family={Steel},
+           familyi={S\bibinitperiod},
+           given={Mike},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{bab096e894b22c926093e7689451caff}
+      \strng{fullhash}{bab096e894b22c926093e7689451caff}
+      \strng{fullhashraw}{bab096e894b22c926093e7689451caff}
+      \strng{bibnamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authorbibnamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authornamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authorfullhash}{bab096e894b22c926093e7689451caff}
+      \strng{authorfullhashraw}{bab096e894b22c926093e7689451caff}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{11}
+      \field{title}{Neighbor-joining revealed}
+      \field{volume}{23}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{pages}{1997\bibrangedash 2000}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1093/molbev/msl072
+      \endverb
+    \endentry
+    \entry{c05-guindon2003}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=b341c4dd667418875350f62cbc33502a}{%
+           family={Guindon},
+           familyi={G\bibinitperiod},
+           given={Stéphane},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9ac0403b5ef77ed84fcc4065eb407340}{%
+           family={Gascuel},
+           familyi={G\bibinitperiod},
+           given={Olivier},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{fullhash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{fullhashraw}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{bibnamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorbibnamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authornamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorfullhash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorfullhashraw}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Biology}
+      \field{number}{5}
+      \field{title}{A simple, fast, and accurate algorithm to estimate large phylogenies by maximum likelihood}
+      \field{volume}{52}
+      \field{year}{2003}
+      \field{dateera}{ce}
+      \field{pages}{696\bibrangedash 704}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1080/10635150390235520
+      \endverb
+    \endentry
+    \entry{c05-hasegawa1985}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=fe249cc56acd2394743f2831ce044f75}{%
+           family={Hasegawa},
+           familyi={H\bibinitperiod},
+           given={Masami},
+           giveni={M\bibinitperiod}}}%
+        {{hash=8f3a73736f6840278c66080db6435bb2}{%
+           family={Kishino},
+           familyi={K\bibinitperiod},
+           given={Hirohisa},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d8103850d14cf27c9a696623a6f7c54f}{%
+           family={Yano},
+           familyi={Y\bibinitperiod},
+           given={Taka-aki},
+           giveni={T\bibinithyphendelim a\bibinitperiod}}}%
+      }
+      \strng{namehash}{b01c79cf2c7cff438433d06f4a5b9fb5}
+      \strng{fullhash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{fullhashraw}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{bibnamehash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authorbibnamehash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authornamehash}{b01c79cf2c7cff438433d06f4a5b9fb5}
+      \strng{authorfullhash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authorfullhashraw}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{2}
+      \field{title}{Dating of the human-ape splitting by a molecular clock of mitochondrial {DNA}}
+      \field{volume}{22}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{160\bibrangedash 174}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1007/BF02101694
+      \endverb
+    \endentry
+    \entry{c05-hoang2018}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=5dfd1b11f4e5bbf1d7d017e3dee8b92b}{%
+           family={Hoang},
+           familyi={H\bibinitperiod},
+           given={Diep\bibnamedelima Thi},
+           giveni={D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=96a9e94192bd6a7073eab795de9592e4}{%
+           family={Chernomor},
+           familyi={C\bibinitperiod},
+           given={Olga},
+           giveni={O\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=38e3355bbc5026efd69773937f86df19}{%
+           family={Vinh},
+           familyi={V\bibinitperiod},
+           given={Le\bibnamedelima Sy},
+           giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9bb092874df624d6becf84135c99ee35}
+      \strng{fullhash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{fullhashraw}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{bibnamehash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authorbibnamehash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authornamehash}{9bb092874df624d6becf84135c99ee35}
+      \strng{authorfullhash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authorfullhashraw}{cdf454c2c549a096c9bb7be53fb03018}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{2}
+      \field{title}{UFBoot2: Improving the ultrafast bootstrap approximation}
+      \field{volume}{35}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{pages}{518\bibrangedash 522}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1093/molbev/msx281
+      \endverb
+    \endentry
+    \entry{c05-jukes1969}{inbook}{}{}
+      \name{author}{2}{}{%
+        {{hash=3156cf5964b66800828c84e8c365eded}{%
+           family={Jukes},
+           familyi={J\bibinitperiod},
+           given={Thomas\bibnamedelima H.},
+           giveni={T\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=3fe8b7976a57b36d11f1cbc47458010f}{%
+           family={Cantor},
+           familyi={C\bibinitperiod},
+           given={Charles\bibnamedelima R.},
+           giveni={C\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=1923ea842a830db06147c41fcf4f352b}{%
+           family={Munro},
+           familyi={M\bibinitperiod},
+           given={Hamish\bibnamedelima N.},
+           giveni={H\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{fullhash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{fullhashraw}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{bibnamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorbibnamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authornamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorfullhash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorfullhashraw}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{editorbibnamehash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editornamehash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editorfullhash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editorfullhashraw}{1923ea842a830db06147c41fcf4f352b}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Mammalian Protein Metabolism}
+      \field{title}{Evolution of protein molecules}
+      \field{year}{1969}
+      \field{dateera}{ce}
+      \field{pages}{21\bibrangedash 132}
+      \range{pages}{112}
+      \verb{doi}
+      \verb 10.1016/B978-1-4832-3211-9.50009-7
+      \endverb
+    \endentry
+    \entry{c05-kalyaanamoorthy2017}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=272ab0983912427445ebe8a9fd17fb04}{%
+           family={Kalyaanamoorthy},
+           familyi={K\bibinitperiod},
+           given={Subha},
+           giveni={S\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=d83f794dda9a0765b44cfc6884a57183}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Thomas\bibnamedelimb K.\bibnamedelimi F.},
+           giveni={T\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=a9d0165df2c181bd4298178f65269a78}{%
+           family={Jermiin},
+           familyi={J\bibinitperiod},
+           given={Lars\bibnamedelima S.},
+           giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{cf5e80d2e0cee33eba755f48fd90741a}
+      \strng{fullhash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{fullhashraw}{f32283932aadc555caa135a6a788e7a5}
+      \strng{bibnamehash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authorbibnamehash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authornamehash}{cf5e80d2e0cee33eba755f48fd90741a}
+      \strng{authorfullhash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authorfullhashraw}{f32283932aadc555caa135a6a788e7a5}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Methods}
+      \field{number}{6}
+      \field{title}{ModelFinder: Fast model selection for accurate phylogenetic estimates}
+      \field{volume}{14}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{pages}{587\bibrangedash 589}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/nmeth.4285
+      \endverb
+    \endentry
+    \entry{c05-kimura1980}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=53609597cbe3ec33e41129b2ad93c3da}{%
+           family={Kimura},
+           familyi={K\bibinitperiod},
+           given={Motoo},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{fullhash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{fullhashraw}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{bibnamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorbibnamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authornamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorfullhash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorfullhashraw}{53609597cbe3ec33e41129b2ad93c3da}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{2}
+      \field{title}{A simple method for estimating evolutionary rates of base substitutions through comparative studies of nucleotide sequences}
+      \field{volume}{16}
+      \field{year}{1980}
+      \field{dateera}{ce}
+      \field{pages}{111\bibrangedash 120}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1007/BF01731581
+      \endverb
+    \endentry
+    \entry{c05-minh2020}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=ff3f69e987b0e888d610f4c0dfc0f177}{%
+           family={Schmidt},
+           familyi={S\bibinitperiod},
+           given={Heiko\bibnamedelima A.},
+           giveni={H\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=96a9e94192bd6a7073eab795de9592e4}{%
+           family={Chernomor},
+           familyi={C\bibinitperiod},
+           given={Olga},
+           giveni={O\bibinitperiod}}}%
+        {{hash=9bb73946e4e74a5bab1fbfc07d97bf62}{%
+           family={Schrempf},
+           familyi={S\bibinitperiod},
+           given={Dominik},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9e78b0040e5960051a0fd5231db12e76}{%
+           family={Woodhams},
+           familyi={W\bibinitperiod},
+           given={Michael\bibnamedelima D.},
+           giveni={M\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=e95b2f8e8cee11047379072c745c6b1b}{%
+           family={Lanfear},
+           familyi={L\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{8e858af3195118b27d4bb6fdc25cca59}
+      \strng{fullhash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{fullhashraw}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{bibnamehash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authorbibnamehash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authornamehash}{8e858af3195118b27d4bb6fdc25cca59}
+      \strng{authorfullhash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authorfullhashraw}{de01ec5f94136067b6e970eae75a12dd}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{5}
+      \field{title}{IQ-TREE 2: New models and efficient methods for phylogenetic inference in the genomic era}
+      \field{volume}{37}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{pages}{1530\bibrangedash 1534}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1093/molbev/msaa015
+      \endverb
+    \endentry
+    \entry{c05-nguyen2015}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=f4de9ebe04db141c4d38ca5112487294}{%
+           family={Nguyen},
+           familyi={N\bibinitperiod},
+           given={Lam-Tung},
+           giveni={L\bibinithyphendelim T\bibinitperiod}}}%
+        {{hash=ff3f69e987b0e888d610f4c0dfc0f177}{%
+           family={Schmidt},
+           familyi={S\bibinitperiod},
+           given={Heiko\bibnamedelima A.},
+           giveni={H\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ba8055538e8e7bc4766aa622eed0a19}
+      \strng{fullhash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{fullhashraw}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{bibnamehash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authorbibnamehash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authornamehash}{8ba8055538e8e7bc4766aa622eed0a19}
+      \strng{authorfullhash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authorfullhashraw}{07f8f70832bff50ac941e8b711fc85e6}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{1}
+      \field{title}{IQ-TREE: A fast and effective stochastic algorithm for estimating maximum-likelihood phylogenies}
+      \field{volume}{32}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{268\bibrangedash 274}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1093/molbev/msu300
+      \endverb
+    \endentry
+    \entry{c05-rodriguez1990}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=e58340a93a09718794f7a57c48e1e8ec}{%
+           family={Rodríguez},
+           familyi={R\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=4b1c792c8dda7738d8fe1db34e91e86b}{%
+           family={Oliver},
+           familyi={O\bibinitperiod},
+           given={J.\bibnamedelimi L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=0802611657961ebdafc2a9781fa67736}{%
+           family={Marín},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=6565c5f152ee6afb63c8f256a6e447d8}{%
+           family={Medina},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi R.},
+           giveni={J\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{55537c4e9791e8cfcd51ba47e2627a91}
+      \strng{fullhash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{fullhashraw}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{bibnamehash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authorbibnamehash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authornamehash}{55537c4e9791e8cfcd51ba47e2627a91}
+      \strng{authorfullhash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authorfullhashraw}{b21a043a9e351ecb42cceee87fd26af5}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Theoretical Biology}
+      \field{number}{4}
+      \field{title}{The general stochastic model of nucleotide substitution}
+      \field{volume}{142}
+      \field{year}{1990}
+      \field{dateera}{ce}
+      \field{pages}{485\bibrangedash 501}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1016/S0022-5193(05)80104-3
+      \endverb
+    \endentry
+    \entry{c05-saitou1987}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d209c6887fb04e6d5dd3db63253f1b7f}{%
+           family={Saitou},
+           familyi={S\bibinitperiod},
+           given={Naruya},
+           giveni={N\bibinitperiod}}}%
+        {{hash=f7e54938018be38227393edcb9566fca}{%
+           family={Nei},
+           familyi={N\bibinitperiod},
+           given={Masatoshi},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{fullhash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{fullhashraw}{b66d3cee519c6d1848824865d97a985a}
+      \strng{bibnamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorbibnamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authornamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorfullhash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorfullhashraw}{b66d3cee519c6d1848824865d97a985a}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{4}
+      \field{title}{The neighbor-joining method: A new method for reconstructing phylogenetic trees}
+      \field{volume}{4}
+      \field{year}{1987}
+      \field{dateera}{ce}
+      \field{pages}{406\bibrangedash 425}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1093/oxfordjournals.molbev.a040454
+      \endverb
+    \endentry
+    \entry{c05-schwarz1978}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=7434820123b7dda72fff7a710dc36bc0}{%
+           family={Schwarz},
+           familyi={S\bibinitperiod},
+           given={Gideon},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{fullhash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{fullhashraw}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{bibnamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorbibnamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authornamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorfullhash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorfullhashraw}{7434820123b7dda72fff7a710dc36bc0}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{2}
+      \field{title}{Estimating the dimension of a model}
+      \field{volume}{6}
+      \field{year}{1978}
+      \field{dateera}{ce}
+      \field{pages}{461\bibrangedash 464}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1214/aos/1176344136
+      \endverb
+    \endentry
+    \entry{c05-stamatakis2014}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=fa9cb11fc0196cb2a4dac60fa1bb9926}{%
+           family={Stamatakis},
+           familyi={S\bibinitperiod},
+           given={Alexandros},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{fullhash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{fullhashraw}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{bibnamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorbibnamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authornamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorfullhash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorfullhashraw}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{9}
+      \field{title}{RAxML version 8: A tool for phylogenetic analysis and post-analysis of large phylogenies}
+      \field{volume}{30}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \field{pages}{1312\bibrangedash 1313}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1093/bioinformatics/btu033
+      \endverb
+    \endentry
+    \entry{c05-studier1988}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=0d6eb611ba6444f61abe1cd7749f26e1}{%
+           family={Studier},
+           familyi={S\bibinitperiod},
+           given={James\bibnamedelima A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=d678303e2205647dcb01effc2135b0f2}{%
+           family={Keppler},
+           familyi={K\bibinitperiod},
+           given={Karl\bibnamedelima J.},
+           giveni={K\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{759c07176eb9db1ec680f77427479909}
+      \strng{fullhash}{759c07176eb9db1ec680f77427479909}
+      \strng{fullhashraw}{759c07176eb9db1ec680f77427479909}
+      \strng{bibnamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorbibnamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authornamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorfullhash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorfullhashraw}{759c07176eb9db1ec680f77427479909}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{6}
+      \field{title}{A note on the neighbor-joining algorithm of {Saitou} and {Nei}}
+      \field{volume}{5}
+      \field{year}{1988}
+      \field{dateera}{ce}
+      \field{pages}{729\bibrangedash 731}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1093/oxfordjournals.molbev.a040527
+      \endverb
+    \endentry
+    \entry{c05-yang1994}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d0bece89adf0d22a7586a8927bc4a66}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ziheng},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{bibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorbibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authornamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \field{extraname}{1}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{3}
+      \field{title}{Maximum likelihood phylogenetic estimation from {DNA} sequences with variable rates over sites: Approximate methods}
+      \field{volume}{39}
+      \field{year}{1994}
+      \field{dateera}{ce}
+      \field{pages}{306\bibrangedash 314}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/BF00160154
+      \endverb
+    \endentry
+    \entry{c05-yang2014}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d0bece89adf0d22a7586a8927bc4a66}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ziheng},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Oxford}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University Press}%
+      }
+      \strng{namehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{bibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorbibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authornamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \field{extraname}{2}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{A Statistical Approach}
+      \field{title}{Molecular Evolution}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \verb{doi}
+      \verb 10.1093/acprof:oso/9780199602605.001.0001
+      \endverb
+    \endentry
+    \entry{c05-zuckerkandl1965}{inbook}{}{}
+      \name{author}{2}{}{%
+        {{hash=0cf364e78a672997a488f855de2a0af2}{%
+           family={Zuckerkandl},
+           familyi={Z\bibinitperiod},
+           given={Emile},
+           giveni={E\bibinitperiod}}}%
+        {{hash=57002dec049d71166a4985e677fc4d28}{%
+           family={Pauling},
+           familyi={P\bibinitperiod},
+           given={Linus},
+           giveni={L\bibinitperiod}}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=3f1a3567abaf58796236f82c922430c6}{%
+           family={Bryson},
+           familyi={B\bibinitperiod},
+           given={Vernon},
+           giveni={V\bibinitperiod}}}%
+        {{hash=1be6f5c3c0568e2bf72da8ea12563249}{%
+           family={Vogel},
+           familyi={V\bibinitperiod},
+           given={Henry\bibnamedelima J.},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{fullhash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{fullhashraw}{1ad637542c215561c7a0bca138d50d84}
+      \strng{bibnamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorbibnamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authornamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorfullhash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorfullhashraw}{1ad637542c215561c7a0bca138d50d84}
+      \strng{editorbibnamehash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editornamehash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editorfullhash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editorfullhashraw}{200bf44dfaa8959708d93e48c249bbfa}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Evolving Genes and Proteins}
+      \field{title}{Evolutionary divergence and convergence in proteins}
+      \field{year}{1965}
+      \field{dateera}{ce}
+      \field{pages}{97\bibrangedash 166}
+      \range{pages}{70}
+      \verb{doi}
+      \verb 10.1016/B978-1-4832-2734-4.50017-6
+      \endverb
+    \endentry
+  \enddatalist
+  \datalist[entry]{apa/global//global/global/global}
+    \entry{c05-akaike1974}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9482d81bf0654208860e574639f7bf0}{%
+           family={Akaike},
+           familyi={A\bibinitperiod},
+           given={Hirotugu},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{fullhash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{fullhashraw}{a9482d81bf0654208860e574639f7bf0}
+      \strng{bibnamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorbibnamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authornamehash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorfullhash}{a9482d81bf0654208860e574639f7bf0}
+      \strng{authorfullhashraw}{a9482d81bf0654208860e574639f7bf0}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{IEEE Transactions on Automatic Control}
+      \field{number}{6}
+      \field{title}{A new look at the statistical model identification}
+      \field{volume}{19}
+      \field{year}{1974}
+      \field{dateera}{ce}
+      \field{pages}{716\bibrangedash 723}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/TAC.1974.1100705
+      \endverb
+    \endentry
+    \entry{c05-buneman1974}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=0e2b444d9d3a80f70ca5eb50e7596a60}{%
+           family={Buneman},
+           familyi={B\bibinitperiod},
+           given={Peter},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{fullhash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{fullhashraw}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{bibnamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorbibnamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authornamehash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorfullhash}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \strng{authorfullhashraw}{0e2b444d9d3a80f70ca5eb50e7596a60}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+      \field{number}{1}
+      \field{title}{A note on the metric properties of trees}
+      \field{volume}{17}
+      \field{year}{1974}
+      \field{dateera}{ce}
+      \field{pages}{48\bibrangedash 50}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1016/0095-8956(74)90047-1
+      \endverb
+    \endentry
+    \entry{c05-darwin2009}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=d0e4f38206db228a7b870a49f6f52db2}{%
+           family={Darwin},
+           familyi={D\bibinitperiod},
+           given={Charles},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{fullhash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{fullhashraw}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{bibnamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorbibnamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authornamehash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorfullhash}{d0e4f38206db228a7b870a49f6f52db2}
+      \strng{authorfullhashraw}{d0e4f38206db228a7b870a49f6f52db2}
+      \field{sortinit}{D}
+      \field{sortinithash}{6f385f66841fb5e82009dc833c761848}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{origyear}{1859}
+      \field{title}{The Origin of Species}
+      \field{year}{2009}
+      \field{dateera}{ce}
+      \field{origdateera}{ce}
+      \verb{doi}
+      \verb 10.1017/CBO9780511694295
+      \endverb
+    \endentry
+    \entry{c05-efron1979}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=5470455fc7dceb3ccf6db38cb22a113d}{%
+           family={Efron},
+           familyi={E\bibinitperiod},
+           given={Bradley},
+           giveni={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{fullhash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{fullhashraw}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{bibnamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorbibnamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authornamehash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorfullhash}{5470455fc7dceb3ccf6db38cb22a113d}
+      \strng{authorfullhashraw}{5470455fc7dceb3ccf6db38cb22a113d}
+      \field{sortinit}{E}
+      \field{sortinithash}{8da8a182d344d5b9047633dfc0cc9131}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{1}
+      \field{title}{Bootstrap methods: Another look at the jackknife}
+      \field{volume}{7}
+      \field{year}{1979}
+      \field{dateera}{ce}
+      \field{pages}{1\bibrangedash 26}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.1214/aos/1176344552
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1978}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{1}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Zoology}
+      \field{number}{4}
+      \field{title}{Cases in which parsimony or compatibility methods will be positively misleading}
+      \field{volume}{27}
+      \field{year}{1978}
+      \field{dateera}{ce}
+      \field{pages}{401\bibrangedash 410}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.2307/2412923
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1981}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{2}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{6}
+      \field{title}{Evolutionary trees from {DNA} sequences: A maximum likelihood approach}
+      \field{volume}{17}
+      \field{year}{1981}
+      \field{dateera}{ce}
+      \field{pages}{368\bibrangedash 376}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/BF01734359
+      \endverb
+    \endentry
+    \entry{c05-felsenstein1985}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{3}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Evolution}
+      \field{number}{4}
+      \field{title}{Confidence limits on phylogenies: An approach using the bootstrap}
+      \field{volume}{39}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{783\bibrangedash 791}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1111/j.1558-5646.1985.tb00420.x
+      \endverb
+    \endentry
+    \entry{c05-felsenstein2004}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=a9a7aeb8d3c34e3da316b87101984cda}{%
+           family={Felsenstein},
+           familyi={F\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Sunderland, MA}%
+      }
+      \list{publisher}{1}{%
+        {Sinauer Associates}%
+      }
+      \strng{namehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{fullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{bibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorbibnamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authornamehash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhash}{a9a7aeb8d3c34e3da316b87101984cda}
+      \strng{authorfullhashraw}{a9a7aeb8d3c34e3da316b87101984cda}
+      \field{extraname}{4}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{9780878931774}
+      \field{title}{Inferring Phylogenies}
+      \field{year}{2004}
+      \field{dateera}{ce}
+    \endentry
+    \entry{c05-fitch1971}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=461de48442afec6574b574456724ba50}{%
+           family={Fitch},
+           familyi={F\bibinitperiod},
+           given={Walter\bibnamedelima M.},
+           giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+      }
+      \strng{namehash}{461de48442afec6574b574456724ba50}
+      \strng{fullhash}{461de48442afec6574b574456724ba50}
+      \strng{fullhashraw}{461de48442afec6574b574456724ba50}
+      \strng{bibnamehash}{461de48442afec6574b574456724ba50}
+      \strng{authorbibnamehash}{461de48442afec6574b574456724ba50}
+      \strng{authornamehash}{461de48442afec6574b574456724ba50}
+      \strng{authorfullhash}{461de48442afec6574b574456724ba50}
+      \strng{authorfullhashraw}{461de48442afec6574b574456724ba50}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Zoology}
+      \field{number}{4}
+      \field{title}{Toward defining the course of evolution: Minimum change for a specific tree topology}
+      \field{volume}{20}
+      \field{year}{1971}
+      \field{dateera}{ce}
+      \field{pages}{406\bibrangedash 416}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.2307/2412116
+      \endverb
+    \endentry
+    \entry{c05-gascuel2006}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=9ac0403b5ef77ed84fcc4065eb407340}{%
+           family={Gascuel},
+           familyi={G\bibinitperiod},
+           given={Olivier},
+           giveni={O\bibinitperiod}}}%
+        {{hash=5d30f1613015984b38a2f60dfac80640}{%
+           family={Steel},
+           familyi={S\bibinitperiod},
+           given={Mike},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{bab096e894b22c926093e7689451caff}
+      \strng{fullhash}{bab096e894b22c926093e7689451caff}
+      \strng{fullhashraw}{bab096e894b22c926093e7689451caff}
+      \strng{bibnamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authorbibnamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authornamehash}{bab096e894b22c926093e7689451caff}
+      \strng{authorfullhash}{bab096e894b22c926093e7689451caff}
+      \strng{authorfullhashraw}{bab096e894b22c926093e7689451caff}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{11}
+      \field{title}{Neighbor-joining revealed}
+      \field{volume}{23}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{pages}{1997\bibrangedash 2000}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1093/molbev/msl072
+      \endverb
+    \endentry
+    \entry{c05-guindon2003}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=b341c4dd667418875350f62cbc33502a}{%
+           family={Guindon},
+           familyi={G\bibinitperiod},
+           given={Stéphane},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9ac0403b5ef77ed84fcc4065eb407340}{%
+           family={Gascuel},
+           familyi={G\bibinitperiod},
+           given={Olivier},
+           giveni={O\bibinitperiod}}}%
+      }
+      \strng{namehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{fullhash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{fullhashraw}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{bibnamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorbibnamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authornamehash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorfullhash}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \strng{authorfullhashraw}{0231a1fb19c7fb153e8d507c4fec9d33}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Systematic Biology}
+      \field{number}{5}
+      \field{title}{A simple, fast, and accurate algorithm to estimate large phylogenies by maximum likelihood}
+      \field{volume}{52}
+      \field{year}{2003}
+      \field{dateera}{ce}
+      \field{pages}{696\bibrangedash 704}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1080/10635150390235520
+      \endverb
+    \endentry
+    \entry{c05-hasegawa1985}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=fe249cc56acd2394743f2831ce044f75}{%
+           family={Hasegawa},
+           familyi={H\bibinitperiod},
+           given={Masami},
+           giveni={M\bibinitperiod}}}%
+        {{hash=8f3a73736f6840278c66080db6435bb2}{%
+           family={Kishino},
+           familyi={K\bibinitperiod},
+           given={Hirohisa},
+           giveni={H\bibinitperiod}}}%
+        {{hash=d8103850d14cf27c9a696623a6f7c54f}{%
+           family={Yano},
+           familyi={Y\bibinitperiod},
+           given={Taka-aki},
+           giveni={T\bibinithyphendelim a\bibinitperiod}}}%
+      }
+      \strng{namehash}{b01c79cf2c7cff438433d06f4a5b9fb5}
+      \strng{fullhash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{fullhashraw}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{bibnamehash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authorbibnamehash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authornamehash}{b01c79cf2c7cff438433d06f4a5b9fb5}
+      \strng{authorfullhash}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \strng{authorfullhashraw}{860c38bb2d423a535a1fc5bb8b3e3e86}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{2}
+      \field{title}{Dating of the human-ape splitting by a molecular clock of mitochondrial {DNA}}
+      \field{volume}{22}
+      \field{year}{1985}
+      \field{dateera}{ce}
+      \field{pages}{160\bibrangedash 174}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1007/BF02101694
+      \endverb
+    \endentry
+    \entry{c05-hoang2018}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=5dfd1b11f4e5bbf1d7d017e3dee8b92b}{%
+           family={Hoang},
+           familyi={H\bibinitperiod},
+           given={Diep\bibnamedelima Thi},
+           giveni={D\bibinitperiod\bibinitdelim T\bibinitperiod}}}%
+        {{hash=96a9e94192bd6a7073eab795de9592e4}{%
+           family={Chernomor},
+           familyi={C\bibinitperiod},
+           given={Olga},
+           giveni={O\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=38e3355bbc5026efd69773937f86df19}{%
+           family={Vinh},
+           familyi={V\bibinitperiod},
+           given={Le\bibnamedelima Sy},
+           giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9bb092874df624d6becf84135c99ee35}
+      \strng{fullhash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{fullhashraw}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{bibnamehash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authorbibnamehash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authornamehash}{9bb092874df624d6becf84135c99ee35}
+      \strng{authorfullhash}{cdf454c2c549a096c9bb7be53fb03018}
+      \strng{authorfullhashraw}{cdf454c2c549a096c9bb7be53fb03018}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{2}
+      \field{title}{UFBoot2: Improving the ultrafast bootstrap approximation}
+      \field{volume}{35}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{pages}{518\bibrangedash 522}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1093/molbev/msx281
+      \endverb
+    \endentry
+    \entry{c05-jukes1969}{inbook}{}{}
+      \name{author}{2}{}{%
+        {{hash=3156cf5964b66800828c84e8c365eded}{%
+           family={Jukes},
+           familyi={J\bibinitperiod},
+           given={Thomas\bibnamedelima H.},
+           giveni={T\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=3fe8b7976a57b36d11f1cbc47458010f}{%
+           family={Cantor},
+           familyi={C\bibinitperiod},
+           given={Charles\bibnamedelima R.},
+           giveni={C\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=1923ea842a830db06147c41fcf4f352b}{%
+           family={Munro},
+           familyi={M\bibinitperiod},
+           given={Hamish\bibnamedelima N.},
+           giveni={H\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{fullhash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{fullhashraw}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{bibnamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorbibnamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authornamehash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorfullhash}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{authorfullhashraw}{c1e91ab3991dc2dfdde23c353502ba92}
+      \strng{editorbibnamehash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editornamehash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editorfullhash}{1923ea842a830db06147c41fcf4f352b}
+      \strng{editorfullhashraw}{1923ea842a830db06147c41fcf4f352b}
+      \field{sortinit}{J}
+      \field{sortinithash}{b2f54a9081ace9966a7cb9413811edb4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Mammalian Protein Metabolism}
+      \field{title}{Evolution of protein molecules}
+      \field{year}{1969}
+      \field{dateera}{ce}
+      \field{pages}{21\bibrangedash 132}
+      \range{pages}{112}
+      \verb{doi}
+      \verb 10.1016/B978-1-4832-3211-9.50009-7
+      \endverb
+    \endentry
+    \entry{c05-kalyaanamoorthy2017}{article}{}{}
+      \name{author}{5}{}{%
+        {{hash=272ab0983912427445ebe8a9fd17fb04}{%
+           family={Kalyaanamoorthy},
+           familyi={K\bibinitperiod},
+           given={Subha},
+           giveni={S\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=d83f794dda9a0765b44cfc6884a57183}{%
+           family={Wong},
+           familyi={W\bibinitperiod},
+           given={Thomas\bibnamedelimb K.\bibnamedelimi F.},
+           giveni={T\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=a9d0165df2c181bd4298178f65269a78}{%
+           family={Jermiin},
+           familyi={J\bibinitperiod},
+           given={Lars\bibnamedelima S.},
+           giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod}}}%
+      }
+      \strng{namehash}{cf5e80d2e0cee33eba755f48fd90741a}
+      \strng{fullhash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{fullhashraw}{f32283932aadc555caa135a6a788e7a5}
+      \strng{bibnamehash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authorbibnamehash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authornamehash}{cf5e80d2e0cee33eba755f48fd90741a}
+      \strng{authorfullhash}{f32283932aadc555caa135a6a788e7a5}
+      \strng{authorfullhashraw}{f32283932aadc555caa135a6a788e7a5}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Nature Methods}
+      \field{number}{6}
+      \field{title}{ModelFinder: Fast model selection for accurate phylogenetic estimates}
+      \field{volume}{14}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{pages}{587\bibrangedash 589}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1038/nmeth.4285
+      \endverb
+    \endentry
+    \entry{c05-kimura1980}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=53609597cbe3ec33e41129b2ad93c3da}{%
+           family={Kimura},
+           familyi={K\bibinitperiod},
+           given={Motoo},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{fullhash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{fullhashraw}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{bibnamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorbibnamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authornamehash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorfullhash}{53609597cbe3ec33e41129b2ad93c3da}
+      \strng{authorfullhashraw}{53609597cbe3ec33e41129b2ad93c3da}
+      \field{sortinit}{K}
+      \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{2}
+      \field{title}{A simple method for estimating evolutionary rates of base substitutions through comparative studies of nucleotide sequences}
+      \field{volume}{16}
+      \field{year}{1980}
+      \field{dateera}{ce}
+      \field{pages}{111\bibrangedash 120}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1007/BF01731581
+      \endverb
+    \endentry
+    \entry{c05-minh2020}{article}{}{}
+      \name{author}{7}{}{%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+        {{hash=ff3f69e987b0e888d610f4c0dfc0f177}{%
+           family={Schmidt},
+           familyi={S\bibinitperiod},
+           given={Heiko\bibnamedelima A.},
+           giveni={H\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=96a9e94192bd6a7073eab795de9592e4}{%
+           family={Chernomor},
+           familyi={C\bibinitperiod},
+           given={Olga},
+           giveni={O\bibinitperiod}}}%
+        {{hash=9bb73946e4e74a5bab1fbfc07d97bf62}{%
+           family={Schrempf},
+           familyi={S\bibinitperiod},
+           given={Dominik},
+           giveni={D\bibinitperiod}}}%
+        {{hash=9e78b0040e5960051a0fd5231db12e76}{%
+           family={Woodhams},
+           familyi={W\bibinitperiod},
+           given={Michael\bibnamedelima D.},
+           giveni={M\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=e95b2f8e8cee11047379072c745c6b1b}{%
+           family={Lanfear},
+           familyi={L\bibinitperiod},
+           given={Robert},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{8e858af3195118b27d4bb6fdc25cca59}
+      \strng{fullhash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{fullhashraw}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{bibnamehash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authorbibnamehash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authornamehash}{8e858af3195118b27d4bb6fdc25cca59}
+      \strng{authorfullhash}{de01ec5f94136067b6e970eae75a12dd}
+      \strng{authorfullhashraw}{de01ec5f94136067b6e970eae75a12dd}
+      \field{sortinit}{M}
+      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{5}
+      \field{title}{IQ-TREE 2: New models and efficient methods for phylogenetic inference in the genomic era}
+      \field{volume}{37}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{pages}{1530\bibrangedash 1534}
+      \range{pages}{5}
+      \verb{doi}
+      \verb 10.1093/molbev/msaa015
+      \endverb
+    \endentry
+    \entry{c05-nguyen2015}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=f4de9ebe04db141c4d38ca5112487294}{%
+           family={Nguyen},
+           familyi={N\bibinitperiod},
+           given={Lam-Tung},
+           giveni={L\bibinithyphendelim T\bibinitperiod}}}%
+        {{hash=ff3f69e987b0e888d610f4c0dfc0f177}{%
+           family={Schmidt},
+           familyi={S\bibinitperiod},
+           given={Heiko\bibnamedelima A.},
+           giveni={H\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=c6699d807ad08a2adbc48e32deccc5de}{%
+           family={Haeseler},
+           familyi={H\bibinitperiod},
+           given={Arndt},
+           giveni={A\bibinitperiod},
+           prefix={von},
+           prefixi={v\bibinitperiod}}}%
+        {{hash=3331b2b694c3c86ff90fcece74fcfa30}{%
+           family={Minh},
+           familyi={M\bibinitperiod},
+           given={Bui\bibnamedelima Quang},
+           giveni={B\bibinitperiod\bibinitdelim Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ba8055538e8e7bc4766aa622eed0a19}
+      \strng{fullhash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{fullhashraw}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{bibnamehash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authorbibnamehash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authornamehash}{8ba8055538e8e7bc4766aa622eed0a19}
+      \strng{authorfullhash}{07f8f70832bff50ac941e8b711fc85e6}
+      \strng{authorfullhashraw}{07f8f70832bff50ac941e8b711fc85e6}
+      \field{sortinit}{N}
+      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{1}
+      \field{title}{IQ-TREE: A fast and effective stochastic algorithm for estimating maximum-likelihood phylogenies}
+      \field{volume}{32}
+      \field{year}{2015}
+      \field{dateera}{ce}
+      \field{pages}{268\bibrangedash 274}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1093/molbev/msu300
+      \endverb
+    \endentry
+    \entry{c05-rodriguez1990}{article}{}{}
+      \name{author}{4}{}{%
+        {{hash=e58340a93a09718794f7a57c48e1e8ec}{%
+           family={Rodríguez},
+           familyi={R\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=4b1c792c8dda7738d8fe1db34e91e86b}{%
+           family={Oliver},
+           familyi={O\bibinitperiod},
+           given={J.\bibnamedelimi L.},
+           giveni={J\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+        {{hash=0802611657961ebdafc2a9781fa67736}{%
+           family={Marín},
+           familyi={M\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=6565c5f152ee6afb63c8f256a6e447d8}{%
+           family={Medina},
+           familyi={M\bibinitperiod},
+           given={J.\bibnamedelimi R.},
+           giveni={J\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+      }
+      \strng{namehash}{55537c4e9791e8cfcd51ba47e2627a91}
+      \strng{fullhash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{fullhashraw}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{bibnamehash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authorbibnamehash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authornamehash}{55537c4e9791e8cfcd51ba47e2627a91}
+      \strng{authorfullhash}{b21a043a9e351ecb42cceee87fd26af5}
+      \strng{authorfullhashraw}{b21a043a9e351ecb42cceee87fd26af5}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Theoretical Biology}
+      \field{number}{4}
+      \field{title}{The general stochastic model of nucleotide substitution}
+      \field{volume}{142}
+      \field{year}{1990}
+      \field{dateera}{ce}
+      \field{pages}{485\bibrangedash 501}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1016/S0022-5193(05)80104-3
+      \endverb
+    \endentry
+    \entry{c05-saitou1987}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=d209c6887fb04e6d5dd3db63253f1b7f}{%
+           family={Saitou},
+           familyi={S\bibinitperiod},
+           given={Naruya},
+           giveni={N\bibinitperiod}}}%
+        {{hash=f7e54938018be38227393edcb9566fca}{%
+           family={Nei},
+           familyi={N\bibinitperiod},
+           given={Masatoshi},
+           giveni={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{fullhash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{fullhashraw}{b66d3cee519c6d1848824865d97a985a}
+      \strng{bibnamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorbibnamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authornamehash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorfullhash}{b66d3cee519c6d1848824865d97a985a}
+      \strng{authorfullhashraw}{b66d3cee519c6d1848824865d97a985a}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{4}
+      \field{title}{The neighbor-joining method: A new method for reconstructing phylogenetic trees}
+      \field{volume}{4}
+      \field{year}{1987}
+      \field{dateera}{ce}
+      \field{pages}{406\bibrangedash 425}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1093/oxfordjournals.molbev.a040454
+      \endverb
+    \endentry
+    \entry{c05-schwarz1978}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=7434820123b7dda72fff7a710dc36bc0}{%
+           family={Schwarz},
+           familyi={S\bibinitperiod},
+           given={Gideon},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{fullhash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{fullhashraw}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{bibnamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorbibnamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authornamehash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorfullhash}{7434820123b7dda72fff7a710dc36bc0}
+      \strng{authorfullhashraw}{7434820123b7dda72fff7a710dc36bc0}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{The Annals of Statistics}
+      \field{number}{2}
+      \field{title}{Estimating the dimension of a model}
+      \field{volume}{6}
+      \field{year}{1978}
+      \field{dateera}{ce}
+      \field{pages}{461\bibrangedash 464}
+      \range{pages}{4}
+      \verb{doi}
+      \verb 10.1214/aos/1176344136
+      \endverb
+    \endentry
+    \entry{c05-stamatakis2014}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=fa9cb11fc0196cb2a4dac60fa1bb9926}{%
+           family={Stamatakis},
+           familyi={S\bibinitperiod},
+           given={Alexandros},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{fullhash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{fullhashraw}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{bibnamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorbibnamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authornamehash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorfullhash}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \strng{authorfullhashraw}{fa9cb11fc0196cb2a4dac60fa1bb9926}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Bioinformatics}
+      \field{number}{9}
+      \field{title}{RAxML version 8: A tool for phylogenetic analysis and post-analysis of large phylogenies}
+      \field{volume}{30}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \field{pages}{1312\bibrangedash 1313}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1093/bioinformatics/btu033
+      \endverb
+    \endentry
+    \entry{c05-studier1988}{article}{}{}
+      \name{author}{2}{}{%
+        {{hash=0d6eb611ba6444f61abe1cd7749f26e1}{%
+           family={Studier},
+           familyi={S\bibinitperiod},
+           given={James\bibnamedelima A.},
+           giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+        {{hash=d678303e2205647dcb01effc2135b0f2}{%
+           family={Keppler},
+           familyi={K\bibinitperiod},
+           given={Karl\bibnamedelima J.},
+           giveni={K\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{759c07176eb9db1ec680f77427479909}
+      \strng{fullhash}{759c07176eb9db1ec680f77427479909}
+      \strng{fullhashraw}{759c07176eb9db1ec680f77427479909}
+      \strng{bibnamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorbibnamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authornamehash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorfullhash}{759c07176eb9db1ec680f77427479909}
+      \strng{authorfullhashraw}{759c07176eb9db1ec680f77427479909}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Molecular Biology and Evolution}
+      \field{number}{6}
+      \field{title}{A note on the neighbor-joining algorithm of {Saitou} and {Nei}}
+      \field{volume}{5}
+      \field{year}{1988}
+      \field{dateera}{ce}
+      \field{pages}{729\bibrangedash 731}
+      \range{pages}{3}
+      \verb{doi}
+      \verb 10.1093/oxfordjournals.molbev.a040527
+      \endverb
+    \endentry
+    \entry{c05-yang1994}{article}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d0bece89adf0d22a7586a8927bc4a66}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ziheng},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{bibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorbibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authornamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \field{extraname}{1}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Molecular Evolution}
+      \field{number}{3}
+      \field{title}{Maximum likelihood phylogenetic estimation from {DNA} sequences with variable rates over sites: Approximate methods}
+      \field{volume}{39}
+      \field{year}{1994}
+      \field{dateera}{ce}
+      \field{pages}{306\bibrangedash 314}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/BF00160154
+      \endverb
+    \endentry
+    \entry{c05-yang2014}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=4d0bece89adf0d22a7586a8927bc4a66}{%
+           family={Yang},
+           familyi={Y\bibinitperiod},
+           given={Ziheng},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Oxford}%
+      }
+      \list{publisher}{1}{%
+        {Oxford University Press}%
+      }
+      \strng{namehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{fullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{bibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorbibnamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authornamehash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhash}{4d0bece89adf0d22a7586a8927bc4a66}
+      \strng{authorfullhashraw}{4d0bece89adf0d22a7586a8927bc4a66}
+      \field{extraname}{2}
+      \field{sortinit}{Y}
+      \field{sortinithash}{fd67ad5a9ef0f7456bdd9aab10fe1495}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{subtitle}{A Statistical Approach}
+      \field{title}{Molecular Evolution}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \verb{doi}
+      \verb 10.1093/acprof:oso/9780199602605.001.0001
+      \endverb
+    \endentry
+    \entry{c05-zuckerkandl1965}{inbook}{}{}
+      \name{author}{2}{}{%
+        {{hash=0cf364e78a672997a488f855de2a0af2}{%
+           family={Zuckerkandl},
+           familyi={Z\bibinitperiod},
+           given={Emile},
+           giveni={E\bibinitperiod}}}%
+        {{hash=57002dec049d71166a4985e677fc4d28}{%
+           family={Pauling},
+           familyi={P\bibinitperiod},
+           given={Linus},
+           giveni={L\bibinitperiod}}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=3f1a3567abaf58796236f82c922430c6}{%
+           family={Bryson},
+           familyi={B\bibinitperiod},
+           given={Vernon},
+           giveni={V\bibinitperiod}}}%
+        {{hash=1be6f5c3c0568e2bf72da8ea12563249}{%
+           family={Vogel},
+           familyi={V\bibinitperiod},
+           given={Henry\bibnamedelima J.},
+           giveni={H\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{fullhash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{fullhashraw}{1ad637542c215561c7a0bca138d50d84}
+      \strng{bibnamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorbibnamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authornamehash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorfullhash}{1ad637542c215561c7a0bca138d50d84}
+      \strng{authorfullhashraw}{1ad637542c215561c7a0bca138d50d84}
+      \strng{editorbibnamehash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editornamehash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editorfullhash}{200bf44dfaa8959708d93e48c249bbfa}
+      \strng{editorfullhashraw}{200bf44dfaa8959708d93e48c249bbfa}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{}
+      \true{uniqueprimaryauthor}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Evolving Genes and Proteins}
+      \field{title}{Evolutionary divergence and convergence in proteins}
+      \field{year}{1965}
+      \field{dateera}{ce}
+      \field{pages}{97\bibrangedash 166}
+      \range{pages}{70}
+      \verb{doi}
+      \verb 10.1016/B978-1-4832-2734-4.50017-6
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

@@ -1,0 +1,983 @@
+% =====================================================================
+%  Capítulo 6 · Secuenciación de nueva generación (NGS)
+% =====================================================================
+\chapter{Secuenciación de nueva generación (NGS)}\label{cap:06}
+
+\epigrafe{Predecimos que, en la perspectiva larga de la historia, el impacto de la secuenciación de ADN estará a la par con el del microscopio.}{\textcite{c06-shendure2017}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Explicar la química y la física de las principales plataformas de secuenciación (Sanger, 454, Illumina, PacBio y Oxford Nanopore) y relacionar cada mecanismo con su perfil de errores característico.
+  \item Traducir una puntuación de calidad Phred en una probabilidad de error, decodificar la línea de calidades de un archivo FASTQ y calcular el número esperado de errores de una lectura.
+  \item Leer un informe de control de calidad (FastQC/MultiQC) y decidir, con criterio, cómo recortar adaptadores y extremos de baja calidad.
+  \item Derivar la teoría de Lander-Waterman (cobertura de Poisson, fracción no cubierta, número de \ingles{contigs}) y usarla, junto con modelos sobredispersos, para diseñar la profundidad de un experimento.
+\end{itemize}
+\end{objetivos}
+
+En 2001, leer un genoma humano costaba cerca de cien millones de dólares; dos décadas después, bastan unos pocos cientos \parencite{c06-nhgri2022}. Ninguna otra tecnología de la biología ha abaratado su producto en cinco órdenes de magnitud en tan poco tiempo, y esa caída explica por qué hoy la secuenciación es el instrumento de medida universal del laboratorio: cuenta transcritos, localiza proteínas unidas al ADN, detecta patógenos en una muestra clínica o reconstruye la historia de poblaciones enteras. Pero las máquinas no entregan genomas: entregan millones de fragmentos cortos, o miles de fragmentos largos, cada uno con su propia incertidumbre. Todo lo que haremos en los capítulos siguientes (mapeo, llamado de variantes, ensamblaje, cuantificación de expresión) parte de ese material imperfecto, y conocer sus defectos es la mejor defensa contra conclusiones falsas.
+
+El capítulo recorre el camino que va de la molécula al archivo. Primero veremos cómo funcionan las plataformas y por qué cada una se equivoca a su manera (\cref{sec:06-tecnologias}). Luego aprenderemos el lenguaje con que la máquina expresa su confianza, la calidad Phred, y cómo usarlo para inspeccionar y limpiar las lecturas (\cref{sec:06-calidad}). Por último, preguntaremos cuántas lecturas hacen falta para ``ver'' un genoma completo, una pregunta que \textcite{c06-lander1988} respondieron con una elegante teoría probabilística que sigue guiando el diseño de cada experimento (\cref{sec:06-cobertura}).
+
+% ---------------------------------------------------------------------
+\section{Tecnologías de secuenciación}\label{sec:06-tecnologias}
+% ---------------------------------------------------------------------
+\enlacerepo{6.1 · Tecnologías de secuenciación}
+
+\begin{intuicion}[Un estadio que se fotografía a sí mismo]
+Piense en esas coreografías de las tribunas en las que cada espectador levanta una cartulina de color a una señal. Suponga ahora que en cada asiento hay una persona con un mazo de cuatro colores y una lista secreta, y que desde el techo del estadio una cámara toma una foto después de cada señal. Tras cien señales tendremos cien fotografías; si seguimos un mismo asiento a través de todas ellas, leeremos su lista secreta, color por color. Nadie tuvo que leer las listas una por una: bastó sincronizar a miles de personas y fotografiarlas a la vez. Esta es, en esencia, la idea de la secuenciación masiva en paralelo. Y ya se adivinan sus defectos: si alguien se retrasa una señal, sus colores se desfasan; si la foto está borrosa, los asientos vecinos se confunden; y cuanto más dura el espectáculo, más espectadores se distraen.
+\end{intuicion}
+
+\subsection{Leer una molécula: el método de Sanger}
+
+Todas las tecnologías de secuenciación resuelven el mismo problema: convertir una sucesión de bases químicamente casi idénticas en una señal física medible (una banda en un gel, un destello de luz, una variación de corriente) que pueda asignarse a una posición. La primera solución práctica, y la que dominó durante casi treinta años, fue la de \textcite{c06-sanger1977}. Su idea fue usar a la propia ADN polimerasa como ``lectora''. La enzima copia una hebra molde a partir de un cebador, pero en la mezcla se añade, junto a los desoxinucleótidos normales (dNTP), una pequeña proporción de \emph{didesoxinucleótidos} (ddNTP), que carecen del grupo hidroxilo 3' necesario para unir la siguiente base. Cada vez que la polimerasa incorpora un ddNTP, la síntesis se detiene. El resultado es una colección de fragmentos que terminan en cada posición donde aparece la base correspondiente; separándolos por tamaño con resolución de una base, se lee la secuencia.
+
+\begin{definicion}{Probabilidad de terminación}{sanger}
+Sea $r$ la probabilidad de que, frente a una posición del molde que admite la base $b$, la polimerasa incorpore el ddNTP en lugar del dNTP. Si las incorporaciones son independientes, la probabilidad de que la síntesis termine exactamente en la $k$-ésima aparición de $b$ es geométrica:
+\begin{equation}\label{eq:06-sanger}
+\Prob(K=k) = (1-r)^{k-1}\,r,\qquad k=1,2,\dots
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$r$}{Probabilidad de terminación por aparición; depende del cociente de concentraciones ddNTP/dNTP y de la preferencia de la enzima.}
+\simbolo{$K$}{Número de apariciones de la base $b$ que la polimerasa ``atraviesa'' hasta terminar (incluida la última).}
+\simbolo{$k$}{Valor concreto de $K$.}
+\end{simbolos}
+
+La \cref{eq:06-sanger} explica de inmediato la limitación más conocida del método. Si una base aparece, en promedio, una vez cada cuatro posiciones, la señal de los fragmentos que terminan cerca de la posición $\ell$ decae aproximadamente como $(1-r)^{\ell/4}$. Con $r=0{,}005$, a las 400 bases queda el \SI{61}{\percent} de la intensidad inicial y a las 800 bases solo el \SI{37}{\percent}; con $r=0{,}01$, la señal a 800 bases cae al \SI{13}{\percent}. Aumentar $r$ produce más fragmentos cortos (más señal al principio); disminuirlo alarga la lectura pero debilita todas las bandas. A esto se suma que la electroforesis separa cada vez peor un fragmento de $n$ bases de otro de $n+1$ a medida que $n$ crece. Por ambas razones, las lecturas de Sanger se quedaron en el rango de 400 a 800 pares de bases \parencite{c06-bentley2008}, largas para los estándares de la época pero imposibles de paralelizar a gran escala: cada capilar leía un único fragmento.
+
+\begin{historia}[El genoma que se leyó a mano]
+Frederick Sanger recibió dos premios Nobel de Química: uno por secuenciar la insulina y otro, en 1980, por el método de terminación de cadena. En su artículo de 1977 lo aplicó al bacteriófago $\phi$X174 y señaló que era más rápido y exacto que sus métodos anteriores \parencite{c06-sanger1977}. Automatizado con fluorocromos y electroforesis capilar, el método de Sanger produjo la primera secuencia del genoma humano. Para dar a cada base una medida objetiva de confianza nació el programa \cmd{phred} \parencite{c06-ewing1998a}, cuya escala de calidad estudiaremos en la \cref{sec:06-calidad}. \textcite{c06-shendure2017} ofrecen una crónica de estos cuarenta años.
+\end{historia}
+
+\subsection{Paralelizar: pirosecuenciación y la plataforma 454}
+
+La ruptura conceptual llegó al abandonar la electroforesis. En lugar de separar fragmentos, se puede \emph{observar la síntesis mientras ocurre}. \textcite{c06-ronaghi1998} describieron la \emph{pirosecuenciación}: cada vez que la polimerasa incorpora un nucleótido, libera una molécula de pirofosfato (PP\textsubscript{i}); una cascada enzimática convierte ese pirofosfato en ATP (ATP sulfurilasa) y el ATP en un destello de luz (luciferasa). Si se inyecta en la cámara de reacción un solo tipo de nucleótido a la vez, un destello indica que esa base es la siguiente del molde.
+
+\textcite{c06-margulies2005} llevaron esta química a una escala sin precedentes. Cada fragmento de ADN se amplificaba clonalmente sobre una microesfera dentro de una gota de emulsión agua-aceite (PCR en emulsión), y las esferas se depositaban en una placa de fibra óptica con cientos de miles de pocillos de picolitros. En un único experimento de cuatro horas el sistema leía 25 millones de bases con una exactitud del \SI{99}{\percent} o superior, y con él se ensambló \emph{de novo} el genoma de \especie{Mycoplasma genitalium}. Había nacido la ``nueva generación''.
+
+La pirosecuenciación tiene un talón de Aquiles que se deduce de su propio principio. Si el molde contiene un homopolímero, por ejemplo \secuencia{AAAAAA}, la polimerasa incorpora las seis bases en un único flujo y la luz emitida es, idealmente, proporcional a seis. Distinguir seis de siete a partir de una intensidad luminosa es mucho más difícil que distinguir una de dos, porque el ruido de la medición crece con la señal. Por eso el error dominante de 454 (y de otras químicas sin terminadores, como Ion Torrent) no son las sustituciones sino las \emph{inserciones y deleciones en homopolímeros} \parencite{c06-metzker2010}.
+
+\subsection{Illumina: síntesis con terminadores reversibles}
+
+La tecnología que terminó por dominar el mercado combina dos ideas: amplificar cada molécula \emph{en su sitio}, sobre una superficie de vidrio, y leerla una base por ciclo con nucleótidos que se detienen \emph{de forma reversible} \parencite{c06-bentley2008}.
+
+\paragraph{Preparación de la biblioteca} El ADN se fragmenta (por ultrasonido o enzimáticamente) hasta tamaños de unos cientos de pares de bases, y a cada fragmento se le ligan \emph{adaptadores}: secuencias sintéticas conocidas que contienen los sitios de unión a la celda de flujo, los sitios de los cebadores de secuenciación y, a menudo, \emph{índices} (\ingles{barcodes}) que identifican la muestra y permiten mezclar decenas de muestras en una misma corrida (\ingles{multiplexing}). La parte biológica del fragmento, entre los dos adaptadores, se llama \emph{inserto}.
+
+\paragraph{Amplificación en puente} La celda de flujo está tapizada de dos tipos de oligonucleótidos complementarios a los adaptadores. Un fragmento monocatenario se hibrida a uno de ellos, la polimerasa lo copia, el original se lava, y la copia anclada se dobla para hibridarse con un oligonucleótido vecino del otro tipo, formando un ``puente''. Repetido decenas de veces, este ciclo produce un \emph{clúster}: un grupo compacto de unas mil copias idénticas de la molécula original, lo bastante brillante para ser fotografiado (\cref{fig:06-puente}). La química de anclaje permite densidades de unos diez millones de colonias por centímetro cuadrado \parencite{c06-fedurco2006}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  % --- plantilla de panel ---
+  \foreach \px/\tit in {0/{1. Hibridación},3.25/{2. Puente},6.5/{3. Extensión},9.75/{4. Clúster}}{
+    \draw[rejilla,rounded corners=3pt,fill=papel!35] (\px,-0.35) rectangle (\px+3.05,3.3);
+    \node[font=\sffamily\bfseries\scriptsize,text=tinta] at (\px+1.525,3.05) {\tit};
+  }
+  % superficie y cebadores (paneles 1-3)
+  \foreach \px in {0,3.25,6.5}{
+    \fill[gris!45] (\px+0.15,0) rectangle (\px+2.9,0.12);
+    \foreach \k in {0,...,5}{
+      \pgfmathsetmacro{\xx}{\px+0.35+\k*0.46}
+      \ifodd\k \draw[magenta,thick] (\xx,0.12) -- (\xx,0.42);
+      \else \draw[aqua,thick] (\xx,0.12) -- (\xx,0.42); \fi
+    }
+  }
+  % panel 1: fragmento que llega
+  \draw[azul,very thick] (0.81,0.42) -- (0.81,2.55);
+  \draw[naranja,very thick] (0.81,2.2) -- (0.81,2.55);
+  \node[etiqueta,anchor=west,align=left] at (0.95,1.5) {fragmento\\monocatenario\\hibridado};
+  \node[etiqueta,anchor=west,text=naranja!80!black] at (0.95,2.4) {adaptador};
+  % panel 2: puente
+  \draw[azul,very thick] (4.06,0.42) .. controls (4.06,2.4) and (4.98,2.4) .. (4.98,0.42);
+  \node[etiqueta] at (4.52,2.45) {puente};
+  % panel 3: doble cadena
+  \draw[azul,very thick] (7.31,0.42) .. controls (7.31,2.4) and (8.23,2.4) .. (8.23,0.42);
+  \draw[naranja,very thick] (7.43,0.42) .. controls (7.43,2.15) and (8.11,2.15) .. (8.11,0.42);
+  \node[etiqueta,anchor=west] at (8.35,1.5) {copia};
+  \node[etiqueta,anchor=west] at (8.35,1.2) {nueva};
+  % panel 4: vista superior de un clúster
+  \begin{scope}[shift={(11.275,1.35)}]
+    \foreach \a in {0,20,...,340}{
+      \foreach \rr in {0.25,0.5,0.75,1.0}{
+        \pgfmathsetmacro{\jit}{mod(\a*7+\rr*100,13)/60}
+        \fill[azul!70] ({(\rr+\jit)*cos(\a+\rr*40)},{(\rr+\jit)*0.95*sin(\a+\rr*40)}) circle (0.045);
+      }
+    }
+    \fill[azul!70] (0,0) circle (0.05);
+    \node[etiqueta,text=azulprofundo] at (0,-1.45) {$\sim\!10^3$ copias idénticas};
+  \end{scope}
+  \draw[flecha=tinta2] (3.07,1.5) -- (3.23,1.5);
+  \draw[flecha=tinta2] (6.32,1.5) -- (6.48,1.5);
+  \draw[flecha=tinta2] (9.57,1.5) -- (9.73,1.5);
+  \node[etiqueta,text=aqua!70!black,anchor=east] at (6.3,-0.62) {\textbf{|} oligonucleótido anclado tipo 1};
+  \node[etiqueta,text=magenta!80!black,anchor=west] at (6.8,-0.62) {\textbf{|} tipo 2};
+\end{tikzpicture}
+\caption[Amplificación en puente]{Amplificación en puente sobre la celda de flujo. (1) Un fragmento de la biblioteca, flanqueado por adaptadores, se hibrida con un oligonucleótido anclado. (2) La copia sintetizada se dobla y se hibrida con un oligonucleótido vecino del otro tipo. (3) La polimerasa la extiende y forma un puente de doble cadena, que se desnaturaliza para empezar otra ronda. (4) Tras unas treinta rondas, cada molécula original ha dado lugar a un clúster de alrededor de mil copias, visto aquí desde arriba. La amplificación convierte una molécula invisible en un punto luminoso, pero también introduce sesgos (\cref{sec:06-cobertura}).}
+\label{fig:06-puente}
+\end{figure}
+
+\paragraph{El ciclo de secuenciación} Cada clúster se secuencia por síntesis (SBS) con cuatro nucleótidos modificados de dos maneras: llevan un fluorocromo distinto por base y un \emph{grupo bloqueador} en el extremo 3' que impide que la polimerasa añada una segunda base. Un ciclo consta de cuatro pasos (\cref{fig:06-sbs}): (1) se inyectan los cuatro nucleótidos y la polimerasa incorpora exactamente uno en cada hebra; (2) se lava el exceso y se excita la celda con láser; una cámara registra el color de cada clúster; (3) se escinden químicamente el fluorocromo y el bloqueador, restaurando un 3'-OH libre; (4) se repite. Como los cuatro nucleótidos compiten a la vez, los homopolímeros ya no son un problema: el error típico de Illumina es la \emph{sustitución}, no el \ingles{indel}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,x=0.93cm,y=1cm]
+  \tikzset{bb/.style={minimum size=3.3mm,inner sep=0pt,font=\ttfamily\bfseries\tiny,text=white,rounded corners=0.8pt}}
+  % marcos
+  \foreach \px/\tit in {0/{1. Incorporación},3.3/{2. Imagen},6.6/{3. Escisión},9.9/{4. Ciclo $n{+}1$}}{
+    \draw[rejilla,rounded corners=3pt,fill=papel!35] (\px,0) rectangle (\px+3.05,4.2);
+    \node[font=\sffamily\bfseries\scriptsize,text=tinta] at (\px+1.525,3.95) {\tit};
+  }
+  % hebras en los paneles 1-4
+  \foreach \px/\nb in {0/3,3.3/4,6.6/4,9.9/5}{
+    \fill[gris!45] (\px+0.2,0.25) rectangle (\px+1.5,0.37);
+    \foreach \b [count=\i from 0] in {T,G,C,A,T,G,A}{
+      \node[bb,fill=nuc\b] at (\px+0.55,0.6+\i*0.42) {\b};}
+    \foreach \b [count=\i from 0] in {A,C,G,T,A}{
+      \ifnum\i<\nb \node[bb,fill=nuc\b] at (\px+1.0,0.6+\i*0.42) {\b};\fi}
+  }
+  % panel 1: nucleótido entrante (T) con fluorocromo y bloqueador
+  \node[bb,fill=nucT] (nin) at (2.05,2.35) {T};
+  \fill[nucT!80] (2.5,2.62) circle (0.11);
+  \node[star,star points=6,fill=nucT!35,minimum size=5mm,inner sep=0pt] at (2.5,2.62) {};
+  \fill[nucT] (2.5,2.62) circle (0.08);
+  \fill[gris] (2.05,2.03) rectangle (2.2,2.13);
+  \draw[flecha=tinta2] (1.85,2.2) -- (1.25,1.95);
+  \node[etiqueta,anchor=west] at (1.55,3.35) {fluorocromo};
+  \node[etiqueta,anchor=west] at (1.55,1.55) {bloqueo 3'};
+  \draw[tinta2,thin] (2.3,1.62) -- (2.15,2.02);
+  % panel 2: láser y cámara
+  \node[bb,fill=nucT] at (4.3,1.86) {T};
+  \shade[inner color=nucT!70,outer color=white,opacity=.9] (4.75,1.86) circle (0.33);
+  \fill[nucT] (4.75,1.86) circle (0.08);
+  \draw[rojo,thick,decorate,decoration={snake,amplitude=0.7pt,segment length=3pt}] (6.1,0.9) -- (5.0,1.7);
+  \node[etiqueta,text=rojooscuro] at (5.85,0.65) {láser};
+  \draw[tinta2,fill=tinta2!15,rounded corners=1pt] (5.35,2.9) rectangle (6.1,3.35);
+  \fill[tinta2] (5.47,2.78) rectangle (5.63,2.9);
+  \draw[tinta2,dashed] (5.5,2.78) -- (4.85,2.0);
+  \node[etiqueta] at (5.72,3.62) {cámara};
+  % panel 3: escisión
+  \node[bb,fill=nucT] at (7.6,1.86) {T};
+  \fill[nucT] (8.35,2.55) circle (0.08);
+  \fill[gris] (8.5,1.35) rectangle (8.65,1.45);
+  \draw[flecha=tinta2] (7.8,2.0) -- (8.25,2.45);
+  \draw[flecha=tinta2] (7.8,1.75) -- (8.4,1.48);
+  \node[etiqueta,align=left,anchor=west] at (8.0,3.3) {se liberan\\fluorocromo\\y bloqueo};
+  % panel 4: vista superior, imagen del ciclo
+  \begin{scope}[shift={(11.95,2.25)},scale=0.78]
+    \draw[rejilla,fill=nocturno!90] (-0.6,-1.4) rectangle (1.05,1.45);
+    \foreach \x/\y/\c in {-0.3/1.05/nucA,0.55/0.95/nucC,0.1/0.4/nucT,0.75/0.1/nucG,-0.35/-0.2/nucA,0.3/-0.55/nucC,-0.1/-1.05/nucG,0.75/-1.0/nucT}{
+      \shade[inner color=\c,outer color=nocturno!90] (\x,\y) circle (0.2);}
+    \node[etiqueta] at (0.22,-1.75) {foto del ciclo};
+  \end{scope}
+  \draw[flecha=tinta2] (3.07,2.1) -- (3.28,2.1);
+  \draw[flecha=tinta2] (6.37,2.1) -- (6.58,2.1);
+  \draw[flecha=tinta2] (9.67,2.1) -- (9.88,2.1);
+  \draw[flecha=naranja,rounded corners=4pt] (11.4,0.0) -- (11.4,-0.35) -- (1.5,-0.35) node[pos=0.5,below,etiqueta,text=naranja!80!black] {se repite 50--300 veces: una base por ciclo y por clúster} -- (1.5,0.0);
+\end{tikzpicture}
+\caption[Un ciclo de secuenciación por síntesis]{Un ciclo de secuenciación por síntesis con terminadores reversibles. (1) La polimerasa incorpora un único nucleótido marcado (aquí \nuc{T}, complementario de la \nuc{A} del molde); el grupo bloqueador impide añadir otro. (2) Un láser excita el fluorocromo y la cámara registra el color de cada clúster de la celda. (3) Se escinden el fluorocromo y el bloqueo, dejando un 3'-OH libre. (4) Comienza el ciclo siguiente; la secuencia de un clúster es la sucesión de colores que emite, foto tras foto. Una lectura de 150 bases requiere 150 ciclos y otras tantas imágenes de toda la celda.}
+\label{fig:06-sbs}
+\end{figure}
+
+\subsection{Por qué la calidad cae a lo largo de la lectura: fase y desfase}
+
+Si todas las hebras de un clúster avanzaran en perfecta sincronía, la calidad sería la misma en el ciclo 1 que en el 150. No es así, y la razón es instructiva. En cada ciclo, una pequeña fracción de las hebras no incorpora ninguna base (por ejemplo, porque la escisión del bloqueador falló o la polimerasa no actuó): quedan \emph{retrasadas} una posición (\ingles{phasing}). Otra fracción incorpora dos bases, porque algún nucleótido carecía de bloqueador: quedan \emph{adelantadas} (\ingles{pre-phasing}). Las hebras desfasadas siguen emitiendo luz, pero del color equivocado, y contaminan la señal del clúster.
+
+\begin{teorema}{Decaimiento de la fracción en fase}{fase}
+Sea $\varepsilon = p + q$ la probabilidad, por ciclo y por hebra, de un evento de desfase (retraso con probabilidad $p$, adelanto con probabilidad $q$), independiente entre ciclos. La fracción de hebras que siguen exactamente en fase tras $n$ ciclos es
+\begin{equation}\label{eq:06-fase}
+\phi(n) = (1-\varepsilon)^{n} \approx e^{-\varepsilon n}.
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$p$}{Probabilidad por ciclo de no incorporar ninguna base (\ingles{phasing}).}
+\simbolo{$q$}{Probabilidad por ciclo de incorporar dos bases (\ingles{pre-phasing}).}
+\simbolo{$\varepsilon$}{Tasa total de desfase por ciclo, $p+q$.}
+\simbolo{$n$}{Número de ciclos completados (posición en la lectura).}
+\simbolo{$\phi(n)$}{Fracción de hebras del clúster que emiten la base correcta en el ciclo $n$.}
+\end{simbolos}
+
+La demostración es inmediata: una hebra está en fase tras $n$ ciclos si y solo si no sufrió ningún evento en ninguno de ellos, y la probabilidad de ese suceso es el producto de $n$ factores $(1-\varepsilon)$. La aproximación exponencial usa $\ln(1-\varepsilon)\approx-\varepsilon$ para $\varepsilon$ pequeño. Aunque $\varepsilon$ sea diminuto, su efecto se \emph{acumula}. Con $\varepsilon=0{,}002$, en el ciclo 150 solo el \SI{74}{\percent} de las hebras emite el color correcto, y en el ciclo 300 apenas el \SI{55}{\percent} (\cref{fig:06-fase}). El resto forma un fondo de colores de las posiciones vecinas que, ciclo a ciclo, hace más difícil decidir cuál es la base dominante. El programa de llamado de bases (\ingles{basecaller}) corrige parte de este efecto modelando el desfase, pero no todo, y por eso \emph{la calidad de las lecturas de Illumina disminuye hacia el extremo 3'}. Este patrón es el que veremos en todos los informes de control de calidad de la \cref{sec:06-calidad}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.8\linewidth, height=5.2cm,
+   xlabel={ciclo $n$ (posición en la lectura)}, ylabel={fracción en fase $\phi(n)$},
+   xmin=0, xmax=300, ymin=0, ymax=1.02, legend pos=south west,
+   ytick={0,0.2,0.4,0.6,0.8,1}]
+  \addplot[azul, domain=0:300, samples=100] {(1-0.001)^x};
+  \addlegendentry{$\varepsilon=0{,}001$}
+  \addplot[naranja, domain=0:300, samples=100] {(1-0.002)^x};
+  \addlegendentry{$\varepsilon=0{,}002$}
+  \addplot[rojo, domain=0:300, samples=100] {(1-0.005)^x};
+  \addlegendentry{$\varepsilon=0{,}005$}
+  \addplot[tinta2, dashed, thin] coordinates {(150,0) (150,1.02)};
+  \node[etiqueta, anchor=west] at (axis cs:152,0.95) {lectura de 150 pb};
+  \addplot[only marks, mark=*, mark size=1.8pt, naranja] coordinates {(150,0.741) (300,0.548)};
+  \node[etiqueta, anchor=south west, text=naranja!80!black] at (axis cs:150,0.745) {0,74};
+  \node[etiqueta, anchor=south west, text=naranja!80!black] at (axis cs:285,0.56) {0,55};
+\end{axis}
+\end{tikzpicture}
+\caption[Desfase acumulado en Illumina]{Fracción de hebras de un clúster que permanecen en fase según la \cref{eq:06-fase}, para tres tasas de desfase por ciclo. Tasas del orden de una milésima, que parecen despreciables, hacen que tras 300 ciclos casi la mitad de la señal provenga de hebras desfasadas. Este mecanismo, junto con el desgaste de los reactivos y el fotoblanqueo, fija el límite práctico de longitud de las lecturas cortas y explica la caída de calidad hacia el extremo 3'.}
+\label{fig:06-fase}
+\end{figure}
+
+\paragraph{Lecturas pareadas y química de dos colores} Tras leer un extremo del inserto, la hebra puede regenerarse para leer el extremo opuesto: se obtienen \emph{lecturas pareadas} (\ingles{paired-end}), dos lecturas cuya distancia y orientación relativas son conocidas aproximadamente. Esa restricción geométrica será valiosísima para el mapeo y el ensamblaje. \textcite{c06-bentley2008} secuenciaron así el genoma de un varón yoruba con pares de lecturas de 35 bases y una profundidad media superior a $30\times$. Los instrumentos más recientes usan una química de \emph{dos colores}, en la que una de las cuatro bases (G) se reconoce por la \emph{ausencia} de fluorescencia; la consecuencia práctica es que un clúster que se apaga produce falsas colas de \secuencia{GGGGG}, un artefacto que herramientas como \cmd{fastp} recortan de forma específica \parencite{c06-chen2018}.
+
+\subsection{Tercera generación: molécula única y lecturas largas}
+
+Las plataformas de lecturas cortas leen clústeres, no moléculas; necesitan amplificar, y el desfase limita su longitud a unos cientos de bases. Las llamadas tecnologías de \emph{tercera generación} observan una sola molécula en tiempo real y producen lecturas de decenas o cientos de kilobases.
+
+\paragraph{PacBio SMRT} \textcite{c06-eid2009} fijaron una única polimerasa en el fondo de un \emph{guía de onda de modo cero} (\ingles{zero-mode waveguide}), un pozo de dimensiones inferiores a la longitud de onda de la luz que limita la observación a un volumen de zeptolitros. Los fluorocromos están unidos al fosfato terminal del nucleótido, de modo que se liberan con el pirofosfato al incorporarse la base: la hebra sintetizada queda sin modificar y la polimerasa puede seguir durante miles de bases. Cada incorporación se ve como un pulso de luz del color correspondiente. Los errores de esta lectura continua (\ingles{continuous long read}) son frecuentes, del orden del 10 al \SI{15}{\percent}, dominados por inserciones y deleciones, pero tienen una propiedad preciosa: son \emph{aproximadamente aleatorios}, sin sesgo sistemático fuerte. \textcite{c06-eid2009} ya mostraron que el consenso de lecturas a $15\times$ alcanzaba una exactitud mediana del \SI{99,3}{\percent}.
+
+Esa aleatoriedad es la base de las lecturas HiFi. Si el inserto se circulariza con adaptadores en horquilla, la polimerasa da muchas vueltas a la misma molécula y cada vuelta (\ingles{pass}) es una lectura independiente del mismo molde. La secuencia consenso circular (CCS) combina las pasadas.
+
+\begin{ejemplo}{Cuántas pasadas hacen una lectura HiFi}{hifi}
+Modelemos cada pasada como un voto independiente que acierta la base con probabilidad $1-e$ y supongamos, de forma pesimista, que basta que la mayoría de las pasadas se equivoque para que el consenso falle. Con $k$ pasadas (impar),
+\begin{equation}\label{eq:06-consenso}
+e_{\text{cons}}(k) = \sum_{j=\lceil k/2\rceil}^{k}\binom{k}{j}\,e^{\,j}\,(1-e)^{k-j}.
+\end{equation}
+Con $e=0{,}10$ por pasada: una pasada da $Q10$; tres pasadas, $e_{\text{cons}}=0{,}028$ ($Q15{,}5$); cinco, $0{,}0086$ ($Q20{,}7$); nueve, $8{,}9\times10^{-4}$ ($Q30{,}5$), y quince, $3{,}4\times10^{-5}$ ($Q44{,}7$). La cota es pesimista porque, en la realidad, varias pasadas erróneas raramente coinciden en el \emph{mismo} error. El resultado ilustra un principio general: los errores aleatorios se corrigen con redundancia; los sistemáticos, no. \textcite{c06-wenger2019} optimizaron este procedimiento y obtuvieron lecturas HiFi con un \SI{99,8}{\percent} de exactitud y una longitud media de \SI{13,5}{kb}, capaces de ensamblar un genoma humano con \ingles{contigs} N50 superiores a \SI{15}{Mb}.
+\end{ejemplo}
+
+\paragraph{Oxford Nanopore} La idea más radical prescinde por completo de la óptica y de la polimerasa como sensor. Una proteína motora hace pasar una hebra de ADN, base a base, a través de un nanoporo proteico insertado en una membrana con un voltaje aplicado; la corriente iónica que atraviesa el poro depende de las \emph{varias} bases que lo ocupan en cada instante (un $k$-mer), y la señal resultante (el \ingles{squiggle}) se traduce a bases con redes neuronales \parencite{c06-jain2016,c06-rang2018}. No hay límite químico intrínseco a la longitud de lectura: \textcite{c06-jain2018} secuenciaron un genoma humano con lecturas ultralargas de N50 superior a \SI{100}{kb} y una lectura máxima de \SI{882}{kb}, que permitieron ensamblar completo el complejo principal de histocompatibilidad. El precio ha sido una tasa de error alta, entre el 5 y el \SI{15}{\percent} en las químicas R9 según la revisión de \textcite{c06-rang2018}, con una fracción \emph{sistemática} importante en homopolímeros (la corriente cambia poco mientras el poro ``ve'' siempre la misma base). Las químicas posteriores han reducido mucho ese problema: con los poros R10.4 ya es posible obtener genomas bacterianos casi terminados sin corrección con lecturas cortas \parencite{c06-sereika2022}.
+
+\subsection{Comparación y perfiles de error}
+
+La \cref{tab:06-plataformas} y la \cref{fig:06-plataformas} resumen el panorama. La lección fundamental no es qué plataforma es ``mejor'', sino que \emph{cada mecanismo físico deja una huella característica en los errores}, y los algoritmos posteriores deben conocerla: un alineador pensado para sustituciones aisladas sufrirá con lecturas cuyos errores son \ingles{indels}, y un ensamblador que confía en $k$-mers exactos fracasará con lecturas al \SI{10}{\percent} de error. Las revisiones de \textcite{c06-metzker2010} y \textcite{c06-goodwin2016} describen estas diferencias con detalle.
+
+\begin{table}[t]
+\centering\small
+\caption[Plataformas de secuenciación]{Características aproximadas de las principales plataformas. Las cifras son órdenes de magnitud típicos, que cambian con cada química y versión de instrumento; véanse las fuentes citadas en el texto.}
+\label{tab:06-plataformas}
+\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{2.2cm}>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{1.9cm}>{\raggedright\arraybackslash}p{1.6cm}X@{}}
+\toprule
+\textbf{Plataforma} & \textbf{Señal} & \textbf{Longitud} & \textbf{Error} & \textbf{Error dominante}\\
+\midrule
+Sanger & fluorescencia, electroforesis & 400--800 pb & bajo & caída de señal al final\\
+454 / Ion Torrent & luz / pH por flujo & 100--700 pb & $\sim$\SI{1}{\percent} & \ingles{indels} en homopolímeros\\
+Illumina & fluorescencia por ciclo & 50--300 pb & $\sim$\SI{0,1}{\percent} & sustituciones; peor en 3'\\
+PacBio CLR & pulso de luz en ZMW & 10--50 kb & 10--\SI{15}{\percent} & \ingles{indels} aleatorios\\
+PacBio HiFi & consenso circular & 10--25 kb & $\lesssim$\SI{0,5}{\percent} & residual en homopolímeros\\
+Nanopore & corriente iónica & 1--$>$100 kb & 1--\SI{15}{\percent} & \ingles{indels} sistemáticos en homopolímeros\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.4cm,
+   xmode=log, ymode=log, xmin=20, xmax=2e6, ymin=0.03, ymax=30,
+   xlabel={longitud típica de lectura (pb, escala log)},
+   ylabel={tasa de error por base (\%, escala log)},
+   xtick={100,1000,10000,100000,1000000}, clip=false,
+   xticklabels={100,1 kb,10 kb,100 kb,1 Mb},
+   ytick={0.1,1,10}, yticklabels={0{,}1,1,10}]
+  \draw[fill=azul!30,draw=azul!80!black,rounded corners=2pt] (axis cs:50,0.08) rectangle (axis cs:300,0.5);
+  \node[etiqueta,text=azulprofundo,font=\sffamily\scriptsize\bfseries,anchor=north] at (axis cs:120,0.075) {Illumina};
+  \draw[fill=verde!30,draw=verde!70!black,rounded corners=2pt] (axis cs:400,0.1) rectangle (axis cs:900,0.5);
+  \node[etiqueta,text=verde!40!black,font=\sffamily\scriptsize\bfseries,anchor=north] at (axis cs:600,0.095) {Sanger};
+  \draw[fill=amarillo!40,draw=amarillo!80!black,rounded corners=2pt] (axis cs:100,0.8) rectangle (axis cs:700,2);
+  \node[etiqueta,text=amarillo!30!black,font=\sffamily\scriptsize\bfseries,anchor=south] at (axis cs:265,2.1) {454 / Ion Torrent};
+  \draw[fill=naranja!20,draw=naranja!80!black,rounded corners=2pt] (axis cs:1000,5) rectangle (axis cs:150000,15);
+  \node[etiqueta,text=naranja!50!black,font=\sffamily\scriptsize\bfseries,anchor=west] at (axis cs:1150,6.3) {Nanopore R9};
+  \draw[fill=magenta!30,draw=magenta!80!black,rounded corners=2pt] (axis cs:8000,9) rectangle (axis cs:60000,16.5);
+  \node[etiqueta,text=magenta!60!black,font=\sffamily\scriptsize\bfseries,anchor=south] at (axis cs:22000,16) {PacBio CLR};
+  \draw[fill=rojo!12,draw=rojo!70!black,rounded corners=2pt,dashed] (axis cs:1000,0.6) rectangle (axis cs:150000,2);
+  \node[etiqueta,text=rojooscuro,font=\sffamily\scriptsize\bfseries,anchor=west] at (axis cs:1150,1.1) {Nanopore R10.4};
+  \draw[fill=violeta!30,draw=violeta!80!black,rounded corners=2pt] (axis cs:10000,0.1) rectangle (axis cs:25000,0.5);
+  \node[etiqueta,text=violeta!60!black,font=\sffamily\scriptsize\bfseries,anchor=west] at (axis cs:27000,0.22) {PacBio HiFi};
+  \draw[flecha=violeta] (axis cs:16000,9.6) -- node[pos=0.36,right,etiqueta,text=violeta!60!black]{consenso} (axis cs:16000,0.55);
+  \draw[naranja!80!black,thick,-{Stealth}] (axis cs:150000,8) -- (axis cs:880000,8);
+  \node[etiqueta,text=naranja!50!black,anchor=south] at (axis cs:420000,8.3) {ultralargas};
+\end{axis}
+\end{tikzpicture}
+\caption[Longitud y error por plataforma]{Mapa aproximado de las plataformas según longitud de lectura y tasa de error por base (ambos ejes logarítmicos). Los rectángulos indican órdenes de magnitud típicos, no especificaciones exactas \parencite{c06-goodwin2016,c06-rang2018,c06-wenger2019,c06-jain2018}. La flecha violeta muestra la estrategia HiFi: sacrificar longitud y rendimiento para convertir errores aleatorios en exactitud por consenso. Durante una década existió un compromiso entre longitud y exactitud; las químicas recientes de lecturas largas lo han ido borrando.}
+\label{fig:06-plataformas}
+\end{figure}
+
+\begin{cuidado}[Aleatorio no es lo mismo que sistemático]
+Un error aleatorio se diluye al aumentar la profundidad: con 30 lecturas independientes, el consenso será correcto aunque cada lectura falle una vez de cada diez. Un error \emph{sistemático}, en cambio, se repite en todas las lecturas que cubren el mismo contexto (un homopolímero largo, una región muy rica en GC) y ninguna profundidad lo corrige. Antes de confiar en una variante observada en muchas lecturas, pregúntese si todas ellas pudieron equivocarse \emph{de la misma manera}.
+\end{cuidado}
+
+\subsection{El costo de un genoma}
+
+La \cref{fig:06-costo} muestra la serie histórica que mantiene el Instituto Nacional de Investigación del Genoma Humano de EE.\,UU. \parencite{c06-nhgri2022}. Hasta 2007 el costo cayó al ritmo de la ley de Moore, que describe la mejora de los microprocesadores (una reducción a la mitad cada dos años). A partir de 2008, con la llegada de las plataformas masivamente paralelas, la curva se desplomó: si la secuenciación hubiera seguido a los procesadores, un genoma costaría hoy unos \num{70000} dólares; cuesta del orden de 500. Esa divergencia tiene una consecuencia que se repite a lo largo del libro: hoy es mucho más barato \emph{generar} datos que \emph{analizarlos}, y el cuello de botella de la genómica se ha desplazado del laboratorio a la computadora.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.92\linewidth, height=6.2cm,
+   ymode=log, xmin=2001, xmax=2023, ymin=100, ymax=3e8,
+   xlabel={año}, ylabel={costo por genoma humano (USD)},
+   xtick={2002,2006,2010,2014,2018,2022},
+   /pgf/number format/1000 sep={},
+   ytick={100,1000,10000,100000,1000000,10000000,100000000},
+   yticklabels={100,1\,mil,10\,mil,100\,mil,1\,M,10\,M,100\,M},
+   legend pos=north east]
+  \addplot[azul, very thick, mark=*, mark size=1.1pt] table[x=anio,y=costo] {figuras/cap06/costo.dat};
+  \addlegendentry{costo observado (NHGRI)}
+  \addplot[naranja, dashed, very thick] table[x=anio,y=costo] {figuras/cap06/moore.dat};
+  \addlegendentry{ley de Moore (mitad cada 2 años)}
+  \draw[tinta2,dashed] (axis cs:2008,100) -- (axis cs:2008,3e8);
+  \node[etiqueta,anchor=south west,align=left] at (axis cs:2001.3,130) {2008: llegan\\las plataformas\\masivamente paralelas};
+\end{axis}
+\end{tikzpicture}
+\caption[Costo por genoma humano]{Costo de secuenciar un genoma humano, 2001--2022, según los datos del NHGRI \parencite{c06-nhgri2022}, en escala logarítmica. La línea naranja muestra lo que habría costado si hubiera seguido la ley de Moore desde 2001. La brecha de dos órdenes de magnitud que se abre a partir de 2008 corresponde a la transición de la electroforesis capilar a la secuenciación masiva en paralelo. Datos: \archivo{figuras/cap06/nhgri\_costos.csv}.}
+\label{fig:06-costo}
+\end{figure}
+
+\begin{ideaclave}
+Cada plataforma convierte bases en una señal física distinta, y su perfil de errores es la huella de esa física: sustituciones en Illumina, \ingles{indels} en homopolímeros en 454 y Nanopore, \ingles{indels} aleatorios corregibles por consenso en PacBio.
+\end{ideaclave}
+
+
+
+% ---------------------------------------------------------------------
+\section{Calidad Phred, control de calidad y \ingles{trimming}}\label{sec:06-calidad}
+% ---------------------------------------------------------------------
+\enlacerepo{6.2 · Calidad Phred y control de calidad}
+
+\begin{intuicion}[El pronóstico del tiempo de cada base]
+Un buen servicio meteorológico no dice ``mañana lloverá'': dice ``mañana hay un 70\,\% de probabilidad de lluvia''. Y lo que lo hace bueno no es acertar siempre, sino estar \emph{calibrado}: de todos los días en que anunció un 70\,\%, llovió aproximadamente en siete de cada diez. Un secuenciador moderno hace lo mismo con cada base que entrega. Junto a la letra \nuc{A} escribe, en clave, algo como ``me equivoco en una de cada mil veces que digo esto''. Aprender a leer esa clave, y a desconfiar cuando el pronóstico empeora, es el primer paso de cualquier análisis.
+\end{intuicion}
+
+\subsection{La escala Phred}
+
+Cuando el programa \cmd{phred} asignaba bases a partir de las curvas de fluorescencia de los secuenciadores capilares, calculaba para cada pico varios parámetros de la traza (espaciado entre picos, cociente entre la señal llamada y la no llamada, etc.) y, mediante una tabla calibrada con lecturas de secuencia conocida, los convertía en una probabilidad de error \parencite{c06-ewing1998a,c06-ewing1998b}. Para expresar esa probabilidad de forma compacta, los autores propusieron una escala logarítmica que hoy es universal.
+
+\begin{definicion}{Calidad Phred}{phred}
+Si $p$ es la probabilidad de que la base asignada sea incorrecta, su calidad Phred es
+\begin{equation}\label{eq:06-phred}
+Q = -10\,\log_{10} p \qquad\Longleftrightarrow\qquad p = 10^{-Q/10}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$p$}{Probabilidad de error de la base, estimada por el \ingles{basecaller}.}
+\simbolo{$Q$}{Calidad Phred, en ``decibelios'' de probabilidad; normalmente se redondea a un entero.}
+\end{simbolos}
+
+La escala tiene dos virtudes. Primero, es \emph{intuitiva en órdenes de magnitud}: cada 10 unidades de $Q$ dividen el error por diez. $Q10$ es un error de cada 10 bases (\SI{90}{\percent} de exactitud), $Q20$ uno de cada 100, $Q30$ uno de cada mil y $Q40$ uno de cada diez mil (\SI{99,99}{\percent}). Segundo, convierte productos en sumas: la probabilidad de que dos bases independientes sean ambas incorrectas, $p_1p_2$, corresponde a una calidad $Q_1+Q_2$. La cifra ``$Q30$'' que aparece en las especificaciones de los instrumentos es, por lo tanto, una promesa concreta: como mucho un error por cada mil bases.
+
+\subsection{Del registro a la probabilidad: el formato FASTQ}
+
+Las lecturas se almacenan en archivos FASTQ, que \textcite{c06-cock2010} documentaron formalmente junto con sus variantes históricas. Cada lectura ocupa cuatro líneas: un identificador que empieza con \texttt{@}, la secuencia, una línea separadora que empieza con \texttt{+}, y una cadena de calidades \emph{de la misma longitud que la secuencia}, en la que cada carácter codifica el $Q$ de la base correspondiente.
+
+\begin{definicion}{Codificación ASCII de las calidades}{ascii}
+En la codificación estándar (llamada \emph{Sanger} o Phred+33), el carácter $\kappa$ de la línea de calidades representa
+\begin{equation}\label{eq:06-ascii}
+Q = \operatorname{ord}(\kappa) - 33,
+\end{equation}
+de modo que \texttt{!} (ASCII 33) es $Q0$, \texttt{+} (43) es $Q10$, \texttt{5} (53) es $Q20$, \texttt{?} (63) es $Q30$ e \texttt{I} (73) es $Q40$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\kappa$}{Carácter imprimible de la línea de calidades.}
+\simbolo{$\operatorname{ord}(\kappa)$}{Código ASCII del carácter (por ejemplo, $\operatorname{ord}(\texttt{I})=73$).}
+\simbolo{$33$}{Desplazamiento (\ingles{offset}); se elige 33 porque es el primer carácter ASCII imprimible después del espacio.}
+\end{simbolos}
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap06/fastq_anatomia.tex}
+\caption[Anatomía de un registro FASTQ]{Anatomía de un registro FASTQ. Las líneas 1 a 4 son el identificador, la secuencia, el separador y la cadena de calidades. Debajo de cada carácter de calidad se muestra su código ASCII y la calidad $Q=\operatorname{ord}-33$ (\cref{eq:06-ascii}); las barras reproducen el perfil de calidad con las referencias $Q10$, $Q20$ y $Q30$. Obsérvese la caída hacia el extremo 3' y el último carácter, \texttt{\#} ($Q2$), que algunos \ingles{basecallers} usan como marca de ``base no fiable''. Lectura simulada con \archivo{figuras/cap06/generar.py}.}
+\label{fig:06-fastq}
+\end{figure}
+
+Por desgracia, no siempre fue así. Los primeros instrumentos de Solexa/Illumina usaron un desplazamiento de 64 y, además, una escala distinta, basada en el cociente de probabilidades (\ingles{odds}),
+\begin{equation}\label{eq:06-solexa}
+Q_{\text{Solexa}} = -10\log_{10}\frac{p}{1-p},\qquad Q_{\text{Phred}} = 10\log_{10}\!\left(10^{Q_{\text{Solexa}}/10}+1\right),
+\end{equation}
+que admite valores negativos y coincide con la escala Phred solo para calidades altas \parencite{c06-cock2010}. Versiones posteriores pasaron a Phred+64 y, finalmente, a la codificación Sanger que hoy es el estándar. La consecuencia práctica es que un archivo antiguo leído con el desplazamiento equivocado tendrá todas sus calidades desplazadas en 31 unidades: un error silencioso que convierte bases malas en excelentes, o al revés.
+
+\begin{simbolos}
+\simbolo{$Q_{\text{Solexa}}$}{Calidad en la escala de \ingles{odds} logarítmicos de Solexa.}
+\simbolo{$Q_{\text{Phred}}$}{Calidad equivalente en la escala Phred de la \cref{eq:06-phred}.}
+\end{simbolos}
+
+\subsection{Errores esperados en una lectura}
+
+Si conocemos la probabilidad de error de cada base, podemos resumir la calidad de toda una lectura. Considerando las bases independientes (una aproximación razonable), el número de errores de una lectura de longitud $L$ es una suma de variables de Bernoulli.
+
+\begin{teorema}{Errores esperados y probabilidad de lectura perfecta}{errores}
+Para una lectura con probabilidades de error $p_1,\dots,p_L$ independientes, el número de errores $X$ cumple
+\begin{equation}\label{eq:06-errores}
+\E[X] = \sum_{i=1}^{L} p_i = \sum_{i=1}^{L}10^{-Q_i/10},\qquad
+\Prob(X=0) = \prod_{i=1}^{L}\left(1-p_i\right).
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$X$}{Número (aleatorio) de bases incorrectas en la lectura.}
+\simbolo{$p_i,\ Q_i$}{Probabilidad de error y calidad Phred de la base $i$.}
+\simbolo{$L$}{Longitud de la lectura.}
+\end{simbolos}
+
+La esperanza de una suma es la suma de las esperanzas, sin necesidad siquiera de independencia; la segunda fórmula, en cambio, sí la requiere. Un detalle importante es que el \emph{promedio de las calidades} no es un buen resumen: como $p$ es exponencial en $Q$, una sola base de $Q2$ aporta más errores esperados que treinta bases de $Q30$. Por eso algunos filtros (por ejemplo, en el análisis de amplicones) descartan lecturas según su $\E[X]$, no según su $Q$ medio.
+
+\begin{ejemplo}{La lectura de la \cref{fig:06-fastq}}{errores}
+Las 24 calidades de la figura suman $\E[X] = 0{,}78$ errores esperados. Sin embargo, $0{,}63$ de ellos proceden de la última base ($Q2$, $p=10^{-0{,}2}\approx0{,}63$); las 20 primeras, todas con $Q\ge20$, aportan en conjunto menos de $0{,}02$. Recortar solo las cuatro últimas bases elimina más del \SI{95}{\percent} de los errores esperados.
+
+A mayor escala, comparemos dos lecturas de 150 bases con calidad uniforme. A $Q30$, $\E[X]=150\times10^{-3}=0{,}15$ y $\Prob(X=0)=0{,}999^{150}\approx0{,}86$: casi nueve de cada diez lecturas no tienen ningún error. A $Q20$, $\E[X]=1{,}5$ y $\Prob(X=0)=0{,}99^{150}\approx0{,}22$: casi cuatro de cada cinco lecturas llevan al menos un error. La diferencia entre $Q20$ y $Q30$, que parece modesta en la escala logarítmica, cambia por completo la naturaleza de los datos (\cref{fig:06-phred}).
+\end{ejemplo}
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.7cm},
+   curso, width=0.5\linewidth, height=5.2cm]
+\nextgroupplot[xlabel={calidad Phred $Q$}, ylabel={probabilidad de error $p$},
+   ymode=log, xmin=0, xmax=45, ymin=1e-5, ymax=1.2, xtick={0,10,20,30,40},
+   title={$p=10^{-Q/10}$}]
+  \addplot[azul, domain=0:45, samples=60] {10^(-x/10)};
+  \addplot[only marks, mark=*, mark size=1.8pt, naranja] coordinates {(10,0.1)(20,0.01)(30,0.001)(40,0.0001)};
+  \node[etiqueta,anchor=south west] at (axis cs:10,0.1) {1 en 10};
+  \node[etiqueta,anchor=south west] at (axis cs:20,0.01) {1 en 100};
+  \node[etiqueta,anchor=south west] at (axis cs:30,0.001) {1 en 1000};
+  \node[etiqueta,anchor=north east] at (axis cs:40,0.0001) {1 en $10^4$};
+\nextgroupplot[xlabel={longitud de la lectura $L$ (pb)}, ylabel={$\Prob(\text{lectura sin errores})$},
+   xmin=0, xmax=300, ymin=0, ymax=1.02, legend pos=south west, title={$(1-p)^L$},
+   ytick={0,0.2,0.4,0.6,0.8,1}]
+  \addplot[verde, domain=0:300, samples=80] {(1-1e-4)^x}; \addlegendentry{$Q40$}
+  \addplot[azul, domain=0:300, samples=80] {(1-1e-3)^x}; \addlegendentry{$Q30$}
+  \addplot[naranja, domain=0:300, samples=80] {(1-1e-2)^x}; \addlegendentry{$Q20$}
+  \addplot[only marks, mark=*, mark size=1.6pt, tinta2] coordinates {(150,0.861)(150,0.221)};
+\end{groupplot}
+\end{tikzpicture}
+\caption[La escala Phred]{\textbf{Izquierda}: la escala Phred es logarítmica; cada 10 unidades de $Q$ reducen el error en un factor 10. \textbf{Derecha}: probabilidad de que una lectura no contenga ningún error (\cref{eq:06-errores}) si todas sus bases tienen la misma calidad. Los puntos grises marcan las lecturas de 150 pb del \cref{ej:errores}: $0{,}86$ a $Q30$ frente a $0{,}22$ a $Q20$.}
+\label{fig:06-phred}
+\end{figure}
+
+\begin{cuidado}[Las calidades son estimaciones, no verdades]
+Un $Q$ es tan bueno como la calibración del \ingles{basecaller} que lo produjo. Las calidades pueden estar sistemáticamente infladas o desinfladas según el instrumento, la química y el contexto de secuencia; por eso los flujos de llamado de variantes suelen \emph{recalibrarlas} empíricamente usando posiciones conocidas. Además, muchos instrumentos actuales agrupan las calidades en unos pocos niveles para comprimir los archivos, de modo que un $Q$ individual tiene una resolución limitada.
+\end{cuidado}
+
+\subsection{Control de calidad: FastQC y MultiQC}
+
+Antes de cualquier análisis conviene mirar los datos en conjunto. \cmd{FastQC} \parencite{c06-andrews2010} es la herramienta de referencia: recorre un archivo FASTQ y produce un informe con una serie de módulos, cada uno marcado como aprobado, dudoso o fallido. Los más útiles son:
+
+\begin{itemize}
+  \item \textbf{Calidad por posición} (\ingles{per base sequence quality}): diagramas de caja de $Q$ en cada posición de la lectura (\cref{fig:06-fastqc}). Revela la caída hacia 3' que predice la \cref{eq:06-fase}, o problemas puntuales en ciclos concretos (una burbuja en la celda, un fallo de reactivo).
+  \item \textbf{Contenido de bases por posición}: en una biblioteca aleatoria, las proporciones de A, C, G y T deberían ser constantes a lo largo de la lectura. Las oscilaciones en las primeras posiciones son habituales en RNA-seq por los sesgos de los cebadores aleatorios, y no justifican por sí solas un recorte.
+  \item \textbf{Contenido de GC por lectura}: debería parecerse a una distribución unimodal centrada en el GC del organismo; una segunda moda sugiere contaminación.
+  \item \textbf{Niveles de duplicación} y \textbf{secuencias sobrerrepresentadas}: detectan bibliotecas de baja complejidad, dímeros de adaptadores y contaminantes abundantes.
+  \item \textbf{Contenido de adaptadores}: fracción acumulada de lecturas en las que aparece una secuencia de adaptador conocida a partir de cada posición.
+\end{itemize}
+
+Un proyecto real tiene decenas o cientos de muestras, y abrir cientos de informes es inviable. \cmd{MultiQC} \parencite{c06-ewels2016} resuelve este problema: busca en un directorio los resultados de FastQC y de muchas otras herramientas (recortadores, alineadores, cuantificadores) y los agrega en un único informe interactivo, donde las muestras atípicas y los efectos de lote saltan a la vista.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap06/fastqc_ticks.tex}%
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=6.2cm, clip=false,
+   xmin=0, xmax=39, ymin=0, ymax=41,
+   xlabel={posición en la lectura (pb)}, ylabel={calidad Phred $Q$},
+   capseis/ticks, grid=none, boxplot/draw direction=y]
+  \fill[verde!12] (axis cs:0,28) rectangle (axis cs:39,41);
+  \fill[amarillo!18] (axis cs:0,20) rectangle (axis cs:39,28);
+  \fill[rojo!12] (axis cs:0,0) rectangle (axis cs:39,20);
+  \input{figuras/cap06/fastqc_cajas.tex}
+  \addplot[azul, thick, mark=none] table[x=x,y=media] {figuras/cap06/fastqc_media.dat};
+  \node[etiqueta,anchor=west,text=verde!50!black] at (axis cs:39.3,34.5) {buena};
+  \node[etiqueta,anchor=west,text=amarillo!40!black] at (axis cs:39.3,24) {aceptable};
+  \node[etiqueta,anchor=west,text=rojooscuro] at (axis cs:39.3,10) {mala};
+\end{axis}
+\end{tikzpicture}
+\caption[Calidad por posición al estilo FastQC]{Calidad por posición de \num{20000} lecturas simuladas de 150 pb, al estilo del módulo \ingles{per base sequence quality} de FastQC. Como en FastQC, las primeras nueve posiciones se muestran individualmente y el resto en bloques de cinco. Cada caja abarca del cuartil 1 al 3, con la mediana en rojo y bigotes entre los percentiles 10 y 90; la línea azul es la media. El patrón es el típico de Illumina: calidad alta y estable al principio, una ligera caída en las primeras bases y un deterioro creciente, con mayor dispersión, hacia el extremo 3'. En las últimas posiciones el percentil 10 cae por debajo de $Q20$: candidatas a recorte.}
+\label{fig:06-fastqc}
+\end{figure}
+
+\subsection{Duplicados y complejidad de la biblioteca}
+
+Un duplicado es un par de lecturas que proceden de la \emph{misma molécula original}: copias creadas por la PCR de la preparación de la biblioteca, o duplicados ``ópticos'' en los que un mismo clúster se registró dos veces. Los duplicados no aportan información independiente y, si no se identifican, inflan artificialmente la confianza en lo que sea que esas copias contengan, incluido un error de la PCR temprana. Pero no todos los duplicados son artefactos: si la biblioteca tiene pocas moléculas distintas, incluso un muestreo perfecto las repetirá.
+
+\begin{teorema}{Moléculas distintas observadas}{complejidad}
+Si una biblioteca contiene $M$ moléculas distintas igualmente representadas y se secuencian $N$ lecturas elegidas al azar, el número esperado de moléculas distintas observadas es
+\begin{equation}\label{eq:06-complejidad}
+\E[D] = M\left[1-\left(1-\tfrac{1}{M}\right)^{N}\right] \approx M\left(1-e^{-N/M}\right),
+\end{equation}
+y la tasa de duplicación esperada es $1-\E[D]/N$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$M$}{Complejidad de la biblioteca: número de moléculas únicas disponibles.}
+\simbolo{$N$}{Número de lecturas secuenciadas.}
+\simbolo{$D$}{Número de moléculas distintas observadas al menos una vez.}
+\end{simbolos}
+
+La demostración usa un argumento que reaparecerá, casi idéntico, en la \cref{sec:06-cobertura}: una molécula concreta no es elegida por ninguna de las $N$ lecturas con probabilidad $(1-1/M)^N\approx e^{-N/M}$, y la esperanza de $D$ es $M$ veces la probabilidad de lo contrario. Con $M=10^7$ moléculas y $N=2\times10^7$ lecturas, $\E[D]\approx8{,}65\times10^6$ y la tasa de duplicación es del \SI{57}{\percent}: la mitad del presupuesto de secuenciación se gasta en releer lo mismo. Con una biblioteca diez veces más compleja ($M=10^8$), la misma cantidad de lecturas produce solo un \SI{9}{\percent} de duplicados. La lección práctica es que \emph{la complejidad de la biblioteca, no el número de lecturas, limita la información}; secuenciar más una biblioteca pobre solo produce más duplicados.
+
+\subsection{Recorte de adaptadores}
+
+Si el inserto es más corto que la longitud de lectura, la polimerasa lo atraviesa por completo y sigue leyendo el adaptador del otro extremo (\cref{fig:06-adaptador}). Esas bases no pertenecen al organismo: si no se eliminan, impedirán el alineamiento o, peor, producirán falsas discrepancias en el extremo 3'. El fenómeno es inevitable en bibliotecas de fragmentos cortos, como las de ARN pequeños o las de ADN antiguo y degradado.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize, x=1cm, y=1cm]
+  % inserto largo
+  \node[etiqueta,anchor=east] at (-0.1,1.6) {inserto largo};
+  \fill[magenta!45] (0,1.45) rectangle (0.8,1.75);
+  \fill[azul!45] (0.8,1.45) rectangle (9.2,1.75);
+  \fill[aqua!55] (9.2,1.45) rectangle (10.0,1.75);
+  \draw[flecha=tinta] (0.8,2.05) -- node[above,etiqueta]{lectura (150 ciclos)} (6.0,2.05);
+  % inserto corto
+  \node[etiqueta,anchor=east] at (-0.1,0.2) {inserto corto};
+  \fill[magenta!45] (0,0.05) rectangle (0.8,0.35);
+  \fill[azul!45] (0.8,0.05) rectangle (3.8,0.35);
+  \fill[aqua!55] (3.8,0.05) rectangle (4.6,0.35);
+  \fill[gris!30] (4.6,0.05) rectangle (6.4,0.35);
+  \draw[flecha=tinta] (0.8,0.65) -- node[above,etiqueta]{lectura (150 ciclos)} (6.0,0.65);
+  \draw[decorate,decoration={brace,amplitude=4pt,mirror},rojooscuro,thick] (3.8,-0.05) -- node[below=4pt,etiqueta,text=rojooscuro]{lectura del adaptador} (6.0,-0.05);
+  % leyenda
+  \fill[magenta!45] (6.9,0.55) rectangle (7.2,0.75); \node[etiqueta,anchor=west] at (7.25,0.65) {adaptador 5'};
+  \fill[azul!45] (6.9,0.2) rectangle (7.2,0.4); \node[etiqueta,anchor=west] at (7.25,0.3) {inserto (genoma)};
+  \fill[aqua!55] (6.9,-0.15) rectangle (7.2,0.05); \node[etiqueta,anchor=west] at (7.25,-0.05) {adaptador 3'};
+  \fill[gris!30] (6.9,-0.5) rectangle (7.2,-0.3); \node[etiqueta,anchor=west] at (7.25,-0.4) {más allá: ruido, poli-G};
+\end{tikzpicture}
+\caption[Lectura a través del adaptador]{Cuando el inserto (azul) es más largo que el número de ciclos, la lectura termina dentro del genoma. Cuando es más corto, la lectura lo atraviesa y continúa en el adaptador 3' (aqua) y, más allá, en una región sin molde que produce ruido o, en la química de dos colores, colas de \secuencia{GGG}. Las bases desde el inicio del adaptador deben recortarse. En lecturas pareadas, los dos miembros del par se solapan por completo en este caso, lo que permite localizar el adaptador sin conocer su secuencia.}
+\label{fig:06-adaptador}
+\end{figure}
+
+Detectar el adaptador parece trivial, porque su secuencia es conocida (por ejemplo, el prefijo \secuencia{AGATCGGAAGAGC}, común a los adaptadores TruSeq de Illumina). La dificultad está en el extremo: cuando el adaptador empieza a solo $k$ bases del final de la lectura, apenas se ven sus primeras $k$ letras, y una coincidencia tan corta puede ser casual.
+
+\begin{definicion}{Coincidencia casual con el adaptador}{adaptador}
+Si las bases de la lectura son independientes y equiprobables, la probabilidad de que sus últimas $k$ bases coincidan por azar con las primeras $k$ del adaptador es
+\begin{equation}\label{eq:06-adaptador}
+\Prob(\text{coincidencia casual de longitud } k) = 4^{-k}.
+\end{equation}
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$k$}{Longitud del solapamiento entre el extremo 3' de la lectura y el comienzo del adaptador.}
+\end{simbolos}
+
+Con $k=3$, uno de cada 64 extremos (\SI{1,6}{\percent}) coincide por azar; con $k=10$, menos de uno por millón. Las herramientas, por lo tanto, deben aceptar un compromiso: exigir un solapamiento mínimo largo deja adaptadores residuales cortos; aceptar solapamientos cortos recorta de más unas pocas bases genuinas en una fracción de las lecturas, un daño normalmente menor. \cmd{cutadapt} \parencite{c06-martin2011} busca el adaptador mediante un alineamiento semiglobal que tolera una fracción de errores, y recorta desde el punto de coincidencia. \cmd{Trimmomatic} \parencite{c06-bolger2014} añade un modo ``palíndromo'' para lecturas pareadas, que aprovecha que ambos miembros del par, cuando el inserto es corto, son complementarios inversos entre sí. \cmd{fastp} \parencite{c06-chen2018} usa la misma idea de solapamiento para detectar adaptadores automáticamente y, en un único recorrido del archivo, realiza también el control de calidad, el recorte por calidad y el de colas de poli-G.
+
+\subsection{Recorte por calidad}
+
+Una vez eliminados los adaptadores, queda decidir qué hacer con los extremos de baja calidad. Hay dos estrategias clásicas.
+
+\paragraph{Ventana deslizante} \cmd{Trimmomatic} recorre la lectura desde el extremo 5' con una ventana de $w$ bases y la corta cuando la calidad media de la ventana cae por debajo de un umbral $t$ (opción \texttt{SLIDINGWINDOW:$w$:$t$}) \parencite{c06-bolger2014}. Formalmente, la lectura se trunca en
+\begin{equation}\label{eq:06-ventana}
+x^{\star} = \min\left\{\,x \;:\; \frac{1}{w}\sum_{i=x}^{x+w-1} Q_i < t\,\right\},
+\end{equation}
+conservando las bases $1,\dots,x^{\star}-1$. Promediar sobre una ventana evita que una única base mala, aislada en medio de una lectura excelente, provoque un corte prematuro.
+
+\begin{simbolos}
+\simbolo{$w,\ t$}{Anchura de la ventana y umbral de calidad media (p.\,ej., $w=4$, $t=20$).}
+\simbolo{$x^{\star}$}{Primera posición en la que empieza una ventana con calidad media inferior al umbral.}
+\end{simbolos}
+
+\paragraph{Suma acumulada desde 3'} La alternativa, heredada del alineador BWA y usada por la opción \texttt{-q} de \cmd{cutadapt}, recorre la lectura desde el extremo 3' acumulando $t-Q_i$ y corta donde esa suma alcanza su máximo:
+\begin{equation}\label{eq:06-bwa}
+x^{\star} = \argmax_{x}\ \sum_{i=x}^{L}\left(t - Q_i\right).
+\end{equation}
+Es exactamente el problema del segmento de suma máxima que vimos en el \cref{cap:03} con Smith-Waterman, restringido a sufijos: las bases con $Q<t$ suman a favor del recorte y las buenas en contra, de modo que se elimina el sufijo cuya ``mala calidad neta'' es máxima.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap06/ventana_corte.tex}
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=5.6cm,
+   xmin=0.3, xmax=30.7, ymin=0, ymax=42, xlabel={posición en la lectura},
+   ylabel={calidad $Q$}, xtick={1,5,10,15,20,25,30},
+   legend style={at={(0.5,1.03)},anchor=south}, legend columns=3, grid=none]
+  \fill[rojo!10] (axis cs:\capseiscorte,0) rectangle (axis cs:30.7,42);
+  \addplot[ybar, area legend, bar width=4.2pt, fill=azul!55, draw=azul!80!black] table[x=pos,y=q] {figuras/cap06/ventana_q.dat};
+  \addlegendentry{$Q_i$}
+  \addplot[naranja, very thick, mark=*, mark size=1.2pt] table[x=pos,y=m] {figuras/cap06/ventana_m.dat};
+  \addlegendentry{media de la ventana ($w=4$)}
+  \addplot[rojo, dashed, thick, domain=0.3:30.7] {20};
+  \addlegendentry{umbral $t=20$}
+  \draw[rojooscuro, very thick] (axis cs:\capseiscorte,0) -- (axis cs:\capseiscorte,42);
+  \draw[amarillo!70!black, thick, rounded corners=1pt] (axis cs:20.55,0.5) rectangle (axis cs:24.45,24);
+  \node[etiqueta, text=rojooscuro, anchor=north east, align=right] at (axis cs:\capseiscorte,41) {corte\\(ventana deslizante)};
+  \draw[verde!60!black, very thick, dashed] (axis cs:23.5,0) -- (axis cs:23.5,33);
+  \node[etiqueta, text=verde!40!black, anchor=south west, align=left, fill=white, fill opacity=0.8, text opacity=1] at (axis cs:23.6,33) {corte\\\texttt{cutadapt -q 20}};
+\end{axis}
+\end{tikzpicture}
+\caption[Recorte por calidad]{Recorte por calidad de una lectura de 30 bases. Las barras son las calidades individuales; la curva naranja, la media de cada ventana de cuatro bases, dibujada en su centro. La primera ventana con media inferior a 20 empieza en la posición 21 (recuadro amarillo, media $19{,}75$), así que la ventana deslizante conserva 20 bases (\cref{eq:06-ventana}). El criterio de suma acumulada (\cref{eq:06-bwa}) es menos conservador y conserva 23: las bases 21 a 23 ($Q=22,19,21$) tienen, en conjunto, una calidad neta por encima del umbral. Ninguno de los dos es ``el correcto''; son reglas distintas para el mismo compromiso.}
+\label{fig:06-ventana}
+\end{figure}
+
+\begin{ejemplo}{Comparar los dos criterios}{recorte}
+La \cref{fig:06-ventana} aplica ambos criterios a la misma lectura con $t=20$. Las medias de ventana de cuatro bases descienden lentamente ($37{,}75$, $37{,}25$, \ldots, $22{,}25$) hasta que la ventana que empieza en la posición 21, con calidades $(22,19,21,17)$, da $19{,}75<20$: \cmd{Trimmomatic} corta allí y conserva 20 bases. El criterio de BWA acumula desde el final: $20-6=14$, $+12=26$, $+10=36$, $+8=44$, $+2=46$, $+5=51$, $+3=54$ (posición 24), $-1=53$, $+1=54$, $-2=52$\ldots\ El máximo, 54, se alcanza por primera vez en la posición 24, así que se conservan las 23 primeras bases. La diferencia (tres bases) es pequeña aquí, pero ilustra por qué dos herramientas con el ``mismo'' umbral no producen los mismos archivos.
+\end{ejemplo}
+
+\begin{codigo}[recorte.py]
+from Bio import SeqIO
+
+def errores_esperados(q):
+    return sum(10 ** (-qi / 10) for qi in q)
+
+def ventana_deslizante(q, w=4, t=20):
+    """Devuelve cuántas bases conservar (criterio de Trimmomatic)."""
+    for x in range(len(q) - w + 1):
+        if sum(q[x:x + w]) / w < t:
+            return x
+    return len(q)
+
+with open("recortadas.fastq", "w") as out:
+    for rec in SeqIO.parse("muestra_R1.fastq", "fastq"):
+        q = rec.letter_annotations["phred_quality"]      # ya sin +33
+        corte = ventana_deslizante(q)
+        rec = rec[:corte]                                # corta seq y Q
+        if len(rec) >= 50 and errores_esperados(q[:corte]) < 1:
+            SeqIO.write(rec, out, "fastq")
+\end{codigo}
+
+En la práctica no escribiremos nuestro propio recortador: usaremos herramientas probadas, rápidas y que manejan correctamente las lecturas pareadas (si un miembro del par se descarta, el otro debe ir a un archivo aparte, o los archivos quedarán desincronizados). Un flujo típico de control de calidad es el siguiente:
+
+\begin{consola}[Control de calidad y recorte de un par de archivos]
+# 1. Diagnóstico inicial
+fastqc -t 4 -o qc_crudo/ muestra_R1.fastq.gz muestra_R2.fastq.gz
+
+# 2. Adaptadores + calidad + longitud mínima en un solo paso
+fastp -i muestra_R1.fastq.gz -I muestra_R2.fastq.gz \
+      -o limpia_R1.fastq.gz  -O limpia_R2.fastq.gz  \
+      --detect_adapter_for_pe --trim_poly_g         \
+      --cut_right --cut_right_window_size 4         \
+      --cut_right_mean_quality 20 --length_required 50 \
+      -h fastp.html -j fastp.json -w 8
+
+# 3. Diagnóstico después del recorte y resumen de todo el proyecto
+fastqc -t 4 -o qc_limpio/ limpia_R1.fastq.gz limpia_R2.fastq.gz
+multiqc qc_crudo/ qc_limpio/ fastp.json -o informe_qc/
+\end{consola}
+
+\begin{cuidado}[No recorte por reflejo]
+El recorte agresivo tiene costos: acorta lecturas (lo que empeora el mapeo en regiones repetidas), descarta pares enteros y puede introducir sesgos si la calidad depende de la secuencia. Muchos alineadores modernos realizan alineamientos locales que ignoran (\ingles{soft-clip}) los extremos que no alinean, y los llamadores de variantes ya ponderan cada base por su calidad. Recortar adaptadores es casi siempre necesario; recortar por calidad debe hacerse con umbrales moderados ($Q15$--$Q20$) y comprobando su efecto con un segundo informe de FastQC, no como un ritual. \textcite{c06-schirmer2015} mostraron, para amplicones de MiSeq, que la preparación de la biblioteca y los cebadores influyen en los patrones de error tanto como el propio instrumento: ningún recorte arregla un problema del laboratorio.
+\end{cuidado}
+
+\begin{ideaclave}
+$Q=-10\log_{10}p$. Resuma la calidad de una lectura con sus errores esperados $\sum p_i$, no con el promedio de $Q$; recorte adaptadores siempre y calidad con moderación.
+\end{ideaclave}
+
+
+% ---------------------------------------------------------------------
+\section{Cobertura y la teoría de Lander-Waterman}\label{sec:06-cobertura}
+% ---------------------------------------------------------------------
+\enlacerepo{6.3 · Cobertura y Lander-Waterman}
+
+\begin{intuicion}[Gotas sobre la acera]
+Empieza a llover sobre una acera seca. Las primeras gotas dejan manchas aisladas; al cabo de un rato las manchas se tocan y forman islas mojadas; mucho después, la acera está completamente oscura. Pero incluso cuando ya ha caído agua más que suficiente para cubrir la acera dos o tres veces, si mira con atención encontrará todavía algún rincón seco: las gotas caen al azar y el azar no reparte con justicia. La secuenciación de un genoma por fragmentos aleatorios se parece mucho a esa lluvia. ¿Cuántas ``gotas'' (lecturas) necesitamos para que no queden rincones secos? ¿Cuántas islas habrá mientras tanto? La respuesta es una de las aplicaciones más bellas de la distribución de Poisson.
+\end{intuicion}
+
+\subsection{Cobertura y profundidad}
+
+Supongamos que secuenciamos $N$ lecturas de longitud $L$ de un genoma de tamaño $G$. La cantidad total de bases leídas es $NL$, y la definimos en relación con el tamaño del genoma.
+
+\begin{definicion}{Cobertura media}{cobertura}
+La \emph{cobertura} (o profundidad media) de un experimento es
+\begin{equation}\label{eq:06-cobertura}
+c = \frac{N\,L}{G},
+\end{equation}
+y se expresa como ``$c\times$'' (por ejemplo, $30\times$). La \emph{profundidad} $D_x$ en una posición $x$ es el número de lecturas que la contienen.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$N$}{Número de lecturas (o de pares de lecturas, si se cuenta el inserto).}
+\simbolo{$L$}{Longitud de cada lectura, en pares de bases.}
+\simbolo{$G$}{Tamaño del genoma (haploide), en pares de bases.}
+\simbolo{$c$}{Cobertura media: cuántas veces, en promedio, se lee cada base.}
+\simbolo{$D_x$}{Profundidad (aleatoria) en la posición $x$.}
+\end{simbolos}
+
+Por construcción, la profundidad media sobre todas las posiciones es $c$; la pregunta interesante es cómo se \emph{distribuye} alrededor de ese valor. La \cref{fig:06-lecturas} muestra una realización: aunque la cobertura media es de $2{,}6\times$, hay posiciones leídas seis veces y pequeños huecos sin ninguna lectura.
+
+\begin{figure}[t]
+\centering
+\input{figuras/cap06/lecturas.tex}
+\caption[Lecturas aleatorias y perfil de profundidad]{Veintidós lecturas de 14 posiciones colocadas al azar sobre un genoma de 120 posiciones ($c = 22\cdot14/120 \approx 2{,}57$). \textbf{Arriba}: las lecturas, apiladas para que no se solapen visualmente. \textbf{Abajo}: la profundidad en cada posición. Pese a que en promedio cada base se leyó más de dos veces y media, la profundidad varía entre 0 y más del doble de la media, y aparecen huecos (rojo) que ninguna lectura cubre; dos de ellos están en los extremos, donde un genoma lineal es más difícil de cubrir. La teoría predice $G e^{-c}\approx 9$ posiciones descubiertas; en esta realización hay 4. Generado con \archivo{figuras/cap06/generar.py}.}
+\label{fig:06-lecturas}
+\end{figure}
+
+\subsection{La distribución de Poisson de la profundidad}
+
+\textcite{c06-lander1988} formularon el modelo que usamos hasta hoy. Aunque lo propusieron para el mapeo físico con clones, sus supuestos se trasladan sin cambios a las lecturas: (i) las lecturas comienzan en posiciones independientes y uniformemente distribuidas a lo largo del genoma; (ii) todas tienen la misma longitud $L$; (iii) el genoma es mucho mayor que las lecturas, $G\gg L$. Waterman desarrolla el modelo con detalle en su libro de texto \parencite{c06-waterman1995}.
+
+\begin{teorema}{Profundidad de Poisson}{poisson}
+Bajo los supuestos (i)--(iii), la profundidad en una posición fija sigue, aproximadamente, una distribución de Poisson de media $c$:
+\begin{equation}\label{eq:06-poisson}
+\Prob(D_x = k) = \frac{e^{-c}\,c^{k}}{k!},\qquad k=0,1,2,\dots
+\end{equation}
+En particular, la fracción esperada del genoma \emph{no cubierta} es $\Prob(D_x=0)=e^{-c}$, y la fracción cubierta, $1-e^{-c}$.
+\end{teorema}
+
+\paragraph{Derivación paso a paso} Fijemos una posición $x$. Una lectura cubre $x$ si y solo si empieza en alguna de las $L$ posiciones $x-L+1,\dots,x$. Como hay (aproximadamente) $G$ posiciones de inicio posibles y todas son equiprobables, la probabilidad de que una lectura dada cubra $x$ es
+\[
+\pi = \frac{L}{G}.
+\]
+Las $N$ lecturas son independientes, de modo que el número de ellas que cubren $x$ es binomial:
+\[
+\Prob(D_x=k)=\binom{N}{k}\pi^k(1-\pi)^{N-k},\qquad \E[D_x]=N\pi=\frac{NL}{G}=c.
+\]
+En un experimento real $N$ es enorme (millones) y $\pi$ minúscula ($L/G\sim10^{-7}$ en un genoma humano), mientras que su producto $c$ es moderado. Es el régimen clásico en que la binomial converge a la Poisson. Explícitamente, con $\pi=c/N$,
+\[
+\begin{aligned}
+\binom{N}{k}\left(\frac{c}{N}\right)^k\left(1-\frac{c}{N}\right)^{N-k}
+&= \underbrace{\frac{N(N-1)\cdots(N-k+1)}{N^k}}_{\to\,1}\;\frac{c^k}{k!}\;
+\underbrace{\left(1-\frac{c}{N}\right)^{N}}_{\to\,e^{-c}}\;
+\underbrace{\left(1-\frac{c}{N}\right)^{-k}}_{\to\,1}\\[4pt]
+&\xrightarrow[N\to\infty]{}\;\frac{e^{-c}c^k}{k!}.
+\end{aligned}
+\]
+Con $k=0$ obtenemos la fracción no cubierta, $e^{-c}$. $\square$
+
+\begin{simbolos}
+\simbolo{$\pi$}{Probabilidad de que una lectura concreta cubra la posición $x$.}
+\simbolo{$k$}{Valor de la profundidad cuya probabilidad se calcula.}
+\simbolo{$e^{-c}$}{Fracción esperada del genoma sin ninguna lectura.}
+\end{simbolos}
+
+La fórmula es implacable. Con $c=1$, el \SI{36,8}{\percent} del genoma queda sin leer, aunque ``hayamos leído el genoma una vez''. Con $c=3$ falta el \SI{5}{\percent}; con $c=5$, el \SI{0,67}{\percent}; con $c=10$, el $0{,}0045\,\%$. Como la fracción descubierta decrece exponencialmente, cada unidad adicional de cobertura divide lo que falta por $e\approx2{,}72$, pero nunca lo anula. Observe también el paralelismo formal con la \cref{eq:06-complejidad}: en ambos casos se pregunta por los objetos (posiciones o moléculas) que un muestreo aleatorio no ha tocado, y en ambos la respuesta es $e^{-\text{(número medio de toques)}}$.
+
+\subsection{Islas, \ingles{contigs} y huecos}
+
+Para el ensamblaje, más que las bases no cubiertas importa cuántos fragmentos contiguos (\emph{islas} o \ingles{contigs}) podremos reconstruir. Dos lecturas solo pueden unirse si se solapan lo suficiente para detectarlo; llamemos $T$ al solapamiento mínimo detectable y $\sigma = 1-T/L$ a la fracción de la lectura que \emph{no} necesita solaparse.
+
+\begin{teorema}{Lander-Waterman: número y tamaño de las islas}{lw}
+Bajo los supuestos anteriores y con solapamiento mínimo detectable $T=(1-\sigma)L$:
+\begin{align}
+\E[\text{número de islas}] &= N\,e^{-c\sigma},\label{eq:06-islas}\\
+\E[\text{lecturas por isla}] &= e^{c\sigma},\label{eq:06-lecturasisla}\\
+\E[\text{longitud de una isla}] &= L\left[\frac{e^{c\sigma}-1}{c} + 1 - \sigma\right].\label{eq:06-longisla}
+\end{align}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$T$}{Solapamiento mínimo (en pb) necesario para reconocer que dos lecturas son vecinas.}
+\simbolo{$\sigma$}{Fracción $1-T/L$; con $T=0$ vale 1.}
+\simbolo{$N e^{-c\sigma}$}{Número esperado de islas; en un genoma lineal, los huecos son una menos que las islas.}
+\end{simbolos}
+
+\paragraph{Derivación} Cada isla tiene exactamente una lectura ``final'', la situada más a la derecha. Una lectura que empieza en la posición $s$ es final si ninguna otra lectura empieza en el intervalo $(s,\ s+L-T]$, de longitud $L\sigma$: si alguna empezara allí, se solaparía con ella en al menos $T$ bases y la isla continuaría. Para cada una de las otras $N-1$ lecturas, la probabilidad de no empezar en ese intervalo es $1-L\sigma/G$, luego
+\[
+\Prob(\text{una lectura es final}) = \left(1-\frac{L\sigma}{G}\right)^{N-1} \approx e^{-NL\sigma/G} = e^{-c\sigma}.
+\]
+Contar islas es contar lecturas finales, y por linealidad de la esperanza se obtiene la \cref{eq:06-islas}. Si cada lectura, recorriendo de izquierda a derecha, ``cierra'' la isla con probabilidad $e^{-c\sigma}$, el número de lecturas por isla es geométrico con esa probabilidad de éxito, de media $e^{c\sigma}$ (\cref{eq:06-lecturasisla}). La longitud de la isla (\cref{eq:06-longisla}) se obtiene sumando la longitud de la última lectura a las distancias entre inicios consecutivos dentro de la isla, que son exponenciales truncadas en $L\sigma$; el cálculo detallado está en \textcite{c06-lander1988}. $\square$
+
+La \cref{eq:06-islas} esconde un comportamiento no monótono. Midamos el número de islas en unidades de $G/L$ (el número de lecturas que ``cabrían'' en el genoma sin solaparse): como $N=cG/L$,
+\begin{equation}\label{eq:06-islasnorm}
+\frac{\E[\text{islas}]}{G/L} = c\,e^{-c\sigma},\qquad
+\frac{d}{dc}\left(c\,e^{-c\sigma}\right) = e^{-c\sigma}(1-c\sigma) = 0
+\;\Longrightarrow\; c^{\star}=\frac{1}{\sigma}.
+\end{equation}
+Al principio, cada lectura nueva suele caer en territorio virgen y \emph{crea} una isla; más tarde, las lecturas nuevas \emph{unen} islas existentes. El número de islas alcanza su máximo, $(G/L)/(e\sigma)$, cuando la cobertura vale $1/\sigma$, y después decae exponencialmente (\cref{fig:06-lw}). Un ensamblaje con cobertura baja no es simplemente ``un poco peor'': está en la zona de máxima fragmentación.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=2 by 1, horizontal sep=1.6cm},
+   curso, width=0.52\linewidth, height=5.6cm, xmin=0, xmax=8]
+\nextgroupplot[xlabel={cobertura $c$}, ylabel={fracción del genoma cubierta},
+   ymin=0, ymax=1.03, title={$1-e^{-c}$}, legend pos=south east,
+   ytick={0,0.2,0.4,0.6,0.8,1}]
+  \addplot[azul] table[x=c,y=f] {figuras/cap06/lw_frac.dat};
+  \addlegendentry{teoría}
+  \addplot[only marks, mark=o, mark size=2pt, naranja, thick] table[x=c,y=f] {figuras/cap06/lw_sim.dat};
+  \addlegendentry{simulación}
+\nextgroupplot[xlabel={cobertura $c$}, ylabel={islas por $G/L$},
+   ymin=0, ymax=0.8, title={$c\,e^{-c\sigma}$}, legend pos=north east]
+  \addplot[azul] table[x=c,y=s1] {figuras/cap06/lw_islas.dat};
+  \addlegendentry{$\sigma=1$}
+  \addplot[aqua] table[x=c,y=s08] {figuras/cap06/lw_islas.dat};
+  \addlegendentry{$\sigma=0{,}8$}
+  \addplot[violeta] table[x=c,y=s05] {figuras/cap06/lw_islas.dat};
+  \addlegendentry{$\sigma=0{,}5$}
+  \addplot[only marks, mark=o, mark size=2pt, naranja, thick, forget plot] table[x=c,y=islas] {figuras/cap06/lw_sim.dat};
+  \addplot[tinta2, dashed, thin, forget plot] coordinates {(1,0) (1,0.368)};
+  \addplot[tinta2, dashed, thin, forget plot] coordinates {(1.25,0) (1.25,0.46)};
+  \addplot[tinta2, dashed, thin, forget plot] coordinates {(2,0) (2,0.736)};
+\end{groupplot}
+\end{tikzpicture}
+\caption[Curvas de Lander-Waterman]{Las dos curvas de Lander-Waterman. \textbf{Izquierda}: fracción del genoma cubierta por al menos una lectura. \textbf{Derecha}: número esperado de islas (\ingles{contigs}), en unidades de $G/L$, para tres valores de $\sigma=1-T/L$; las líneas discontinuas marcan los máximos en $c^\star=1/\sigma$ (\cref{eq:06-islasnorm}). Los círculos naranjas son el promedio de cinco simulaciones con $G=10^6$ y $L=500$ (con $\sigma=1$) y coinciden con la teoría. Exigir más solapamiento (menor $\sigma$) retrasa la fusión de islas: para la misma cobertura hay más \ingles{contigs}.}
+\label{fig:06-lw}
+\end{figure}
+
+\begin{ejemplo}{Planificar el ensamblaje de una bacteria}{lw}
+Queremos ensamblar un genoma bacteriano de $G=5\times10^6$ pb con lecturas de $L=150$ pb, y nuestro ensamblador necesita un solapamiento de al menos $T=30$ pb, de modo que $\sigma=0{,}8$. Aplicando las \cref{eq:06-poisson,eq:06-islas,eq:06-longisla}:
+
+\begin{center}
+\small
+\begin{tabular}{@{}rrrrr@{}}
+\toprule
+$c$ & $N$ (lecturas) & bases sin cubrir, $Ge^{-c}$ & islas, $Ne^{-c\sigma}$ & longitud media de isla\\
+\midrule
+1  & \num{33333}  & \num{1839397} & \num{14978} & \SI{214}{pb}\\
+5  & \num{166667} & \num{33690}   & \num{3053}  & \SI{1638}{pb}\\
+10 & \num{333333} & \num{227}     & \num{112}   & \SI{44,7}{kb}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Con $5\times$ tendríamos más de tres mil fragmentos; con $10\times$, alrededor de un centenar. Con $30\times$ la teoría predice $Ne^{-24}\approx4\times10^{-5}$ islas adicionales, es decir, esencialmente un único \ingles{contig}. ¿Por qué entonces los ensamblajes reales de lecturas cortas a $30\times$ o $50\times$ terminan en decenas o cientos de \ingles{contigs}? Porque el modelo ignora dos cosas: las \emph{repeticiones} y el \emph{sesgo de cobertura}. Las abordamos a continuación.
+\end{ejemplo}
+
+\begin{profundizacion}[Lo que Lander-Waterman no ve: las repeticiones]
+El modelo supone que dos lecturas que se solapan \emph{siempre} pueden unirse sin ambigüedad. Si el genoma contiene una repetición más larga que las lecturas (un elemento transponible, un operón de ARN ribosómico), las lecturas que caen dentro de ella son compatibles con varias posiciones y el ensamblador no puede decidir cómo continuar: la isla se rompe \emph{independientemente de la cobertura}. Ninguna profundidad de lecturas cortas resuelve una repetición de \SI{6}{kb}; una sola lectura de \SI{20}{kb} que la atraviese de lado a lado, sí. Esta es la razón de fondo por la que las lecturas largas han transformado el ensamblaje: las lecturas ultralargas de Nanopore permitieron cerrar huecos de la referencia humana GRCh38 \parencite{c06-jain2018}, y las HiFi producen \ingles{contigs} de decenas de megabases \parencite{c06-wenger2019}. Lo retomaremos al estudiar el ensamblaje \emph{de novo}.
+\end{profundizacion}
+
+\subsection{Más allá de Poisson: sesgos y sobredispersión}
+
+La distribución de Poisson tiene varianza igual a su media. Los datos reales casi nunca la cumplen: la varianza observada de la profundidad es mayor, a veces mucho mayor. Se dice entonces que la profundidad está \emph{sobredispersa}. La causa principal es que el supuesto (i), inicio uniforme de las lecturas, es falso: la probabilidad de que un fragmento acabe secuenciado depende de su secuencia.
+
+El sesgo mejor estudiado es el del \textbf{contenido de GC}. \textcite{c06-benjamini2012} analizaron datos de Illumina y encontraron que la relación entre el número de fragmentos y su contenido de GC tiene forma \emph{unimodal}: tanto los fragmentos muy ricos en GC como los muy ricos en AT están infrarrepresentados. Mostraron además que lo que importa es el GC del \emph{fragmento completo}, no solo el de la lectura, lo que apunta a la PCR de la biblioteca como causa principal, y que la forma de la curva varía de una muestra a otra (\cref{fig:06-gc}). \textcite{c06-ross2013} compararon varias plataformas y concluyeron que PacBio presenta la cobertura menos sesgada, seguida de Illumina, pero que todas las tecnologías muestran sesgos en regiones extremas de GC y en homopolímeros largos; en un genoma humano secuenciado a $120\times$ con Illumina, el \SI{0,20}{\percent} del genoma autosómico quedó cubierto a menos del \SI{10}{\percent} de la media, entre ellas muchas regiones promotoras ricas en GC.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.86\linewidth, height=5.4cm,
+   xmin=0.2, xmax=0.8, ymin=0, ymax=1.9,
+   xlabel={contenido de GC del fragmento}, ylabel={cobertura relativa},
+   xtick={0.2,0.3,0.4,0.5,0.6,0.7,0.8},
+   xticklabels={20\,\%,30\,\%,40\,\%,50\,\%,60\,\%,70\,\%,80\,\%},
+   legend style={at={(0.5,-0.3)},anchor=north}, legend columns=3]
+  \addplot[only marks, mark=*, mark size=0.9pt, azul!50, opacity=0.7] table[x=gc,y=rel] {figuras/cap06/gc_puntos.dat};
+  \addlegendentry{ventanas del genoma}
+  \addplot[naranja, very thick] table[x=gc,y=rel] {figuras/cap06/gc_curva.dat};
+  \addlegendentry{curva de sesgo}
+  \addplot[tinta2, dashed, domain=0.2:0.8] {1};
+  \addlegendentry{sin sesgo}
+  \node[etiqueta,text=rojooscuro,align=left,anchor=north west] at (axis cs:0.21,1.85) {ricos en AT:\\infrarrepresentados};
+  \node[etiqueta,text=rojooscuro,align=right,anchor=north east] at (axis cs:0.79,1.85) {ricos en GC:\\infrarrepresentados};
+\end{axis}
+\end{tikzpicture}
+\caption[Sesgo de GC en la cobertura]{Esquema del sesgo de GC (datos simulados). Cada punto es una ventana del genoma; su cobertura relativa depende del contenido de GC según una curva unimodal, como la descrita por \textcite{c06-benjamini2012}, más ruido de muestreo. Si el sesgo no se corrige, las regiones de GC extremo parecen tener menos copias de ADN de las que realmente tienen, un error grave al estimar variaciones en el número de copias. La forma exacta de la curva cambia entre bibliotecas, por lo que debe estimarse en cada muestra.}
+\label{fig:06-gc}
+\end{figure}
+
+\paragraph{Un modelo para la sobredispersión} Si la tasa de muestreo varía de una posición a otra (por GC, mapeabilidad u otros factores), podemos modelarla como una variable aleatoria. La elección clásica es una tasa con distribución gamma.
+
+\begin{teorema}{Mezcla Poisson-gamma}{nb}
+Si, en cada posición, $D\mid\lambda\sim\mathrm{Poisson}(\lambda)$ y la tasa local sigue $\lambda\sim\mathrm{Gamma}(r,\ c/r)$ (forma $r$, escala $c/r$), la profundidad marginal es binomial negativa:
+\begin{equation}\label{eq:06-nb}
+\Prob(D=k)=\frac{\Gamma(k+r)}{k!\,\Gamma(r)}\left(\frac{r}{r+c}\right)^{r}\left(\frac{c}{r+c}\right)^{k},
+\qquad \E[D]=c,\quad \Var(D)=c+\frac{c^2}{r}.
+\end{equation}
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\lambda$}{Tasa de muestreo local (profundidad esperada en esa posición).}
+\simbolo{$r$}{Parámetro de forma; mide la homogeneidad: $r\to\infty$ recupera la Poisson.}
+\simbolo{$\Gamma(\cdot)$}{Función gamma, extensión continua del factorial: $\Gamma(n)=(n-1)!$.}
+\end{simbolos}
+
+La derivación es un cálculo directo: se integra la Poisson contra la densidad gamma,
+\[
+\Prob(D=k)=\int_0^\infty \frac{e^{-\lambda}\lambda^k}{k!}\,\frac{\lambda^{r-1}e^{-\lambda r/c}}{\Gamma(r)\,(c/r)^r}\,d\lambda
+=\frac{1}{k!\,\Gamma(r)\,(c/r)^r}\int_0^\infty \lambda^{k+r-1}e^{-\lambda(1+r/c)}\,d\lambda,
+\]
+y la última integral vale $\Gamma(k+r)/(1+r/c)^{k+r}$; reordenando se llega a la \cref{eq:06-nb}. La varianza se obtiene por la ley de la varianza total: $\Var(D)=\E[\Var(D\mid\lambda)]+\Var(\E[D\mid\lambda])=\E[\lambda]+\Var(\lambda)=c+c^2/r$. El término $c^2/r$ es la sobredispersión: crece con el cuadrado de la cobertura, así que \emph{secuenciar más no la elimina}.
+
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.9\linewidth, height=5.6cm,
+   xmin=0, xmax=80, ymin=0, ymax=0.078,
+   xlabel={profundidad $k$}, ylabel={$\Prob(D=k)$},
+   yticklabel style={/pgf/number format/fixed,/pgf/number format/precision=2},
+   legend pos=north east]
+  \fill[rojo!10] (axis cs:0,0) rectangle (axis cs:9.5,0.078);
+  \node[etiqueta,text=rojooscuro,align=center] at (axis cs:4.8,0.068) {$D<10$};
+  \addplot[ybar, area legend, bar width=1.6pt, fill=azul!55, draw=none] table[x=k,y=pois] {figuras/cap06/prof.dat};
+  \addlegendentry{Poisson, $c=30$ (var.\ 30)}
+  \addplot[naranja, very thick, mark=none] table[x=k,y=nb] {figuras/cap06/prof.dat};
+  \addlegendentry{binomial negativa, $r=10$ (var.\ 120)}
+  \addplot[only marks, mark=o, mark size=1.4pt, naranja!70!black] table[x=k,y=f] {figuras/cap06/prof_sim.dat};
+  \addlegendentry{simulación Poisson-gamma}
+\end{axis}
+\end{tikzpicture}
+\caption[Profundidad: Poisson frente a sobredispersión]{Distribución de la profundidad para una cobertura media de $30\times$. Las barras azules son el modelo ideal de Poisson; la curva naranja, una binomial negativa con la misma media y cuatro veces su varianza ($r=10$), y los círculos, una simulación de \num{200000} posiciones con tasas gamma (\cref{eq:06-nb}). Bajo Poisson, la fracción de posiciones con menos de 10 lecturas (zona roja) es $7\times10^{-6}$; con sobredispersión es del \SI{0,9}{\percent}, más de mil veces mayor. En un genoma humano eso son decenas de millones de bases donde no se podrán llamar variantes con confianza.}
+\label{fig:06-prof}
+\end{figure}
+
+\subsection{¿Cuánta profundidad necesito?}
+
+Con estos modelos podemos responder la pregunta de diseño más frecuente. Suponga que, para llamar con confianza una variante en una posición, necesitamos al menos $k$ lecturas, y que queremos que eso ocurra en una fracción $1-\alpha$ del genoma. Buscamos el menor $c$ tal que
+\begin{equation}\label{eq:06-diseno}
+\Prob(D \ge k \mid c) = 1-F(k-1\mid c) \;\ge\; 1-\alpha,
+\end{equation}
+donde $F$ es la función de distribución acumulada del modelo elegido (Poisson o binomial negativa). No hay fórmula cerrada, pero la búsqueda numérica es trivial.
+
+\begin{simbolos}
+\simbolo{$k$}{Profundidad mínima necesaria en una posición (p.\,ej., 10 lecturas).}
+\simbolo{$\alpha$}{Fracción tolerada del genoma por debajo de ese mínimo (p.\,ej., $0{,}01$).}
+\simbolo{$F(\cdot\mid c)$}{Función de distribución acumulada de la profundidad con cobertura media $c$.}
+\end{simbolos}
+
+\begin{ejemplo}{Diseño de la profundidad de un genoma humano}{diseno}
+Queremos que el \SI{99}{\percent} del genoma tenga al menos 10 lecturas. Resolviendo la \cref{eq:06-diseno} numéricamente:
+\begin{itemize}
+  \item con el modelo de Poisson basta $c\ge18{,}8\times$;
+  \item con una binomial negativa de $r=10$ hace falta $c\ge29{,}4\times$;
+  \item con un sesgo mayor ($r=5$), $c\ge44{,}1\times$.
+\end{itemize}
+Si exigimos 20 lecturas, los valores suben a $31{,}9\times$, $53{,}9\times$ y $83{,}3\times$. El modelo ideal subestima la profundidad necesaria en un factor de 1,5 a 2. No es casual que la recomendación habitual para la resecuenciación de genomas humanos con lecturas cortas se sitúe en torno a $30\times$ \parencite{c06-bentley2008,c06-sims2014}: es aproximadamente lo que pide un modelo realista para tener unas diez lecturas en casi todo el genoma. \textcite{c06-sims2014} revisan cómo cambian estas consideraciones para otros diseños, como exomas, RNA-seq o ChIP-seq, donde la ``cobertura'' relevante no es uniforme por naturaleza.
+\end{ejemplo}
+
+\begin{codigo}[profundidad.py]
+import numpy as np
+from scipy import stats
+from scipy.optimize import brentq
+
+def lander_waterman(G, L, c, T=0):
+    s = 1 - T / L
+    N = c * G / L
+    return {"lecturas": N,
+            "sin_cubrir_pb": G * np.exp(-c),
+            "islas": N * np.exp(-c * s),
+            "long_isla": L * ((np.exp(c * s) - 1) / c + 1 - s)}
+
+def cobertura_necesaria(k, alfa=0.01, r=None):
+    """Menor c con P(D >= k) >= 1 - alfa (Poisson o NB)."""
+    def f(c):
+        if r is None:
+            return stats.poisson.sf(k - 1, c) - (1 - alfa)
+        return stats.nbinom.sf(k - 1, r, r / (r + c)) - (1 - alfa)
+    return brentq(f, k / 10, 50 * k)
+
+print(lander_waterman(5e6, 150, c=5, T=30))    # ~3053 islas
+print(round(cobertura_necesaria(10), 2))        # 18.78 (Poisson)
+print(round(cobertura_necesaria(10, r=10), 2))  # 29.38 (NB)
+\end{codigo}
+
+\begin{cuidado}[La cobertura ``bruta'' engaña]
+La cobertura que importa es la \emph{efectiva}: la que queda después de descartar duplicados, lecturas de baja calidad, lecturas que no mapean o que mapean en varios sitios, y bases recortadas. Un experimento anunciado como $30\times$ puede quedarse en $22\times$ útiles tras estas pérdidas. Planifique con la cobertura efectiva y verifique siempre la distribución observada de la profundidad, no solo su media.
+\end{cuidado}
+
+\begin{ideaclave}
+Con cobertura $c$, falta una fracción $e^{-c}$ del genoma y hay unas $Ne^{-c\sigma}$ islas. Los datos reales son sobredispersos: diseñe con un modelo binomial negativo y con la cobertura efectiva, no con la bruta.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\begin{resumen}
+\begin{itemize}
+  \item El método de Sanger lee fragmentos terminados por ddNTP; su longitud está limitada por la estadística geométrica de la terminación y por la resolución de la electroforesis. La pirosecuenciación (454) paralelizó la lectura, pero comete \ingles{indels} en homopolímeros.
+  \item Illumina amplifica cada molécula en un clúster (amplificación en puente) y la lee con terminadores reversibles, una base por ciclo. El desfase acumulado, $\phi(n)=(1-\varepsilon)^n$, explica la caída de calidad hacia 3'; su error típico es la sustitución.
+  \item PacBio y Oxford Nanopore leen moléculas únicas de decenas a cientos de kilobases. Los errores aleatorios de PacBio se corrigen por consenso circular (HiFi); los de Nanopore tienen un componente sistemático en homopolímeros que las químicas recientes han reducido.
+  \item La calidad Phred es $Q=-10\log_{10}p$, codificada en FASTQ como $\operatorname{ord}(\kappa)-33$. El número esperado de errores de una lectura es $\sum_i p_i$.
+  \item FastQC y MultiQC diagnostican calidad, contenido, duplicación y adaptadores. La tasa de duplicados depende de la complejidad de la biblioteca: $\E[D]\approx M(1-e^{-N/M})$. Los adaptadores se recortan siempre; la calidad, con ventanas deslizantes o sumas acumuladas y umbrales moderados.
+  \item Con cobertura $c=NL/G$, la profundidad es aproximadamente Poisson($c$): falta una fracción $e^{-c}$ del genoma y se esperan $Ne^{-c\sigma}$ islas, con un máximo en $c=1/\sigma$. El sesgo de GC produce sobredispersión (binomial negativa), que eleva la profundidad necesaria hacia $30\times$ para genomas humanos.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Decodifique a mano la línea de calidades \texttt{II?5+\#} en Phred+33: obtenga $Q$, $p$ y el número esperado de errores de esas seis bases. ¿Qué calidades obtendría si, por error, leyera el archivo como Phred+64?
+\ej{1} Un genoma de levadura mide \SI{12}{Mb}. ¿Cuántas lecturas de 150 pb necesita para una cobertura de $40\times$? Si cada lectura pareada aporta dos lecturas, ¿cuántos pares?
+\ej{1} Explique, a partir del mecanismo físico, por qué 454 y Nanopore cometen \ingles{indels} en homopolímeros mientras que Illumina comete sobre todo sustituciones.
+\ej{2} Con la \cref{eq:06-fase}, estime la tasa de desfase $\varepsilon$ que haría que en el ciclo 250 solo la mitad de las hebras siguieran en fase. ¿Cómo cambiaría la longitud máxima útil si $\varepsilon$ se redujera a la mitad?
+\ej{2} Usando la \cref{eq:06-consenso}, calcule cuántas pasadas se necesitan para alcanzar $Q30$ si el error por pasada es del \SI{15}{\percent}. Discuta por qué el modelo es pesimista.
+\ej{2} Una biblioteca de ChIP-seq muestra un \SI{60}{\percent} de duplicados con $3\times10^7$ lecturas. Estime su complejidad $M$ con la \cref{eq:06-complejidad} y prediga la tasa de duplicados si se secuencian $6\times10^7$ lecturas. ¿Vale la pena?
+\ej{2} Implemente el criterio de la \cref{eq:06-bwa} y compárelo con la ventana deslizante sobre un archivo FASTQ real: ¿qué fracción de bases elimina cada uno con $t=20$? Visualice el resultado con FastQC antes y después.
+\ej{3} Simule el experimento de Lander-Waterman con $G=10^6$, $L=100$ y $T=20$, para $c\in\{0{,}5,1,\dots,8\}$, y compare el número de islas y su longitud media con las \cref{eq:06-islas,eq:06-longisla}. ¿Dónde se desvía la simulación de la teoría y por qué?
+\ej{3} Demuestre que, bajo la mezcla Poisson-gamma, la fracción del genoma no cubierta es $\left(1+c/r\right)^{-r}$ y compárela con $e^{-c}$ para $c=10$ y $r=5$. Interprete: ¿qué nos dice sobre la eficacia de ``secuenciar más'' para cerrar huecos cuando hay sesgo?
+\ej{3} Descargue un archivo BAM público de un genoma bacteriano, calcule la profundidad por posición con \cmd{samtools depth} y ajuste una Poisson y una binomial negativa. Estime $r$ y relacione las posiciones de baja cobertura con su contenido de GC en ventanas de \SI{500}{pb}.
+\end{ejercicios}
+
+\referenciascapitulo

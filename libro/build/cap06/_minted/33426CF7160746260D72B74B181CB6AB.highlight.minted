@@ -1,0 +1,16 @@
+\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
+\PYG{c+c1}{\PYGZsh{} 1. Diagnóstico inicial}
+fastqc\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }qc\PYGZus{}crudo/\PYG{+w}{ }muestra\PYGZus{}R1.fastq.gz\PYG{+w}{ }muestra\PYGZus{}R2.fastq.gz
+
+\PYG{c+c1}{\PYGZsh{} 2. Adaptadores + calidad + longitud mínima en un solo paso}
+fastp\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }muestra\PYGZus{}R1.fastq.gz\PYG{+w}{ }\PYGZhy{}I\PYG{+w}{ }muestra\PYGZus{}R2.fastq.gz\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{      }\PYGZhy{}o\PYG{+w}{ }limpia\PYGZus{}R1.fastq.gz\PYG{+w}{  }\PYGZhy{}O\PYG{+w}{ }limpia\PYGZus{}R2.fastq.gz\PYG{+w}{  }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{      }\PYGZhy{}\PYGZhy{}detect\PYGZus{}adapter\PYGZus{}for\PYGZus{}pe\PYG{+w}{ }\PYGZhy{}\PYGZhy{}trim\PYGZus{}poly\PYGZus{}g\PYG{+w}{         }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{      }\PYGZhy{}\PYGZhy{}cut\PYGZus{}right\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cut\PYGZus{}right\PYGZus{}window\PYGZus{}size\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{         }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{      }\PYGZhy{}\PYGZhy{}cut\PYGZus{}right\PYGZus{}mean\PYGZus{}quality\PYG{+w}{ }\PYG{l+m}{20}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}length\PYGZus{}required\PYG{+w}{ }\PYG{l+m}{50}\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
+\PYG{+w}{      }\PYGZhy{}h\PYG{+w}{ }fastp.html\PYG{+w}{ }\PYGZhy{}j\PYG{+w}{ }fastp.json\PYG{+w}{ }\PYGZhy{}w\PYG{+w}{ }\PYG{l+m}{8}
+
+\PYG{c+c1}{\PYGZsh{} 3. Diagnóstico después del recorte y resumen de todo el proyecto}
+fastqc\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }qc\PYGZus{}limpio/\PYG{+w}{ }limpia\PYGZus{}R1.fastq.gz\PYG{+w}{ }limpia\PYGZus{}R2.fastq.gz
+multiqc\PYG{+w}{ }qc\PYGZus{}crudo/\PYG{+w}{ }qc\PYGZus{}limpio/\PYG{+w}{ }fastp.json\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }informe\PYGZus{}qc/
+\end{MintedVerbatim}
