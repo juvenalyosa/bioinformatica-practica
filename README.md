@@ -30,8 +30,10 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 2 · Secuencias, formatos y bases de datos
 
-- 2.1 FASTA, FASTQ, GenBank, GFF/GTF, SAM/BAM, VCF · *próximamente*
-- 2.2 NCBI, Ensembl, UniProt, PDB: consultas programáticas · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 2.1 | El idioma de los archivos: FASTA, FASTQ (Phred), GenBank, GFF/BED, SAM/BAM (CIGAR, FLAG) y VCF | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-02-formatos-bases-datos/2.1_formatos_archivos.ipynb) |
+| 2.2 | Bases de datos biológicas desde Python: NCBI, Ensembl, UniProt y PDB siguiendo al gen TP53 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-02-formatos-bases-datos/2.2_bases_de_datos.ipynb) |
 
 ### Módulo 3 · Alineamiento de secuencias
 
@@ -137,6 +139,7 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 bioinformatica-practica/
 ├── modulo-00-preparacion/   # notebooks de cada módulo (con resultados ya ejecutados)
 ├── modulo-01-biologia-molecular/
+├── modulo-02-formatos-bases-datos/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

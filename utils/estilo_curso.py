@@ -168,7 +168,7 @@ def _set_plotly_template() -> None:
         # Construcción del curso: además del gráfico interactivo se guarda una imagen PNG
         # para que la figura se vea en la vista previa de GitHub (Colab usa la versión interactiva).
         pio.renderers.default = "plotly_mimetype+png"
-        pio.renderers["png"].width, pio.renderers["png"].height, pio.renderers["png"].scale = 1000, 560, 1.5
+        pio.renderers["png"].width, pio.renderers["png"].height, pio.renderers["png"].scale = 1000, None, 1.5
 
 
 # ---------------------------------------------------------------------------
