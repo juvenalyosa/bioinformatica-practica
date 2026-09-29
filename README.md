@@ -22,9 +22,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 1 · Biología molecular para bioinformáticos
 
-- 1.1 El dogma central como sistema de información · *próximamente*
-- 1.2 Genes, genomas, código genético y marcos de lectura (ORF finder) · *próximamente*
-- 1.3 Composición de secuencias: contenido GC, GC skew y el origen de replicación · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 1.1 | El dogma central como sistema de información: entropía, compresión y robustez del código genético | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-01-biologia-molecular/1.1_dogma_central.ipynb) |
+| 1.2 | Genes, genomas y marcos abiertos de lectura: un buscador de ORFs en *Mycoplasma genitalium* | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-01-biologia-molecular/1.2_genes_orfs.ipynb) |
+| 1.3 | Composición de secuencias: GC, GC skew y el origen de replicación de *E. coli* | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-01-biologia-molecular/1.3_composicion_gc_skew.ipynb) |
 
 ### Módulo 2 · Secuencias, formatos y bases de datos
 
@@ -133,9 +135,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ```
 bioinformatica-practica/
-├── modulo-00-preparacion/   # notebooks de cada módulo
+├── modulo-00-preparacion/   # notebooks de cada módulo (con resultados ya ejecutados)
+├── modulo-01-biologia-molecular/
+├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
-├── tools/                   # scripts para construir y probar los notebooks
+├── tools/                   # scripts para construir (builders/) y probar los notebooks
 └── data/                    # copias de respaldo de datos pequeños
 ```
 

@@ -163,6 +163,12 @@ def _set_plotly_template() -> None:
         legend=dict(bgcolor="rgba(0,0,0,0)"),
     ))
     pio.templates.default = "curso"
+    import os
+    if os.environ.get("COURSE_ASSETS"):
+        # Construcción del curso: además del gráfico interactivo se guarda una imagen PNG
+        # para que la figura se vea en la vista previa de GitHub (Colab usa la versión interactiva).
+        pio.renderers.default = "plotly_mimetype+png"
+        pio.renderers["png"].width, pio.renderers["png"].height, pio.renderers["png"].scale = 1000, 560, 1.5
 
 
 # ---------------------------------------------------------------------------
