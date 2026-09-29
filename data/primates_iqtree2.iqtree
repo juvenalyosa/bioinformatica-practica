@@ -1,0 +1,234 @@
+IQ-TREE 2.4.0 built Mar  8 2025
+
+Input file name: primates_mt_cytb_cox1.fasta
+Type of analysis: ModelFinder + tree reconstruction + ultrafast bootstrap (1000 replicates)
+Random seed number: 12345
+
+REFERENCES
+----------
+
+To cite IQ-TREE please use:
+
+Bui Quang Minh, Heiko A. Schmidt, Olga Chernomor, Dominik Schrempf,
+Michael D. Woodhams, Arndt von Haeseler, and Robert Lanfear (2020)
+IQ-TREE 2: New models and efficient methods for phylogenetic inference
+in the genomic era. Mol. Biol. Evol., in press.
+https://doi.org/10.1093/molbev/msaa015
+
+To cite ModelFinder please use: 
+
+Subha Kalyaanamoorthy, Bui Quang Minh, Thomas KF Wong, Arndt von Haeseler,
+and Lars S Jermiin (2017) ModelFinder: Fast model selection for
+accurate phylogenetic estimates. Nature Methods, 14:587–589.
+https://doi.org/10.1038/nmeth.4285
+
+Since you used ultrafast bootstrap (UFBoot) please also cite: 
+
+Diep Thi Hoang, Olga Chernomor, Arndt von Haeseler, Bui Quang Minh,
+and Le Sy Vinh (2018) UFBoot2: Improving the ultrafast bootstrap
+approximation. Mol. Biol. Evol., 35:518–522.
+https://doi.org/10.1093/molbev/msx281
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 12 sequences with 2676 nucleotide sites
+Number of constant sites: 1463 (= 54.6712% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 1463 (= 54.6712% of all sites)
+Number of parsimony informative sites: 888
+Number of distinct site patterns: 863
+
+ModelFinder
+-----------
+
+Best-fit model according to BIC: TIM2+F+I+G4
+
+List of models sorted by BIC scores: 
+
+Model                  LogL         AIC      w-AIC        AICc     w-AICc         BIC      w-BIC
+TIM2+F+I+G4      -15006.839   30071.679 +    0.216   30072.336 +    0.226   30242.549 +    0.624
+TPM2u+F+I+G4     -15011.315   30078.630 -  0.00669   30079.243 -  0.00716   30243.608 +    0.368
+GTR+F+I+G4       -15003.868   30069.735 +    0.571   30070.486 +    0.571   30252.390 -  0.00456
+TVM+F+I+G4       -15008.193   30076.386 -   0.0205   30077.089 -    0.021   30253.148 -  0.00312
+K3Pu+F+I+G4      -15019.582   30095.164 - 1.72e-06   30095.777 - 1.84e-06   30260.142 - 9.44e-05
+TIM+F+I+G4       -15016.373   30090.745 - 1.57e-05   30091.403 - 1.64e-05   30261.615 - 4.52e-05
+HKY+F+I+G4       -15025.888   30105.775 - 8.53e-09   30106.346 - 9.33e-09   30264.861 - 8.92e-06
+TN+F+I+G4        -15022.778   30101.555 - 7.04e-08   30102.169 - 7.53e-08   30266.533 - 3.87e-06
+GTR+F+R3         -15003.376   30072.752 +    0.126   30073.602 +     0.12   30267.191 - 2.78e-06
+TPM3u+F+I+G4     -15024.014   30104.027 - 2.04e-08   30104.641 - 2.19e-08   30269.006 - 1.12e-06
+TIM3+F+I+G4      -15020.910   30099.819 - 1.68e-07   30100.477 - 1.76e-07   30270.689 - 4.84e-07
+GTR+F+R2         -15014.324   30090.648 - 1.64e-05   30091.399 - 1.64e-05   30273.303 - 1.31e-07
+GTR+F+I+R3       -15003.609   30075.218 -   0.0368   30076.119 -   0.0342   30275.548 - 4.26e-08
+GTR+F+I+R2       -15012.603   30089.206 - 3.38e-05   30090.005 -  3.3e-05   30277.752 - 1.42e-08
+GTR+F+R4         -15003.475   30076.949 -   0.0155   30077.904 -    0.014   30283.172 - 9.42e-10
+GTR+F+G4         -15023.621   30107.243 - 4.09e-09   30107.946 - 4.19e-09   30284.005 - 6.21e-10
+GTR+F+I+R4       -15003.346   30078.692 -  0.00649   30079.701 -   0.0057   30290.807 - 2.07e-11
+GTR+F+I          -15059.804   30179.607 - 7.91e-25   30180.311 -  8.1e-25   30356.370 -  1.2e-25
+TIM2e+I+G4       -15169.829   30391.658 - 7.11e-71   30392.188 - 7.94e-71   30544.852 - 1.42e-66
+SYM+I+G4         -15163.338   30382.675 - 6.35e-69   30383.289 -  6.8e-69   30547.654 - 3.49e-67
+TIMe+I+G4        -15238.544   30529.089 - 1.02e-100   30529.619 - 1.14e-100   30682.283 - 2.03e-96
+TNe+I+G4         -15259.441   30568.882 - 2.34e-109   30569.372 - 2.66e-109   30716.184 - 8.85e-104
+TPM2+I+G4        -15259.981   30569.962 - 1.36e-109   30570.453 - 1.55e-109   30717.264 - 5.16e-104
+TIM3e+I+G4       -15256.180   30564.361 - 2.24e-108   30564.891 - 2.5e-108   30717.555 - 4.46e-104
+TVMe+I+G4        -15253.836   30561.671 - 8.6e-108   30562.242 - 9.4e-108   30720.757 - 8.99e-105
+K3P+I+G4         -15329.652   30709.303 - 7.52e-140   30709.794 - 8.57e-140   30856.605 - 2.85e-134
+K2P+I+G4         -15350.615   30749.230 - 1.61e-148   30749.682 - 1.87e-148   30890.640 - 1.16e-141
+TPM3+I+G4        -15347.625   30745.250 - 1.18e-147   30745.740 - 1.34e-147   30892.552 - 4.46e-142
+GTR+F            -16045.607   32149.215 -        0   32149.872 -        0   32320.085 -        0
+F81+F+I+G4       -16362.669   32777.339 -        0   32777.869 -        0   32930.533 -        0
+JC+I+G4          -16615.662   33277.323 -        0   33277.739 -        0   33412.841 -        0
+
+AIC, w-AIC   : Akaike information criterion scores and weights.
+AICc, w-AICc : Corrected AIC scores and weights.
+BIC, w-BIC   : Bayesian information criterion scores and weights.
+
+Plus signs denote the 95% confidence sets.
+Minus signs denote significant exclusion.
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: TIM2+F+I+G4
+
+Rate parameter R:
+
+  A-C: 2.5833
+  A-G: 21.6350
+  A-T: 2.5833
+  C-G: 1.0000
+  C-T: 28.0209
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.2778
+  pi(C) = 0.3051
+  pi(G) = 0.145
+  pi(T) = 0.2721
+
+Rate matrix Q:
+
+  A   -0.6262    0.1066    0.4245   0.09511
+  C    0.0971    -1.148   0.01962     1.032
+  G    0.8132   0.04127   -0.8913   0.03682
+  T    0.0971     1.157   0.01962    -1.273
+
+Model of rate heterogeneity: Invar+Gamma with 4 categories
+Proportion of invariable sites: 0.4685
+Gamma shape alpha: 1.487
+
+ Category  Relative_rate  Proportion
+  0         0              0.4685
+  1         0.4203         0.1329
+  2         1.103          0.1329
+  3         1.975          0.1329
+  4         4.027          0.1329
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -15006.7728 (s.e. 231.6351)
+Unconstrained log-likelihood (without tree): -11712.8773
+Number of free parameters (#branches + #model parameters): 29
+Akaike information criterion (AIC) score: 30071.5457
+Corrected Akaike information criterion (AICc) score: 30072.2033
+Bayesian information criterion (BIC) score: 30242.4159
+
+Total tree length (sum of branch lengths): 2.1914
+Sum of internal branch lengths: 0.6531 (29.8043% of tree length)
+
+NOTE: Tree is UNROOTED although outgroup taxon 'Homo_sapiens' is drawn at root
+Numbers in parentheses are  ultrafast bootstrap support (%)
+
++----Homo_sapiens
+|
+|  +--Pan_troglodytes
++--| (100)
+|  +--Pan_paniscus
+|
+|  +-----Gorilla_gorilla
++--| (98)
+   |          +--Pongo_abelii
+   |  +-------| (100)
+   |  |       +--Pongo_pygmaeus
+   +--| (100)
+      |  +-----------Hylobates_lar
+      +--| (94)
+         |                  +-------Macaca_mulatta
+         |               +--| (78)
+         |               |  +-----------Papio_hamadryas
+         |    +----------| (100)
+         |    |          +---------Chlorocebus_sabaeus
+         +----| (96)
+              |              +-----------------------Callithrix_jacchus
+              +--------------| (100)
+                             +-------------------------------Lemur_catta
+
+Tree in newick format:
+
+(Homo_sapiens:0.0740836611,(Pan_troglodytes:0.0265503107,Pan_paniscus:0.0250861139)100:0.0364092241,(Gorilla_gorilla:0.0763197523,((Pongo_abelii:0.0373785080,Pongo_pygmaeus:0.0434196394)100:0.1046983734,(Hylobates_lar:0.1555573567,(((Macaca_mulatta:0.1060475627,Papio_hamadryas:0.1511817585)78:0.0238126129,Chlorocebus_sabaeus:0.1285245496)100:0.1455914313,(Callithrix_jacchus:0.3079796914,Lemur_catta:0.4061649237)100:0.1890158490)96:0.0706010036)94:0.0221045106)100:0.0395707374)98:0.0213385775);
+
+CONSENSUS TREE
+--------------
+
+Consensus tree is constructed from 1000 bootstrap trees
+Log-likelihood of consensus tree: -15006.772695
+Robinson-Foulds distance between ML tree and consensus tree: 0
+
+Branches with support >0.000000% are kept (extended consensus)
+Branch lengths are optimized by maximum likelihood on original alignment
+Numbers in parentheses are bootstrap supports (%)
+
++----Homo_sapiens
+|
+|  +--Pan_troglodytes
++--| (100)
+|  +--Pan_paniscus
+|
+|  +-----Gorilla_gorilla
++--| (98)
+   |          +--Pongo_abelii
+   |  +-------| (100)
+   |  |       +--Pongo_pygmaeus
+   +--| (100)
+      |  +-----------Hylobates_lar
+      +--| (94)
+         |                  +-------Macaca_mulatta
+         |               +--| (78)
+         |               |  +-----------Papio_hamadryas
+         |    +----------| (100)
+         |    |          +---------Chlorocebus_sabaeus
+         +----| (96)
+              |              +-----------------------Callithrix_jacchus
+              +--------------| (100)
+                             +-------------------------------Lemur_catta
+
+
+Consensus tree in newick format: 
+
+(Homo_sapiens:0.0740965247,(Pan_troglodytes:0.0265504338,Pan_paniscus:0.0250928578)100:0.0364181843,(Gorilla_gorilla:0.0763292058,((Pongo_abelii:0.0373984099,Pongo_pygmaeus:0.0434320706)100:0.1047302140,(Hylobates_lar:0.1556146660,(((Macaca_mulatta:0.1060648519,Papio_hamadryas:0.1513214145)78:0.0238669559,Chlorocebus_sabaeus:0.1285986500)100:0.1457021069,(Callithrix_jacchus:0.3081717880,Lemur_catta:0.4064392960)100:0.1891277769)96:0.0706307603)94:0.0221123695)100:0.0395838922)98:0.0213429821);
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t primates.treefile -m "TIM2{2.58333,21.635,28.0209}+F{0.277809,0.305057,0.145024,0.27211}+I{0.468513}+G4{1.48742}" --length 2676
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s primates_mt_cytb_cox1.fasta --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s primates_mt_cytb_cox1.fasta --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Wed Sep 30 00:40:21 2026
+Total CPU time used: 4.324676 seconds (0h:0m:4s)
+Total wall-clock time used: 3.64238596 seconds (0h:0m:3s)
+
