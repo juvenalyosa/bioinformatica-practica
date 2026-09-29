@@ -37,10 +37,12 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 3 · Alineamiento de secuencias
 
-- 3.1 Dot plots · *próximamente*
-- 3.2 Programación dinámica: Needleman-Wunsch y Smith-Waterman · *próximamente*
-- 3.3 Matrices de sustitución (PAM, BLOSUM) y penalización de gaps · *próximamente*
-- 3.4 BLAST y la estadística de Karlin-Altschul · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 3.1 | Dot plots: ver la similitud antes de medirla (SARS-CoV-2 vs SARS-CoV-1, calmodulina) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-03-alineamiento/3.1_dot_plots.ipynb) |
+| 3.2 | Programación dinámica: Needleman-Wunsch y Smith-Waterman con la matriz animada paso a paso | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-03-alineamiento/3.2_programacion_dinamica.ipynb) |
+| 3.3 | Matrices de sustitución (PAM, BLOSUM) y penalizaciones de huecos | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-03-alineamiento/3.3_matrices_sustitucion.ipynb) |
+| 3.4 | BLAST y la estadística de Karlin-Altschul: semillas, X-drop, Gumbel y E-value | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-03-alineamiento/3.4_blast_estadistica.ipynb) |
 
 ### Módulo 4 · Alineamiento múltiple, motivos y perfiles
 
@@ -140,6 +142,7 @@ bioinformatica-practica/
 ├── modulo-00-preparacion/   # notebooks de cada módulo (con resultados ya ejecutados)
 ├── modulo-01-biologia-molecular/
 ├── modulo-02-formatos-bases-datos/
+├── modulo-03-alineamiento/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
