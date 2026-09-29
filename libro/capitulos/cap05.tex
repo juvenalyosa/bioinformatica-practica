@@ -31,7 +31,7 @@ Cada posición de una secuencia de ADN se comporta como esa pared: acumula susti
 
 \subsection{Árboles: el vocabulario mínimo}
 
-\begin{definicion}{Árbol filogenético}{arbol}
+\begin{definicion}{Árbol filogenético}{05-arbol}
 Un \emph{árbol filogenético} es un grafo conexo y sin ciclos cuyas \emph{hojas} (nodos de grado 1) representan los taxones o secuencias observadas y cuyos \emph{nodos internos} representan ancestros hipotéticos. Cada \emph{rama} (arista) tiene una longitud $b\ge 0$, medida en sustituciones esperadas por sitio. El árbol es \emph{binario} si todo nodo interno tiene grado 3; es \emph{enraizado} si uno de sus nodos, la \emph{raíz}, se distingue como el ancestro común de todos los demás y define así la dirección del tiempo.
 \end{definicion}
 
@@ -91,7 +91,7 @@ La \cref{fig:05-anatomia} resume los términos. Dos más serán imprescindibles.
 
 Antes de reconstruir un árbol conviene saber entre cuántos candidatos debemos elegir. Consideremos árboles binarios no enraizados. Con tres hojas hay uno solo: una estrella de tres puntas. Un árbol binario no enraizado con $k$ hojas tiene $2k-3$ ramas; la $(k+1)$-ésima hoja puede insertarse en el punto medio de cualquiera de ellas, y cada elección produce una topología distinta. Multiplicando las opciones desde $k=3$ hasta $k=n-1$ se obtiene el resultado clásico, que se encuentra, por ejemplo, en \textcite{c05-felsenstein2004}.
 
-\begin{teorema}{Número de topologías}{topologias}
+\begin{teorema}{Número de topologías}{05-topologias}
 El número de topologías binarias distintas con $n\ge 3$ hojas etiquetadas es
 \begin{equation}\label{eq:05-topologias}
 U(n) = \prod_{k=3}^{n-1}(2k-3) = (2n-5)!!,\qquad R(n) = (2n-3)!! = U(n+1),
@@ -123,7 +123,7 @@ A comienzos de los años sesenta, al comparar las secuencias de hemoglobinas y c
 
 La medida más directa de divergencia entre dos secuencias alineadas es la proporción de sitios en que difieren.
 
-\begin{definicion}{Distancia $p$}{distp}
+\begin{definicion}{Distancia $p$}{05-distp}
 Sean $x$ e $y$ dos secuencias alineadas con $L$ sitios comparables (sin huecos). La \emph{distancia} $p$ es
 \begin{equation}\label{eq:05-p}
 p = \frac{1}{L}\sum_{h=1}^{L}\mathbb{1}\left[x_h\neq y_h\right].
@@ -148,7 +148,7 @@ Modelaremos cada sitio de la secuencia como un proceso aleatorio $X(t)$ que toma
   \item \textbf{Estacionariedad y reversibilidad}: la composición de bases está en equilibrio y el proceso «se ve igual» hacia adelante y hacia atrás en el tiempo.
 \end{enumerate}
 
-\begin{definicion}{Matriz de tasas instantáneas}{Q}
+\begin{definicion}{Matriz de tasas instantáneas}{05-Q}
 Una cadena de Márkov de tiempo continuo sobre $s$ estados se describe mediante una matriz $Q=(q_{ij})$ de tamaño $s\times s$ tal que, para un intervalo de tiempo $\Delta t$ muy pequeño,
 \begin{equation}\label{eq:05-Q}
 \Prob\big(X(t+\Delta t)=j \,\big|\, X(t)=i\big) = q_{ij}\,\Delta t + o(\Delta t),\quad i\neq j;\qquad q_{ii} = -\sum_{j\neq i} q_{ij}.
@@ -170,7 +170,7 @@ P_{ij}(t+\Delta t) = \sum_k P_{ik}(t)\,\big(\delta_{kj}+q_{kj}\,\Delta t\big) + 
 \]
 Esta es la \emph{ecuación de Kolmogorov hacia adelante}, $P'(t)=P(t)\,Q$ con $P(0)=I$. Su solución es la exponencial de una matriz:
 
-\begin{teorema}{Probabilidades de transición}{expQ}
+\begin{teorema}{Probabilidades de transición}{05-expQ}
 Para una cadena de Márkov homogénea con matriz de tasas $Q$,
 \begin{equation}\label{eq:05-expQ}
 P(t) = e^{Qt} = \sum_{k=0}^{\infty}\frac{(Qt)^k}{k!} = U\,\mathrm{diag}\!\left(e^{\lambda_1 t},\dots,e^{\lambda_s t}\right)U^{-1},
@@ -231,7 +231,7 @@ a'(t) = \underbrace{-3\alpha\, a(t)}_{\text{salir de } i} + \underbrace{3\cdot\a
 \]
 Es una ecuación lineal de primer orden, cuya solución es $a(t)=\tfrac14+\tfrac34 e^{-4\alpha t}$. Como el número esperado de sustituciones es $d=3\alpha t$, podemos escribir $4\alpha t = 4d/3$ y obtenemos el resultado central de esta sección.
 
-\begin{teorema}{Distancia de Jukes-Cantor}{jc}
+\begin{teorema}{Distancia de Jukes-Cantor}{05-jc}
 Bajo el modelo JC69, dos secuencias separadas por $d$ sustituciones esperadas por sitio difieren en una proporción esperada de sitios
 \begin{equation}\label{eq:05-pjc}
 p(d) = \frac34\left(1-e^{-4d/3}\right).
@@ -422,7 +422,7 @@ g(r;\alpha) = \frac{\alpha^{\alpha}}{\Gamma(\alpha)}\, r^{\alpha-1}e^{-\alpha r}
 \label{fig:05-gamma}
 \end{figure}
 
-\begin{ejemplo}{Tres distancias para el mismo par de secuencias}{distancias}
+\begin{ejemplo}{Tres distancias para el mismo par de secuencias}{05-distancias}
 Considere el siguiente par de fragmentos alineados de 40 pb (las marcas indican \texttt{i} para transición y \texttt{v} para transversión):
 \begin{center}
 \ttfamily\small
@@ -498,13 +498,13 @@ Los métodos de distancias siguen exactamente ese programa. Primero reducen el a
 
 \subsection{Árboles aditivos y ultramétricos}
 
-\begin{definicion}{Distancias aditivas y ultramétricas}{aditiva}
+\begin{definicion}{Distancias aditivas y ultramétricas}{05-aditiva}
 Una matriz de distancias $D$ sobre $n$ taxones es \emph{aditiva} si existe un árbol con longitudes de rama no negativas tal que, para todo par $i,j$, $D_{ij}$ es la suma de las longitudes de las ramas del camino entre $i$ y $j$. Es \emph{ultramétrica} si, además, el árbol puede enraizarse de modo que todas las hojas estén a la misma distancia de la raíz.
 \end{definicion}
 
 Un árbol ultramétrico es un árbol con \emph{reloj molecular}: todos los linajes han acumulado el mismo número de sustituciones desde la raíz, de modo que la profundidad de cada nodo es proporcional a su edad. Un árbol aditivo no exige nada de eso: las ramas pueden tener longitudes arbitrarias, como ocurre cuando unos linajes evolucionan más deprisa que otros (\cref{fig:05-ultrametrico}). Ambas propiedades pueden comprobarse directamente sobre la matriz, sin conocer el árbol.
 
-\begin{teorema}{Condiciones de tres y cuatro puntos}{cuatropuntos}
+\begin{teorema}{Condiciones de tres y cuatro puntos}{05-cuatropuntos}
 (i) $D$ es ultramétrica si y solo si, para toda terna $i,j,k$,
 \begin{equation}\label{eq:05-trespuntos}
 D_{ij} \le \max\{D_{ik},\,D_{jk}\},
@@ -576,7 +576,7 @@ La condición de cuatro puntos tiene una explicación gráfica muy clara (\cref{
     {\scriptsize\color{tinta2}las dos sumas mayores coinciden;}\\
     {\scriptsize\color{tinta2}la menor identifica a los vecinos}};
 \end{tikzpicture}
-\caption[La condición de cuatro puntos]{La condición de cuatro puntos. En un cuarteto con topología $ij\,|\,kl$, los caminos $i\to k$ (azul) y $j\to l$ (verde) atraviesan ambos la rama interna $e$ (naranja), mientras que los caminos $i\to j$ y $k\to l$ no lo hacen. Por eso las dos sumas «cruzadas» son iguales y exceden a la tercera en $2e$. En la matriz del \cref{ej:nj}, para el cuarteto A, B, C, D, las sumas son $1{,}1$, $1{,}3$ y $1{,}3$: A y B son vecinos y la rama interna mide $0{,}1$.}
+\caption[La condición de cuatro puntos]{La condición de cuatro puntos. En un cuarteto con topología $ij\,|\,kl$, los caminos $i\to k$ (azul) y $j\to l$ (verde) atraviesan ambos la rama interna $e$ (naranja), mientras que los caminos $i\to j$ y $k\to l$ no lo hacen. Por eso las dos sumas «cruzadas» son iguales y exceden a la tercera en $2e$. En la matriz del \cref{ej:05-nj}, para el cuarteto A, B, C, D, las sumas son $1{,}1$, $1{,}3$ y $1{,}3$: A y B son vecinos y la rama interna mide $0{,}1$.}
 \label{fig:05-cuatropuntos}
 \end{figure}
 
@@ -601,13 +601,13 @@ El método de agrupamiento más antiguo que todavía se enseña es UPGMA (\ingle
 \simbolo{$D_{(AB),K}$}{Distancia media entre los taxones de $A\cup B$ y los de $K$.}
 \end{simbolos}
 
-UPGMA produce siempre un árbol enraizado y ultramétrico, y su coste es $O(n^2)$ en memoria y $O(n^3)$ en tiempo en la versión directa. Su gran virtud es también su gran defecto: \emph{si $D$ es ultramétrica, UPGMA recupera exactamente el árbol verdadero}, pero si no lo es, porque los linajes evolucionan a ritmos distintos, puede unir taxones que no son vecinos. La razón es simple. UPGMA une el par más cercano, y en un árbol sin reloj el par más cercano no tiene por qué ser un par de hermanos: un taxón con una rama muy larga puede estar más lejos de su hermano que de un primo con ramas cortas. El \cref{ej:nj} y la \cref{fig:05-upgma} muestran exactamente esa situación.
+UPGMA produce siempre un árbol enraizado y ultramétrico, y su coste es $O(n^2)$ en memoria y $O(n^3)$ en tiempo en la versión directa. Su gran virtud es también su gran defecto: \emph{si $D$ es ultramétrica, UPGMA recupera exactamente el árbol verdadero}, pero si no lo es, porque los linajes evolucionan a ritmos distintos, puede unir taxones que no son vecinos. La razón es simple. UPGMA une el par más cercano, y en un árbol sin reloj el par más cercano no tiene por qué ser un par de hermanos: un taxón con una rama muy larga puede estar más lejos de su hermano que de un primo con ramas cortas. El \cref{ej:05-nj} y la \cref{fig:05-upgma} muestran exactamente esa situación.
 
 \subsection{Neighbor-Joining: corregir por la divergencia neta}
 
 \textcite{c05-saitou1987} propusieron una solución ingeniosa. En lugar de unir el par con la menor distancia, Neighbor-Joining (NJ) une el par con la menor distancia \emph{corregida por lo lejos que está cada uno de todos los demás}. Un taxón con una rama larga está lejos de todo el mundo; restando su divergencia total se elimina ese efecto.
 
-\begin{teorema}{Criterio y actualización de Neighbor-Joining}{nj}
+\begin{teorema}{Criterio y actualización de Neighbor-Joining}{05-nj}
 Con $n$ nodos activos, defina la divergencia neta $r_i=\sum_{k}D_{ik}$ y la matriz
 \begin{equation}\label{eq:05-njQ}
 Q_{ij} = (n-2)\,D_{ij} - r_i - r_j .
@@ -637,7 +637,7 @@ El proceso se repite hasta que quedan tres nodos, que se unen en una estrella. S
 Durante dos décadas se discutió qué criterio optimiza NJ, si es que optimiza alguno. \textcite{c05-gascuel2006} resumieron la respuesta: NJ es un algoritmo voraz (\ingles{greedy}) para el criterio de \emph{evolución mínima balanceada}, que estima la longitud total del árbol con una ponderación particular de las distancias. Esto explica tanto su robustez (tolera bastante bien el ruido en $D$) como sus límites: al ser voraz, una decisión temprana errónea no se corrige después. Programas como FastME aplican búsquedas locales sobre ese mismo criterio para mejorar el árbol de NJ.
 \end{profundizacion}
 
-\begin{ejemplo}{Neighbor-Joining paso a paso}{nj}
+\begin{ejemplo}{Neighbor-Joining paso a paso}{05-nj}
 La \cref{tab:05-njD} contiene las distancias de camino de un árbol \emph{aditivo pero no ultramétrico} con cinco taxones, en el que B tiene una rama larga (\cref{fig:05-upgma}, izquierda). Puede comprobarse que satisface la condición de cuatro puntos: para A, B, C, D, las sumas son $D_{AB}+D_{CD}=1{,}1$, $D_{AC}+D_{BD}=1{,}3$ y $D_{AD}+D_{BC}=1{,}3$.
 
 \medskip\noindent\textbf{Paso 1} ($n=5$). Las divergencias netas son $r=(2{,}0;\ 2{,}9;\ 2{,}2;\ 2{,}6;\ 2{,}3)$. Por ejemplo, $Q_{AB}=3\cdot0{,}5-2{,}0-2{,}9=-3{,}4$ y $Q_{AC}=3\cdot0{,}4-2{,}0-2{,}2=-3{,}0$. El mínimo, $-3{,}4$, se alcanza en dos pares, A--B y D--E, ambos vecinos genuinos; tomamos D--E (resaltado en la tabla). Observe que A--C, el par más cercano ($0{,}4$), \emph{no} gana. Las ramas son $b_{D}=0{,}25+(2{,}6-2{,}3)/6=0{,}30$ y $b_{E}=0{,}20$. El nuevo nodo $u_1$ queda a distancias $D_{u_1A}=\tfrac12(0{,}6+0{,}5-0{,}5)=0{,}3$, $D_{u_1B}=0{,}6$ y $D_{u_1C}=0{,}3$.
@@ -741,7 +741,7 @@ La \cref{tab:05-njD} contiene las distancias de camino de un árbol \emph{aditiv
     \node[font=\sffamily\bfseries\small] at (1.9,0.65) {(b) UPGMA};
   \end{scope}
 \end{tikzpicture}
-\caption[UPGMA frente a Neighbor-Joining sin reloj molecular]{Cuando falla el reloj. \textbf{(a)} Árbol generador del \cref{ej:nj}, dibujado desde su nodo central: B pertenece al linaje de A, pero su rama (naranja) es cuatro veces más larga. NJ lo recupera exactamente. \textbf{(b)} UPGMA sobre la misma matriz. Como $D_{AC}=0{,}4$ es la menor distancia, UPGMA une primero A con C (rojo), un grupo que no existe en el árbol verdadero, y relega a B a la posición más externa, porque su rama larga lo aleja de todos. La hipótesis de ultrametricidad fuerza además a que todas las hojas terminen alineadas.}
+\caption[UPGMA frente a Neighbor-Joining sin reloj molecular]{Cuando falla el reloj. \textbf{(a)} Árbol generador del \cref{ej:05-nj}, dibujado desde su nodo central: B pertenece al linaje de A, pero su rama (naranja) es cuatro veces más larga. NJ lo recupera exactamente. \textbf{(b)} UPGMA sobre la misma matriz. Como $D_{AC}=0{,}4$ es la menor distancia, UPGMA une primero A con C (rojo), un grupo que no existe en el árbol verdadero, y relega a B a la posición más externa, porque su rama larga lo aleja de todos. La hipótesis de ultrametricidad fuerza además a que todas las hojas terminen alineadas.}
 \label{fig:05-upgma}
 \end{figure}
 
@@ -797,7 +797,7 @@ Esa es, en esencia, la filosofía de la máxima verosimilitud (ML, \ingles{maxim
 
 Sea $X$ un alineamiento de $n$ secuencias y $N$ sitios, y sea $x_h$ la columna $h$. Dado un árbol $T$ con longitudes de rama $\mathbf b$ y un modelo con parámetros $\boldsymbol\theta$ (por ejemplo, $\kappa$, $\pi$ y $\alpha$), la independencia entre sitios permite escribir:
 
-\begin{definicion}{Verosimilitud filogenética}{verosimilitud}
+\begin{definicion}{Verosimilitud filogenética}{05-verosimilitud}
 \begin{equation}\label{eq:05-lik}
 \begin{aligned}
 L(T,\mathbf b,\boldsymbol\theta) &= \Prob(X\mid T,\mathbf b,\boldsymbol\theta) = \prod_{h=1}^{N}\Prob(x_h\mid T,\mathbf b,\boldsymbol\theta),\\
@@ -833,7 +833,7 @@ Cada término es la probabilidad de una historia completa del sitio; sumarlos to
 
 La idea es la misma que en la programación dinámica del \cref{cap:03}: reordenar las sumas para no repetir cálculos. En la \cref{eq:05-sitio}, los factores que dependen de $x_6$ pueden agruparse en una suma interior, que se calcula una sola vez para cada valor de $x_6$. Generalizando este reordenamiento a cualquier árbol, \textcite{c05-felsenstein1981} obtuvo un recorrido desde las hojas hacia la raíz, denominado \emph{poda} (\ingles{pruning}) porque cada subárbol ya procesado se «corta» y se sustituye por un vector de cuatro números.
 
-\begin{teorema}{Algoritmo de poda}{poda}
+\begin{teorema}{Algoritmo de poda}{05-poda}
 Para cada nodo $k$ y estado $x$, sea $L_k(x)$ la probabilidad de los estados observados en las hojas que descienden de $k$, condicionada a que $k$ esté en el estado $x$. Entonces
 \begin{equation}\label{eq:05-poda}
 L_k(x) = \begin{cases}
@@ -892,7 +892,7 @@ Dos observaciones completan el cuadro. Primero, bajo un modelo reversible la ver
 \label{fig:05-poda}
 \end{figure}
 
-\begin{ejemplo}{Verosimilitud de un sitio, paso a paso}{poda}
+\begin{ejemplo}{Verosimilitud de un sitio, paso a paso}{05-poda}
 Usemos JC69 con las ramas de la \cref{fig:05-poda}. Para JC, $P_{xx}(b)=\frac14+\frac34e^{-4b/3}$ y $P_{xy}(b)=\frac14-\frac14e^{-4b/3}$, de modo que la probabilidad de permanecer y la de cambiar a una base concreta valen $0{,}9064$ y $0{,}0312$ para $b=0{,}1$; $0{,}8245$ y $0{,}0585$ para $b=0{,}2$; y $0{,}7527$ y $0{,}0824$ para $b=0{,}3$.
 
 \medskip\noindent\textbf{Nodo 6.} Sus hijos son hojas con \nuc{G}, de modo que $L_6(x)=P_{x\text{G}}(0{,}1)\,P_{x\text{G}}(0{,}2)$. Para $x=\text{\nuc{G}}$: $0{,}9064\times0{,}8245=0{,}7473$; para cualquier otra base: $0{,}0312\times0{,}0585=0{,}0018$.
@@ -1003,7 +1003,7 @@ Los programas modernos combinan estas piezas con astucia. PhyML \parencite{c05-g
 \input{figuras/cap05/modelos.tex}
 \end{table}
 
-\begin{ejemplo}{Elegir el modelo con datos simulados}{modelos}
+\begin{ejemplo}{Elegir el modelo con datos simulados}{05-modelos}
 La \cref{tab:05-modelos} permite seguir el razonamiento completo. Pasar de JC69 a K80 añade un parámetro ($\kappa$) y aumenta $\hat\ell$ en $39{,}5$ unidades: $2\Delta\ell=78{,}9$, con $p\approx6\times10^{-19}$ para una $\chi^2_1$. La relación transición/transversión es real. Pasar de HKY85 a HKY85+$\Gamma$ añade $\alpha$ y gana $19{,}95$ unidades ($2\Delta\ell=39{,}9$, $p\approx3\times10^{-10}$): la heterogeneidad de tasas también es real. En cambio, pasar de HKY85+$\Gamma$ a GTR+$\Gamma$ añade cuatro parámetros y apenas gana $1{,}81$ unidades ($2\Delta\ell=3{,}6$, $p=0{,}46$ para una $\chi^2_4$): las seis tasas libres no aportan nada que $\kappa$ no explique ya. Los dos criterios de información coinciden y eligen HKY85+$\Gamma$, precisamente el modelo con que se simularon los datos; el BIC penaliza a GTR+$\Gamma$ con más dureza ($\Delta\mathrm{BIC}=22{,}0$) que el AIC ($\Delta\mathrm{AIC}=4{,}4$), porque $\ln 600\approx 6{,}4>2$. Las estimaciones, $\hat\kappa=3{,}71$ y $\hat\alpha=0{,}57$, están cerca de los valores verdaderos (4 y 0,5).
 \end{ejemplo}
 
@@ -1054,7 +1054,7 @@ Un árbol de máxima verosimilitud es una estimación puntual; necesitamos saber
   \item Repita $B$ veces (típicamente entre 100 y 1000) y registre, para cada bipartición del árbol original, la fracción de réplicas en que aparece.
 \end{enumerate}
 
-\begin{definicion}{Soporte bootstrap}{bootstrap}
+\begin{definicion}{Soporte bootstrap}{05-bootstrap}
 El soporte bootstrap de una bipartición $S$ es
 \begin{equation}\label{eq:05-bootstrap}
 \mathrm{BS}(S) = \frac{1}{B}\sum_{b=1}^{B}\mathbb 1\left[S\in \hat T^{*}_{b}\right]\times 100\,\%.
@@ -1095,7 +1095,7 @@ La \cref{fig:05-bootstrap} muestra el resultado para el alineamiento simulado de
 \label{fig:05-bootstrap}
 \end{figure}
 
-\begin{ejemplo}{Leer el soporte de la \cref{fig:05-bootstrap}}{soporte}
+\begin{ejemplo}{Leer el soporte de la \cref{fig:05-bootstrap}}{05-soporte}
 El clado humano-chimpancé-gorila aparece en el 100\,\% de las réplicas y el que añade al orangután, en el 95\,\%: sus ramas definitorias miden $0{,}03$ y $0{,}06$ sustituciones por sitio en el árbol generador, es decir, unas 18 y 36 sustituciones esperadas en 600 sitios. En cambio, el clado humano-chimpancé (72\,\%) se apoya en una rama de $0{,}008$: en un 28\,\% de las réplicas, el azar del remuestreo reúne a gorila con uno de los dos. Sin embargo, la topología estimada es correcta. La lección es general: un soporte moderado no indica que el clado sea falso, sino que \emph{estos datos} contienen poca información sobre él.
 \end{ejemplo}
 

@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber build/cap18/cap18"] 1790721368.85294 "build/cap18/cap18.bcf" "build/cap18/cap18.bbl" "build/cap18/cap18" 1790721386.8869 0
+["biber build/cap18/cap18"] 1790721368.85294 "build/cap18/cap18.bcf" "build/cap18/cap18.bbl" "build/cap18/cap18" 1790721797.41493 0
   "bib/cap18.bib" 1790720601.34071 11819 f05df95bda465f2c88fe427ea46011e4 ""
-  "build/cap18/cap18.bcf" 1790721386.50616 139615 3f61597dd209e917ee1e255dc2fc273d "lualatex"
+  "build/cap18/cap18.bcf" 1790721797.03409 139615 3f61597dd209e917ee1e255dc2fc273d "lualatex"
   (generated)
   "build/cap18/cap18.bbl"
   "build/cap18/cap18.blg"
   (rewritten before read)
-["lualatex"] 1790721378.82255 "build/cap18/cap18.tex" "build/cap18/cap18.pdf" "cap18" 1790721386.88716 0
+["lualatex"] 1790721789.1952 "build/cap18/cap18.tex" "build/cap18/cap18.pdf" "cap18" 1790721797.41519 0
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-medium.luc" 1790710272.77064 182725 27224749d640afb9be6cc6ad0752cf03 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-oblique.luc" 1790710272.83123 183636 3ed5ba597b0bed3ded643a35a1bc14a4 ""
   "/Users/juvenalyosa/Library/texlive/2025/texmf-var/luatex-cache/generic/fonts/otl/firamono-regular.luc" 1790710272.6472 182438 f241801388deb6dbd1843a704584a568 ""
@@ -463,26 +463,26 @@
   "build/cap18/_minted/01A5D305E05725168772FB11263B47A9.highlight.minted" 1790721358.10031 1287 6dfc313c055c824af8c32034f0f3029a ""
   "build/cap18/_minted/124552B720728194D3F3C4F94F34CCEC.highlight.minted" 1790721358.11593 758 60d1b3856d3b85abe9f92580334bb915 ""
   "build/cap18/_minted/136B243FF8FF18AAB8B20FE40ACC4F23.highlight.minted" 1790721358.11929 1370 432dad065c5fe49e5c0e19bb6dbf2533 ""
-  "build/cap18/_minted/220D82CD6C9CCC750B27447BA0A7EDCE.highlight.minted" 1790721358.10711 13918 e70a02bd8e502b769859b37353af436f ""
   "build/cap18/_minted/4B0DFBF762895C20BAB1790630FE2D5B.highlight.minted" 1790721358.08996 5654 760dbc8548040836edf589cec5a1c57b ""
   "build/cap18/_minted/52322AAD7EC17893AF6640FB7FEB72A0.highlight.minted" 1790721358.11798 1720 777d4f1ac21be992db013b1f0c5fcef2 ""
   "build/cap18/_minted/5589BFC85917FD41C3966F1E914687DC.highlight.minted" 1790721358.12247 2506 a76fffa7a3a87fea4ac5a4db85dd95fe ""
   "build/cap18/_minted/5CEBA9894DB9B812FE90EDFC67B2DB82.highlight.minted" 1790721358.08615 2675 a2856a4fbcd4dfb21475166b003d0664 ""
   "build/cap18/_minted/5E1F084FE64FF55DAB013B688E469A4D.highlight.minted" 1790721358.12068 467 2971176aa3d16a8d71825174d7523728 ""
+  "build/cap18/_minted/70B4D0853C34C73F5510DA0CA518C831.highlight.minted" 1790721785.49489 14100 145773cc44f853735e4501bd4feb81e5 ""
   "build/cap18/_minted/7FB17BB9B087C9B06BD72AF5DF2BBF13.highlight.minted" 1790721358.11654 431 3f31dd5eb348ee3974037797840ce108 ""
+  "build/cap18/_minted/80243486964F1C1B7C7268E68D7C1264.highlight.minted" 1790721623.40234 13367 27d024c33ef02d62ac96d8680cf20faa ""
   "build/cap18/_minted/926AD13BB0D7F4B5DD5A496011CA4907.highlight.minted" 1790721358.11977 215 8969ebe820fcbe2750a7294af1442b2b ""
   "build/cap18/_minted/9962DF59CF3BB346CC8D8BA4F54DC052.highlight.minted" 1790721358.12022 215 79ad50b7df1acd8038c7ff952cd1dd20 ""
   "build/cap18/_minted/A12DB3D743A0766659FA7ED66807B9BC.highlight.minted" 1790721358.12348 153 2583e8f4a64b78c2a0f869bd96aaa27d ""
-  "build/cap18/_minted/B83074D2C3C5FE8BAA9C2282B3B27966.highlight.minted" 1790721358.11524 13370 ecf0ef00897bdc42c90533b9a53305af ""
   "build/cap18/_minted/E2FA89A49E5CBF16E521D32F5163815E.highlight.minted" 1790721358.10796 957 551a55c9031f1d8e38648693dd8c4f1d ""
   "build/cap18/_minted/F5BCC19AD606A3179773DA330998F178.highlight.minted" 1790721358.12308 725 c2ffa0d8300ba2fbd842891f54bb0fd5 ""
   "build/cap18/_minted/friendly.style.minted" 1790721358.06163 6511 10ee1c54a45212a1fd1d9825a4cd8b6a ""
   "build/cap18/_minted/monokai.style.minted" 1790721358.09116 7023 c7089e902f66ab873db0423d87473e40 ""
-  "build/cap18/cap18.aux" 1790721386.48778 27960 d6955671138a9806d416a6239359394f "lualatex"
+  "build/cap18/cap18.aux" 1790721797.01551 27977 aeb4f7761d5db83207c7403dea930e30 "lualatex"
   "build/cap18/cap18.bbl" 1790721370.17563 153698 3f88710b641022d2cf03d6986064fc70 "biber build/cap18/cap18"
-  "build/cap18/cap18.run.xml" 1790721386.50671 2400 c764b2abbeaf367998978b13458e18b0 "lualatex"
-  "build/cap18/cap18.tex" 1790721350.31606 183 b91fb6e8f93b3278ea799d1ebbfce07d ""
-  "capitulos/cap18.tex" 1790721350.30183 99865 34f41f76ab454581b784bf21abf3c7b9 ""
+  "build/cap18/cap18.run.xml" 1790721797.03474 2400 c764b2abbeaf367998978b13458e18b0 "lualatex"
+  "build/cap18/cap18.tex" 1790721780.32262 183 b91fb6e8f93b3278ea799d1ebbfce07d ""
+  "capitulos/cap18.tex" 1790721780.3092 99887 04fe1526be03d2b33c2931391e56d1da ""
   "estilo/bioinfo.sty" 1790711624.00951 22652 d2ba805e6cbc276696dbdfff05c8bafb ""
   "figuras/cap18/amdahl.tex" 1790721312.72417 53 08383157fdc4368da2d6776de33ab21e ""
   "figuras/cap18/dag.tex" 1790721312.70701 3351 700ddf7a6842235509005bfb0d61bf29 ""

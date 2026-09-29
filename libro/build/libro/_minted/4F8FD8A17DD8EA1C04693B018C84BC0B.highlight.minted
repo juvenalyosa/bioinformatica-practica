@@ -1,3 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{n}{a} \PYG{o}{=} \PYG{p}{[}\PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1000}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1001}\PYG{p}{,} \PYG{o}{\PYGZhy{}}\PYG{l+m+mi}{1002}\PYG{p}{]}
-\end{MintedVerbatim}

@@ -66,7 +66,7 @@ Cada aminoácido aporta al esqueleto tres átomos pesados: el nitrógeno amida (
 
 Si los planos son rígidos, la conformación del esqueleto queda determinada por los ángulos de giro en torno a los dos enlaces restantes de cada C$_\alpha$. Esos giros se miden con ángulos \emph{diedros}.
 
-\begin{definicion}{Ángulo diedro}{diedro}
+\begin{definicion}{Ángulo diedro}{15-diedro}
 Dados cuatro átomos consecutivos con posiciones $\mathbf a,\mathbf b,\mathbf c,\mathbf d\in\R^3$, sean $\mathbf b_1=\mathbf b-\mathbf a$, $\mathbf b_2=\mathbf c-\mathbf b$, $\mathbf b_3=\mathbf d-\mathbf c$, y $\mathbf n_1=\mathbf b_1\times\mathbf b_2$, $\mathbf n_2=\mathbf b_2\times\mathbf b_3$ las normales de los dos planos que forman. El ángulo diedro es
 \begin{equation}\label{eq:15-diedro}
 \theta = \operatorname{atan2}\!\Big( \big(\mathbf n_1\times\mathbf n_2\big)\cdot\frac{\mathbf b_2}{\lVert\mathbf b_2\rVert},\;\; \mathbf n_1\cdot\mathbf n_2 \Big)\in(-\ang{180},\ang{180}].
@@ -121,7 +121,7 @@ Pauling cuenta que concibió la hélice $\alpha$ en 1948, convaleciente de un re
 
 Mirar una estructura y decir ``esto es una hélice'' parece trivial, pero dos expertos pueden discrepar en los extremos. \textcite{c15-kabsch1983} sustituyeron el juicio visual por un algoritmo, DSSP (\ingles{Dictionary of Secondary Structure of Proteins}), que primero identifica los puentes de hidrógeno del esqueleto con un modelo electrostático sencillo y después reconoce patrones en ellos.
 
-\begin{definicion}{Energía de puente de hidrógeno de DSSP}{dssp}
+\begin{definicion}{Energía de puente de hidrógeno de DSSP}{15-dssp}
 Para un grupo C=O y un grupo N--H del esqueleto, se colocan cargas parciales $\pm q_1$ en C y O, y $\pm q_2$ en N y H. La energía electrostática de interacción es
 \begin{equation}\label{eq:15-dssp}
 E = f\,q_1 q_2\left(\frac{1}{r_{\mathrm{ON}}}+\frac{1}{r_{\mathrm{CH}}}-\frac{1}{r_{\mathrm{OH}}}-\frac{1}{r_{\mathrm{CN}}}\right),
@@ -245,7 +245,7 @@ Al ser autodescriptivo, el formato admite tablas nuevas sin romper los programas
 
 La penúltima columna del fragmento anterior, \texttt{occupancy}, indica qué fracción de las moléculas del cristal tiene el átomo en esa posición (menor que 1 si hay conformaciones alternativas). La última, \texttt{B\_iso\_or\_equiv}, es el \emph{factor de desplazamiento atómico} o factor $B$, que mide cuánto se ``emborrona'' la densidad de cada átomo por vibración térmica y por desorden estático entre las copias del cristal.
 
-\begin{teorema}{Factor $B$ y desplazamiento cuadrático medio}{bfactor}
+\begin{teorema}{Factor $B$ y desplazamiento cuadrático medio}{15-bfactor}
 En el modelo isótropo, la contribución de un átomo a la difracción se atenúa por el factor $\exp(-B\sin^2\theta/\lambda^2)$, con
 \begin{equation}\label{eq:15-bfactor}
 B = 8\pi^2\,\langle u_x^2\rangle
@@ -262,7 +262,7 @@ B = 8\pi^2\,\langle u_x^2\rangle
 
 Así, $B=\SI{10}{\angstrom^2}$ corresponde a un desplazamiento tridimensional típico de \SI{0,62}{\angstrom}; $B=20$, a \SI{0,87}{\angstrom}; $B=80$, a \SI{1,74}{\angstrom}. Un átomo con $B$ alto está mal definido en el modelo, y conviene no apoyar conclusiones finas (una distancia de puente de hidrógeno, la orientación de una cadena lateral) en él.
 
-\begin{ejemplo}{Cristal frente a disolución: la ubiquitina}{ubq}
+\begin{ejemplo}{Cristal frente a disolución: la ubiquitina}{15-ubq}
 La ubiquitina humana, de 76 residuos, se ha resuelto por cristalografía a \SI{1,8}{\angstrom} (\texttt{1UBQ}) y por RMN con un ensamble de 10 modelos (\texttt{1D3Z}). Superponiendo los C$_\alpha$ con el algoritmo de Kabsch (que veremos a continuación), cada modelo de RMN difiere del cristal en un RMSD medio de \SI{0,97}{\angstrom} (entre 0,47 y 1,55). Si se excluye la cola C-terminal (residuos 71--76), la diferencia cae a \SI{0,37}{\angstrom}: el núcleo es prácticamente idéntico en el cristal y en disolución.
 
 La \cref{fig:15-ubq} explica por qué. El factor $B$ medio de los C$_\alpha$ del cristal es de \SI{8,9}{\angstrom^2} en los residuos 1--70 y de \SI{32,8}{\angstrom^2} en los residuos 72--76, y la fluctuación (RMSF) de esos mismos residuos entre los modelos de RMN alcanza \SI{6,6}{\angstrom} en el último. Dos experimentos completamente distintos coinciden en que la cola es flexible: la correlación entre el factor $B$ y la RMSF es de 0,71. Y no es un detalle menor: la glicina 76 de esa cola es la que se une covalentemente a las proteínas marcadas para su degradación, una función que exige flexibilidad.
@@ -293,7 +293,7 @@ La \cref{fig:15-ubq} explica por qué. El factor $B$ medio de los C$_\alpha$ del
 
 Una pregunta aparece una y otra vez en bioinformática estructural: ¿cuánto se parecen dos estructuras? Dos modelos de la misma proteína, un modelo predicho y la estructura experimental, una proteína antes y después de unir un ligando. Si tenemos una correspondencia entre átomos (el C$_\alpha$ $k$ de una con el C$_\alpha$ $k$ de la otra), la medida natural es la raíz de la desviación cuadrática media (RMSD). Pero las coordenadas de dos archivos están en sistemas de referencia arbitrarios; antes de medir hay que \emph{superponer}, es decir, encontrar la rotación y la traslación que mejor llevan una estructura sobre la otra.
 
-\begin{definicion}{RMSD tras superposición óptima}{rmsd}
+\begin{definicion}{RMSD tras superposición óptima}{15-rmsd}
 Sean $\{\mathbf p_k\}_{k=1}^N$ y $\{\mathbf q_k\}_{k=1}^N$ dos conjuntos de puntos en $\R^3$ con correspondencia conocida. El RMSD tras superposición óptima es
 \begin{equation}\label{eq:15-rmsd}
 \mathrm{RMSD} = \min_{\mathbf R\in SO(3),\ \mathbf t\in\R^3}\ \sqrt{\frac1N\sum_{k=1}^{N}\big\lVert \mathbf R\mathbf p_k+\mathbf t-\mathbf q_k\big\rVert^2}.
@@ -332,7 +332,7 @@ El paso intermedio usa la identidad $\mathbf q^\top\mathbf R\mathbf p=\operatorn
 \]
 Como $\mathbf M$ es ortogonal, sus elementos diagonales cumplen $M_{jj}\le1$, así que la suma es máxima cuando $\mathbf M=\mathbf I$, es decir, $\mathbf R=\mathbf V\mathbf U^\top$. Queda un detalle: si $\det(\mathbf V\mathbf U^\top)=-1$, esa matriz es una \emph{reflexión}, que convertiría una proteína en su imagen especular. La mejor rotación propia se obtiene entonces sacrificando el término del valor singular más pequeño.
 
-\begin{teorema}{Algoritmo de Kabsch}{kabsch}
+\begin{teorema}{Algoritmo de Kabsch}{15-kabsch}
 Con las estructuras centradas y $\mathbf H=\sum_k\mathbf p_k\mathbf q_k^\top=\mathbf U\boldsymbol\Sigma\mathbf V^\top$, la rotación óptima y el error mínimo son
 \begin{gather}
 \mathbf R^\ast=\mathbf V\,\mathbf D\,\mathbf U^\top,\qquad
@@ -357,7 +357,7 @@ El coste es el de construir $\mathbf H$, $O(N)$, más una SVD de $3\times3$, que
 \label{fig:15-kabsch}
 \end{figure}
 
-\begin{ejemplo}{Kabsch a mano, en el plano}{kabsch}
+\begin{ejemplo}{Kabsch a mano, en el plano}{15-kabsch}
 En la \cref{fig:15-kabsch}, la estructura móvil se construyó girando la de referencia \ang{52} alrededor de su centroide, trasladándola y añadiendo ruido de unas centésimas. Tras centrar, las sumas de cuadrados son $\sum\lVert\mathbf p_k\rVert^2=9{,}154$ y $\sum\lVert\mathbf q_k\rVert^2=9{,}064$, y la matriz de covarianza cruzada vale
 \[
 \mathbf H=\begin{pmatrix}1{,}906 & -2{,}558\\ 4{,}741 & 3{,}519\end{pmatrix},
@@ -388,7 +388,7 @@ El RMSD tiene dos defectos serios como medida de similitud global. Primero, depe
 
 \textcite{c15-zhang2004} propusieron una medida que resuelve ambos problemas.
 
-\begin{definicion}{TM-score}{tmscore}
+\begin{definicion}{TM-score}{15-tmscore}
 Para una estructura modelo y una de referencia de longitud $L$, con $N_{\mathrm{al}}$ pares de residuos alineados,
 \begin{equation}\label{eq:15-tmscore}
 \mathrm{TM} = \max_{\mathbf R,\mathbf t}\ \frac1L\sum_{k=1}^{N_{\mathrm{al}}}\frac{1}{1+\left(d_k/d_0(L)\right)^2},
@@ -406,7 +406,7 @@ donde $d_k$ es la distancia entre el par $k$ tras la superposición $(\mathbf R,
 
 Cada par contribuye entre 0 y 1: cerca de 1 si $d_k\ll d_0$ y casi nada si $d_k\gg d_0$, de modo que los residuos muy desviados dejan de pesar en lugar de dominar. La escala $d_0(L)$ se eligió para que el puntaje medio de estructuras no relacionadas apenas dependa de la longitud. El resultado va de 0 a 1; en la práctica, un TM-score mayor que 0,5 indica, casi siempre, el mismo plegamiento. Observe también el ``máx'': la superposición óptima para el TM-score \emph{no} es la de Kabsch (que minimiza el RMSD), sino la que maximiza el número de residuos bien superpuestos, y se busca de forma heurística a partir de fragmentos semilla.
 
-\begin{ejemplo}{Mioglobina frente a hemoglobina}{globinas}
+\begin{ejemplo}{Mioglobina frente a hemoglobina}{15-globinas}
 La mioglobina de cachalote (\texttt{1A6M}, 151 residuos) y la cadena $\alpha$ de la hemoglobina humana (\texttt{2DN2}, 141 residuos) son un ejemplo clásico de homología estructural. Un alineamiento global con BLOSUM62 empareja 138 residuos con solo un \SI{28,3}{\percent} de identidad, cerca de la ``zona crepuscular'' del \cref{cap:03}. Sin embargo, la superposición de Kabsch de esos 138 C$_\alpha$ da un RMSD de \SI{1,93}{\angstrom}; si se descartan iterativamente los pares a más de \SI{3}{\angstrom}, quedan 129 con un RMSD de \SI{1,38}{\angstrom}. El TM-score, normalizado por la cadena $\alpha$, es 0,87, inequívocamente el mismo plegamiento. Como control, si se baraja al azar la correspondencia entre residuos, el TM-score cae a 0,12. \emph{La estructura se conserva mucho más que la secuencia}, una regla que justifica el modelado por homología de la próxima lección.
 \end{ejemplo}
 
@@ -573,7 +573,7 @@ La atención permite que cada residuo ``consulte'' a todos los demás y decida a
 
 Una predicción sin estimación de su error sería peligrosa. AlphaFold2 aprende a predecir, además de la estructura, cuánto se equivoca.
 
-\begin{definicion}{lDDT y pLDDT}{plddt}
+\begin{definicion}{lDDT y pLDDT}{15-plddt}
 El lDDT \parencite{c15-mariani2013} compara un modelo con la referencia \emph{sin superponerlos}. Para cada átomo $i$, se consideran los pares $(i,j)$ con distancia de referencia $d^{\mathrm{ref}}_{ij}<R_0=\SI{15}{\angstrom}$, y se cuenta la fracción de ellos cuya distancia en el modelo se conserva dentro de cada tolerancia:
 \begin{equation}\label{eq:15-lddt}
 \mathrm{lDDT}_i=\frac14\sum_{\tau\in\{0{,}5,\,1,\,2,\,4\}}\frac{\big|\{j:\ d^{\mathrm{ref}}_{ij}<R_0,\ |d^{\mathrm{mod}}_{ij}-d^{\mathrm{ref}}_{ij}|<\tau\}\big|}{\big|\{j:\ d^{\mathrm{ref}}_{ij}<R_0\}\big|}.
@@ -613,7 +613,7 @@ Para la disposición relativa de dominios, AlphaFold2 ofrece el \emph{error alin
 \label{fig:15-plddt}
 \end{figure}
 
-\begin{ejemplo}{Leer un modelo de AlphaFold DB: p53}{p53}
+\begin{ejemplo}{Leer un modelo de AlphaFold DB: p53}{15-p53}
 La p53 humana (393 residuos) es un caso de estudio ideal porque mezcla dominios compactos con largas regiones desordenadas. En su modelo de AlphaFold DB, el \SI{52,7}{\percent} de los residuos tiene pLDDT muy alto, el \SI{7,1}{\percent} seguro, el \SI{10,4}{\percent} bajo y el \SI{29,8}{\percent} muy bajo (\cref{fig:15-plddt}).
 
 La matriz de PAE (\cref{fig:15-pae}) añade la información que el pLDDT no da. Dentro del dominio de unión a ADN, el PAE medio es de \SI{3,6}{\angstrom}, y dentro del de tetramerización, de \SI{2,9}{\angstrom}; pero el PAE medio de las posiciones del dominio de tetramerización vistas desde el marco del dominio de unión a ADN es de \SI{20,1}{\angstrom}. Traducción: cada dominio está bien predicho, pero su orientación relativa en el modelo es arbitraria, y sería un error medir distancias entre ellos.
@@ -788,7 +788,7 @@ S=\frac{\sum_{i<j} \sum_{m} w_m\,h_m(d_{ij})}{1+w_{\mathrm{rot}}\,N_{\mathrm{rot
 
 La \cref{fig:15-vina} muestra la forma de estos términos. Tienen una lógica clara: la atracción gaussiana estrecha premia el contacto íntimo; la ancha, la proximidad general; la repulsión castiga los choques; y los dos términos lineales recompensan los contactos hidrofóbicos y los puentes de hidrógeno. Llama la atención lo que \emph{falta}: no hay término electrostático explícito ni desolvatación. Los pesos se ajustaron para reproducir afinidades experimentales, así que esos efectos quedan absorbidos, de forma promedio, en los términos existentes. Es una función deliberadamente simple, y su virtud es la velocidad.
 
-\begin{ejemplo}{De la puntuación a la constante de disociación}{vina}
+\begin{ejemplo}{De la puntuación a la constante de disociación}{15-vina}
 Suponga que la suma intermolecular de una pose es de $-10{,}5$ kcal/mol y que el ligando tiene $N_{\mathrm{rot}}=5$ enlaces rotables. La \cref{eq:15-vinarot} divide por $1+0{,}0585\times5=1{,}29$, de modo que $S=-8{,}12$ kcal/mol: la flexibilidad le cuesta al ligando más de 2 kcal/mol, porque al unirse pierde la libertad de girar esos enlaces. Si interpretamos $S$ como energía libre de unión, la relación termodinámica $\Delta G=RT\ln K_d$ a \SI{298}{\kelvin} ($RT=0{,}593$ kcal/mol) da
 \[
 K_d = e^{\Delta G/RT}=e^{-8{,}12/0{,}593}\approx1{,}1\times10^{-6}\ \mathrm{M}\approx\SI{1,1}{\micro M}.
@@ -891,7 +891,7 @@ El \ingles{docking} clásico es útil pero tiene limitaciones que todo usuario d
 \begin{itemize}
   \item \textbf{Receptor rígido.} Las proteínas se ajustan al ligando (\ingles{induced fit}); una estructura cristalizada con otro ligando, o sin ninguno, puede tener el bolsillo cerrado o con cadenas laterales en posiciones incompatibles. Acoplar contra varias conformaciones del receptor (\ingles{ensemble docking}) o permitir flexibilidad en algunas cadenas laterales mitiga el problema a un coste computacional mayor.
   \item \textbf{Agua y protonación.} Las moléculas de agua que median puentes entre ligando y proteína, y los estados de protonación, rara vez se modelan bien.
-  \item \textbf{Puntuaciones que no son afinidades.} Como vimos en el \cref{ej:vina}, el error en afinidad es del orden de 2 kcal/mol. En cribado virtual, las puntuaciones sirven para \emph{enriquecer} la lista de candidatos, no para predecir cuáles son activos.
+  \item \textbf{Puntuaciones que no son afinidades.} Como vimos en el \cref{ej:15-vina}, el error en afinidad es del orden de 2 kcal/mol. En cribado virtual, las puntuaciones sirven para \emph{enriquecer} la lista de candidatos, no para predecir cuáles son activos.
   \item \textbf{Modelos predichos.} Acoplar contra un modelo de AlphaFold es posible, pero las cadenas laterales del bolsillo, incluso con pLDDT alto, pueden no estar en la conformación de unión; la exactitud suele caer respecto a las estructuras experimentales cocristalizadas.
 \end{itemize}
 

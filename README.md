@@ -54,9 +54,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 5 · Filogenética y evolución molecular
 
-- 5.1 Distancias evolutivas y modelos de sustitución · *próximamente*
-- 5.2 UPGMA y Neighbor-Joining · *próximamente*
-- 5.3 Máxima verosimilitud y bootstrap · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 5.1 | Distancias evolutivas y modelos de sustitución (JC69, K80, GTR, Gamma) en la polimerasa de 12 coronavirus | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-05-filogenetica/5.1_distancias_modelos.ipynb) |
+| 5.2 | Árboles a partir de distancias: UPGMA y Neighbor-Joining animados, enraizado y Robinson-Foulds | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-05-filogenetica/5.2_upgma_neighbor_joining.ipynb) |
+| 5.3 | Máxima verosimilitud (poda de Felsenstein), bootstrap e IQ-TREE con 12 primates | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-05-filogenetica/5.3_maxima_verosimilitud_bootstrap.ipynb) |
 
 ### Módulo 6 · Secuenciación de nueva generación (NGS)
 
@@ -146,6 +148,7 @@ bioinformatica-practica/
 ├── modulo-02-formatos-bases-datos/
 ├── modulo-03-alineamiento/
 ├── modulo-04-msa-motivos-hmm/
+├── modulo-05-filogenetica/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

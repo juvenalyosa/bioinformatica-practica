@@ -97,7 +97,7 @@ Un genoma bacteriano puede llevar entre una y más de una docena de copias del o
 
 Durante una década, el procedimiento estándar para convertir millones de lecturas en una tabla de ``especies'' fue agruparlas en \emph{unidades taxonómicas operativas} (OTUs).
 
-\begin{definicion}{Unidad taxonómica operativa (OTU)}{otu}
+\begin{definicion}{Unidad taxonómica operativa (OTU)}{14-otu}
 Una OTU al nivel $\theta$ es un grupo de secuencias tal que cada miembro tiene una identidad de al menos $\theta$ con la secuencia representativa (centroide) del grupo. El umbral clásico es $\theta = 97\,\%$, que se tomó como aproximación a la ``especie'' bacteriana.
 \end{definicion}
 
@@ -151,7 +151,7 @@ Para un amplicón V4 de 253 nucleótidos (sin cebadores), el 97 \% de identidad 
 
 La alternativa moderna invierte la lógica. En lugar de preguntarse ``¿qué lecturas se parecen lo suficiente?'', pregunta: ``¿qué secuencias \emph{reales} tuvieron que estar en la muestra para producir las lecturas observadas, dado lo que sabemos de los errores del secuenciador?''. El resultado es un conjunto de \emph{variantes de secuencia de amplicón} (ASVs), secuencias exactas inferidas con resolución de un nucleótido. \textcite{c14-callahan2016} implementaron este enfoque en DADA2, y un año después \textcite{c14-callahan2017} argumentaron que las ASVs deben reemplazar a las OTUs como unidad de análisis por tres razones: son \emph{precisas} (distinguen variantes que difieren en una base), \emph{reproducibles} (la misma secuencia biológica produce la misma ASV en cualquier estudio) y \emph{reutilizables} (las tablas de distintos estudios pueden combinarse directamente, porque la etiqueta de cada unidad es su propia secuencia).
 
-\begin{definicion}{Variante de secuencia de amplicón (ASV)}{asv}
+\begin{definicion}{Variante de secuencia de amplicón (ASV)}{14-asv}
 Una ASV es una secuencia exacta que un procedimiento de inferencia estadística considera presente en la muestra, porque su abundancia observada es demasiado alta para explicarse como producto de errores de amplificación y secuenciación de otras secuencias más abundantes.
 \end{definicion}
 
@@ -172,7 +172,7 @@ Las probabilidades $p(b\mid a, q)$ no se toman de la calidad nominal: DADA2 las 
 
 Si una secuencia real $i$ tiene abundancia $n_i$ (número de lecturas en su partición), el número esperado de lecturas idénticas a $j$ que $i$ produce por error es $n_i\lambda_{ji}$. Bajo el supuesto de errores independientes entre lecturas, el número de copias de $j$ generadas por error sigue aproximadamente una distribución de Poisson con esa media. Esto permite preguntar si la abundancia observada de $j$, $a_j$, es \emph{sorprendente}.
 
-\begin{teorema}{Prueba de abundancia de DADA2}{dada2}
+\begin{teorema}{Prueba de abundancia de DADA2}{14-dada2}
 Sea $a_j$ el número de lecturas idénticas a la secuencia $j$, y sea $i$ la variante de la partición a la que $j$ está asignada. Condicionando en que $j$ fue observada al menos una vez, el valor $p$ de abundancia es
 \begin{equation}\label{eq:14-pabund}
 p_A(j \mid i) = \frac{1}{1 - \rho(0;\, n_i\lambda_{ji})}\sum_{a \ge a_j} \rho(a;\, n_i\lambda_{ji}),
@@ -218,7 +218,7 @@ El algoritmo es divisivo. Empieza con todas las secuencias únicas en una sola p
 \label{fig:14-dada2}
 \end{figure}
 
-\begin{ejemplo}{¿Error o variante a un nucleótido?}{dada2}
+\begin{ejemplo}{¿Error o variante a un nucleótido?}{14-dada2}
 En la simulación de la \cref{fig:14-dada2}, la variante dominante produce $n_i = \num{5000}$ moléculas y la tasa de error es $e = 0{,}002$ por base, repartida por igual entre las tres bases incorrectas. La probabilidad de que una lectura de $i$ se lea como una secuencia concreta $j$ que difiere en una posición es
 \[
 \lambda_{ji} = \frac{e}{3}\,(1-e)^{249} = 6{,}67\times10^{-4}\times 0{,}607 = 4{,}05\times10^{-4},
@@ -324,7 +324,7 @@ y, suponiendo que las palabras son independientes (de ahí lo de ``ingenuo''),
 
 Con una probabilidad previa uniforme sobre géneros, maximizar $P(S\mid G)$ equivale a maximizar la probabilidad posterior $P(G\mid S)$. La confianza no se obtiene de esa posterior, que suele ser engañosamente cercana a 1, sino por \emph{remuestreo}: se repite la clasificación con 100 subconjuntos aleatorios de un octavo de las palabras y se cuenta en cuántas réplicas se obtiene el mismo género. Si la confianza (el porcentaje de réplicas coincidentes) cae por debajo de un umbral, habitualmente \SI{80}{\percent}, la asignación se trunca al rango superior (familia, orden) en el que sí se alcanza.
 
-\begin{ejemplo}{Tres géneros y cuatro palabras}{bayes}
+\begin{ejemplo}{Tres géneros y cuatro palabras}{14-bayes}
 Una base de juguete tiene $N=125$ secuencias: 40 de \especie{Bacteroides}, 25 de \especie{Prevotella} y 60 de \especie{Escherichia}. Una ASV contiene cuatro palabras $w_1,\dots,w_4$, presentes en $n(w)=59,\ 37,\ 61,\ 61$ secuencias de la base, respectivamente. Los conteos por género son:
 \begin{center}
 \small
@@ -388,7 +388,7 @@ Distinguiremos, siguiendo la tradición ecológica, dos escalas de diversidad. L
 
 \subsection{Riqueza, Shannon y Simpson}
 
-\begin{definicion}{Índices clásicos de diversidad alfa}{alfa}
+\begin{definicion}{Índices clásicos de diversidad alfa}{14-alfa}
 Para una muestra con abundancias relativas $p_1,\dots,p_S$ (todas positivas),
 \begin{align}
 S &= \#\{i : p_i > 0\}, \label{eq:14-riqueza}\\
@@ -407,7 +407,7 @@ son, respectivamente, la riqueza observada, la entropía de Shannon y el índice
 
 Cada índice responde una pregunta distinta. $S$ ignora las abundancias; da el mismo peso a un taxón con una lectura que a uno con un millón. $H$ es la entropía de la teoría de la información: es máxima, $\ln S$, cuando todos los taxones son igual de abundantes, y vale cero cuando uno solo acapara la muestra. $D$ está dominado por los taxones abundantes, porque eleva las proporciones al cuadrado; suele reportarse como $1-D$ (índice de Gini-Simpson, la probabilidad de que dos lecturas sean de taxones distintos) o como $1/D$ (Simpson inverso). La \emph{equidad} de Pielou, $J = H/\ln S$, normaliza la entropía por su máximo.
 
-\begin{ejemplo}{Una comunidad de nueve taxones}{alfa}
+\begin{ejemplo}{Una comunidad de nueve taxones}{14-alfa}
 Una muestra con $N=100$ lecturas tiene los conteos $(50, 20, 10, 10, 5, 2, 1, 1, 1)$. Entonces
 \[
 \begin{aligned}
@@ -433,7 +433,7 @@ Llamemos $f_k$ al número de taxones observados exactamente $k$ veces (así, $f_
 \simbolo{$S_{\text{real}}$}{Número total de taxones de la comunidad, observados o no.}
 \end{simbolos}
 
-\begin{teorema}{Cota inferior de Chao}{chao1}
+\begin{teorema}{Cota inferior de Chao}{14-chao1}
 Bajo el modelo de la \cref{eq:14-fk}, $\E[f_0] \ge \E[f_1]^2 / \bigl(2\,\E[f_2]\bigr)$. En consecuencia, el estimador
 \begin{equation}\label{eq:14-chao1}
 \hat{S}_{\text{Chao1}} = S_{\text{obs}} + \frac{f_1^2}{2 f_2}
@@ -447,7 +447,7 @@ estima una \emph{cota inferior} de la riqueza real. Cuando $f_2 = 0$ se usa la f
 \]
 y basta despejar. La igualdad se alcanza cuando todos los $\lambda_i$ son iguales; cuanto más heterogéneas sean las abundancias de los taxones raros, más holgada es la cota. $\square$
 
-La demostración explica también el uso correcto del estimador. Chao1 no ``adivina'' la riqueza: dice que, \emph{como mínimo}, faltan unos $f_1^2/(2f_2)$ taxones. Si muchos taxones aparecen una sola vez y pocos dos veces, la muestra está lejos de estar completa. Si casi no hay \ingles{singletons}, la muestra está saturada. En la muestra del \cref{ej:alfa}, con $f_1=3$ y $f_2=1$, obtenemos $\hat{S}_{\text{Chao1}} = 9 + 9/2 = 13{,}5$.
+La demostración explica también el uso correcto del estimador. Chao1 no ``adivina'' la riqueza: dice que, \emph{como mínimo}, faltan unos $f_1^2/(2f_2)$ taxones. Si muchos taxones aparecen una sola vez y pocos dos veces, la muestra está lejos de estar completa. Si casi no hay \ingles{singletons}, la muestra está saturada. En la muestra del \cref{ej:14-alfa}, con $f_1=3$ y $f_2=1$, obtenemos $\hat{S}_{\text{Chao1}} = 9 + 9/2 = 13{,}5$.
 
 \begin{cuidado}[Los \ingles{singletons} de un amplicón no son los de un censo]
 Chao1 descansa por completo en $f_1$ y $f_2$. Pero DADA2 elimina por defecto las secuencias vistas una sola vez, porque la mayoría son errores (\cref{sec:14-16s}). Una tabla de ASVs casi no tiene \ingles{singletons}, y en ella Chao1 coincide con la riqueza observada por construcción, no porque la comunidad esté completa. Con OTUs, el problema es el inverso: los errores de secuenciación inflan $f_1$ y con él la riqueza estimada. Los estimadores de riqueza basados en \ingles{singletons} deben usarse con mucha cautela en datos de amplicones.
@@ -491,7 +491,7 @@ La curva crece rápido al principio, cuando cada lectura nueva tiene alta probab
   \node[etiqueta, anchor=west] at (axis cs:8200,125) {profundidad de rarefacción ($n=\num{8000}$)};
 \end{axis}
 \end{tikzpicture}
-\caption[Curvas de rarefacción]{Curvas de rarefacción exactas (\cref{eq:14-rare}) para tres comunidades simuladas secuenciadas a profundidades distintas (\num{30000}, \num{18000} y \num{8000} lecturas). La comunidad C, pequeña y equitativa, se satura enseguida: sus 90 taxones aparecen todos. La B casi se satura. La A, con 400 taxones y una larguísima cola de raros, sigue subiendo: se observan solo 237, y Chao1 (línea discontinua) estima 264, una cota inferior muy por debajo del valor real, como anticipa el \cref{teo:chao1}. Recortar las tres muestras a \num{8000} lecturas (línea punteada) hace comparables sus riquezas ($202$, $165$ y $90$), a costa de descartar el \SI{73}{\percent} de las lecturas de A.}
+\caption[Curvas de rarefacción]{Curvas de rarefacción exactas (\cref{eq:14-rare}) para tres comunidades simuladas secuenciadas a profundidades distintas (\num{30000}, \num{18000} y \num{8000} lecturas). La comunidad C, pequeña y equitativa, se satura enseguida: sus 90 taxones aparecen todos. La B casi se satura. La A, con 400 taxones y una larguísima cola de raros, sigue subiendo: se observan solo 237, y Chao1 (línea discontinua) estima 264, una cota inferior muy por debajo del valor real, como anticipa el \cref{teo:14-chao1}. Recortar las tres muestras a \num{8000} lecturas (línea punteada) hace comparables sus riquezas ($202$, $165$ y $90$), a costa de descartar el \SI{73}{\percent} de las lecturas de A.}
 \label{fig:14-rare}
 \end{figure}
 
@@ -501,7 +501,7 @@ La curva crece rápido al principio, cuando cada lectura nueva tiene alta probab
 
 La discusión anterior dejó una incomodidad: la riqueza, Shannon y Simpson miden cosas distintas en escalas distintas. \textcite{c14-hill1973} mostró que son, en realidad, miembros de una única familia.
 
-\begin{definicion}{Números de Hill}{hill}
+\begin{definicion}{Números de Hill}{14-hill}
 El número de Hill de orden $q \ge 0$ de una comunidad con abundancias relativas $p_1,\dots,p_S$ es
 \begin{equation}\label{eq:14-hill}
 {}^{q}D = \left(\sum_{i=1}^{S} p_i^{\,q}\right)^{1/(1-q)}, \qquad q \ne 1,
@@ -523,7 +523,7 @@ La exponencial de Shannon es, así, el número de Hill de orden 1.
 
 ¿Por qué molestarse en transformar índices que ya conocíamos? \textcite{c14-jost2006} dio el argumento decisivo: la entropía de Shannon y el índice de Gini-Simpson \emph{no son diversidades}, sino funciones de ellas, y tratarlas como tales produce conclusiones absurdas.
 
-\begin{teorema}{Principio de replicación}{replicacion}
+\begin{teorema}{Principio de replicación}{14-replicacion}
 Si se combinan $m$ comunidades igual de grandes, cada una con número de Hill ${}^qD$, y sin ningún taxón en común, la comunidad combinada tiene número de Hill $m\cdot{}^qD$, para todo $q$.
 \end{teorema}
 
@@ -609,7 +609,7 @@ La secuenciación mide proporciones, no cantidades. Cualquier conclusión del ti
 
 Para comparar muestras necesitamos una disimilitud $d(u,v)$ entre dos vectores de abundancia. No existe una única elección correcta; cada índice responde una pregunta biológica distinta.
 
-\begin{definicion}{Bray-Curtis y Jaccard}{bcj}
+\begin{definicion}{Bray-Curtis y Jaccard}{14-bcj}
 Para dos muestras con abundancias $u_i$ y $v_i$ (conteos o proporciones),
 \begin{align}
 d_{\text{BC}}(u,v) &= \frac{\sum_i |u_i - v_i|}{\sum_i (u_i + v_i)} = 1 - \frac{2\sum_i \min(u_i, v_i)}{\sum_i (u_i+v_i)},\label{eq:14-bc}\\[3pt]
@@ -643,7 +643,7 @@ Si las dos comunidades comparten linajes cercanos, las ramas exclusivas serán c
 
 Con $n$ muestras obtenemos una matriz $n\times n$ de distancias. Para \emph{verla}, buscamos puntos en un plano cuyas distancias euclidianas se parezcan lo más posible a las originales. El análisis de coordenadas principales (PCoA, o escalamiento multidimensional clásico) lo hace mediante una descomposición espectral.
 
-\begin{teorema}{Coordenadas principales}{pcoa}
+\begin{teorema}{Coordenadas principales}{14-pcoa}
 Sea $\mathbf{D}$ la matriz de disimilitudes, $\mathbf{A} = -\tfrac12 [d_{kl}^2]$ y $\mathbf{J} = \mathbf{I} - \tfrac1n \mathbf{1}\mathbf{1}^{\top}$ la matriz de centrado. Sea
 \begin{equation}\label{eq:14-gower}
 \mathbf{B} = \mathbf{J}\mathbf{A}\mathbf{J} = \mathbf{V}\boldsymbol{\Lambda}\mathbf{V}^{\top}
@@ -664,7 +664,7 @@ La idea detrás de la \cref{eq:14-gower} es que, si las muestras fueran puntos $
 
 Una ordenación sugiere, pero no prueba. Para contrastar si la composición difiere entre grupos (sanos frente a enfermos, dietas, tratamientos) necesitamos un análisis de la varianza que funcione con cualquier disimilitud. \textcite{c14-anderson2001} lo formuló a partir de una identidad clásica: la suma de cuadrados de las distancias de los puntos a su centroide puede calcularse sin conocer el centroide, solo con las distancias entre pares.
 
-\begin{teorema}{Pseudo-$F$ de PERMANOVA}{permanova}
+\begin{teorema}{Pseudo-$F$ de PERMANOVA}{14-permanova}
 Sean $N$ muestras repartidas en $a$ grupos de tamaño $n$, y sea $\varepsilon_{kl}=1$ si $k$ y $l$ pertenecen al mismo grupo (0 en otro caso). Con
 \begin{equation}\label{eq:14-ss}
 SS_T = \frac{1}{N}\sum_{k<l} d_{kl}^2, \qquad SS_W = \frac{1}{n}\sum_{k<l} d_{kl}^2\,\varepsilon_{kl}, \qquad SS_A = SS_T - SS_W,
@@ -772,13 +772,13 @@ Con $B=10^{11}$ bases, un 15-mer aparecería por azar unas 93 veces, un 21-mer $
 
 Muchos $k$-mers no son exclusivos de un genoma: un 31-mer de un gen ribosómico puede estar en todos los miembros de una familia. Kraken resuelve la ambigüedad al construir la base, no al consultarla.
 
-\begin{definicion}{Ancestro común más bajo (LCA)}{lca}
+\begin{definicion}{Ancestro común más bajo (LCA)}{14-lca}
 Dado un conjunto de taxones $T$ en un árbol taxonómico, su ancestro común más bajo, $\mathrm{LCA}(T)$, es el nodo más profundo del árbol del que descienden todos los elementos de $T$. En la base de Kraken, cada $k$-mer $\kappa$ se asocia a $\tau(\kappa) = \mathrm{LCA}\{\text{taxones cuyos genomas contienen } \kappa\}$.
 \end{definicion}
 
 Un $k$-mer presente solo en \especie{Escherichia coli} apunta a la especie; uno presente en \especie{E.~coli} y en \especie{Shigella flexneri} apunta a la familia \especie{Enterobacteriaceae}; uno presente en toda bacteria apunta al dominio. Así, cada $k$-mer lleva la etiqueta más específica que la base de datos puede justificar. Para clasificar una lectura, Kraken consulta todos sus $k$-mers y construye el \emph{árbol de clasificación}: el subárbol formado por los taxones $\tau(\kappa)$ encontrados y sus ancestros, con un peso $w_t$ igual al número de $k$-mers de la lectura asignados a cada nodo $t$.
 
-\begin{teorema}{Regla de clasificación de Kraken}{rtl}
+\begin{teorema}{Regla de clasificación de Kraken}{14-rtl}
 Para cada hoja $h$ del árbol de clasificación, sea $\mathrm{camino}(h)$ el conjunto de nodos desde la raíz hasta $h$, y
 \begin{equation}\label{eq:14-rtl}
 \mathrm{RTL}(h) = \sum_{t\,\in\,\mathrm{camino}(h)} w_t .
@@ -831,7 +831,7 @@ La regla tiene una lógica clara: un $k$-mer asignado a la familia es compatible
 \label{fig:14-lca}
 \end{figure}
 
-\begin{ejemplo}{Leer el árbol de la \cref{fig:14-lca}}{rtl}
+\begin{ejemplo}{Leer el árbol de la \cref{fig:14-lca}}{14-rtl}
 Una lectura de 150 pb tiene $150-35+1 = 116$ $k$-mers. De ellos, 36 no aparecen en la base (quizá la cepa de la muestra difiere de las de referencia) y 80 sí. Las puntuaciones de los cuatro caminos son $\mathrm{RTL}(\text{\emph{E.~coli}}) = 2+3+10+12+40 = 67$, $\mathrm{RTL}(\text{\emph{E.~albertii}}) = 2+3+10+12+4 = 31$, $\mathrm{RTL}(\text{\emph{S.~flexneri}}) = 2+3+10+1+6 = 22$ y $\mathrm{RTL}(\text{\emph{S.~enterica}}) = 2+3+10+0+2 = 17$. La lectura se asigna a \especie{E.~coli}. Observe que los 6 $k$-mers exclusivos de \especie{S.~flexneri} no bastan para cambiar la decisión: en bacterias con mucha transferencia horizontal, que una lectura contenga algunos $k$-mers de otra especie es lo esperable.
 \end{ejemplo}
 
@@ -888,7 +888,7 @@ P(S_i \mid G) = \frac{P(G \mid S_i)\, P(S_i)}{\sum_k P(G\mid S_k)\, P(S_k)}, \qq
 \label{fig:14-bracken}
 \end{figure}
 
-\begin{ejemplo}{Bracken en números}{bracken}
+\begin{ejemplo}{Bracken en números}{14-bracken}
 En la \cref{fig:14-bracken}, Kraken deja $K=(3000, 2400, 300)$ lecturas a nivel de especie y $n_G = \num{4300}$ en el género. La probabilidad previa se estima con los conteos de especie, $P(S_i) = K_i/\sum K = (0{,}526;\ 0{,}421;\ 0{,}053)$, y $P(G\mid S_i) = 1 - P_{S\mid S} = (0{,}5;\ 0{,}2;\ 0{,}7)$. Los productos son $(0{,}263;\ 0{,}084;\ 0{,}037)$, que normalizados dan $P(S_i\mid G) = (0{,}685;\ 0{,}219;\ 0{,}096)$. Las estimaciones finales son $\hat{n} = (3000 + 2945,\ 2400 + 942,\ 300 + 412) = (\num{5945}, \num{3342}, \num{712})$, frente a los valores verdaderos $(\num{6000}, \num{3000}, \num{1000})$.
 \end{ejemplo}
 
@@ -971,7 +971,7 @@ Baja calidad & $<50\,\%$ & $<10\,\%$ & ---\\
 \end{tabular}
 \end{table}
 
-\begin{ejemplo}{Clasificar un MAG}{mimag}
+\begin{ejemplo}{Clasificar un MAG}{14-mimag}
 Un bin contiene 95 de los 104 marcadores de copia única de su linaje, y 6 de ellos aparecen dos veces. Su completitud es $95/104 = 91{,}3\,\%$ y su contaminación $6/104 = 5{,}8\,\%$. Aunque supera el 90\,\% de completitud, la contaminación excede el 5\,\%: es un borrador de \emph{calidad media}. Además, los genes de ARNr 16S rara vez se ensamblan bien en metagenomas (las copias casi idénticas del operón colapsan en el grafo), de modo que muchos MAGs con completitud y contaminación excelentes no alcanzan la categoría alta por ese requisito.
 \end{ejemplo}
 
@@ -1048,9 +1048,9 @@ El perfilado por referencia responde rápido ``quién está'', pero solo entre l
 \begin{ejercicios}
 \ej{1} Calcule $H$, $1/D$, ${}^0D$, ${}^1D$ y ${}^2D$ para la comunidad con abundancias $(0{,}4;\ 0{,}3;\ 0{,}2;\ 0{,}1)$. Verifique numéricamente que ${}^qD$ es decreciente en $q$.
 \ej{2} Usando la \cref{eq:14-pabund}, calcule la abundancia mínima que DADA2 exigiría a una secuencia a dos nucleótidos de una variante con \num{20000} lecturas, con $L=250$ y $e=0{,}005$. Repita con $\Omega_A = 10^{-5}$ y discuta cuántos falsos positivos esperaría con \num{50000} secuencias únicas.
-\ej{2} Demuestre el principio de replicación (\cref{teo:replicacion}) para $q=1$ directamente a partir de la entropía de Shannon, y muestre con un contraejemplo que el índice de Gini-Simpson no lo cumple.
+\ej{2} Demuestre el principio de replicación (\cref{teo:14-replicacion}) para $q=1$ directamente a partir de la entropía de Shannon, y muestre con un contraejemplo que el índice de Gini-Simpson no lo cumple.
 \ej{2} Implemente la \cref{eq:14-rare} y el estimador Chao1 en Python. Simule una comunidad con 500 taxones de abundancias log-normales, tome muestras de \num{1000}, \num{10000} y \num{100000} lecturas, y grafique cómo cambian $S_{\text{obs}}$ y $\hat{S}_{\text{Chao1}}$. ¿Converge Chao1 a 500?
-\ej{2} Implemente en Python la regla RTL (\cref{teo:rtl}), construya el árbol de la \cref{fig:14-lca} y compruebe las puntuaciones RTL. Añada la regla de confianza de Kraken 2 (\cref{eq:14-conf}) y encuentre el umbral a partir del cual la lectura deja de asignarse al género.
+\ej{2} Implemente en Python la regla RTL (\cref{teo:14-rtl}), construya el árbol de la \cref{fig:14-lca} y compruebe las puntuaciones RTL. Añada la regla de confianza de Kraken 2 (\cref{eq:14-conf}) y encuentre el umbral a partir del cual la lectura deja de asignarse al género.
 \ej{3} Implemente PERMANOVA (\cref{eq:14-ss,eq:14-pseudoF}) desde cero y compárela con \py{skbio.stats.distance.permanova}. Luego simule dos grupos con el mismo centroide pero dispersiones distintas (una el triple de la otra) y tamaños 10 y 40: ¿con qué frecuencia rechaza la hipótesis nula al 5\,\%?
 \ej{3} Un metagenoma de heces tiene $3\times10^7$ pares de lecturas de 150 pb, de las cuales el 40\,\% son humanas. ¿Qué abundancia relativa mínima debe tener una bacteria de \SI{3}{Mb} para alcanzar una cobertura de 10? Si la contaminación esperada de un bin crece cuando dos cepas de la misma especie coexisten, proponga una forma de detectarlo con CheckM.
 \end{ejercicios}

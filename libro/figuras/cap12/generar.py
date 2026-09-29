@@ -502,7 +502,7 @@ ax = axs[1]
 fin = np.isfinite(zd) & okg
 ax.scatter(lmu[fin & ~es_hv], zd[fin & ~es_hv], s=2, c=C["base"], lw=0)
 ax.scatter(lmu[fin & es_hv], zd[fin & es_hv], s=3, c=C["naranja"], lw=0)
-for g in ("LYZ", "GNLY", "MS4A1", "CD8A", "FCER1A", "CCR7"):
+for g in ("GNLY", "MS4A1", "FCER1A"):
     i = IM[g]
     ax.annotate(g, (lmu[i], zd[i]), fontsize=6.5, color=C["tinta2"],
                 xytext=(3, 1), textcoords="offset points")

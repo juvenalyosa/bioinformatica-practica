@@ -39,7 +39,7 @@ Imagine un diccionario muy extraño: en lugar de palabras, contiene \emph{todos 
 
 Formalicemos lo que pedimos a un mapeador. Sea $R=r_1r_2\cdots r_G$ la secuencia de referencia (un genoma, con sus cromosomas concatenados) y $q=q_1\cdots q_m$ una lectura, con $m\ll G$.
 
-\begin{definicion}{Mapeo de una lectura}{mapeo}
+\begin{definicion}{Mapeo de una lectura}{07-mapeo}
 Dada una función de puntuación de alineamiento local $S(q, R_{u..v})$ (por ejemplo, la de Smith-Waterman con huecos afines del \cref{cap:03}), mapear $q$ consiste en encontrar el intervalo de la referencia
 \begin{equation}\label{eq:07-mapeo}
 (\hat u,\hat v) = \argmax_{1\le u\le v\le G}\; \max\big\{S(q, R_{u..v}),\; S(\bar q, R_{u..v})\big\},
@@ -106,7 +106,7 @@ La alternativa, que acabó por imponerse para lecturas cortas, fue indexar \emph
 
 Añadimos al final de la referencia un símbolo centinela \texttt{\$} que no pertenece al alfabeto y que, por convenio, es menor que cualquier base. Así, $T=R\,\texttt{\$}$ tiene longitud $n=G+1$ y ningún sufijo es prefijo de otro.
 
-\begin{definicion}{Arreglo de sufijos}{sa}
+\begin{definicion}{Arreglo de sufijos}{07-sa}
 El arreglo de sufijos de $T$ es la permutación $\capsieteSA[0..n-1]$ de $\{0,\dots,n-1\}$ tal que
 \begin{equation}\label{eq:07-sa}
 T[\capsieteSA[0]..] \;<\; T[\capsieteSA[1]..] \;<\;\cdots\;<\; T[\capsieteSA[n-1]..]
@@ -126,7 +126,7 @@ La propiedad clave es que todos los sufijos que empiezan por un patrón $P$ qued
 
 Escribamos todas las rotaciones cíclicas de $T$, una debajo de otra, y ordenémoslas alfabéticamente. Obtenemos una matriz $M$ de $n\times n$ caracteres (\cref{fig:07-rotaciones}). Como $T$ termina en el centinela único, ordenar las rotaciones equivale a ordenar los sufijos: la fila $r$ de $M$ empieza con el sufijo $T[\capsieteSA[r]..]$.
 
-\begin{definicion}{Transformada de Burrows-Wheeler}{bwt}
+\begin{definicion}{Transformada de Burrows-Wheeler}{07-bwt}
 La BWT de $T$ es la última columna $L$ de la matriz de rotaciones ordenadas. Equivalentemente, a partir del arreglo de sufijos,
 \begin{equation}\label{eq:07-bwt}
 L[r] = \begin{cases}
@@ -160,7 +160,7 @@ Michael Burrows y David Wheeler describieron la transformada en 1994, en un repo
 
 ¿Cómo recuperar $T$ a partir de $L$ sola? La clave es una propiedad que, una vez vista, parece evidente.
 
-\begin{teorema}{Orden de las apariciones}{lf}
+\begin{teorema}{Orden de las apariciones}{07-lf}
 La $j$-ésima aparición de un carácter $c$ en la columna $L$ y la $j$-ésima aparición de $c$ en la columna $F$ corresponden a la \emph{misma} posición del texto $T$.
 \end{teorema}
 
@@ -187,11 +187,11 @@ La \cref{eq:07-lf} es la traducción directa del teorema: el bloque de $c$ en $F
 \begin{figure}[tbp]
 \centering
 \input{figuras/cap07/lfmap.tex}
-\caption[El \ingles{LF-mapping}]{El \ingles{LF-mapping} para $T=\capsieteT$. Los subíndices numeran las apariciones de cada letra de arriba abajo. Cada flecha une la fila $r$ de $L$ con la fila $\capsieteLF(r)$ de $F$ (repetida a la derecha para mayor claridad): la $j$-ésima \texttt{A} de $L$ va a la $j$-ésima \texttt{A} de $F$, y lo mismo para cada letra. Las flechas del mismo color nunca se cruzan; esa es la propiedad del \cref{teo:lf}. En gris, el centro de cada fila, que el índice \emph{no} almacena.}
+\caption[El \ingles{LF-mapping}]{El \ingles{LF-mapping} para $T=\capsieteT$. Los subíndices numeran las apariciones de cada letra de arriba abajo. Cada flecha une la fila $r$ de $L$ con la fila $\capsieteLF(r)$ de $F$ (repetida a la derecha para mayor claridad): la $j$-ésima \texttt{A} de $L$ va a la $j$-ésima \texttt{A} de $F$, y lo mismo para cada letra. Las flechas del mismo color nunca se cruzan; esa es la propiedad del \cref{teo:07-lf}. En gris, el centro de cada fila, que el índice \emph{no} almacena.}
 \label{fig:07-lf}
 \end{figure}
 
-\begin{ejemplo}{Reconstruir $T$ desde su BWT}{reconstruir}
+\begin{ejemplo}{Reconstruir $T$ desde su BWT}{07-reconstruir}
 Con $L=\texttt{GTTCCAAAA\$}$ y $F=\texttt{\$AAAACCGTT}$ tenemos $C[\texttt{A}]=1$, $C[\texttt{C}]=5$, $C[\texttt{G}]=7$ y $C[\texttt{T}]=8$. Empezamos en la fila $0$, la que comienza con \texttt{\$}; su última letra, $L[0]=\texttt{G}$, es el último carácter de $R$. Aplicamos la \cref{eq:07-lf} repetidamente:
 \[
 0 \xrightarrow{\texttt{G}} 7 \xrightarrow{\texttt{A}} 3 \xrightarrow{\texttt{C}} 5 \xrightarrow{\texttt{A}} 1 \xrightarrow{\texttt{T}} 8 \xrightarrow{\texttt{A}} 4 \xrightarrow{\texttt{C}} 6 \xrightarrow{\texttt{A}} 2 \xrightarrow{\texttt{T}} 9,
@@ -203,7 +203,7 @@ donde sobre cada flecha escribimos $L[r]$ en la fila de partida. Por ejemplo, $\
 
 El mismo mecanismo que reconstruye el texto sirve para \emph{buscar} en él. La idea de \textcite{c07-ferragina2005} es procesar el patrón $P=p_1\cdots p_m$ \emph{de derecha a izquierda}, manteniendo el intervalo de filas de $M$ que empiezan con el sufijo de $P$ ya procesado.
 
-\begin{teorema}{Búsqueda hacia atrás}{backward}
+\begin{teorema}{Búsqueda hacia atrás}{07-backward}
 Sea $[sp, ep)$ el intervalo de filas de $M$ que empiezan con la cadena $W$. Entonces las filas que empiezan con $cW$ forman el intervalo
 \begin{equation}\label{eq:07-backward}
 sp' = C[c] + \capsieteOcc(c, sp), \qquad ep' = C[c] + \capsieteOcc(c, ep).
@@ -218,7 +218,7 @@ Empezando con $W$ vacío, $[sp,ep)=[0,n)$, y aplicando la regla para $c=p_m, p_{
 \simbolo{$[sp',ep')$}{Intervalo de las filas que empiezan con $cW$.}
 \end{simbolos}
 
-\noindent\textit{Por qué funciona.} Las filas que empiezan con $cW$ son exactamente las rotaciones $cW\ldots$; al rotarlas un carácter a la izquierda se convierten en filas $W\ldots c$, es decir, filas del intervalo $[sp,ep)$ cuya última letra es $c$. Por el \cref{teo:lf}, esas $c$ de $L$ se mapean, en el mismo orden, a un bloque contiguo del bloque de $c$ en $F$. Las $c$ de $L$ situadas \emph{antes} de $sp$ son $\capsieteOcc(c,sp)$; por eso el nuevo bloque empieza en $C[c]+\capsieteOcc(c,sp)$ y termina justo antes de $C[c]+\capsieteOcc(c,ep)$. \hfill$\square$
+\noindent\textit{Por qué funciona.} Las filas que empiezan con $cW$ son exactamente las rotaciones $cW\ldots$; al rotarlas un carácter a la izquierda se convierten en filas $W\ldots c$, es decir, filas del intervalo $[sp,ep)$ cuya última letra es $c$. Por el \cref{teo:07-lf}, esas $c$ de $L$ se mapean, en el mismo orden, a un bloque contiguo del bloque de $c$ en $F$. Las $c$ de $L$ situadas \emph{antes} de $sp$ son $\capsieteOcc(c,sp)$; por eso el nuevo bloque empieza en $C[c]+\capsieteOcc(c,sp)$ y termina justo antes de $C[c]+\capsieteOcc(c,ep)$. \hfill$\square$
 
 Lo extraordinario es el coste: cada carácter del patrón cuesta dos consultas a $\capsieteOcc$, sin importar el tamaño del genoma. Buscar una lectura de 150 bases en el genoma humano cuesta 300 consultas, lo mismo que buscarla en el genoma de un virus.
 
@@ -246,7 +246,7 @@ $r$ & $L[r]$ & $\capsieteOcc(\texttt{A},r)$ & $\capsieteOcc(\texttt{C},r)$ & $\c
 \end{tabular}
 \end{table}
 
-\begin{ejemplo}{Buscar \texttt{ACA} en \capsieteT}{busqueda}
+\begin{ejemplo}{Buscar \texttt{ACA} en \capsieteT}{07-busqueda}
 Usamos la \cref{tab:07-occ}. Empezamos con $[0,10)$ y leemos el patrón al revés:
 \begin{enumerate}
   \item $c=\texttt{A}$: $sp'=1+\capsieteOcc(\texttt{A},0)=1+0=1$; $ep'=1+\capsieteOcc(\texttt{A},10)=1+4=5$. Intervalo $[1,5)$: las cuatro filas que empiezan con \texttt{A}.
@@ -263,7 +263,7 @@ Hay $3-1=2$ apariciones, en las posiciones $\capsieteSA[1]=5$ y $\capsieteSA[2]=
 \label{fig:07-backward}
 \end{figure}
 
-El siguiente programa construye el índice de forma ingenua (ordenando sufijos, lo que cuesta $O(n^2\log n)$ y solo sirve para ejemplos) y busca por el método del \cref{teo:backward}. Los programas reales construyen el arreglo de sufijos en tiempo lineal o casi lineal, con algoritmos especializados que no requieren tener en memoria todos los sufijos \parencite{c07-makinen2015}.
+El siguiente programa construye el índice de forma ingenua (ordenando sufijos, lo que cuesta $O(n^2\log n)$ y solo sirve para ejemplos) y busca por el método del \cref{teo:07-backward}. Los programas reales construyen el arreglo de sufijos en tiempo lineal o casi lineal, con algoritmos especializados que no requieren tener en memoria todos los sufijos \parencite{c07-makinen2015}.
 
 \begin{codigo}[indice\_fm.py]
 def indice_fm(T):
@@ -387,7 +387,7 @@ La programación dinámica, cara, solo se ejecuta en un puñado de regiones cand
 
 Para lecturas largas y ruidosas, \textcite{c07-li2018} optó en minimap2 por un índice de \ingles{hash}, pero sin guardar todos los $k$-meros del genoma: solo sus \emph{minimizadores}, una idea de \textcite{c07-roberts2004}.
 
-\begin{definicion}{$(w,k)$-minimizador}{minimizador}
+\begin{definicion}{$(w,k)$-minimizador}{07-minimizador}
 Sea $h$ una función que ordena los $k$-meros (por ejemplo, un \ingles{hash} pseudoaleatorio). Para cada ventana de $w$ $k$-meros consecutivos de una secuencia, el minimizador de la ventana es el $k$-mero de valor $h$ mínimo:
 \begin{equation}\label{eq:07-minimizador}
 \mu_j = \argmin_{j\le i<j+w} h\big(s[i..i+k-1]\big).
@@ -404,7 +404,7 @@ El conjunto de minimizadores de la secuencia es $\{\mu_j\}$ para todas las venta
 
 La definición garantiza dos propiedades. La primera es la de \emph{cobertura}: toda ventana de $w+k-1$ bases aporta al menos un minimizador, así que dos secuencias que comparten un tramo exacto de esa longitud comparten al menos un minimizador; es la misma garantía que buscaba el algoritmo de \ingles{winnowing} para detectar plagio en documentos \parencite{c07-schleimer2003}. La segunda es la de \emph{escasez}: ventanas vecinas comparten casi todos sus $k$-meros y suelen elegir el mismo, de modo que el número de minimizadores distintos es mucho menor que el de $k$-meros.
 
-\begin{teorema}{Densidad de los minimizadores}{densidad}
+\begin{teorema}{Densidad de los minimizadores}{07-densidad}
 Si los $k$-meros de una secuencia aleatoria reciben valores $h$ independientes y sin empates, la fracción esperada de posiciones elegidas como minimizador es
 \begin{equation}\label{eq:07-densidad}
 \delta \approx \frac{2}{w+1}.
@@ -504,7 +504,7 @@ minimap2 -ax map-ont ref.fa nanoporo.fq.gz   > m1_ont.sam
 
 Supongamos que una lectura tiene dos ubicaciones candidatas. ¿Cuán seguros podemos estar de la mejor? \textcite{c07-li2008maq} introdujeron en MAQ la \emph{calidad de mapeo}, que expresa en escala Phred (la misma del \cref{cap:06}) la probabilidad de que la posición asignada sea errónea.
 
-\begin{definicion}{Calidad de mapeo}{mapq}
+\begin{definicion}{Calidad de mapeo}{07-mapq}
 Sean $u_1,\dots,u_K$ las ubicaciones candidatas de una lectura $q$ y $p(q\mid u)$ la probabilidad de observar $q$ si procede de $u$. Suponiendo un origen \emph{a priori} uniforme, la probabilidad \emph{a posteriori} de que la mejor ubicación $\hat u$ sea la verdadera es
 \begin{equation}\label{eq:07-posterior}
 \Prob(\hat u\mid q) = \frac{p(q\mid \hat u)}{\sum_{k=1}^{K} p(q\mid u_k)},
@@ -521,7 +521,7 @@ y la calidad de mapeo es
 \simbolo{$\capsieteMQ$}{Calidad de mapeo en escala Phred: 20 significa 1 \% de probabilidad de posición errónea, 30 significa \SI{0,1}{\percent}.}
 \end{simbolos}
 
-\begin{ejemplo}{Dos candidatas y un empate}{mapq}
+\begin{ejemplo}{Dos candidatas y un empate}{07-mapq}
 Una lectura coincide con la posición $u_1$ salvo por una base de calidad $Q=35$, y con $u_2$ salvo por dos bases de calidades 25 y 30. Aproximando $p(q\mid u)$ por el producto de las probabilidades de error de las discordancias,
 \[
 p(q\mid u_1)=10^{-3{,}5}=3{,}16\times10^{-4},\qquad p(q\mid u_2)=10^{-2{,}5}\cdot10^{-3}=3{,}16\times10^{-6}.
@@ -736,7 +736,7 @@ La \cref{fig:07-pileup} resume la lectura de un \ingles{pileup}. Distinguir una 
 
 La definición de cobertura del \cref{cap:06} era un promedio; ahora la necesitamos posición a posición.
 
-\begin{definicion}{Profundidad por posición}{profundidad}
+\begin{definicion}{Profundidad por posición}{07-profundidad}
 Sea $\mathcal{A}$ el conjunto de alineamientos que superan los filtros (por ejemplo, primarios, no duplicados y con $\capsieteMQ\ge 20$), y sea $B(a)$ el conjunto de bloques de referencia $[s,e)$ que el alineamiento $a$ cubre, es decir, sus operaciones \texttt{M}, \texttt{=} o \texttt{X} de la cadena CIGAR. La profundidad en la posición $x$ es
 \begin{equation}\label{eq:07-profundidad}
 c(x) = \sum_{a\in\mathcal{A}}\;\sum_{[s,e)\in B(a)} \mathbb{1}\big[s\le x<e\big].
@@ -863,7 +863,7 @@ W_{\min}^{\text{hom}} = \frac{z^{\star 2}\,L}{\bar c}.
 \simbolo{$W_{\min}$}{Tamaño mínimo de una deleción detectable por profundidad.}
 \end{simbolos}
 
-\begin{ejemplo}{Diseño para detectar deleciones}{deteccion}
+\begin{ejemplo}{Diseño para detectar deleciones}{07-deteccion}
 Con $\bar c=30$, $L=150$ y $z^\star=5$, la \cref{eq:07-wmin} da $W^{\text{het}}_{\min}=4\cdot25\cdot150/30=500$ pb y $W^{\text{hom}}_{\min}=125$ pb. A $10\times$, los valores se triplican: \num{1500} y 375 pb; a $60\times$, se reducen a la mitad: 250 y 62 pb. Una duplicación heterocigota, que cambia la media de $\lambda$ a $1{,}5\lambda$, produce la misma diferencia absoluta que una deleción heterocigota y requiere, por tanto, ventanas similares. Por debajo de unos cientos de bases, la profundidad no basta y hay que recurrir a lecturas partidas y a pares discordantes (\cref{fig:07-inserto}).
 \end{ejemplo}
 

@@ -48,6 +48,7 @@
 \setlength{\parindent}{1.2em}
 \setlength{\parskip}{0pt}
 \frenchspacing
+\raggedbottom
 \clubpenalty=10000 \widowpenalty=10000 \displaywidowpenalty=10000
 
 % ---------------------------------------------------------------------
@@ -181,8 +182,7 @@
 % Código (minted + tcolorbox) — requiere -shell-escape
 % ---------------------------------------------------------------------
 \RequirePackage[most,minted]{tcolorbox}
-\setminted{fontsize=\small, breaklines, autogobble, tabsize=4,
-  escapeinside=||}
+\setminted{fontsize=\small, breaklines, autogobble, tabsize=4}
 \usemintedstyle{friendly}
 \newtcblisting{codigo}[1][]{
   enhanced, breakable, listing only,

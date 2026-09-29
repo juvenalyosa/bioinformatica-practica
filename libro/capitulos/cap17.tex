@@ -1,0 +1,1113 @@
+% =====================================================================
+%  Capítulo 17 · Machine learning e inteligencia artificial en bioinformática
+% =====================================================================
+\chapter{Machine learning e \mbox{inteligencia} artificial en \mbox{bioinformática}}\label{cap:17}
+
+\pgfplotsset{
+  capdiecisiete panel/.style={curso, width=0.5\linewidth, height=5.4cm},
+  capdiecisiete ancho/.style={curso, width=0.86\linewidth, height=5.6cm},
+}
+
+\epigrafe{Puesto que todos los modelos son erróneos, el científico debe estar alerta a lo que es importantemente erróneo.}{\textcite{c17-box1976}}
+
+\begin{objetivos}
+\begin{itemize}
+  \item Formular un problema bioinformático como aprendizaje supervisado y convertir secuencias en vectores (codificación \ingles{one-hot}, espectro de $k$-mers, núcleo de espectro).
+  \item Derivar el gradiente de la regresión logística y explicar el funcionamiento de las máquinas de vectores de soporte y de los \ingles{random forests}.
+  \item Diseñar una validación honesta: descomposición sesgo-varianza, validación cruzada por grupos para evitar la fuga de información por homología y métricas adecuadas para clases desbalanceadas (curvas ROC y de precisión-exhaustividad).
+  \item Explicar la retropropagación y por qué un filtro convolucional aplicado a ADN codificado en \ingles{one-hot} es una matriz de pesos posicionales; interpretar un modelo con mapas de saliencia.
+  \item Describir el mecanismo de atención y el modelado de lenguaje enmascarado, y usar un modelo de lenguaje de proteínas (ESM-2) para obtener \ingles{embeddings}, contactos y predicciones de efecto de variantes sin supervisión.
+\end{itemize}
+\end{objetivos}
+
+En los capítulos anteriores casi todos nuestros métodos nacieron de un modelo explícito del proceso biológico: una matriz de sustitución deriva de un modelo de evolución, un HMM de perfil codifica cómo varía una familia de proteínas, un modelo de coalescencia describe la genealogía de una muestra. El aprendizaje automático (\ingles{machine learning}, ML) invierte el orden: en lugar de escribir el modelo y luego ajustar unos pocos parámetros, le damos a un algoritmo muchos ejemplos y le pedimos que \emph{descubra} la función que relaciona la entrada con la salida. Cuando los datos abundan y el mecanismo es demasiado complejo para escribirlo a mano (qué hace que un fragmento de ADN sea un potenciador activo en el hígado, o que una mutación desestabilice una proteína), esta inversión ha resultado extraordinariamente productiva \parencite{c17-lecun2015,c17-greener2022}.
+
+Pero la potencia tiene un precio. Un modelo con millones de parámetros puede memorizar sus datos de entrenamiento y aparentar una exactitud que se desploma ante secuencias nuevas; puede aprender atajos (el contenido de GC, un artefacto del protocolo) en lugar de biología; y puede producir números que parecen probabilidades sin serlo. Por eso este capítulo dedica tanto espacio a \emph{evaluar} modelos como a construirlos, siguiendo la tradición estadística que resumen \textcite{c17-hastie2009}.
+
+El recorrido tiene tres etapas. En la \cref{sec:17-clasico} convertiremos secuencias en vectores y estudiaremos los clasificadores clásicos (regresión logística, SVM, \ingles{random forests}) junto con las herramientas para validarlos sin engañarnos. En la \cref{sec:17-dl} pasaremos a las redes neuronales profundas: la retropropagación, las redes convolucionales que leen ADN y la forma de abrir la ``caja negra''. En la \cref{sec:17-plm} llegaremos a los modelos de lenguaje de proteínas, que aprenden la gramática de la evolución a partir de cientos de millones de secuencias sin una sola etiqueta, y los usaremos, con un modelo real, sobre la ubiquitina humana.
+
+% ---------------------------------------------------------------------
+\section{Clasificación de secuencias con ML clásico}\label{sec:17-clasico}
+% ---------------------------------------------------------------------
+\enlacerepo{17.1 · ML clásico para secuencias}
+
+\begin{intuicion}[El catador que nunca leyó un manual]
+Un catador experto distingue un Rioja de un Burdeos con un sorbo, pero sería incapaz de escribir las reglas que usa. Aprendió probando miles de vinos \emph{etiquetados}, y su cerebro ajustó poco a poco una frontera entre ``esto es Rioja'' y ``esto no''. Si solo hubiera probado vinos de tres bodegas, confundiría ``Rioja'' con ``el estilo de esas tres bodegas'' y fracasaría ante la cuarta. El aprendizaje supervisado hace lo mismo con secuencias, y comparte el mismo riesgo: aprender las bodegas en lugar de la región.
+\end{intuicion}
+
+\subsection{El problema del aprendizaje supervisado}
+
+Supongamos que tenemos $n$ secuencias de ADN de 200 pb y, para cada una, un experimento (por ejemplo, ChIP-seq) que dice si un factor de transcripción se une a ella ($y=1$) o no ($y=0$). Queremos una función que, dada una secuencia \emph{nueva}, prediga la etiqueta. Ese es el esquema general del aprendizaje supervisado.
+
+\begin{definicion}{Aprendizaje supervisado y riesgo empírico}{17-supervisado}
+Dado un conjunto de entrenamiento $\mathcal{D}=\{(\mathbf{x}_i,y_i)\}_{i=1}^{n}$ extraído de una distribución desconocida $P(\mathbf{x},y)$, y una familia de funciones $f_{\boldsymbol\theta}$, el aprendizaje supervisado busca los parámetros que minimizan el \emph{riesgo empírico} regularizado:
+\begin{equation}\label{eq:17-riesgo}
+\hat{\boldsymbol\theta} = \argmin_{\boldsymbol\theta}\; \frac{1}{n}\sum_{i=1}^{n} \ell\big(y_i, f_{\boldsymbol\theta}(\mathbf{x}_i)\big) \;+\; \lambda\, \Omega(\boldsymbol\theta).
+\end{equation}
+El objetivo real, sin embargo, es el \emph{riesgo esperado} $R(\boldsymbol\theta)=\E_{(\mathbf{x},y)\sim P}\big[\ell(y,f_{\boldsymbol\theta}(\mathbf{x}))\big]$ sobre datos que el modelo nunca vio.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$\mathbf{x}_i,\ y_i$}{Representación numérica de la $i$-ésima secuencia y su etiqueta (clase o valor).}
+\simbolo{$f_{\boldsymbol\theta}$}{Modelo con parámetros $\boldsymbol\theta$ (pesos de una regresión, de una red, umbrales de un árbol).}
+\simbolo{$\ell(y,\hat y)$}{Función de pérdida: cuánto cuesta predecir $\hat y$ cuando la verdad es $y$.}
+\simbolo{$\Omega(\boldsymbol\theta),\ \lambda$}{Penalización de complejidad (regularización) y su peso.}
+\simbolo{$P(\mathbf{x},y)$}{Distribución de la población de secuencias sobre la que se usará el modelo.}
+\end{simbolos}
+
+Toda la dificultad del aprendizaje automático está en la distancia entre las dos cantidades de la \cref{def:17-supervisado}: minimizamos el error sobre los datos que tenemos, pero nos importa el error sobre los que no tenemos. Un modelo que minimiza el primero sin controlar el segundo \emph{sobreajusta}. Las herramientas de esta sección (regularización, validación cruzada, particiones por homología) existen para mantener honesta esa distancia. \textcite{c17-greener2022} ofrecen una guía introductoria excelente, escrita para biólogos, de todo este vocabulario.
+
+\subsection{Representar una secuencia como vector}
+
+Los algoritmos de ML trabajan con vectores de números, no con cadenas de letras. La elección de la representación, o \emph{ingeniería de atributos}, decide en buena medida qué puede aprender el modelo.
+
+\paragraph{Codificación one-hot} La representación más fiel asigna a cada posición un vector indicador de longitud 4:
+\begin{equation}\label{eq:17-onehot}
+X_{c,i} = \mathbb{1}\left[x_i = c\right],\qquad c\in\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\},\quad i=1,\dots,L.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$X$}{Matriz \ingles{one-hot} de tamaño $4\times L$; cada columna tiene un único 1.}
+\simbolo{$x_i$}{Base en la posición $i$ de la secuencia.}
+\simbolo{$L$}{Longitud de la secuencia.}
+\end{simbolos}
+
+No introduce ningún orden artificial entre las bases (codificar \texttt{A}=1, \texttt{C}=2, \texttt{G}=3, \texttt{T}=4 haría creer al modelo que \texttt{T} es ``más'' que \texttt{A}) y conserva la posición exacta de cada nucleótido. Su inconveniente es que un motivo desplazado una base produce un vector completamente distinto: un clasificador lineal sobre \ingles{one-hot} no puede reconocer un motivo que aparece en posiciones variables. Las redes convolucionales de la \cref{sec:17-dl} resuelven exactamente ese problema.
+
+\paragraph{Espectro de $k$-mers} La alternativa clásica renuncia a la posición y cuenta palabras. Para cada una de las $4^k$ palabras $u$ de longitud $k$,
+\begin{equation}\label{eq:17-espectro}
+\Phi_k(x) = \big(\phi_u(x)\big)_{u\in\mathcal{A}^k},\qquad \phi_u(x) = \#\{\,i : x_{i}x_{i+1}\cdots x_{i+k-1} = u\,\}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\Phi_k(x)$}{Vector de conteos de $k$-mers de la secuencia $x$ (dimensión $4^k$ en ADN, $20^k$ en proteínas).}
+\simbolo{$\phi_u(x)$}{Número de apariciones (solapadas) de la palabra $u$ en $x$.}
+\simbolo{$\mathcal{A}^k$}{Conjunto de todas las palabras de longitud $k$ sobre el alfabeto $\mathcal{A}$.}
+\end{simbolos}
+
+El espectro es invariante a desplazamientos y permite comparar secuencias de longitudes distintas. A cambio pierde el orden de las palabras y crece exponencialmente con $k$: con $k=6$ hay \num{4096} dimensiones para ADN, y con $k=3$ ya hay \num{8000} para proteínas, casi todas con conteo cero en una secuencia concreta. La \cref{fig:17-onehot} contrasta las dos representaciones.
+
+\begin{figure}[!tbp]
+  \centering
+  \input{figuras/cap17/onehot_kmer.tex}
+  \caption[Codificación one-hot y espectro de $k$-mers]{Dos maneras de convertir la secuencia \secuencia{GATTACAGAT} en números. \textbf{(a)} La codificación \ingles{one-hot} (\cref{eq:17-onehot}) produce una matriz $4\times10$ con un único 1 por columna; conserva la posición de cada base, pero no generaliza a desplazamientos. \textbf{(b)} El espectro de 2-mers (\cref{eq:17-espectro}) cuenta las 9 palabras solapadas en un vector de 16 componentes; \texttt{AT} y \texttt{GA} aparecen dos veces. El espectro olvida \emph{dónde} está cada palabra, y por eso dos secuencias que son permutaciones de bloques pueden tener espectros casi idénticos. Datos de \archivo{figuras/cap17/generar.py}.}
+  \label{fig:17-onehot}
+\end{figure}
+
+\paragraph{El núcleo de espectro} Muchos algoritmos solo necesitan saber cuánto se parecen dos secuencias, no sus coordenadas. \textcite{c17-leslie2002} definieron el \emph{núcleo de espectro} (\ingles{spectrum kernel}) como el producto interno de los espectros:
+\begin{equation}\label{eq:17-kernel}
+K_k(x,y) = \big\langle \Phi_k(x), \Phi_k(y)\big\rangle = \sum_{u\in\mathcal{A}^k} \phi_u(x)\,\phi_u(y),
+\qquad
+\tilde K_k(x,y) = \frac{K_k(x,y)}{\sqrt{K_k(x,x)\,K_k(y,y)}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$K_k(x,y)$}{Similitud entre $x$ e $y$: número de pares de $k$-mers idénticos que comparten.}
+\simbolo{$\tilde K_k$}{Versión normalizada (coseno), entre 0 y 1; elimina el efecto de la longitud.}
+\end{simbolos}
+
+Su gracia computacional es que se calcula en tiempo lineal en la longitud de las secuencias recorriendo solo los $k$-mers presentes (con un árbol de sufijos o una tabla \ingles{hash}), sin construir nunca los vectores de dimensión $|\mathcal{A}|^k$. Combinado con una SVM, obtuvo en la detección de homología remota sobre SCOP resultados comparables a métodos mucho más costosos \parencite{c17-leslie2002}.
+
+\begin{ejemplo}{Núcleo de espectro a mano}{17-kernel}
+Sean $x=$\,\secuencia{GATTACAGAT} e $y=$\,\secuencia{TACAGATTAC}, con $k=2$. Los espectros (solo componentes no nulas) son
+\begin{align*}
+\Phi_2(x)&\!:\ \texttt{AC}{:}1,\ \texttt{AG}{:}1,\ \texttt{AT}{:}2,\ \texttt{CA}{:}1,\ \texttt{GA}{:}2,\ \texttt{TA}{:}1,\ \texttt{TT}{:}1;\\
+\Phi_2(y)&\!:\ \texttt{AC}{:}2,\ \texttt{AG}{:}1,\ \texttt{AT}{:}1,\ \texttt{CA}{:}1,\ \texttt{GA}{:}1,\ \texttt{TA}{:}2,\ \texttt{TT}{:}1.
+\end{align*}
+El producto interno es $K_2(x,y)=1\cdot2+1\cdot1+2\cdot1+1\cdot1+2\cdot1+1\cdot2+1\cdot1=11$, y como $K_2(x,x)=K_2(y,y)=13$, el núcleo normalizado vale $\tilde K_2 = 11/13 \approx 0{,}846$. Sin embargo, $x$ e $y$ alineadas sin huecos coinciden en solo 2 de 10 posiciones: el núcleo de espectro ve que ambas están hechas de los mismos ``ladrillos'' (\texttt{TACAGAT} aparece en las dos), aunque desplazados.
+\end{ejemplo}
+
+\subsection{Regresión logística: el clasificador lineal probabilístico}
+
+El modelo más sencillo que produce probabilidades es la \emph{regresión logística}. Combina linealmente los atributos y comprime el resultado al intervalo $(0,1)$ con la función sigmoide:
+\begin{equation}\label{eq:17-logistica}
+p(\mathbf{x}) = \Prob(y=1\mid\mathbf{x}) = \sigma(\mathbf{w}^{\top}\mathbf{x}+b),\qquad \sigma(z)=\frac{1}{1+e^{-z}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathbf{w},\ b$}{Vector de pesos (uno por atributo) y término independiente (sesgo).}
+\simbolo{$z=\mathbf{w}^{\top}\mathbf{x}+b$}{Puntuación lineal o \ingles{logit}; su valor es el logaritmo de las probabilidades a favor, $\log\frac{p}{1-p}$.}
+\simbolo{$\sigma(z)$}{Sigmoide logística: convierte cualquier real en una probabilidad.}
+\end{simbolos}
+
+La interpretación del \ingles{logit} conecta con algo conocido: $z$ es un logaritmo de razón de probabilidades, igual que las puntuaciones de las matrices de sustitución del \cref{cap:03} o de las PWM del \cref{cap:04}. Cada peso $w_j$ dice cuánto aumenta el logaritmo de las probabilidades a favor de la clase 1 por cada unidad adicional del atributo $j$.
+
+\paragraph{De la verosimilitud a la entropía cruzada} Si las etiquetas son independientes y cada una sigue una Bernoulli con parámetro $p_i=p(\mathbf{x}_i)$, la verosimilitud es $\prod_i p_i^{y_i}(1-p_i)^{1-y_i}$. Maximizarla equivale a minimizar el negativo de su logaritmo promediado, la \emph{entropía cruzada binaria}:
+\begin{equation}\label{eq:17-entropia}
+\mathcal{L}(\mathbf{w},b) = -\frac{1}{n}\sum_{i=1}^{n}\Big[\,y_i\log p_i + (1-y_i)\log(1-p_i)\,\Big].
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathcal{L}$}{Pérdida media (en nats); vale $\ln 2\approx0{,}693$ para un clasificador que siempre dice $p=0{,}5$.}
+\simbolo{$p_i$}{Probabilidad predicha para la secuencia $i$.}
+\end{simbolos}
+
+\paragraph{Derivación del gradiente} No existe una fórmula cerrada para el mínimo de la \cref{eq:17-entropia}, pero su gradiente es sorprendentemente simple. Tomemos una sola observación, $\ell = -[y\log p + (1-y)\log(1-p)]$ con $p=\sigma(z)$ y $z=\mathbf{w}^\top\mathbf{x}+b$. Por la regla de la cadena,
+\[
+\frac{\partial \ell}{\partial w_j} = \frac{\partial \ell}{\partial p}\cdot\frac{\partial p}{\partial z}\cdot\frac{\partial z}{\partial w_j}.
+\]
+Los tres factores son: $\partial\ell/\partial p = -y/p + (1-y)/(1-p) = (p-y)/[p(1-p)]$; la derivada de la sigmoide, que cumple la identidad $\sigma'(z)=\sigma(z)\,[1-\sigma(z)] = p(1-p)$; y $\partial z/\partial w_j = x_j$. Al multiplicarlos, el factor $p(1-p)$ se cancela:
+
+\begin{teorema}{Gradiente de la regresión logística}{17-gradlog}
+Para la pérdida de entropía cruzada de la \cref{eq:17-entropia},
+\begin{equation}\label{eq:17-gradiente}
+\nabla_{\mathbf{w}}\mathcal{L} = \frac{1}{n}\sum_{i=1}^{n}(p_i - y_i)\,\mathbf{x}_i,\qquad
+\frac{\partial\mathcal{L}}{\partial b} = \frac{1}{n}\sum_{i=1}^{n}(p_i-y_i).
+\end{equation}
+Además $\mathcal{L}$ es convexa en $(\mathbf{w},b)$, de modo que cualquier mínimo local es global.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$p_i-y_i$}{Error de predicción (residuo) de la observación $i$: positivo si el modelo sobreestima.}
+\simbolo{$\nabla_{\mathbf{w}}\mathcal{L}$}{Vector de derivadas parciales de la pérdida respecto a cada peso.}
+\end{simbolos}
+
+El resultado es tan intuitivo como elegante: cada observación ``empuja'' los pesos en la dirección de sus atributos, con una fuerza proporcional a cuánto se equivocó. Las secuencias bien clasificadas ($p_i\approx y_i$) casi no contribuyen. El algoritmo de \emph{descenso por gradiente} itera
+\begin{equation}\label{eq:17-descenso}
+\mathbf{w}^{(t+1)} = \mathbf{w}^{(t)} - \eta\,\nabla_{\mathbf{w}}\mathcal{L}\big(\mathbf{w}^{(t)}\big),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\eta$}{Tasa de aprendizaje (tamaño del paso).}
+\simbolo{$t$}{Número de iteración.}
+\end{simbolos}
+
+\noindent y, en la práctica, se añade una penalización $\Omega=\tfrac12\|\mathbf{w}\|^2$ (regularización $L_2$) que evita que los pesos crezcan sin límite cuando los datos son separables y que, con miles de $k$-mers como atributos, reduce el sobreajuste. El gradiente simplemente gana un término $\lambda\mathbf{w}$.
+
+\begin{ejemplo}{Un paso de descenso por gradiente}{17-paso}
+Cuatro secuencias se describen con dos atributos: $x_1$, número de copias de un motivo, y $x_2$, número de dinucleótidos CpG. Los datos son $(2,1)$, $(1,0)$, $(0,1)$ y $(0,0)$, con etiquetas $1$, $1$, $0$ y $0$. Partimos de $\mathbf{w}=\mathbf{0}$, $b=0$, así que $p_i=\sigma(0)=0{,}5$ para todas y $\mathcal{L}=\ln 2 = 0{,}6931$. Los residuos son $p-y=(-0{,}5,\,-0{,}5,\,0{,}5,\,0{,}5)$ y, por la \cref{eq:17-gradiente},
+\begin{align*}
+\frac{\partial\mathcal{L}}{\partial w_1} &= \tfrac14\big[(-0{,}5)(2)+(-0{,}5)(1)+0+0\big] = -0{,}375,\\
+\frac{\partial\mathcal{L}}{\partial w_2} &= \tfrac14\big[(-0{,}5)(1)+0+(0{,}5)(1)+0\big] = 0,\qquad
+\frac{\partial\mathcal{L}}{\partial b} = \tfrac14\textstyle\sum_i(p_i-y_i) = 0.
+\end{align*}
+Con $\eta=1$, los nuevos parámetros son $w_1=0{,}375$, $w_2=0$, $b=0$. Las probabilidades pasan a $\sigma(0{,}75)=0{,}679$, $\sigma(0{,}375)=0{,}593$, $0{,}5$ y $0{,}5$, y la pérdida baja a $0{,}5741$. El modelo aprendió en un paso que el motivo discrimina y que los CpG, en este ejemplo, no aportan nada: aparecen igual en una secuencia positiva y en una negativa.
+\end{ejemplo}
+
+\subsection{Máquinas de vectores de soporte}
+
+La regresión logística traza \emph{una} frontera lineal, la que maximiza la verosimilitud. Cuando las clases son separables hay infinitas fronteras que separan perfectamente los datos de entrenamiento; ¿cuál elegir? \textcite{c17-cortes1995} propusieron la que deja el mayor \emph{margen}, es decir, la franja vacía más ancha entre las dos clases. La intuición es que una frontera alejada de todos los ejemplos es más robusta ante secuencias nuevas ligeramente distintas.
+
+Con etiquetas $y_i\in\{-1,+1\}$, la anchura del margen de la frontera $\mathbf{w}^\top\mathbf{x}+b=0$ es $2/\|\mathbf{w}\|$. Permitiendo que algunos puntos violen el margen (datos no separables), el problema de la SVM de margen blando es
+\begin{equation}\label{eq:17-svm}
+\min_{\mathbf{w},b,\boldsymbol\xi}\; \frac12\|\mathbf{w}\|^2 + C\sum_{i=1}^{n}\xi_i
+\quad\text{sujeto a}\quad y_i(\mathbf{w}^\top\mathbf{x}_i+b)\ge 1-\xi_i,\;\; \xi_i\ge 0.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\|\mathbf{w}\|$}{Norma de los pesos; minimizarla ensancha el margen.}
+\simbolo{$\xi_i$}{Holgura: cuánto invade el punto $i$ el margen o cruza la frontera.}
+\simbolo{$C$}{Compromiso entre margen ancho (C pequeño) y pocos errores de entrenamiento (C grande).}
+\end{simbolos}
+
+Eliminando las holguras, la \cref{eq:17-svm} equivale a minimizar $\sum_i\max\{0,\,1-y_if(\mathbf{x}_i)\} + \frac{1}{2C}\|\mathbf{w}\|^2$: la pérdida \ingles{hinge} con regularización $L_2$. Se diferencia de la logística en que la \ingles{hinge} es exactamente cero para los puntos bien clasificados fuera del margen. Por eso, al resolver el problema dual, la solución depende solo de los puntos que tocan o invaden el margen, los \emph{vectores de soporte}:
+\begin{equation}\label{eq:17-dual}
+f(\mathbf{x}) = \sum_{i\in\mathcal{S}} \alpha_i\,y_i\,K(\mathbf{x}_i,\mathbf{x}) + b,\qquad 0<\alpha_i\le C.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathcal{S}$}{Conjunto de vectores de soporte (los $\alpha_i$ no nulos).}
+\simbolo{$\alpha_i$}{Multiplicadores de Lagrange obtenidos del problema dual.}
+\simbolo{$K(\mathbf{x}_i,\mathbf{x})$}{Núcleo: producto interno, quizá en un espacio de atributos implícito.}
+\end{simbolos}
+
+La \cref{eq:17-dual} contiene el famoso \emph{truco del núcleo}: los datos solo aparecen a través de productos internos, de modo que podemos sustituir $\mathbf{x}_i^\top\mathbf{x}$ por cualquier núcleo válido, como el de espectro de la \cref{eq:17-kernel}, y obtener una SVM que trabaja en el espacio de $4^k$ dimensiones sin construirlo nunca. La \cref{fig:17-frontera} compara ambas fronteras en un problema bidimensional.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[capdiecisiete panel, name=lr, xmin=0.28, xmax=0.72, ymin=0, ymax=1.1,
+   xlabel={contenido GC}, ylabel={razón CpG obs./esp.}, title={(a) regresión logística},
+   xtick={0.3,0.4,0.5,0.6,0.7}, ytick={0,0.25,0.5,0.75,1}]
+  \addplot[only marks, mark=*, mark size=1.3pt, azul, fill opacity=.75, draw opacity=0]
+    table[x=gc, y=oe, restrict expr to domain={\thisrow{clase}}{-0.5:0.5}] {figuras/cap17/frontera_pts.dat};
+  \addplot[only marks, mark=triangle*, mark size=1.7pt, naranja, fill opacity=.8, draw opacity=0]
+    table[x=gc, y=oe, restrict expr to domain={\thisrow{clase}}{0.5:1.5}] {figuras/cap17/frontera_pts.dat};
+  \addplot[tinta, thick] table {figuras/cap17/frontera_lr0.dat};
+  \addplot[tinta2, dashed] table {figuras/cap17/frontera_lr1.dat};
+  \addplot[tinta2, dashed] table {figuras/cap17/frontera_lr2.dat};
+  \node[etiqueta, anchor=north west, fill=white, fill opacity=.8, text opacity=1] at (axis cs:0.29,1.08) {$p=0{,}9$};
+  \node[etiqueta, anchor=south east, fill=white, fill opacity=.8, text opacity=1] at (axis cs:0.71,0.02) {$p=0{,}1$};
+\end{axis}
+\begin{axis}[capdiecisiete panel, at={(lr.outer east)}, anchor=outer west, xmin=0.28, xmax=0.72, ymin=0, ymax=1.1,
+   xlabel={contenido GC}, title={(b) SVM lineal ($C=0{,}5$)},
+   xtick={0.3,0.4,0.5,0.6,0.7}, ytick={0,0.25,0.5,0.75,1}]
+  \addplot[only marks, mark=*, mark size=1.3pt, azul, fill opacity=.75, draw opacity=0]
+    table[x=gc, y=oe, restrict expr to domain={\thisrow{clase}}{-0.5:0.5}] {figuras/cap17/frontera_pts.dat};
+  \addplot[only marks, mark=triangle*, mark size=1.7pt, naranja, fill opacity=.8, draw opacity=0]
+    table[x=gc, y=oe, restrict expr to domain={\thisrow{clase}}{0.5:1.5}] {figuras/cap17/frontera_pts.dat};
+  \addplot[only marks, mark=o, mark size=2.6pt, tinta, thin] table {figuras/cap17/frontera_sv.dat};
+  \addplot[tinta, thick] table {figuras/cap17/frontera_svm0.dat};
+  \addplot[violeta, dashed] table {figuras/cap17/frontera_svm1.dat};
+  \addplot[violeta, dashed] table {figuras/cap17/frontera_svm2.dat};
+\end{axis}
+\end{tikzpicture}
+\caption[Fronteras de decisión de regresión logística y SVM]{Dos clasificadores lineales sobre datos simulados: 70 regiones ``de fondo'' (círculos azules) y 70 promotores con isla CpG (triángulos naranjas), descritos por su contenido de GC y su razón CpG observada/esperada. \textbf{(a)} La regresión logística traza la frontera $p=0{,}5$ (línea continua) y, en trazos, las curvas de nivel $p=0{,}9$ y $p=0{,}1$: la franja entre ellas es la zona de incertidumbre. \textbf{(b)} La SVM lineal maximiza el margen (trazos violetas, $f=\pm1$); solo los 31 vectores de soporte rodeados con un círculo determinan la frontera, y mover cualquier otro punto sin cruzar el margen no la cambia. Las dos fronteras son casi paralelas y aciertan en el 95\,\% (logística) y el 95,7\,\% (SVM) de los datos de entrenamiento. Los atributos se estandarizaron antes de ajustar y las rectas se transformaron de vuelta a las unidades originales.}
+\label{fig:17-frontera}
+\end{figure}
+
+\subsection{Árboles de decisión y random forests}
+
+Un \emph{árbol de decisión} clasifica mediante una cascada de preguntas binarias (``¿el conteo de \texttt{TGA} es mayor que 2?''). En cada nodo elige el atributo y el umbral que más reducen la \emph{impureza} de los grupos resultantes, típicamente medida por el índice de Gini:
+\begin{equation}\label{eq:17-gini}
+G(\text{nodo}) = \sum_{c} \hat p_c\,(1-\hat p_c),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\hat p_c$}{Fracción de las secuencias del nodo que pertenecen a la clase $c$.}
+\simbolo{$G$}{Impureza de Gini: 0 si el nodo es puro, máxima si las clases están mezcladas a partes iguales.}
+\end{simbolos}
+
+Los árboles son interpretables y capturan interacciones no lineales, pero son inestables: pequeños cambios en los datos producen árboles muy distintos. Es decir, tienen \emph{alta varianza}. \textcite{c17-breiman2001} propuso atacar precisamente esa debilidad con los \ingles{random forests}: entrenar $B$ árboles profundos, cada uno sobre una muestra \ingles{bootstrap} de los datos y eligiendo en cada nodo el mejor atributo entre un subconjunto aleatorio, y promediar sus votos. ¿Por qué funciona? Si cada árbol tiene varianza $\sigma^2$ y la correlación entre dos árboles es $\rho$, la varianza del promedio es \parencite{c17-hastie2009}
+\begin{equation}\label{eq:17-varbosque}
+\Var\!\left(\frac1B\sum_{b=1}^{B}T_b(\mathbf{x})\right) = \rho\,\sigma^2 + \frac{1-\rho}{B}\,\sigma^2 .
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$T_b(\mathbf{x})$}{Predicción del árbol $b$ para la entrada $\mathbf{x}$.}
+\simbolo{$B$}{Número de árboles del bosque.}
+\simbolo{$\rho$}{Correlación entre las predicciones de dos árboles distintos.}
+\simbolo{$\sigma^2$}{Varianza de la predicción de un árbol individual.}
+\end{simbolos}
+
+El segundo término desaparece al aumentar $B$, pero el primero no: la única forma de reducirlo es \emph{decorrelacionar} los árboles, que es exactamente lo que logra la selección aleatoria de atributos. Como regalo adicional, cada árbol deja fuera alrededor de un tercio de los datos (los que no salieron en su \ingles{bootstrap}), lo que permite estimar el error de generalización ``fuera de la bolsa'' (\ingles{out-of-bag}) sin un conjunto de prueba separado \parencite{c17-breiman2001}.
+
+\subsection{Sesgo, varianza y complejidad}
+
+Para la pérdida cuadrática, el error esperado de un modelo en un punto $\mathbf{x}$, promediado sobre todos los conjuntos de entrenamiento posibles, se descompone exactamente en tres términos \parencite{c17-hastie2009}:
+\begin{equation}\label{eq:17-sesgovar}
+\E\Big[\big(y-\hat f(\mathbf{x})\big)^2\Big] = \underbrace{\sigma_\varepsilon^2}_{\text{ruido}} + \underbrace{\big(\E[\hat f(\mathbf{x})]-f(\mathbf{x})\big)^2}_{\text{sesgo}^2} + \underbrace{\E\Big[\big(\hat f(\mathbf{x})-\E[\hat f(\mathbf{x})]\big)^2\Big]}_{\text{varianza}}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$f(\mathbf{x})$}{Función verdadera; $y=f(\mathbf{x})+\varepsilon$.}
+\simbolo{$\hat f(\mathbf{x})$}{Modelo ajustado; es aleatorio porque depende de la muestra de entrenamiento.}
+\simbolo{$\sigma^2_\varepsilon$}{Varianza del ruido irreducible $\varepsilon$ (errores experimentales, etiquetas ambiguas).}
+\end{simbolos}
+
+Un modelo demasiado simple (un árbol de profundidad 1) no puede representar la frontera verdadera: sesgo alto. Uno demasiado flexible (un árbol que crece hasta dejar una hoja por secuencia) reproduce el ruido de su muestra concreta: varianza alta. La \cref{fig:17-sesgovar} muestra el compromiso con árboles de profundidad creciente. El error de entrenamiento baja monótonamente hasta cero, pero el de validación cruzada dibuja una ``U'' con mínimo en profundidad 6 (error 0,110); con profundidad 15 el árbol memoriza por completo el entrenamiento y su error de validación sube a 0,132. Un \ingles{random forest} de árboles profundos alcanza 0,105 sin necesidad de ajustar la profundidad: el promedio de la \cref{eq:17-varbosque} se encarga de la varianza.
+
+\begin{figure}[!tbp]
+\centering
+\input{figuras/cap17/sesgo_varianza_rf.tex}%
+\begin{tikzpicture}
+\begin{axis}[capdiecisiete ancho, height=5.6cm, xmin=0.5, xmax=15.5, ymin=0, ymax=0.36,
+   xlabel={profundidad máxima del árbol (complejidad)}, ylabel={tasa de error},
+   xtick={1,3,5,7,9,11,13,15}, legend pos=north east, ytick={0,0.05,0.1,0.15,0.2,0.25,0.3,0.35},
+   yticklabel style={/pgf/number format/fixed, /pgf/number format/precision=2, /pgf/number format/fixed zerofill}]
+  \addplot[name path=sup, draw=none, forget plot] table[x=d, y expr=\thisrow{cv}+\thisrow{cvsd}/sqrt(10)] {figuras/cap17/sesgo_varianza.dat};
+  \addplot[name path=inf, draw=none, forget plot] table[x=d, y expr=\thisrow{cv}-\thisrow{cvsd}/sqrt(10)] {figuras/cap17/sesgo_varianza.dat};
+  \addplot[naranja!25, forget plot] fill between[of=sup and inf];
+  \addplot[azul, mark=*, mark size=1.4pt] table[x=d, y=train] {figuras/cap17/sesgo_varianza.dat};
+  \addlegendentry{entrenamiento}
+  \addplot[naranja, mark=square*, mark size=1.4pt] table[x=d, y=cv] {figuras/cap17/sesgo_varianza.dat};
+  \addlegendentry{validación cruzada (10 particiones)}
+  \addplot[aqua, dashed, thick, domain=0.5:15.5] {\capdiecisieteRF};
+  \addlegendentry{\ingles{random forest} (300 árboles)}
+  \draw[flecha=tinta2] (axis cs:4.2,0.25) node[above,etiqueta]{mínimo del error de validación} -- (axis cs:5.9,0.118);
+  \node[etiqueta, text=azulprofundo] at (axis cs:2.6,0.035) {sesgo alto};
+  \node[etiqueta, text=rojooscuro] at (axis cs:13.2,0.17) {varianza alta};
+\end{axis}
+\end{tikzpicture}
+\caption[El compromiso sesgo-varianza]{El compromiso sesgo-varianza con árboles de decisión sobre 400 puntos simulados con dos clases entrelazadas y ruido. El error de entrenamiento (azul) disminuye sin cesar con la profundidad, hasta llegar a cero; el de validación cruzada (naranja, con banda de $\pm1$ error estándar) primero baja, porque el modelo gana capacidad (menos sesgo), y luego sube, porque empieza a ajustar el ruido (más varianza). La distancia creciente entre ambas curvas es la firma del sobreajuste. Un \ingles{random forest} (línea verde) promedia árboles profundos decorrelacionados y consigue un error menor que el mejor árbol individual.}
+\label{fig:17-sesgovar}
+\end{figure}
+
+\subsection{Validación cruzada y la fuga de información por homología}
+
+Para estimar el riesgo esperado de la \cref{def:17-supervisado} sin gastar datos, la \emph{validación cruzada} de $K$ particiones divide el conjunto en $K$ bloques $F_1,\dots,F_K$, entrena $K$ veces dejando fuera uno cada vez y promedia los errores:
+\begin{equation}\label{eq:17-cv}
+\widehat{\mathrm{CV}}_K = \frac{1}{K}\sum_{k=1}^{K}\frac{1}{|F_k|}\sum_{i\in F_k}\ell\big(y_i,\ \hat f^{(-k)}(\mathbf{x}_i)\big).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$F_k$}{Índices de las observaciones del bloque $k$ (usadas como prueba en la ronda $k$).}
+\simbolo{$\hat f^{(-k)}$}{Modelo entrenado con todos los bloques excepto $F_k$.}
+\simbolo{$K$}{Número de particiones (habitualmente 5 o 10).}
+\end{simbolos}
+
+La \cref{eq:17-cv} es un estimador insesgado del error de generalización \emph{solo si} las observaciones de prueba son independientes de las de entrenamiento. En biología, esa suposición se rompe casi siempre, porque las secuencias no son independientes: están emparentadas por la evolución. Si una globina de ratón queda en el entrenamiento y la de rata en la prueba, el modelo no necesita haber aprendido nada sobre globinas; le basta con reconocer a la prima. \textcite{c17-jones2019} advirtió que la separación insuficiente entre los datos de entrenamiento y de prueba es un problema recurrente en los trabajos de ML aplicados a biología, y las recomendaciones DOME \parencite{c17-walsh2021}, acrónimo de datos, optimización, modelo y evaluación, exigen que todo trabajo declare explícitamente cómo se garantizó la independencia entre los conjuntos de entrenamiento y de prueba.
+
+La \cref{fig:17-fuga} cuantifica el problema con un experimento diseñado para no tener ninguna señal biológica. Simulamos 60 familias de 15 secuencias de 200 pb, cada una derivada de un ancestro aleatorio con un 15\,\% de sustituciones, y asignamos una etiqueta \emph{al azar} a cada familia completa. Ningún clasificador puede superar el 50\,\% de exactitud con secuencias de familias nuevas. Sin embargo, con una partición aleatoria de las secuencias el vecino más cercano (1-NN) alcanza un 96,9\,\% y un \ingles{random forest} un 87,8\,\%. Cuando la partición mantiene cada familia completa en un mismo bloque, las cifras caen a 52,9\,\% y 47,0\,\%, alrededor del azar, que es la verdad.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  % esquema de particiones
+  \node[font=\sffamily\bfseries\scriptsize,anchor=west] at (-0.2,2.55) {(a) dos formas de partir los mismos datos};
+  \node[anchor=west,etiqueta] at (-0.2,2.05) {partición aleatoria};
+  \node[anchor=west,etiqueta] at (-0.2,0.85) {partición por familia};
+  \foreach \k/\c in {0/azul,1/naranja,2/aqua,3/violeta}{
+    \foreach \m in {0,1,2}{
+      \pgfmathtruncatemacro{\idx}{\k*3+\m}
+      \pgfmathsetmacro{\xx}{0.15+\idx*0.42}
+      % aleatoria: prueba en posiciones 1,5,9 (un miembro de varias familias)
+      \ifnum\idx=1 \node[draw=tinta,very thick,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,1.55) {};
+      \else\ifnum\idx=5 \node[draw=tinta,very thick,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,1.55) {};
+      \else\ifnum\idx=9 \node[draw=tinta,very thick,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,1.55) {};
+      \else \node[draw=white,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,1.55) {};
+      \fi\fi\fi
+      % por familia: la familia 3 completa en prueba
+      \ifnum\k=2 \node[draw=tinta,very thick,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,0.35) {};
+      \else \node[draw=white,fill=\c!65,minimum size=3.4mm,inner sep=0pt] at (\xx,0.35) {};
+      \fi
+    }
+  }
+  \node[etiqueta,anchor=west,align=left] at (0.0,-0.35) {cuadros = secuencias; color = familia;\\ borde negro = conjunto de prueba};
+  \node[etiqueta,anchor=west,text=rojooscuro,align=left] at (5.2,1.55) {cada secuencia de prueba\\tiene hermanas en el entrenamiento};
+  \node[etiqueta,anchor=west,text=verde,align=left] at (5.2,0.35) {la familia de prueba\\es nueva para el modelo};
+  % barras
+  \begin{axis}[curso, at={(0cm,-5.6cm)}, width=0.8\linewidth, height=4.6cm, ybar, bar width=12pt,
+     ymin=0, ymax=1.12, xtick={0,1,2}, xticklabels={regresión logística, random forest, 1-NN},
+     enlarge x limits=0.25, ylabel={exactitud (CV 5)}, legend style={at={(0.5,1.03)}, anchor=south}, legend columns=2, title style={yshift=14pt},
+     title={(b) exactitud estimada con etiquetas aleatorias por familia}, ytick={0,0.25,0.5,0.75,1},
+     nodes near coords style={font=\sffamily\tiny,text=tinta2,/pgf/number format/fixed,/pgf/number format/precision=2,/pgf/number format/fixed zerofill}]
+    \addplot[fill=rojo!70, draw=rojooscuro, nodes near coords] table[x=i, y=aleatoria] {figuras/cap17/fuga.dat};
+    \addlegendentry{partición aleatoria}
+    \addplot[fill=aqua!70, draw=verde, nodes near coords] table[x=i, y=familia] {figuras/cap17/fuga.dat};
+    \addlegendentry{partición por familia (\texttt{GroupKFold})}
+    \draw[tinta2, dashed, thick] ({rel axis cs:0,0} |- {axis cs:0,0.5}) -- ({rel axis cs:1,0} |- {axis cs:0,0.5});
+  \end{axis}
+\end{tikzpicture}
+\caption[Fuga de información por homología]{La fuga de información por homología infla la exactitud. \textbf{(a)} En una partición aleatoria, cada secuencia de prueba (borde negro) tiene parientes cercanos en el entrenamiento; en una partición por familia, la familia de prueba es completamente nueva. \textbf{(b)} Con 60 familias simuladas cuyas etiquetas se asignaron \emph{al azar}, el valor correcto de la exactitud es 0,5 (línea de trazos). La partición aleatoria produce estimaciones espectaculares, sobre todo para los métodos que memorizan (1-NN, \ingles{random forest}); la partición por familia devuelve cifras compatibles con el azar. Los valores algo inferiores a 0,5 se deben a que, al retirar familias enteras, la proporción de clases del entrenamiento se desplaza en sentido contrario a la del bloque de prueba. Atributos: espectro de 3-mers normalizado.}
+\label{fig:17-fuga}
+\end{figure}
+
+\begin{cuidado}[Cómo evitar la fuga de información]
+\begin{enumerate}
+  \item \emph{Agrupe antes de partir.} Agrupe las secuencias por similitud (por ejemplo, con MMseqs2 o CD-HIT al 30--40\,\% de identidad para proteínas) y use los grupos como unidad de partición (\texttt{GroupKFold} en scikit-learn).
+  \item \emph{Preprocese dentro de cada partición.} Seleccionar los $k$-mers más discriminativos, estandarizar o imputar usando \emph{todos} los datos antes de la validación cruzada filtra información de la prueba. Encadene los pasos en un \texttt{Pipeline}.
+  \item \emph{Reserve un conjunto de prueba final} que no se toque durante la selección de hiperparámetros; la validación cruzada anidada estima el error del procedimiento completo.
+  \item \emph{Piense en el uso real.} Si el modelo se aplicará a especies no vistas, particione por especie; si se aplicará a datos futuros, particione por fecha.
+\end{enumerate}
+\end{cuidado}
+
+\subsection{Métricas para clases desbalanceadas}
+
+En genómica, los positivos suelen ser raros: menos del 1\,\% de las posiciones de un genoma son sitios de unión de un factor dado, y la mayoría de las variantes de sentido erróneo son benignas. Con un 1\,\% de positivos, un clasificador que siempre dice ``negativo'' tiene un 99\,\% de exactitud y no sirve para nada. Necesitamos métricas que miren por separado a cada clase.
+
+Para un umbral de decisión $\tau$, sean VP, FP, VN y FN los verdaderos y falsos positivos y negativos. La \emph{curva ROC} representa la tasa de verdaderos positivos $\mathrm{TPR}=\mathrm{VP}/(\mathrm{VP}+\mathrm{FN})$ (sensibilidad o exhaustividad) frente a la de falsos positivos $\mathrm{FPR}=\mathrm{FP}/(\mathrm{FP}+\mathrm{VN})$ al variar $\tau$. Ambas tasas se calculan \emph{dentro} de cada clase, así que la curva ROC no depende de la proporción de positivos. La \emph{curva de precisión-exhaustividad} (PR) representa, en cambio, la precisión $\mathrm{VP}/(\mathrm{VP}+\mathrm{FP})$, que mezcla las dos clases. Por el teorema de Bayes, con prevalencia $\pi$,
+\begin{equation}\label{eq:17-precision}
+\mathrm{Precisión}(\tau) = \frac{\mathrm{TPR}(\tau)\,\pi}{\mathrm{TPR}(\tau)\,\pi + \mathrm{FPR}(\tau)\,(1-\pi)}.
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\pi$}{Prevalencia: fracción de positivos en la población donde se aplicará el modelo.}
+\simbolo{$\mathrm{TPR},\ \mathrm{FPR}$}{Tasas de verdaderos y falsos positivos al umbral $\tau$.}
+\simbolo{$\tau$}{Umbral sobre la puntuación del clasificador a partir del cual se predice ``positivo''.}
+\end{simbolos}
+
+Cuando $\pi$ es pequeño, el término $\mathrm{FPR}\,(1-\pi)$ domina el denominador y la precisión se hunde, aunque la curva ROC no cambie. \textcite{c17-saito2015} mostraron, con simulaciones y revisando la literatura, que en conjuntos desbalanceados la curva PR es más informativa que la ROC y que la línea base de la curva PR no es 0,5 sino $\pi$.
+
+\begin{ejemplo}{Un clasificador excelente que casi siempre se equivoca}{17-prevalencia}
+Un predictor de sitios de unión tiene $\mathrm{TPR}=0{,}90$ y $\mathrm{FPR}=0{,}05$ a su umbral por defecto: parece muy bueno. Si lo aplicamos a regiones donde solo el 1\,\% son sitios reales ($\pi=0{,}01$), la \cref{eq:17-precision} da
+\[
+\text{Precisión}=\frac{0{,}90\times0{,}01}{0{,}90\times0{,}01+0{,}05\times0{,}99}=\frac{0{,}009}{0{,}0585}\approx0{,}154.
+\]
+De cada 100 predicciones positivas, unas 85 son falsas. El mismo clasificador, con clases equilibradas ($\pi=0{,}5$), tendría una precisión de $0{,}947$.
+\end{ejemplo}
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[capdiecisiete panel, name=roc, xmin=0, xmax=1, ymin=0, ymax=1.02,
+   xlabel={tasa de falsos positivos}, ylabel={tasa de verdaderos positivos}, title={(a) curva ROC},
+   legend pos=south east, xtick={0,0.25,0.5,0.75,1}, ytick={0,0.25,0.5,0.75,1}]
+  \addplot[azul] table {figuras/cap17/roc_bal.dat};
+  \addlegendentry{$\pi=0{,}5$: AUC $=0{,}852$}
+  \addplot[naranja, dashed] table {figuras/cap17/roc_des.dat};
+  \addlegendentry{$\pi=0{,}01$: AUC $=0{,}883$}
+  \addplot[gris, thin, domain=0:1] {x};
+\end{axis}
+\begin{axis}[capdiecisiete panel, at={(roc.outer east)}, anchor=outer west, xmin=0, xmax=1, ymin=0, ymax=1.02,
+   xlabel={exhaustividad (TPR)}, ylabel={precisión}, title={(b) curva de precisión-exhaustividad},
+   legend style={at={(0.97,0.6)}, anchor=east}, xtick={0,0.25,0.5,0.75,1}, ytick={0,0.25,0.5,0.75,1}]
+  \addplot[azul] table {figuras/cap17/pr_bal.dat};
+  \addlegendentry{$\pi=0{,}5$: AP $=0{,}852$}
+  \addplot[naranja, dashed] table {figuras/cap17/pr_des.dat};
+  \addlegendentry{$\pi=0{,}01$: AP $=0{,}127$}
+  \addplot[azul, thin, dotted, domain=0:1] {0.5};
+  \addplot[naranja, thin, dotted, domain=0:1] {0.01};
+\end{axis}
+\end{tikzpicture}
+\caption[Curvas ROC y de precisión-exhaustividad con desbalance]{El mismo clasificador evaluado con dos prevalencias. Las puntuaciones de positivos y negativos siguen normales $\mathcal N(1{,}5,1)$ y $\mathcal N(0,1)$ (AUC teórica $0{,}856$). En azul, \num{2000} positivos y \num{2000} negativos; en naranja, 200 positivos entre \num{20000} secuencias. \textbf{(a)} Las curvas ROC son prácticamente iguales: la ROC es ciega a la prevalencia, y la pequeña diferencia de AUC es fluctuación muestral de los 200 positivos. \textbf{(b)} Las curvas PR son radicalmente distintas: con $\pi=0{,}01$ la precisión media (AP) cae de 0,85 a 0,13. Las líneas punteadas marcan el rendimiento de un clasificador aleatorio en cada caso ($\text{precisión}=\pi$). Cuando los positivos son raros, informe siempre la curva PR.}
+\label{fig:17-rocpr}
+\end{figure}
+
+\subsection{Todo junto con scikit-learn}
+
+La biblioteca scikit-learn \parencite{c17-pedregosa2011} ofrece una interfaz uniforme (\py{fit}, \py{predict}, \py{predict_proba}) para todos los modelos de esta sección, y herramientas para encadenar el preprocesamiento con el modelo de modo que la validación cruzada no filtre información. El siguiente fragmento construye un clasificador de secuencias con espectro de 3-mers y regresión logística, y lo evalúa con particiones por familia y precisión media:
+
+\begin{codigo}[clasificar\_kmers.py]
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import GroupKFold, cross_val_score
+from sklearn.pipeline import make_pipeline
+
+# seqs: lista de str; y: etiquetas 0/1; fam: clúster de homología
+modelo = make_pipeline(
+    CountVectorizer(analyzer="char", ngram_range=(3, 3),
+                    lowercase=False),          # espectro de 3-mers
+    LogisticRegression(C=1.0, max_iter=5000))  # regularización L2
+cv = GroupKFold(n_splits=5)                    # familias separadas
+ap = cross_val_score(modelo, seqs, y, groups=fam, cv=cv,
+                     scoring="average_precision")
+print(f"AP = {ap.mean():.3f} +/- {ap.std():.3f}")
+\end{codigo}
+
+Como el vectorizador forma parte del \ingles{pipeline}, el vocabulario de $k$-mers se aprende de nuevo en cada partición usando solo los datos de entrenamiento. Para cambiar de modelo basta con sustituir la regresión logística por una SVM lineal (\py{SVC(kernel="linear")}) o por un \ingles{random forest} (\py{RandomForestClassifier()}); no hay que cambiar nada más.
+
+\begin{ideaclave}
+En ML para biología, la pregunta decisiva no es ``¿qué modelo uso?'', sino ``¿a qué secuencias \emph{nuevas} se parece mi conjunto de prueba?''.
+\end{ideaclave}
+
+% ---------------------------------------------------------------------
+\section{Deep learning para ADN}\label{sec:17-dl}
+% ---------------------------------------------------------------------
+\enlacerepo{17.2 · Deep learning para ADN}
+
+\begin{intuicion}[El corrector de pruebas con una plantilla]
+Un corrector de imprenta busca una palabra prohibida en un libro. No lee cada página de principio a fin: desliza una pequeña plantilla transparente con la palabra impresa sobre cada renglón y se detiene donde las letras coinciden. No importa en qué renglón esté la palabra; la plantilla la encuentra igual. Si le damos varias plantillas, una por palabra, y anotamos para cada una ``¿apareció en algún lugar de la página?'', habremos resumido la página en unas pocas respuestas. Una red convolucional hace eso con el ADN, con una diferencia decisiva: nadie le da las plantillas; las aprende.
+\end{intuicion}
+
+Los métodos de la sección anterior requieren que \emph{nosotros} elijamos los atributos: $k$-mers, contenido de GC, conteos de motivos. El aprendizaje profundo (\ingles{deep learning}) propone aprender también la representación, apilando capas de transformaciones simples que se ajustan todas a la vez a partir de los datos \parencite{c17-lecun2015}. En genómica, esta idea transformó la predicción de la actividad regulatoria a partir de la secuencia \parencite{c17-eraslan2019}.
+
+\subsection{Del perceptrón a las redes profundas}
+
+La unidad básica es la neurona artificial de \textcite{c17-rosenblatt1958}, que es, esencialmente, la regresión logística de la \cref{eq:17-logistica} con otra función de activación. Una red \emph{multicapa} compone muchas de ellas:
+\begin{equation}\label{eq:17-capas}
+\mathbf{a}^{(0)}=\mathbf{x},\qquad
+\mathbf{z}^{(l)} = W^{(l)}\mathbf{a}^{(l-1)} + \mathbf{b}^{(l)},\qquad
+\mathbf{a}^{(l)} = \varphi\big(\mathbf{z}^{(l)}\big),\qquad l=1,\dots,D,
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathbf{a}^{(l)}$}{Activaciones (salidas) de la capa $l$; $\mathbf{a}^{(0)}$ es la entrada.}
+\simbolo{$W^{(l)},\ \mathbf{b}^{(l)}$}{Matriz de pesos y vector de sesgos de la capa $l$.}
+\simbolo{$\mathbf{z}^{(l)}$}{Preactivaciones: combinaciones lineales antes de la no linealidad.}
+\simbolo{$\varphi$}{Función de activación no lineal, aplicada elemento a elemento; hoy casi siempre $\mathrm{ReLU}(z)=\max(0,z)$.}
+\simbolo{$D$}{Profundidad: número de capas.}
+\end{simbolos}
+
+\noindent y en la última capa se usa una sigmoide (clasificación binaria) o una \ingles{softmax} (varias clases). La no linealidad $\varphi$ es imprescindible: sin ella, la composición de capas lineales sería otra transformación lineal y la red entera no sería más expresiva que una regresión logística. Con ella, una red con una sola capa oculta suficientemente ancha puede aproximar cualquier función continua; las redes \emph{profundas} consiguen lo mismo con muchas menos neuronas, porque reutilizan en las capas altas los rasgos que detectan las capas bajas.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize,
+    neu/.style={circle,draw=#1!70!black,fill=#1!15,thick,minimum size=6.5mm,inner sep=0pt},
+    lk/.style={tinta2!45,thin}]
+  % capa de entrada
+  \foreach \i/\t in {1/x_1,2/x_2,3/x_3}{ \node[neu=azul] (x\i) at (0,2.6-\i*1.0) {$\t$}; }
+  \foreach \j in {1,...,4}{ \node[neu=aqua] (h\j) at (2.2,3.0-\j*0.95) {}; }
+  \node[neu=naranja] (o) at (4.4,0.62) {$\hat y$};
+  \foreach \i in {1,2,3}{ \foreach \j in {1,...,4}{ \draw[lk] (x\i) -- (h\j); } }
+  \foreach \j in {1,...,4}{ \draw[lk] (h\j) -- (o); }
+  \node[etiqueta] at (0,-1.35) {entrada};
+  \node[etiqueta] at (2.2,-1.35) {capa oculta};
+  \node[etiqueta] at (4.4,-1.35) {salida};
+  % grafo computacional
+  \begin{scope}[xshift=5.9cm, yshift=0.6cm]
+    \node[caja=azul, minimum width=9mm] (gx) at (0,0) {$\mathbf{x}$};
+    \node[caja=aqua, minimum width=9mm] (gz1) at (1.45,0) {$\mathbf{z}^{(1)}$};
+    \node[caja=aqua, minimum width=9mm] (ga1) at (2.85,0) {$\mathbf{a}^{(1)}$};
+    \node[caja=naranja, minimum width=9mm] (gy) at (4.25,0) {$\hat y$};
+    \node[caja=rojo, minimum width=9mm] (gl) at (5.55,0) {$\ell$};
+    \draw[flecha=azul] (gx) -- (gz1); \draw[flecha=azul] (gz1) -- (ga1);
+    \draw[flecha=azul] (ga1) -- (gy); \draw[flecha=azul] (gy) -- (gl);
+    \node[etiqueta, text=azul] at (2.8,0.75) {hacia adelante: calcular activaciones};
+    \draw[flecha=naranja] (gl.south) to[bend left=35] node[below,etiqueta,text=naranja!80!black]{$\delta^{(2)}=\hat y-y$} (gy.south);
+    \draw[flecha=naranja] (gy.south) to[bend left=35] node[below,etiqueta,text=naranja!80!black]{$\times\,\mathbf{w}^{(2)}$} (ga1.south);
+    \draw[flecha=naranja] (ga1.south) to[bend left=35] node[below,etiqueta,text=naranja!80!black]{$\odot\,\varphi'$} (gz1.south);
+    \node[etiqueta, text=naranja!80!black] at (2.8,-1.55) {hacia atrás: propagar $\delta$ y acumular $\partial\ell/\partial W$};
+  \end{scope}
+\end{tikzpicture}
+\caption[Red neuronal multicapa y retropropagación]{\textbf{Izquierda}: una red con tres entradas, una capa oculta de cuatro neuronas, $\mathbf{a}^{(1)}=\varphi(W^{(1)}\mathbf{x}+\mathbf{b}^{(1)})$, y una salida $\hat y=\sigma(\mathbf{w}^{(2)\top}\mathbf{a}^{(1)}+b^{(2)})$ (\cref{eq:17-capas}); cada línea es un peso ajustable. \textbf{Derecha}: el mismo cálculo como grafo computacional. La pasada hacia adelante (azul) evalúa las activaciones y la pérdida $\ell$; la pasada hacia atrás (naranja) propaga la ``señal de error'' $\delta$ desde la pérdida hasta la entrada, multiplicando en cada paso por la derivada local (\cref{teo:17-backprop}). El coste de la pasada hacia atrás es del mismo orden que el de la pasada hacia adelante.}
+\label{fig:17-red}
+\end{figure}
+
+\subsection{Retropropagación}
+
+Entrenar una red es, otra vez, minimizar una pérdida por descenso de gradiente (\cref{eq:17-descenso}). El problema es calcular el gradiente respecto de millones de pesos de forma eficiente. \textcite{c17-rumelhart1986} popularizaron la solución, la \emph{retropropagación} (\ingles{backpropagation}), que no es más que la regla de la cadena aplicada con un orden inteligente.
+
+Derivémosla para la red de la \cref{fig:17-red}, con salida sigmoide y entropía cruzada. De la \cref{teo:17-gradlog} ya sabemos que, en la última capa, $\partial\ell/\partial z^{(2)} = \hat y - y \equiv \delta^{(2)}$, y por lo tanto $\partial\ell/\partial\mathbf{w}^{(2)}=\delta^{(2)}\mathbf{a}^{(1)}$. Para bajar a la capa oculta aplicamos la regla de la cadena a través de $z^{(2)}=\mathbf{w}^{(2)\top}\mathbf{a}^{(1)}+b^{(2)}$ y de $\mathbf{a}^{(1)}=\varphi(\mathbf{z}^{(1)})$:
+\[
+\frac{\partial\ell}{\partial z^{(1)}_j}=\frac{\partial\ell}{\partial z^{(2)}}\cdot\frac{\partial z^{(2)}}{\partial a^{(1)}_j}\cdot\frac{\partial a^{(1)}_j}{\partial z^{(1)}_j}=\delta^{(2)}\,w^{(2)}_j\,\varphi'\big(z^{(1)}_j\big).
+\]
+Llamando $\delta^{(1)}_j$ a esta cantidad, el gradiente de los pesos de la primera capa es $\partial\ell/\partial W^{(1)}_{jk}=\delta^{(1)}_j x_k$. El patrón se repite en cualquier número de capas:
+
+\begin{teorema}{Retropropagación}{17-backprop}
+Definiendo el error de la capa $l$ como $\boldsymbol\delta^{(l)}=\partial\ell/\partial\mathbf{z}^{(l)}$, se cumple la recurrencia hacia atrás
+\begin{equation}\label{eq:17-backprop}
+\boldsymbol\delta^{(l)} = \Big(W^{(l+1)\top}\boldsymbol\delta^{(l+1)}\Big)\odot\varphi'\big(\mathbf{z}^{(l)}\big),
+\qquad
+\frac{\partial\ell}{\partial W^{(l)}} = \boldsymbol\delta^{(l)}\,\mathbf{a}^{(l-1)\top},\qquad
+\frac{\partial\ell}{\partial \mathbf{b}^{(l)}} = \boldsymbol\delta^{(l)}.
+\end{equation}
+Con una pasada hacia adelante (que guarda $\mathbf{z}^{(l)}$ y $\mathbf{a}^{(l)}$) y una hacia atrás se obtienen \emph{todas} las derivadas con un coste del mismo orden que evaluar la red una vez.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$\boldsymbol\delta^{(l)}$}{Sensibilidad de la pérdida a las preactivaciones de la capa $l$.}
+\simbolo{$\odot$}{Producto elemento a elemento (de Hadamard).}
+\simbolo{$\varphi'$}{Derivada de la activación; para ReLU vale 1 si $z>0$ y 0 si $z<0$.}
+\end{simbolos}
+
+La alternativa ingenua, perturbar cada peso y medir cómo cambia la pérdida, costaría una evaluación completa de la red \emph{por cada peso}. La retropropagación reduce ese factor de millones a dos. Las bibliotecas modernas (PyTorch, JAX, TensorFlow) implementan la \cref{eq:17-backprop} automáticamente para cualquier composición de operaciones diferenciables (\ingles{diferenciación automática}); en la práctica se usan pequeños lotes (\ingles{minibatches}) de datos para estimar el gradiente en cada paso, lo que se conoce como descenso por gradiente estocástico.
+
+\subsection{Convolución sobre ADN: un filtro es una PWM}
+
+Una red densa sobre la matriz \ingles{one-hot} de 1000 pb necesitaría pesos distintos para ``el motivo en la posición 17'' y ``el motivo en la posición 18''. Las \emph{redes convolucionales} (CNN) imponen, en cambio, que el mismo detector se aplique en todas las posiciones. Una capa convolucional unidimensional con $F$ filtros de ancho $w$ calcula
+\begin{equation}\label{eq:17-conv}
+h_{k,i} = \mathrm{ReLU}\!\left(b_k + \sum_{j=1}^{w}\sum_{c\in\{\texttt{A,C,G,T}\}} W_{k,c,j}\,X_{c,\,i+j-1}\right),
+\end{equation}
+con $k=1,\dots,F$ e $i=1,\dots,L-w+1$,
+
+\begin{simbolos}
+\simbolo{$W_{k,c,j}$}{Peso del filtro $k$ para la base $c$ en la posición $j$ de la ventana ($4\times w$ números por filtro).}
+\simbolo{$b_k$}{Sesgo del filtro $k$; actúa como umbral de detección.}
+\simbolo{$h_{k,i}$}{Activación del filtro $k$ cuando la ventana empieza en la posición $i$ de la secuencia.}
+\simbolo{$F,\ w$}{Número de filtros y ancho de cada uno (en pb).}
+\end{simbolos}
+
+Como $X$ es \ingles{one-hot}, en la suma interior solo sobrevive el término de la base observada, y la \cref{eq:17-conv} se simplifica de un modo revelador:
+
+\begin{teorema}{Un filtro convolucional es una matriz de pesos posicionales}{17-filtropwm}
+Sobre una secuencia codificada en \ingles{one-hot},
+\begin{equation}\label{eq:17-filtropwm}
+h_{k,i} = \mathrm{ReLU}\!\left(b_k + \sum_{j=1}^{w} W_{k,\,x_{i+j-1},\,j}\right).
+\end{equation}
+Si $W_{k,c,j}=\log\big(p_{j,c}/q_c\big)$ es la matriz de log-probabilidades de una PWM y $b_k=-\tau$, la activación es exactamente la puntuación de la PWM en la ventana $i$, recortada por debajo del umbral $\tau$.
+\end{teorema}
+
+\begin{simbolos}
+\simbolo{$x_{i+j-1}$}{Base observada en la posición $j$ de la ventana.}
+\simbolo{$p_{j,c},\ q_c$}{Frecuencia de la base $c$ en la posición $j$ del motivo y en el fondo (\cref{cap:04}).}
+\simbolo{$\tau$}{Umbral de puntuación por debajo del cual el filtro ``no ve'' nada.}
+\end{simbolos}
+
+Este resultado explica por qué las CNN tuvieron tanto éxito con el ADN regulatorio: la primera capa es un banco de PWM que se aprenden solas, sin necesidad de alinear sitios conocidos. Tras la convolución, una operación de \emph{max-pooling} resume cada filtro:
+\begin{equation}\label{eq:17-maxpool}
+m_k = \max_{i}\; h_{k,i},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$m_k$}{Respuesta máxima del filtro $k$ en toda la secuencia: ``¿aparece el motivo $k$ en algún lugar?''.}
+\end{simbolos}
+
+\noindent lo que hace que la predicción sea invariante a la posición del motivo. Las capas siguientes combinan esas detecciones (``motivo 1 \emph{y} motivo 3 a menos de 20 pb'') y aprenden la sintaxis regulatoria. La \cref{fig:17-cnn} resume la arquitectura.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  \def\sq{CGTGACTCATGCAAGT}
+  \foreach \b [count=\i from 0] in {C,G,T,G,A,C,T,C,A,T,G,C,A,A,G,T}{
+    \node[nt=\b, minimum size=4.2mm, font=\ttfamily\bfseries\scriptsize] at (\i*0.45,3.1) {\b};
+    \foreach \c [count=\r from 0] in {A,C,G,T}{
+      \pgfmathsetmacro{\yy}{2.35-\r*0.4}
+      \ifx\b\c
+        \node[draw=white, fill=nuc\c!75, minimum size=4mm, inner sep=0pt] at (\i*0.45,\yy) {};
+      \else
+        \node[draw=rejilla, fill=white, minimum size=4mm, inner sep=0pt] at (\i*0.45,\yy) {};
+      \fi
+    }
+  }
+  \foreach \c [count=\r from 0] in {A,C,G,T}{
+    \pgfmathsetmacro{\yy}{2.35-\r*0.4}
+    \node[font=\ttfamily\bfseries\scriptsize, text=nuc\c, anchor=east] at (-0.3,\yy) {\c};
+  }
+  % filtro
+  \draw[naranja, very thick, rounded corners=2pt] (0.66,2.6) rectangle (3.84,0.9);
+  \node[etiqueta, text=naranja!80!black, anchor=south] at (2.25,3.4) {filtro $W_k$ ($4\times7$) deslizándose};
+  % activaciones
+  \foreach \v [count=\i from 0] in {0.05,0,0.95,0,0,0.1,0,0,0.15,0}{
+    \fill[aqua!75] (\i*0.45+1.35-0.14,-0.3) rectangle (\i*0.45+1.35+0.14,-0.3+\v*1.0);
+  }
+  \draw[base] (1.0,-0.3) -- (6.1,-0.3);
+  \node[etiqueta, anchor=north] at (3.55,-0.4) {activaciones $h_{k,i}$ del filtro (\cref{eq:17-conv})};
+  % max pooling y capas densas
+  \draw[flecha=tinta2] (6.3,0.2) -- (7.0,0.2);
+  \node[etiqueta, anchor=south] at (6.65,0.35) {máx.};
+  \foreach \v [count=\k from 0] in {0.95,0.2,0.1,0.6,0.3,0.05,0.4,0.15}{
+    \node[draw=aqua!70!black, fill=aqua!\fpeval{round(10+80*\v)}, minimum width=4mm, minimum height=3.6mm, inner sep=0pt] at (7.3,1.6-\k*0.4) {};
+  }
+  \node[etiqueta] at (7.3,-1.9) {$\mathbf{m}\in\R^{F}$\\(\cref{eq:17-maxpool})};
+  \draw[flecha=tinta2] (7.6,0.2) -- (8.05,0.2);
+  \node[caja=violeta, minimum height=1.3cm, text width=1.3cm] (dn) at (8.85,0.2) {capas densas\\(sintaxis)};
+  \draw[flecha=tinta2] (dn.east) -- (9.95,0.2);
+  \node[caja=naranja] at (10.8,0.2) {$\Prob(y{=}1\mid x)$};
+  \node[etiqueta, text=tinta, align=left, anchor=north west] at (-0.6,-0.95) {\textbf{1.} convolución: la misma PWM en cada posición\\\textbf{2.} ReLU: solo cuentan las coincidencias fuertes};
+\end{tikzpicture}
+\caption[Red convolucional sobre ADN]{Anatomía de una CNN para ADN. La secuencia se codifica en \ingles{one-hot} (matriz $4\times L$). Cada filtro, una matriz $4\times w$ de pesos, se desliza por la secuencia y produce una pista de activaciones (verde), que se dispara donde la ventana se parece al motivo que el filtro representa (aquí \secuencia{TGACTCA}, recuadrado). El \ingles{max-pooling} resume cada pista en un número, de modo que la detección no depende de la posición; las capas densas combinan las detecciones de todos los filtros y producen la probabilidad final. Esquema ilustrativo; las alturas de las barras no provienen de un modelo entrenado.}
+\label{fig:17-cnn}
+\end{figure}
+
+\begin{ejemplo}{Un filtro a mano}{17-filtro}
+Consideremos un filtro de ancho $w=3$ diseñado para \secuencia{TGA}: pesos $+2$ para la base de consenso en cada posición y $-1$ para las demás, con sesgo $b=-4$. Sobre la ventana \secuencia{TGA}, la \cref{eq:17-filtropwm} da $\mathrm{ReLU}(-4+2+2+2)=2$. Sobre \secuencia{TCA} (una discrepancia), $\mathrm{ReLU}(-4+2-1+2)=\mathrm{ReLU}(-1)=0$. El sesgo actúa como umbral: este filtro solo ``ve'' coincidencias perfectas. Con $b=-2$ toleraría una discrepancia, pues \secuencia{TCA} daría $\mathrm{ReLU}(1)=1$.
+
+¿Cuántos parámetros tiene la red que entrenaremos a continuación? La convolución tiene $F=8$ filtros de $4\times11$ pesos más un sesgo cada uno: $8\times(44+1)=360$. La capa de salida combina los 8 máximos con 8 pesos y un sesgo: 9. En total, 369 parámetros; DeepSEA o Basset tienen millones.
+\end{ejemplo}
+
+\subsection{Un experimento: una CNN aprende un motivo}
+
+Para ver el \cref{teo:17-filtropwm} en acción, simulamos \num{6000} secuencias aleatorias de 100 pb. En la mitad, elegidas al azar, insertamos en una posición aleatoria un sitio muestreado de una PWM de tipo AP-1 (consenso \secuencia{TGASTCA}, donde \texttt{S} es \texttt{C} o \texttt{G}; probabilidad 0,91 para la base de consenso en las posiciones no degeneradas). Entrenamos la red del \cref{ej:17-filtro} con \num{4000} secuencias, usamos \num{1000} para validación y reservamos \num{1000} para la prueba final.
+
+\begin{codigo}[cnn\_motivo.py]
+import torch
+import torch.nn as nn
+
+class CNNMotivo(nn.Module):
+    def __init__(self, n_filtros=8, ancho=11):
+        super().__init__()
+        self.conv = nn.Conv1d(4, n_filtros, ancho)  # canales ACGT
+        self.fc = nn.Linear(n_filtros, 1)
+
+    def forward(self, x):                   # x: (lote, 4, L)
+        h = torch.relu(self.conv(x))        # (lote, F, L - w + 1)
+        m = h.max(dim=2).values             # max-pooling global
+        return self.fc(m).squeeze(1)        # logit
+
+red = CNNMotivo()
+opt = torch.optim.Adam(red.parameters(), lr=3e-3)
+perdida = nn.BCEWithLogitsLoss()            # entropía cruzada
+for epoca in range(40):
+    for xb, yb in cargador:                 # lotes de 64 secuencias
+        opt.zero_grad()
+        perdida(red(xb), yb).backward()     # retropropagación
+        opt.step()
+\end{codigo}
+
+Tras 40 épocas, la red alcanza en el conjunto de prueba un AUROC de 0,896 y una exactitud de 0,822. Puede parecer poco para un problema ``fácil'', pero el límite no está en la red, sino en los datos: muchas copias muestreadas del motivo tienen una o dos discrepancias con el consenso, y en 100 pb aleatorios aparecen por azar palabras a una discrepancia del consenso con frecuencia apreciable. Ningún clasificador puede separar perfectamente esos casos. Las curvas de aprendizaje de la \cref{fig:17-filtro}c muestran además el sobreajuste incipiente: la pérdida de entrenamiento (0,327) queda por debajo de la de validación (0,426).
+
+Lo interesante es \emph{qué} aprendió. Tomamos el filtro con mayor peso positivo en la capa de salida, localizamos en cada secuencia de validación y prueba la ventana de máxima activación y, si supera la mitad del máximo global, la añadimos a un alineamiento; con las \num{1115} ventanas resultantes construimos un logo, que es el procedimiento empleado por DeepBind y Basset \parencite{c17-alipanahi2015,c17-kelley2016}. El resultado (\cref{fig:17-filtro}b) es el motivo que plantamos: consenso \secuencia{TGAGTCA}, con contenidos de información de 1,44 a 1,53 bits en las posiciones fijas (el valor teórico es 1,42) y 0,67 bits en la posición degenerada, exactamente lo que predice una mezcla al 50\,\% de \texttt{C} y \texttt{G}. Nadie le enseñó a la red qué es AP-1.
+
+\begin{figure}[!tbp]
+\centering
+\begin{minipage}[t]{0.49\linewidth}\centering
+  {\sffamily\bfseries\scriptsize (a) motivo plantado (verdadero)}\\[2pt]
+  \input{figuras/cap17/logo_verdadero.tex}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.49\linewidth}\centering
+  {\sffamily\bfseries\scriptsize (b) logo del filtro aprendido}\\[2pt]
+  \input{figuras/cap17/logo_aprendido.tex}
+\end{minipage}\\[8pt]
+\begin{minipage}[c]{0.40\linewidth}\centering
+  {\sffamily\bfseries\scriptsize (c) pesos crudos del filtro}\\[2pt]
+  \input{figuras/cap17/filtro_pesos.tex}\\[1pt]
+  {\sffamily\tiny\color{azulprofundo}$\blacksquare$ negativo\quad\color{rojo}$\blacksquare$ positivo}
+\end{minipage}\hfill
+\begin{minipage}[c]{0.58\linewidth}\centering
+\begin{tikzpicture}
+\begin{axis}[curso, width=\linewidth, height=4.3cm, xmin=0, xmax=41, ymin=0.25, ymax=0.72,
+   xlabel={época}, ylabel={entropía cruzada}, title={(d) curvas de aprendizaje},
+   legend pos=north east, ytick={0.3,0.4,0.5,0.6,0.7}]
+  \addplot[azul, mark=none] table[x=ep, y=train] {figuras/cap17/cnn_hist.dat};
+  \addlegendentry{entrenamiento}
+  \addplot[naranja, mark=none] table[x=ep, y=val] {figuras/cap17/cnn_hist.dat};
+  \addlegendentry{validación}
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption[Un filtro convolucional aprende un motivo]{Lo que aprendió una CNN de 369 parámetros entrenada con secuencias simuladas. \textbf{(a)} Logo de la PWM de tipo AP-1 usada para plantar el motivo (flanqueado por dos columnas de fondo a cada lado para igualar el ancho del filtro). \textbf{(b)} Logo construido con las \num{1115} ventanas de 11 pb que más activan el filtro más relevante: las siete primeras columnas (sombreadas) reproducen el motivo, incluida la posición degenerada \texttt{C}/\texttt{G}, y las cuatro últimas quedan vacías porque el filtro, de 11 pb, es más ancho que el motivo. \textbf{(c)} Los pesos del filtro ($4\times11$) son directamente una matriz de tipo PWM (\cref{teo:17-filtropwm}): rojo en la base de consenso, azul en las demás. \textbf{(d)} La pérdida de validación se estabiliza mientras la de entrenamiento sigue bajando: señal de que más épocas solo añadirían sobreajuste.}
+\label{fig:17-filtro}
+\end{figure}
+
+\subsection{De DeepBind a Enformer}
+
+La historia reciente de la genómica regulatoria puede leerse como una carrera por ampliar el \emph{contexto} que ve la red (\cref{fig:17-contexto}).
+
+\textbf{DeepBind} \parencite{c17-alipanahi2015} aplicó por primera vez CNN a gran escala para predecir la especificidad de proteínas de unión a ADN y ARN a partir de datos de microarreglos de unión (PBM), SELEX, ChIP-seq y CLIP-seq. Su arquitectura era esencialmente la de nuestro experimento: una capa convolucional, \ingles{pooling} y una pequeña red densa, un modelo por proteína. Introdujo además los ``mapas de mutación'', que muestran cómo cambia la predicción al mutar cada base.
+
+\textbf{DeepSEA} \parencite{c17-zhou2015} dio el salto a la predicción \emph{multitarea}: una sola red que, a partir de 1000 pb, predice simultáneamente 919 perfiles de cromatina (sitios de unión de factores de transcripción, hipersensibilidad a DNasa, marcas de histonas) de ENCODE y Roadmap. Y, sobre todo, lo usó para puntuar variantes no codificantes por la diferencia entre las predicciones de los dos alelos:
+\begin{equation}\label{eq:17-deltavar}
+\Delta_t(v) = f_t\big(x^{\text{alt}}\big) - f_t\big(x^{\text{ref}}\big),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$f_t(x)$}{Predicción del modelo para la pista $t$ (p.\,ej., unión de CTCF en células K562) con la secuencia $x$.}
+\simbolo{$x^{\text{ref}},\ x^{\text{alt}}$}{Secuencia de referencia y la misma con el alelo alternativo de la variante $v$.}
+\simbolo{$\Delta_t(v)$}{Efecto predicho de la variante sobre la pista $t$.}
+\end{simbolos}
+
+\noindent lo que permite priorizar variantes de GWAS sin haber medido nunca su efecto. \textbf{Basset} \parencite{c17-kelley2016} entrenó una CNN profunda sobre sitios accesibles medidos por DNase-seq en 164 tipos celulares y mostró que sus predicciones de cambio de accesibilidad eran mucho mayores para las variantes de GWAS probablemente causales que para sus vecinas en desequilibrio de ligamiento.
+
+El siguiente obstáculo era la distancia. Los potenciadores pueden actuar a decenas de kilobases del promotor que regulan, pero una pila de convoluciones con filtros de ancho $w$ solo ``ve'' unos pocos cientos de pares de bases. \textbf{Basenji} \parencite{c17-kelley2018} usó \emph{convoluciones dilatadas}, que saltan posiciones con un paso $d$ creciente, para cubrir secuencias de \num{131} kb. Con $D$ capas de ancho $w$ y dilataciones $d_l$, el \emph{campo receptivo} (el tramo de secuencia que influye en una salida) es
+\begin{equation}\label{eq:17-campo}
+R = 1 + \sum_{l=1}^{D}(w-1)\,d_l \;\overset{d_l=2^{l-1}}{=}\; 1 + (w-1)\,\big(2^{D}-1\big),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$R$}{Campo receptivo en pares de bases.}
+\simbolo{$d_l$}{Dilatación de la capa $l$ (cuántas posiciones salta el filtro entre elementos).}
+\simbolo{$w,\ D$}{Ancho de los filtros y número de capas dilatadas.}
+\end{simbolos}
+
+\noindent de modo que duplicar la dilatación en cada capa hace crecer el campo receptivo de forma \emph{exponencial} con la profundidad, en lugar de lineal: con $w=3$ y $D=11$ capas, $R=1+2\times2047=\num{4095}$ posiciones. Finalmente, \textbf{Enformer} \parencite{c17-avsec2021} sustituyó las convoluciones dilatadas por capas de atención (el mecanismo de la \cref{sec:17-plm}) sobre secuencias de unos \num{200} kb, integrando información de elementos situados hasta a 100 kb de distancia, lo que mejoró de forma sustancial la predicción de la expresión génica y del efecto de variantes medido por ensayos de reporteros masivamente paralelos.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[curso, xbar, width=0.9\linewidth, height=5.2cm, xmode=log, log basis x=10,
+   xmin=50, xmax=1e6, ytick={0,1,2,3,4}, bar width=9pt, y dir=reverse,
+   yticklabels={{DeepBind (2015)},{DeepSEA (2015)},{Basset (2016)},{Basenji (2018)},{Enformer (2021)}},
+   xlabel={longitud de la secuencia de entrada (pb, escala log)}, grid=major, ymajorgrids=false,
+   xtick={100,1000,10000,100000,1000000}, xticklabels={$10^2$,$10^3$,$10^4$,$10^5$,$10^6$},
+   enlarge y limits=0.15, y tick label style={font=\sffamily\scriptsize,text=tinta}]
+  \addplot[fill=azul!70, draw=azul] coordinates {(101,0) (1000,1) (600,2) (131072,3) (196608,4)};
+  \node[etiqueta, anchor=west] at (axis cs:101,0) {\,$\sim$100 pb};
+  \node[etiqueta, anchor=west] at (axis cs:1000,1) {\,1 kb, 919 pistas};
+  \node[etiqueta, anchor=west] at (axis cs:600,2) {\,600 pb, 164 tipos celulares};
+  \node[etiqueta, anchor=west] at (axis cs:131072,3) {\,131 kb};
+  \node[etiqueta, anchor=west] at (axis cs:196608,4) {\,197 kb};
+  \node[etiqueta, anchor=east, text=tinta] at (axis cs:4e4,3) {convoluciones dilatadas\,};
+  \node[etiqueta, anchor=east, text=tinta] at (axis cs:6e4,4) {convoluciones + atención\,};
+\end{axis}
+\end{tikzpicture}
+\caption[El contexto de secuencia de los modelos genómicos]{La carrera por el contexto. Longitud de la secuencia de entrada de cinco modelos emblemáticos, en escala logarítmica. DeepBind trabajaba con fragmentos del orden de 100 pb (la longitud variaba según el tipo de dato); DeepSEA y Basset, con ventanas de 1 kb y 600 pb centradas en picos o sitios accesibles; Basenji y Enformer procesan secuencias de más de cien kilobases, suficientes para incluir potenciadores distales. Cada salto de escala requirió una idea de arquitectura nueva: \ingles{pooling} y multitarea, dilatación, atención.}
+\label{fig:17-contexto}
+\end{figure}
+
+\subsection{Abrir la caja negra: saliencia, DeepLIFT y TF-MoDISco}
+
+Un modelo con millones de parámetros que predice bien no explica \emph{por qué} predice. Para convertir predicciones en hipótesis biológicas necesitamos saber qué bases de la entrada fueron responsables. El método más directo son los \emph{mapas de saliencia} de \textcite{c17-simonyan2013}: la derivada de la salida respecto de la entrada, que la retropropagación calcula gratis. En secuencias \ingles{one-hot} se usa la variante ``gradiente por entrada'':
+\begin{equation}\label{eq:17-saliencia}
+s_i = \sum_{c} X_{c,i}\,\frac{\partial f(X)}{\partial X_{c,i}} = \left.\frac{\partial f}{\partial X_{c,i}}\right|_{c=x_i},
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$s_i$}{Contribución atribuida a la base observada en la posición $i$.}
+\simbolo{$f(X)$}{Salida del modelo (\ingles{logit}) para la secuencia codificada $X$.}
+\end{simbolos}
+
+\noindent que, igual que en la \cref{eq:17-filtropwm}, selecciona la derivada correspondiente a la base presente. La alternativa de fuerza bruta es la \emph{mutagénesis in silico}: mutar cada posición a las tres bases alternativas y registrar $\Delta$ con la \cref{eq:17-deltavar}; es exacta pero cuesta $3L$ evaluaciones.
+
+El gradiente es una aproximación \emph{local}: mide el efecto de un cambio infinitesimal, y con activaciones ReLU saturadas puede valer cero aunque la base sea importante. DeepLIFT \parencite{c17-shrikumar2017} compara en su lugar la activación con la de una \emph{secuencia de referencia} $X^0$ (por ejemplo, una versión barajada con la misma composición) y reparte la diferencia total entre las entradas, de modo que las contribuciones cumplen una propiedad de conservación:
+\begin{equation}\label{eq:17-deeplift}
+\sum_{i}\sum_c C_{\Delta X_{c,i}\,\Delta f} = \Delta f = f(X)-f(X^0).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$X^0$}{Secuencia de referencia (``neutra'').}
+\simbolo{$C_{\Delta X_{c,i}\,\Delta f}$}{Contribución de la diferencia en la entrada $(c,i)$ a la diferencia en la salida.}
+\simbolo{$\Delta f$}{Cambio total de la salida entre la secuencia y la referencia.}
+\end{simbolos}
+
+Los mapas de contribución de miles de secuencias contienen fragmentos de alta importancia (\ingles{seqlets}) que TF-MoDISco \parencite{c17-shrikumar2018} extrae, agrupa por similitud y consolida en motivos no redundantes. El resultado es un catálogo de motivos \emph{aprendidos por el modelo}, que puede compararse con bases de datos como JASPAR y que a menudo incluye variantes o combinaciones de motivos que los métodos clásicos de descubrimiento no detectan.
+
+\begin{figure}[!tbp]
+\centering
+\input{figuras/cap17/saliencia_marca.tex}%
+\begin{tikzpicture}
+\begin{axis}[curso, width=0.95\linewidth, height=4.1cm, xmin=0.5, xmax=100.5, ymin=-0.7, ymax=1.75,
+   xlabel={posición en la secuencia (pb)}, ylabel={$s_i$}, title={(a) gradiente $\times$ entrada a lo largo de la secuencia},
+   xtick={1,10,20,30,40,50,60,70,80,90,100}, grid=none]
+  \fill[amarillo!25] (axis cs:\capdiecisieteMa,-0.7) rectangle (axis cs:\capdiecisieteMb,1.75);
+  \addplot[ycomb, azul, thick, mark=none] table[x=pos, y=val] {figuras/cap17/saliencia.dat};
+  \draw[base] (axis cs:0.5,0) -- (axis cs:100.5,0);
+  \node[etiqueta, anchor=south west, text=amarillo!40!black] at (axis cs:\capdiecisieteMb,1.25) {\,motivo plantado};
+\end{axis}
+\end{tikzpicture}\\[4pt]
+{\sffamily\bfseries\scriptsize (b) ampliación: letras escaladas por su contribución}\\[2pt]
+\input{figuras/cap17/saliencia_letras.tex}
+\caption[Mapa de saliencia de una CNN]{Interpretación de una predicción de la CNN de la \cref{fig:17-filtro} para una secuencia de prueba que contiene el sitio \secuencia{TGAGTCA} en las posiciones 37--43 (sombreado). \textbf{(a)} Contribución de cada base según la \cref{eq:17-saliencia}. El 46\,\% de la contribución absoluta total se concentra en las 7 posiciones del motivo, que son el 7\,\% de la secuencia; el resto se reparte en las ventanas de máxima activación de los demás filtros, que también intervienen en la salida. \textbf{(b)} La misma información como ``logo de contribución'': la altura de cada letra es proporcional a $s_i$ (hacia abajo y en tono pálido si es negativa). El motivo emerge sin que el modelo lo haya visto nunca etiquetado.}
+\label{fig:17-saliencia}
+\end{figure}
+
+\begin{codigo}[saliencia.py]
+x = x0.clone().requires_grad_(True)     # x0: (1, 4, L) one-hot
+red(x).sum().backward()                  # d logit / d x
+s = (x.grad * x).sum(dim=1)[0]           # gradiente x entrada
+top = s.abs().argsort(descending=True)[:10]
+print("posiciones más influyentes:", (top + 1).tolist())
+\end{codigo}
+
+\begin{cuidado}[Atajos y confusores]
+Una red aprende \emph{cualquier} regularidad que separe las clases, sea biológica o no. Si los positivos de ChIP-seq son más ricos en GC que los negativos elegidos al azar, la red puede aprender ``GC alto'' en lugar del motivo; si las secuencias positivas provienen de promotores y las negativas de regiones intergénicas, aprenderá a reconocer promotores. Elija negativos con la misma composición (por ejemplo, barajando dinucleótidos), compruebe con saliencia que el modelo mira donde debe y, sobre todo, evalúe en cromosomas completos que no se usaron para entrenar.
+\end{cuidado}
+
+\begin{historia}[El año en que la genómica descubrió las CNN]
+En 2012 una red convolucional profunda ganó por un margen enorme el concurso de clasificación de imágenes ImageNet, y en menos de tres años la idea saltó a la genómica. DeepBind y DeepSEA se publicaron el mismo verano de 2015 \parencite{c17-alipanahi2015,c17-zhou2015}, y en 2016 Basset ya se distribuía como paquete de código abierto \parencite{c17-kelley2016}. La revisión de \textcite{c17-eraslan2019} resume la explosión posterior. Lo notable no es solo la precisión, sino que el primer filtro de estas redes, visto como un logo, redescubrió por sí solo buena parte del catálogo de motivos que la comunidad había reunido durante décadas.
+\end{historia}
+
+% ---------------------------------------------------------------------
+\section{Modelos de lenguaje de proteínas (ESM)}\label{sec:17-plm}
+% ---------------------------------------------------------------------
+\enlacerepo{17.3 · Modelos de lenguaje de proteínas}
+
+\begin{intuicion}[Completar la palabra que falta]
+En la frase ``El gato persiguió al \rule{1.2cm}{0.4pt} por el jardín'' casi cualquiera escribiría ``ratón''. Para acertar no hace falta una regla gramatical explícita: basta haber leído mucho. Y quien acierta sistemáticamente este tipo de huecos ha aprendido, sin proponérselo, sintaxis, semántica y bastante sobre gatos. Ahora imagine el mismo juego con proteínas: ocultamos un aminoácido y pedimos adivinarlo a partir del resto. Para acertar en el núcleo hidrofóbico de una proteína globular hay que ``saber'' qué residuos están en contacto en la estructura tridimensional. Ese es el experimento que están haciendo, a escala evolutiva, los modelos de lenguaje de proteínas.
+\end{intuicion}
+
+La evolución ha escrito cientos de millones de ``textos'' en el alfabeto de 20 letras de las proteínas, y la selección natural ha actuado como un editor implacable: solo sobreviven las secuencias que se pliegan y funcionan. Las restricciones estructurales y funcionales quedan grabadas en los patrones estadísticos de las secuencias. Los perfiles y los HMM del \cref{cap:04} explotan esos patrones dentro de \emph{una} familia alineada; un modelo de lenguaje intenta aprenderlos para \emph{todas} las proteínas a la vez, sin alineamientos ni etiquetas.
+
+\subsection{Atención: cada residuo mira a todos los demás}
+
+Una CNN combina información local: cada filtro ve $w$ posiciones contiguas. Pero en una proteína, los residuos 8 y 70 pueden estar en contacto directo aunque los separen 60 posiciones en la secuencia. El mecanismo de \emph{atención} \parencite{c17-vaswani2017} permite que cada posición recoja información de cualquier otra en un solo paso, con pesos que dependen del contenido.
+
+Cada posición $i$ tiene un vector $\mathbf{h}_i\in\R^{d}$ (inicialmente, el \ingles{embedding} de su aminoácido). A partir de él se calculan tres proyecciones lineales aprendidas: una \emph{consulta} $\mathbf{q}_i=W_Q\mathbf{h}_i$ (``qué busco''), una \emph{clave} $\mathbf{k}_i=W_K\mathbf{h}_i$ (``qué ofrezco'') y un \emph{valor} $\mathbf{v}_i=W_V\mathbf{h}_i$ (``qué información transmito''). Apiladas por filas en matrices $Q$, $K$ y $V$ de tamaño $L\times d_k$:
+
+\begin{definicion}{Atención de producto escalar escalado}{17-atencion}
+\begin{equation}\label{eq:17-atencion}
+\mathrm{Atención}(Q,K,V) = \underbrace{\mathrm{softmax}\!\left(\frac{QK^{\top}}{\sqrt{d_k}}\right)}_{A\ \in\ \R^{L\times L}} V,
+\qquad
+A_{ij} = \frac{\exp\big(\mathbf{q}_i^\top\mathbf{k}_j/\sqrt{d_k}\big)}{\sum_{j'=1}^{L}\exp\big(\mathbf{q}_i^\top\mathbf{k}_{j'}/\sqrt{d_k}\big)}.
+\end{equation}
+La salida de la posición $i$ es $\mathbf{z}_i=\sum_j A_{ij}\mathbf{v}_j$: un promedio de los valores de todas las posiciones, ponderado por la afinidad entre la consulta de $i$ y la clave de cada $j$.
+\end{definicion}
+
+\begin{simbolos}
+\simbolo{$Q,\ K,\ V$}{Matrices de consultas, claves y valores ($L\times d_k$), una fila por posición.}
+\simbolo{$W_Q,\ W_K,\ W_V$}{Matrices de proyección aprendidas.}
+\simbolo{$d_k$}{Dimensión de consultas y claves.}
+\simbolo{$A_{ij}$}{Peso de atención: cuánto atiende la posición $i$ a la posición $j$; cada fila de $A$ suma 1.}
+\simbolo{$L$}{Longitud de la secuencia (número de \ingles{tokens}).}
+\end{simbolos}
+
+\paragraph{¿Por qué dividir entre $\sqrt{d_k}$?} Supongamos que las componentes de $\mathbf{q}$ y $\mathbf{k}$ son independientes, con media 0 y varianza 1. Entonces el producto escalar $\mathbf{q}^\top\mathbf{k}=\sum_{m=1}^{d_k}q_mk_m$ es una suma de $d_k$ términos de media 0 y varianza $\E[q_m^2]\,\E[k_m^2]=1$, y por lo tanto tiene varianza $d_k$. Con $d_k=64$, los productos escalares tendrían desviación típica 8, la \ingles{softmax} se saturaría (casi todo el peso en una sola posición) y sus gradientes serían minúsculos. Dividir por $\sqrt{d_k}$ devuelve la varianza a 1 \parencite{c17-vaswani2017}.
+
+En la práctica se usan varias ``cabezas'' de atención en paralelo, cada una con sus propias proyecciones, que pueden especializarse en relaciones distintas (vecinos en la secuencia, residuos en contacto, pares de cisteínas). Un bloque \ingles{transformer} combina la atención de varias cabezas con una pequeña red densa aplicada a cada posición, conexiones residuales y normalización; un modelo apila decenas de bloques. Como la atención es invariante a permutaciones, la posición se inyecta explícitamente; ESM-2 usa codificaciones posicionales rotatorias. El coste es $O(L^2)$ en tiempo y memoria, lo que limita la longitud de las secuencias.
+
+\begin{ejemplo}{Atención con cuatro residuos}{17-atencion}
+Tomemos el péptido \texttt{C A K C} con $d_k=2$ y, para simplificar, consultas, claves y valores ya dados:
+\[
+Q=\begin{pmatrix}2&0\\0&1\\0{,}5&1\\2&0\end{pmatrix},\quad
+K=\begin{pmatrix}2&0\\0&1\\0&1\\2&0\end{pmatrix},\quad
+V=\begin{pmatrix}1&0\\0&1\\0&1\\1&0\end{pmatrix}.
+\]
+Para la primera cisteína, $\mathbf{q}_1^\top K^\top/\sqrt2=(4,0,0,4)/1{,}414=(2{,}83;\ 0;\ 0;\ 2{,}83)$. La \ingles{softmax} da $A_{1\cdot}=(0{,}472;\ 0{,}028;\ 0{,}028;\ 0{,}472)$: la Cys1 reparte casi toda su atención entre sí misma y la Cys4, y su salida es $\mathbf{z}_1=(0{,}944;\ 0{,}056)$, dominada por el ``valor de cisteína''. La lisina, en cambio, tiene puntuaciones iguales con todos ($0{,}707$) y atiende uniformemente ($0{,}25$ a cada uno). La \cref{fig:17-atencion} muestra la matriz completa.
+\end{ejemplo}
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  % tokens
+  \foreach \t [count=\i from 0] in {C,A,K,C}{
+    \node[draw=tinta2, fill=papel, rounded corners=1.5pt, minimum size=6mm, font=\ttfamily\bfseries\small] (t\i) at (0,-\i*0.75) {\t};
+  }
+  \node[etiqueta, anchor=south] at (0,0.45) {residuos};
+  \node[caja=azul, minimum width=1.1cm] (wq) at (1.75,-0.35) {$W_Q$};
+  \node[caja=aqua, minimum width=1.1cm] (wk) at (1.75,-1.15) {$W_K$};
+  \node[caja=violeta, minimum width=1.1cm] (wv) at (1.75,-1.95) {$W_V$};
+  \draw[flecha=azul] (0.4,-0.35) -- (wq); \draw[flecha=aqua!70!black] (0.4,-1.15) -- (wk); \draw[flecha=violeta] (0.4,-1.95) -- (wv);
+  \node[etiqueta] at (1.75,-2.75) {$\mathbf{q}_i,\ \mathbf{k}_i,\ \mathbf{v}_i$};
+  % matriz de atencion
+  \begin{scope}[shift={(4.0,0)}]
+    \input{figuras/cap17/atencion_celdas.tex}
+    \foreach \t [count=\i from 0] in {C,A,K,C}{
+      \node[font=\ttfamily\bfseries\small, text=azul] at (-0.65,-\i*0.75) {\t};
+      \node[font=\ttfamily\bfseries\small, text=aqua!70!black] at (\i*0.75,0.62) {\t};
+    }
+    \node[etiqueta, text=azul, rotate=90] at (-1.5,-1.1) {consultas $i$};
+    \node[etiqueta, text=aqua!70!black] at (1.1,1.05) {claves $j$};
+    \node[etiqueta] at (1.1,-3.0) {$A=\mathrm{softmax}(QK^\top/\sqrt{d_k})$};
+  \end{scope}
+  \draw[flecha=tinta2] (2.4,-1.15) -- (3.2,-1.15);
+  % salida
+  \draw[flecha=tinta2] (6.8,-1.15) -- (7.5,-1.15) node[midway,above,etiqueta]{$\times V$};
+  \foreach \a/\b [count=\i from 0] in {0{,}94/0{,}06,0{,}33/0{,}67,0{,}50/0{,}50,0{,}94/0{,}06}{
+    \node[draw=violeta!70!black, fill=violeta!10, rounded corners=1.5pt, minimum width=1.6cm, minimum height=6mm] at (8.5,-\i*0.75) {$(\a;\ \b)$};
+  }
+  \node[etiqueta, anchor=south] at (8.5,0.45) {salidas $\mathbf{z}_i=\sum_j A_{ij}\mathbf{v}_j$};
+  % arco disulfuro
+  \draw[naranja, thick, {Stealth}-{Stealth}] (-0.35,-0.05) to[bend right=50] node[left,etiqueta,text=naranja!80!black]{Cys--Cys} (-0.35,-2.2);
+\end{tikzpicture}
+\caption[El mecanismo de atención]{El mecanismo de atención sobre el péptido de juguete del \cref{ej:17-atencion}. Cada residuo se proyecta en una consulta, una clave y un valor. La matriz $A$ (centro; más oscura cuanto mayor el peso) contiene, en la fila $i$, cómo reparte su atención la posición $i$ entre todas las posiciones; cada fila suma 1. Las dos cisteínas se atienden mutuamente con peso 0,47 (el tipo de relación que un modelo real podría usar para representar un puente disulfuro), mientras que la lisina atiende a todas por igual. A diferencia de una convolución, la atención no tiene ventana: la distancia en la secuencia no limita qué pares pueden interactuar.}
+\label{fig:17-atencion}
+\end{figure}
+
+\subsection{Modelado de lenguaje enmascarado}
+
+¿Cómo se entrena un modelo así sin etiquetas? Con la tarea de la intuición inicial. En el \emph{modelado de lenguaje enmascarado} (MLM), popularizado por BERT en el procesamiento de lenguaje natural \parencite{c17-devlin2019}, se elige al azar un 15\,\% de las posiciones de cada secuencia; la mayoría se sustituye por un \ingles{token} especial \texttt{\textless{}mask\textgreater{}}, algunas por un aminoácido aleatorio y otras se dejan intactas, y el modelo debe recuperar el aminoácido original a partir del contexto:
+\begin{equation}\label{eq:17-mlm}
+\mathcal{L}_{\mathrm{MLM}}(\boldsymbol\theta) = -\,\E_{x\sim\mathcal{D}}\;\E_{M}\left[\sum_{i\in M}\log p_{\boldsymbol\theta}\big(x_i\,\big|\,x_{\setminus M}\big)\right].
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$x\sim\mathcal{D}$}{Secuencia tomada de la base de datos de entrenamiento (p.\,ej., UniRef).}
+\simbolo{$M$}{Conjunto aleatorio de posiciones enmascaradas.}
+\simbolo{$x_{\setminus M}$}{Secuencia con esas posiciones ocultas: el contexto visible.}
+\simbolo{$p_{\boldsymbol\theta}(x_i\mid x_{\setminus M})$}{Distribución sobre los 20 aminoácidos que predice el modelo en la posición $i$.}
+\end{simbolos}
+
+La \cref{eq:17-mlm} es una entropía cruzada multiclase, la generalización directa de la \cref{eq:17-entropia}, y se minimiza con retropropagación. Como cualquier secuencia proporciona sus propios ``problemas'' de entrenamiento, se puede aprovechar toda la diversidad de las bases de datos de secuencias: es aprendizaje \emph{autosupervisado}. La calidad del modelo se resume en la \emph{perplejidad}, la exponencial de la pérdida media por posición:
+\begin{equation}\label{eq:17-perplejidad}
+\mathrm{PPL} = \exp\!\left(-\frac{1}{L}\sum_{i=1}^{L}\log p_{\boldsymbol\theta}\big(x_i\mid x_{\setminus i}\big)\right),
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathrm{PPL}$}{Perplejidad: número efectivo de aminoácidos entre los que el modelo ``duda'' en cada posición. Vale 20 para un modelo que no sabe nada y 1 para uno que acierta siempre con certeza.}
+\simbolo{$x_{\setminus i}$}{La secuencia con solo la posición $i$ enmascarada (por eso se habla de \emph{pseudo}perplejidad).}
+\end{simbolos}
+
+\paragraph{La familia ESM} \textcite{c17-rives2021} entrenaron transformers con MLM sobre 86 mil millones de aminoácidos de 250 millones de secuencias, y mostraron que las representaciones internas, aprendidas solo a partir de secuencias, organizan las proteínas en varias escalas: las propiedades bioquímicas de los aminoácidos, la homología remota entre proteínas, y la estructura secundaria y terciaria, recuperables con simples proyecciones lineales. Su modelo ESM-1b, de 650 millones de parámetros, se convirtió en una referencia. \textcite{c17-lin2023} escalaron la familia hasta ESM-2 de 15 mil millones de parámetros y observaron que, al crecer el modelo, emerge en sus representaciones una imagen de la estructura a resolución atómica; sobre ESM-2 construyeron ESMFold, que predice estructuras a partir de una sola secuencia, sin alineamiento múltiple, un orden de magnitud más rápido que los métodos basados en MSA, y lo usaron para predecir más de 617 millones de estructuras de proteínas metagenómicas. En paralelo, ProtTrans \parencite{c17-elnaggar2022} entrenó varias arquitecturas (entre ellas BERT y T5) con hasta 393 mil millones de aminoácidos de UniRef y BFD, y mostró que los \ingles{embeddings} de ProtT5 permiten predecir la estructura secundaria mejor que los métodos anteriores sin usar información evolutiva explícita.
+
+\begin{figure}[!tbp]
+\centering
+\begin{tikzpicture}[font=\sffamily\scriptsize]
+  % secuencia con mascara (residuos 38-50 de la ubiquitina)
+  \foreach \r/\n [count=\i from 0] in {P/38,D/39,Q/40,Q/41,R/42,L/43,M/44,F/45,A/46,G/47,K/48,Q/49,L/50}{
+    \ifnum\n=44
+      \node[draw=naranja!80!black, fill=naranja!20, rounded corners=1.5pt, minimum width=7.2mm, minimum height=6mm, font=\ttfamily\tiny] (s\i) at (\i*0.78,0) {\textless{}mask\textgreater{}};
+    \else
+      \node[draw=tinta2, fill=papel, rounded corners=1.5pt, minimum width=6mm, minimum height=6mm, font=\ttfamily\bfseries\small] (s\i) at (\i*0.78,0) {\r};
+    \fi
+    \node[text=gris, font=\sffamily\tiny] at (\i*0.78,-0.5) {\n};
+  }
+  \node[etiqueta] at (4.68,-0.95) {ubiquitina humana, residuos 38--50 (se muestra solo un fragmento del contexto)};
+  \node[caja=violeta, minimum width=9.6cm, minimum height=0.9cm] (tr) at (4.68,1.55) {ESM-2 (650 M de parámetros): 33 bloques \ingles{transformer} con atención global};
+  \foreach \i in {0,2,4,6,8,10,12}{ \draw[flecha=tinta2] (s\i.north) -- (s\i.north |- tr.south); }
+  \draw[flecha=naranja] (tr.north -| s6) -- ++(0,0.55) node[above,etiqueta,text=naranja!80!black]{$p_{\boldsymbol\theta}(x_{44}\mid x_{\setminus 44})$};
+  % barras I44
+  \begin{axis}[curso, at={(0.2cm,4.0cm)}, width=5.5cm, height=3.9cm, xbar, bar width=5pt, xmin=0, xmax=1.12,
+     ytick={0,...,5}, yticklabels from table={figuras/cap17/mlm_i44.dat}{aa}, y dir=reverse,
+     y tick label style={font=\ttfamily\bfseries\scriptsize,text=tinta}, xlabel={probabilidad},
+     title={posición 44 (nativo: \texttt{I})}, xtick={0,0.25,0.5,0.75,1}, enlarge y limits=0.12,
+     nodes near coords, nodes near coords style={font=\sffamily\tiny,text=tinta2,/pgf/number format/fixed,/pgf/number format/precision=3}]
+    \addplot[fill=azul!70, draw=azul] table[x=p, y=k] {figuras/cap17/mlm_i44.dat};
+  \end{axis}
+  \begin{axis}[curso, at={(6.3cm,4.0cm)}, width=5.5cm, height=3.9cm, xbar, bar width=5pt, xmin=0, xmax=0.5,
+     ytick={0,...,5}, yticklabels from table={figuras/cap17/mlm_e24.dat}{aa}, y dir=reverse,
+     y tick label style={font=\ttfamily\bfseries\scriptsize,text=tinta}, xlabel={probabilidad},
+     title={posición 24 (nativo: \texttt{E})}, xtick={0,0.1,0.2,0.3,0.4,0.5}, enlarge y limits=0.12,
+     nodes near coords, nodes near coords style={font=\sffamily\tiny,text=tinta2,/pgf/number format/fixed,/pgf/number format/precision=3}]
+    \addplot[fill=aqua!70, draw=aqua!70!black] table[x=p, y=k] {figuras/cap17/mlm_e24.dat};
+  \end{axis}
+\end{tikzpicture}
+\caption[Modelado de lenguaje enmascarado con ESM-2]{Modelado de lenguaje enmascarado con un modelo real (ESM-2 de 650 M de parámetros, \texttt{esm2\_t33\_650M\_UR50D}) sobre la ubiquitina humana. \textbf{Abajo}: se oculta el residuo 44 y el modelo recibe el resto de la secuencia (aquí se muestran solo los residuos 38--50). \textbf{Arriba}: las seis probabilidades más altas que predice en dos posiciones. En la Ile44, que forma parte del parche hidrofóbico reconocido por muchas proteínas que se unen a la ubiquitina, el modelo asigna 0,993 al residuo nativo y casi todo lo demás a Val, otro hidrofóbico ramificado. En el Glu24, expuesto al solvente, la distribución es amplia (entropía $2{,}1$ nats) y el nativo recibe solo 0,027: el modelo ``sabe'' que esa posición tolera muchos residuos. Cifras de \archivo{figuras/cap17/generar.py}.}
+\label{fig:17-mlm}
+\end{figure}
+
+\subsection{Qué aprende un modelo de lenguaje: contactos y embeddings}
+
+\paragraph{Contactos} Si dos residuos están en contacto, sus mutaciones están correlacionadas a lo largo de la evolución (coevolución), y un modelo que predice bien los huecos tiene que haber capturado esas correlaciones. Por eso los mapas de atención de ESM-2 contienen información sobre los contactos; una regresión logística sobre ellos basta para predecir el mapa de contactos \parencite{c17-lin2023}. La \cref{fig:17-contactos} lo comprueba con la ubiquitina: de los 76 pares con mayor probabilidad predicha y separación en la secuencia de al menos 6 residuos, el 86,8\,\% son contactos reales en la estructura cristalográfica 1UBQ; entre los 15 pares más probables separados por 24 o más residuos, todos lo son. Es la misma información que AlphaFold \parencite{c17-jumper2021} extrae de un alineamiento múltiple (\cref{cap:15}), obtenida aquí de una sola secuencia. Una advertencia honesta: la ubiquitina es una de las proteínas más conservadas y estudiadas, y sus homólogos estaban en los datos de entrenamiento; el rendimiento en proteínas huérfanas es bastante menor.
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=0.56\linewidth]{cap17/contactos_ubq.pdf}
+\caption[Contactos predichos por ESM-2]{Mapa de contactos de la ubiquitina humana. Triángulo superior: probabilidad de contacto predicha por ESM-2 (650 M) a partir de sus mapas de atención, sin alineamiento ni estructura. Triángulo inferior: contactos observados en la estructura cristalográfica 1UBQ (distancia C$\beta$--C$\beta$ menor de 8\,Å, C$\alpha$ para la glicina; separación $|i-j|\ge6$). El patrón es casi especular: las franjas perpendiculares a la diagonal corresponden a la horquilla $\beta$ inicial (residuos 1--17) y las manchas alejadas de la diagonal, al emparejamiento de las hebras de la lámina $\beta$ mixta y al empaquetamiento de la hélice (23--34) contra ella. Precisión de los $L$ pares mejor puntuados con $|i-j|\ge6$: 0,87.}
+\label{fig:17-contactos}
+\end{figure}
+
+\paragraph{Embeddings} La última capa de un modelo de lenguaje asigna a cada posición un vector $\mathbf{h}_i\in\R^{d}$ ($d=1280$ en ESM-2 de 650 M). Para obtener una representación de la proteína completa, de dimensión fija sea cual sea su longitud, lo más sencillo es promediar:
+\begin{equation}\label{eq:17-pooling}
+\mathbf{e}(x) = \frac{1}{L}\sum_{i=1}^{L}\mathbf{h}_i(x).
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$\mathbf{h}_i(x)$}{Vector de la última capa para la posición $i$ de la proteína $x$ (\ingles{embedding} por residuo).}
+\simbolo{$\mathbf{e}(x)$}{\ingles{Embedding} de la proteína completa.}
+\end{simbolos}
+
+Estos vectores son atributos excelentes para cualquiera de los clasificadores de la \cref{sec:17-clasico}: en lugar de un espectro de $k$-mers, que solo ve palabras idénticas, usamos un vector que resume lo que el modelo aprendió de toda la evolución. Esta estrategia, llamada \emph{aprendizaje por transferencia}, es hoy la forma más común de usar los modelos de lenguaje con conjuntos de datos etiquetados pequeños. La \cref{fig:17-embeddings} compara ambas representaciones con 150 proteínas reales de cinco familias de UniProt, elegidas para que no haya pares muy parecidos. Proyectadas con UMAP (\cref{cap:12}), las familias se separan con nitidez en el espacio de ESM-2 y se entremezclan en el de 3-mers; el clasificador del vecino más cercano acierta la familia en el 95,3\,\% de los casos con \ingles{embeddings} y en el 89,3\,\% con $k$-mers.
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\linewidth]{cap17/embeddings.pdf}
+\caption[Embeddings de ESM-2 frente a espectros de $k$-mers]{Proyección UMAP de 150 proteínas revisadas de UniProt, 30 por familia (globinas, citocromos c, peptidasas S1, proteínas de choque térmico pequeñas HSP20 y tiorredoxinas), seleccionadas con un filtro de redundancia que descarta secuencias cuyo espectro de 3-mers tenga una similitud coseno mayor que 0,35 con otra ya elegida. \textbf{Izquierda}: espectro de 3-mers ($\num{8000}$ dimensiones). \textbf{Derecha}: \ingles{embedding} medio de ESM-2 (1280 dimensiones, \cref{eq:17-pooling}). En los títulos, la exactitud del clasificador del vecino más cercano (similitud coseno, dejando uno fuera) en el espacio original. El modelo de lenguaje agrupa homólogos remotos que apenas comparten palabras idénticas; los grupos del panel izquierdo reflejan sobre todo composición de aminoácidos.}
+\label{fig:17-embeddings}
+\end{figure}
+
+\subsection{Predicción de efectos de variantes sin supervisión}
+
+La aplicación que más ha llamado la atención de la genética médica es la predicción \emph{zero-shot} (sin ningún dato experimental de entrenamiento) del efecto de las mutaciones. La idea, formalizada por \textcite{c17-meier2021}, es que el modelo ya ha aprendido qué secuencias son ``gramaticales'' para la evolución: si una mutación convierte la proteína en algo improbable para el modelo, probablemente sea perjudicial. La puntuación de \emph{marginal enmascarado} de una variante con posiciones mutadas $M$ es
+\begin{equation}\label{eq:17-llr}
+s(x^{\text{mut}}) = \sum_{i\in M}\Big[\log p_{\boldsymbol\theta}\big(x_i = x_i^{\text{mut}}\,\big|\,x_{\setminus M}\big) - \log p_{\boldsymbol\theta}\big(x_i = x_i^{\text{wt}}\,\big|\,x_{\setminus M}\big)\Big].
+\end{equation}
+
+\begin{simbolos}
+\simbolo{$x_i^{\text{wt}},\ x_i^{\text{mut}}$}{Aminoácido silvestre (\ingles{wild type}) y mutante en la posición $i$.}
+\simbolo{$x_{\setminus M}$}{Secuencia silvestre con las posiciones mutadas enmascaradas.}
+\simbolo{$s(x^{\text{mut}})$}{Razón de log-verosimilitudes (LLR, en nats): negativa si el modelo prefiere el silvestre.}
+\end{simbolos}
+
+La \cref{eq:17-llr} es un viejo conocido con ropa nueva: igual que la puntuación de una matriz de sustitución del \cref{cap:03} o de una PWM del \cref{cap:04}, es el logaritmo de una razón de probabilidades, solo que ahora la probabilidad depende de \emph{todo el contexto} de la proteína concreta y no de una tabla fija. Con una sola pasada del modelo por posición se obtiene el paisaje completo de las $19L$ mutaciones puntuales posibles (\cref{fig:17-paisaje}).
+
+\begin{figure}[!tbp]
+\centering
+\includegraphics[width=\linewidth]{cap17/paisaje_ubq.pdf}
+\caption[Paisaje de efectos de mutación predicho por ESM-2]{Paisaje completo de las $19\times76$ sustituciones puntuales de la ubiquitina humana, puntuadas con el marginal enmascarado de ESM-2 (650 M; \cref{eq:17-llr}). Cada columna es una posición (secuencia silvestre arriba) y cada fila un aminoácido mutante; el punto negro marca el residuo silvestre (LLR $=0$). Rojo: el modelo considera la mutación mucho menos probable que el silvestre (presuntamente perjudicial); azul: más probable. El 97,6\,\% de las sustituciones tienen LLR negativo. Destacan como intolerantes la Ile44 y la Val70 del parche hidrofóbico, la Gly47, la Phe45, la Gly10 y las Lys6 y Lys27; las columnas pálidas (E24, A28, D32, K63) son posiciones expuestas donde el modelo acepta casi cualquier residuo. Los valores se calcularon con \archivo{figuras/cap17/generar.py}.}
+\label{fig:17-paisaje}
+\end{figure}
+
+\begin{ejemplo}{Leer el paisaje de la ubiquitina}{17-paisaje}
+En la Ile44, la sustitución conservadora I44V tiene LLR $=-5{,}10$ nats, I44A baja a $-9{,}54$ y la introducción de una carga, I44D, a $-13{,}62$: el orden coincide con la intuición bioquímica de que un núcleo hidrofóbico tolera mejor otro residuo hidrofóbico que un hueco o una carga. En el Glu24, en cambio, E24A tiene LLR $=\ln(0{,}387/0{,}027)\approx+2{,}66$: el modelo considera la alanina \emph{más} verosímil que el glutamato nativo (\cref{fig:17-mlm}).
+
+El paisaje también muestra los límites del método. Las dos glicinas C-terminales (Gly75 y Gly76) son imprescindibles para que la ubiquitina se conjugue con otras proteínas, pero el modelo penaliza G75A ($-7{,}18$) mucho más que G76A ($-1{,}30$). Un modelo de lenguaje captura sobre todo las restricciones que la evolución imprime en muchas familias de proteínas (plegamiento, empaquetamiento) y no necesariamente las funciones específicas de una proteína concreta; sus puntuaciones son hipótesis, no mediciones.
+\end{ejemplo}
+
+\textcite{c17-meier2021} mostraron que esta estrategia sin supervisión compite con los modelos entrenados específicamente para cada familia, y \textcite{c17-brandes2023} la escalaron al proteoma humano: con ESM1b predijeron el efecto de las $\sim$450 millones de variantes de sentido erróneo posibles, superaron a los métodos existentes al clasificar $\sim$\num{150000} variantes de ClinVar/HGMD como patogénicas o benignas y al predecir las mediciones de 28 experimentos de mutagénesis profunda, y extendieron el enfoque a inserciones y deleciones sin cambio de marco y a codones de parada prematuros.
+
+\begin{codigo}[esm\_llr.py]
+import torch
+from transformers import AutoTokenizer, EsmForMaskedLM
+
+nombre = "facebook/esm2_t33_650M_UR50D"
+tok = AutoTokenizer.from_pretrained(nombre)
+esm = EsmForMaskedLM.from_pretrained(nombre).eval()
+ubq = ("MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQQRLIFAG"
+       "KQLEDGRTLSDYNIQKESTLHLVLRLRGG")
+
+def llr(seq, pos, mut):
+    """Marginal enmascarado de la mutación wt->mut (pos 1-based)."""
+    ids = tok(seq, return_tensors="pt")["input_ids"]
+    ids[0, pos] = tok.mask_token_id        # índice 0 = token <cls>
+    with torch.no_grad():
+        logp = esm(input_ids=ids).logits[0, pos].log_softmax(-1)
+    a, b = tok.convert_tokens_to_ids([mut, seq[pos - 1]])
+    return (logp[a] - logp[b]).item()
+
+print(f"I44A: {llr(ubq, 44, 'A'):.2f}")      # -9.54 nats
+with torch.no_grad():                      # embedding medio
+    h = esm.esm(**tok(ubq, return_tensors="pt")).last_hidden_state
+emb = h[0, 1:-1].mean(0)                   # vector de 1280 dim.
+\end{codigo}
+
+\begin{profundizacion}[Por qué funciona: una lectura estadística]
+En la \cref{eq:17-mlm}, el modelo óptimo es aquel cuya $p_{\boldsymbol\theta}(x_i\mid x_{\setminus i})$ coincide con la distribución condicional real de las secuencias naturales. Las secuencias naturales, a su vez, están moldeadas por la selección: si una sustitución destruye la función, los linajes que la portan desaparecen y la sustitución es rara en las bases de datos. La LLR de la \cref{eq:17-llr} estima, por tanto, un cociente de aptitudes relativas integrado a lo largo de toda la historia evolutiva de la familia. Los modelos de familia única (perfiles, modelos de Potts) hacen la misma estimación con un alineamiento; los modelos de lenguaje comparten parámetros entre todas las familias, lo que les permite funcionar con familias pequeñas o sin alineamiento posible, a cambio de mezclar a veces señales de familias distintas.
+\end{profundizacion}
+
+\subsection{Riesgos y limitaciones}
+
+Los modelos de esta sección son herramientas poderosas, y precisamente por eso conviene conocer sus puntos débiles:
+
+\begin{itemize}
+  \item \textbf{Fuga de información a escala de base de datos.} Los modelos de lenguaje se entrenan con casi todas las proteínas conocidas. Evaluar un modelo derivado sobre un conjunto de prueba cuyas secuencias (u homólogos cercanos) estaban en el preentrenamiento reproduce, a gran escala, el problema de la \cref{fig:17-fuga}. Las recomendaciones DOME \parencite{c17-walsh2021} se aplican igual.
+  \item \textbf{Sesgo de representación.} Las bases de datos están dominadas por organismos modelo, patógenos y familias muy estudiadas. El modelo es más fiable allí donde menos lo necesitamos, y la baja perplejidad de la ubiquitina ($\mathrm{PPL}=1{,}78$ según nuestros cálculos) refleja en parte que ha visto miles de sus homólogos.
+  \item \textbf{Probabilidades que no son probabilidades.} Una LLR de $-9$ no significa que la variante sea patogénica con una probabilidad determinada; hay que calibrarla con datos clínicos o experimentales antes de usarla en decisiones.
+  \item \textbf{Interpretabilidad limitada.} Saliencia y atención indican \emph{dónde} mira el modelo, no \emph{por qué}; una cabeza de atención que coincide con los contactos no demuestra que el modelo ``entienda'' la física del plegamiento.
+  \item \textbf{Costes y acceso.} Entrenar un modelo de miles de millones de parámetros exige recursos que pocos laboratorios tienen; usar modelos preentrenados es asequible, pero hace depender la investigación de las decisiones de quien los entrenó.
+\end{itemize}
+
+\begin{historia}[De la traducción automática a las proteínas]
+El \ingles{transformer} nació en 2017 para traducir del inglés al alemán y al francés \parencite{c17-vaswani2017}. Dos años después, BERT mostró que un \ingles{transformer} preentrenado con palabras enmascaradas podía adaptarse a casi cualquier tarea de lenguaje \parencite{c17-devlin2019}. La biología computacional adoptó la receta casi de inmediato: la primera versión del trabajo de \textcite{c17-rives2021} circuló como preprint en 2019, y en solo cuatro años se pasó de la idea a un atlas de cientos de millones de estructuras predichas \parencite{c17-lin2023}. El epígrafe de este capítulo, escrita por George Box en 1976, sigue siendo el mejor consejo para usarlos: ningún modelo es correcto; la pregunta útil es en qué se equivoca de forma importante.
+\end{historia}
+
+\begin{ideaclave}
+Un modelo de lenguaje de proteínas es un perfil de familia generalizado a toda la evolución: sus probabilidades condicionales resumen qué ha tolerado la selección en cada contexto.
+\end{ideaclave}
+
+\begin{resumen}
+\begin{itemize}
+  \item El aprendizaje supervisado minimiza el riesgo empírico (\cref{eq:17-riesgo}), pero lo que importa es el error sobre datos nuevos. Las secuencias se convierten en vectores mediante codificación \ingles{one-hot} (conserva posiciones) o espectros de $k$-mers (invariantes a desplazamientos); el núcleo de espectro mide su similitud sin construir los vectores.
+  \item La regresión logística tiene gradiente $\frac1n\sum(p_i-y_i)\mathbf{x}_i$ y pérdida convexa; la SVM maximiza el margen y depende solo de los vectores de soporte; los \ingles{random forests} reducen la varianza promediando árboles decorrelacionados.
+  \item El error se descompone en ruido, sesgo$^2$ y varianza. La validación cruzada solo es honesta si entrenamiento y prueba son independientes: en biología hay que particionar por familias de homología (\texttt{GroupKFold}). Con clases desbalanceadas, la curva PR es más informativa que la ROC.
+  \item Las redes neuronales se entrenan por retropropagación (regla de la cadena de atrás hacia adelante). En ADN \ingles{one-hot}, un filtro convolucional es una PWM que se aprende sola; el \ingles{max-pooling} da invariancia a la posición. DeepBind, DeepSEA, Basset, Basenji y Enformer ampliaron el contexto de $\sim$100 pb a $\sim$200 kb.
+  \item La saliencia (gradiente por entrada), DeepLIFT y TF-MoDISco convierten un modelo entrenado en mapas de contribución y catálogos de motivos.
+  \item La atención ($\mathrm{softmax}(QK^\top/\sqrt{d_k})V$) permite que cada residuo integre información de toda la secuencia. Los modelos de lenguaje de proteínas (ESM, ProtTrans) se entrenan prediciendo aminoácidos enmascarados y aprenden contactos, estructura y homología remota.
+  \item La razón de log-verosimilitudes de marginal enmascarado predice sin supervisión el efecto de las mutaciones; es informativa pero no calibrada, y hereda los sesgos de los datos de entrenamiento.
+\end{itemize}
+\end{resumen}
+
+\begin{ejercicios}
+\ej{1} Calcule a mano el espectro de 3-mers de \secuencia{ACGTACGTAC} y el núcleo de espectro normalizado $\tilde K_3$ con \secuencia{CGTACGTACG}. ¿Qué valor obtendría con la codificación \ingles{one-hot} y un producto interno posición a posición? Explique la diferencia.
+\ej{1} Un clasificador de variantes patogénicas tiene sensibilidad 0,95 y especificidad 0,98. Use la \cref{eq:17-precision} para calcular su precisión si el 50\,\%, el 10\,\% y el 1\,\% de las variantes evaluadas son patogénicas. ¿Cuál de esos escenarios corresponde a un panel clínico real?
+\ej{1} Explique con sus palabras por qué un 1-NN obtiene casi un 97\,\% de exactitud en la \cref{fig:17-fuga} con etiquetas aleatorias. ¿Qué informaría usted en la sección de métodos de un artículo para convencer a un revisor de que su evaluación no sufre de fuga de información?
+\ej{2} Demuestre la identidad $\sigma'(z)=\sigma(z)[1-\sigma(z)]$ y úsela para comprobar que la matriz hessiana de la \cref{eq:17-entropia} es $\frac1n\sum_i p_i(1-p_i)\,\tilde{\mathbf{x}}_i\tilde{\mathbf{x}}_i^\top$, donde $\tilde{\mathbf{x}}_i=(1,\mathbf{x}_i)$. ¿Por qué esto prueba que la pérdida es convexa?
+\ej{2} Continúe el \cref{ej:17-paso} durante 20 iteraciones con $\eta=1$ (programe el bucle con numpy). ¿Converge $w_1$ a un valor finito? Añada una penalización $L_2$ con $\lambda=0{,}1$ y compare. Relacione el resultado con la separabilidad de los datos.
+\ej{2} Con \py{sklearn.datasets.make_moons}, reproduzca la \cref{fig:17-sesgovar} y añada la curva de un \py{RandomForestClassifier} en función del número de árboles $B$ (de 1 a 500). ¿Se sobreajusta un \ingles{random forest} al aumentar $B$? Relacione su respuesta con la \cref{eq:17-varbosque}.
+\ej{2} Calcule el campo receptivo de una pila de 7 capas convolucionales con filtros de ancho 5 (a) sin dilatación y (b) con dilataciones $1,2,4,\dots,64$. ¿Cuántas capas sin dilatación harían falta para alcanzar el mismo campo receptivo que (b)?
+\ej{3} Modifique la CNN de la \cref{sec:17-dl} para que reconozca el motivo en cualquiera de las dos hebras: plante el sitio en orientación aleatoria y compare (a) duplicar los datos con el reverso complementario y (b) aplicar cada filtro también al reverso complementario de la secuencia y quedarse con el máximo. ¿Qué logo obtiene en cada caso?
+\ej{3} Con el código de \archivo{esm\_llr.py}, calcule el paisaje de marginal enmascarado de una proteína de su interés con un modelo pequeño (\texttt{esm2\_\allowbreak t12\_\allowbreak 35M\_\allowbreak UR50D}) y con el de 650 M. Calcule la correlación de Spearman entre ambos paisajes. Si existe un experimento de mutagénesis profunda publicado para esa proteína, compare ambos con los datos y discuta qué posiciones predice peor el modelo y por qué.
+\ej{3} Diseñe un experimento para decidir si la alta precisión de contactos de la \cref{fig:17-contactos} se debe a que ESM-2 ``memorizó'' la familia de la ubiquitina. (Pista: considere proteínas diseñadas \emph{de novo}, familias ausentes de UniRef en la fecha de entrenamiento, o secuencias ancestrales reconstruidas.)
+\end{ejercicios}
+
+\referenciascapitulo

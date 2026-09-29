@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 00:36
+This is LuaHBTeX, Version 1.21.0 (TeX Live 2025)  (format=lualatex 2025.6.27)  30 SEP 2026 00:43
  system commands enabled.
 **build/cap18/cap18.tex
 (./build/cap18/cap18.tex
@@ -2872,6 +2872,10 @@ LaTeX Info: Redefining \. on input line 67.
 LaTeX Info: Redefining \% on input line 67.
 Package cleveref Info: loaded `spanish' language definitions on input line 67.
 [3] (./figuras/cap18/dag.tex)
+Overfull \hbox (0.53105pt too wide) in paragraph at lines 89--90
+ [][] 
+ []
+
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 8.39996pt on input line 90.
 
@@ -2899,10 +2903,6 @@ LaTeX Info: Redefining \% on input line 128.
 Package cleveref Info: loaded `spanish' language definitions on input line 128.
 
 [6] (./figuras/cap18/kahn_tabla.tex)
-Overfull \hbox (37.32034pt too wide) in paragraph at lines 1--136
- [][] 
- []
-
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 (Font)              scaled to size 5.87997pt on input line 136.
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
@@ -2913,10 +2913,11 @@ LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
 \pydata@fh@_0CAE0673933717DAA87A9D16AB45EAD9.data.minted=\write7
 
 \openout7 = _0CAE0673933717DAA87A9D16AB45EAD9.data.minted
-runsystem(latexminted config  --timestamp 20260930003618 0CAE0673933717DAA87A9D1
+runsystem(latexminted config  --timestamp 20260930004309 0CAE0673933717DAA87A9D1
 6AB45EAD9)...executed.
+
 (./build/cap18/_0CAE0673933717DAA87A9D16AB45EAD9.config.minted)
-runsystem(latexminted cleanconfig  --timestamp 20260930003618 0CAE0673933717DAA8
+runsystem(latexminted cleanconfig  --timestamp 20260930004309 0CAE0673933717DAA8
 7A9D16AB45EAD9)...executed.
 
 (./build/cap18/_minted/friendly.style.minted)
@@ -2969,12 +2970,6 @@ Package cleveref Info: loaded `spanish' language definitions on input line 247.
 \openout6 = cap18.listing
  (./build/cap18/_minted/monokai.style.minted)
 (./build/cap18/_minted/01A5D305E05725168772FB11263B47A9.highlight.minted)
-Overfull \hbox (35.86087pt too wide) in paragraph at lines 258--259
-[]\TU/LibertinusSerif(0)/m/n/10.95 Nues-tra ver-sión de ju-gue-te no dis-tin-gu
-e que \TU/FiraMono(0)/m/n/10.95 limpio/A_R1.fq.gz \TU/LibertinusSerif(0)/m/n/10
-.95 y \TU/FiraMono(0)/m/n/10.95 limpio/A_R2.fq.gz
- []
-
 
 LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 260.
 
@@ -2989,125 +2984,127 @@ LaTeX Warning: Reference `cap:05' on page 1 undefined on input line 260.
 
 
 \openout6 = cap18.listing
-(./build/cap18/_minted/220D82CD6C9CCC750B27447BA0A7EDCE.highlight.minted)
+(./build/cap18/_minted/70B4D0853C34C73F5510DA0CA518C831.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 408.
-LaTeX Info: Redefining \% on input line 408.
-Package cleveref Info: loaded `spanish' language definitions on input line 408.
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
 
 [12]
 
-LaTeX Info: Redefining \. on input line 408.
-LaTeX Info: Redefining \% on input line 408.
-Package cleveref Info: loaded `spanish' language definitions on input line 408.
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
 
 [13]
 
-LaTeX Info: Redefining \. on input line 408.
-LaTeX Info: Redefining \% on input line 408.
-Package cleveref Info: loaded `spanish' language definitions on input line 408.
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
 
 [14]
 
-LaTeX Info: Redefining \. on input line 408.
-LaTeX Info: Redefining \% on input line 408.
-Package cleveref Info: loaded `spanish' language definitions on input line 408.
+LaTeX Info: Redefining \. on input line 410.
+LaTeX Info: Redefining \% on input line 410.
+Package cleveref Info: loaded `spanish' language definitions on input line 410.
 
 [15]
 \openout6 = cap18.listing
  (./build/cap18/_minted/E2FA89A49E5CBF16E521D32F5163815E.highlight.minted)
-Underfull \vbox (badness 7308) has occurred while \output is active []
 
-
-
-LaTeX Info: Redefining \. on input line 428.
-LaTeX Info: Redefining \% on input line 428.
-Package cleveref Info: loaded `spanish' language definitions on input line 428.
+LaTeX Info: Redefining \. on input line 430.
+LaTeX Info: Redefining \% on input line 430.
+Package cleveref Info: loaded `spanish' language definitions on input line 430.
 
 [16]
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
-(Font)              scaled to size 6.71997pt on input line 491.
+(Font)              scaled to size 5.03998pt on input line 485.
+LaTeX Font Info:    Font shape `TU/FiraMono(0)/m/n' will be
+(Font)              scaled to size 6.71997pt on input line 493.
 
-Overfull \hbox (16.61063pt too wide) in paragraph at lines 492--493
+Overfull \hbox (0.96196pt too wide) in paragraph at lines 494--495
  [][] 
  []
 
 
 
-LaTeX Info: Redefining \. on input line 498.
-LaTeX Info: Redefining \% on input line 498.
-Package cleveref Info: loaded `spanish' language definitions on input line 498.
+LaTeX Info: Redefining \. on input line 500.
+LaTeX Info: Redefining \% on input line 500.
+Package cleveref Info: loaded `spanish' language definitions on input line 500.
 
 [17]
 \openout6 = cap18.listing
- (./build/cap18/_minted/B83074D2C3C5FE8BAA9C2282B3B27966.highlight.minted)
+ (./build/cap18/_minted/80243486964F1C1B7C7268E68D7C1264.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 668.
-LaTeX Info: Redefining \% on input line 668.
-Package cleveref Info: loaded `spanish' language definitions on input line 668.
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
 
 [18]
 
-LaTeX Info: Redefining \. on input line 668.
-LaTeX Info: Redefining \% on input line 668.
-Package cleveref Info: loaded `spanish' language definitions on input line 668.
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
 
 [19]
 
-LaTeX Info: Redefining \. on input line 668.
-LaTeX Info: Redefining \% on input line 668.
-Package cleveref Info: loaded `spanish' language definitions on input line 668.
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
 
 [20]
 
-LaTeX Info: Redefining \. on input line 668.
-LaTeX Info: Redefining \% on input line 668.
-Package cleveref Info: loaded `spanish' language definitions on input line 668.
+LaTeX Info: Redefining \. on input line 670.
+LaTeX Info: Redefining \% on input line 670.
+Package cleveref Info: loaded `spanish' language definitions on input line 670.
 
 [21]
 \openout6 = cap18.listing
  (./build/cap18/_minted/124552B720728194D3F3C4F94F34CCEC.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 678.
-LaTeX Info: Redefining \% on input line 678.
-Package cleveref Info: loaded `spanish' language definitions on input line 678.
+LaTeX Info: Redefining \. on input line 680.
+LaTeX Info: Redefining \% on input line 680.
+Package cleveref Info: loaded `spanish' language definitions on input line 680.
 
 [22]
 \openout6 = cap18.listing
  (./build/cap18/_minted/7FB17BB9B087C9B06BD72AF5DF2BBF13.highlight.minted)
+Underfull \vbox (badness 1629) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 715.
-LaTeX Info: Redefining \% on input line 715.
-Package cleveref Info: loaded `spanish' language definitions on input line 715.
+
+
+LaTeX Info: Redefining \. on input line 717.
+LaTeX Info: Redefining \% on input line 717.
+Package cleveref Info: loaded `spanish' language definitions on input line 717.
 
 [23]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 720.
-LaTeX Info: Redefining \% on input line 720.
-Package cleveref Info: loaded `spanish' language definitions on input line 720.
+LaTeX Info: Redefining \. on input line 722.
+LaTeX Info: Redefining \% on input line 722.
+Package cleveref Info: loaded `spanish' language definitions on input line 722.
 
 [24]
 LaTeX Font Info:    Font shape `TU/FiraMono(0)/b/n' will be
-(Font)              scaled to size 8.39996pt on input line 721.
+(Font)              scaled to size 8.39996pt on input line 723.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 736.
-LaTeX Info: Redefining \% on input line 736.
-Package cleveref Info: loaded `spanish' language definitions on input line 736.
+LaTeX Info: Redefining \. on input line 738.
+LaTeX Info: Redefining \% on input line 738.
+Package cleveref Info: loaded `spanish' language definitions on input line 738.
 
 [25]
 \openout6 = cap18.listing
  (./build/cap18/_minted/52322AAD7EC17893AF6640FB7FEB72A0.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 764.
-LaTeX Info: Redefining \% on input line 764.
-Package cleveref Info: loaded `spanish' language definitions on input line 764.
+LaTeX Info: Redefining \. on input line 766.
+LaTeX Info: Redefining \% on input line 766.
+Package cleveref Info: loaded `spanish' language definitions on input line 766.
 
 [26]
 \openout6 = cap18.listing
@@ -3116,27 +3113,27 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 795.
-LaTeX Info: Redefining \% on input line 795.
-Package cleveref Info: loaded `spanish' language definitions on input line 795.
+LaTeX Info: Redefining \. on input line 797.
+LaTeX Info: Redefining \% on input line 797.
+Package cleveref Info: loaded `spanish' language definitions on input line 797.
 
 [27]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 819.
-LaTeX Info: Redefining \% on input line 819.
-Package cleveref Info: loaded `spanish' language definitions on input line 819.
+LaTeX Info: Redefining \. on input line 821.
+LaTeX Info: Redefining \% on input line 821.
+Package cleveref Info: loaded `spanish' language definitions on input line 821.
 
 [28]
 
-LaTeX Info: Redefining \. on input line 843.
-LaTeX Info: Redefining \% on input line 843.
-Package cleveref Info: loaded `spanish' language definitions on input line 843.
+LaTeX Info: Redefining \. on input line 845.
+LaTeX Info: Redefining \% on input line 845.
+Package cleveref Info: loaded `spanish' language definitions on input line 845.
 
 [29]
-Package pgfplots info on input line 852: Using 'lua backend=false' for axis: xm
+Package pgfplots info on input line 854: Using 'lua backend=false' for axis: xm
 ode=log unsupported (yet).
 PGFPlots: reading {figuras/cap18/speedup.dat}
 PGFPlots: reading {figuras/cap18/speedup.dat}
@@ -3145,113 +3142,105 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 879.
-LaTeX Info: Redefining \% on input line 879.
-Package cleveref Info: loaded `spanish' language definitions on input line 879.
+LaTeX Info: Redefining \. on input line 881.
+LaTeX Info: Redefining \% on input line 881.
+Package cleveref Info: loaded `spanish' language definitions on input line 881.
 
 [30]
 
-LaTeX Info: Redefining \. on input line 884.
-LaTeX Info: Redefining \% on input line 884.
-Package cleveref Info: loaded `spanish' language definitions on input line 884.
+LaTeX Info: Redefining \. on input line 886.
+LaTeX Info: Redefining \% on input line 886.
+Package cleveref Info: loaded `spanish' language definitions on input line 886.
 
 [31]
-Underfull \vbox (badness 1762) has occurred while \output is active []
 
-
-
-LaTeX Info: Redefining \. on input line 901.
-LaTeX Info: Redefining \% on input line 901.
-Package cleveref Info: loaded `spanish' language definitions on input line 901.
+LaTeX Info: Redefining \. on input line 898.
+LaTeX Info: Redefining \% on input line 898.
+Package cleveref Info: loaded `spanish' language definitions on input line 898.
 
 [32]
 
-LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 902.
+LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 904.
 
 
-LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:07' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:07' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:11' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:05' on page 1 undefined on input line 921.
+LaTeX Warning: Reference `cap:05' on page 1 undefined on input line 923.
 
 
-LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 924.
+LaTeX Warning: Reference `cap:06' on page 1 undefined on input line 926.
 
 
 
-LaTeX Info: Redefining \. on input line 928.
-LaTeX Info: Redefining \% on input line 928.
-Package cleveref Info: loaded `spanish' language definitions on input line 928.
+LaTeX Info: Redefining \. on input line 930.
+LaTeX Info: Redefining \% on input line 930.
+Package cleveref Info: loaded `spanish' language definitions on input line 930.
 
 [33]
 Underfull \vbox (badness 1859) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 974.
-LaTeX Info: Redefining \% on input line 974.
-Package cleveref Info: loaded `spanish' language definitions on input line 974.
+LaTeX Info: Redefining \. on input line 976.
+LaTeX Info: Redefining \% on input line 976.
+Package cleveref Info: loaded `spanish' language definitions on input line 976.
 
 [34]
 
-LaTeX Warning: Reference `cap:00' on page 1 undefined on input line 982.
+LaTeX Warning: Reference `cap:00' on page 1 undefined on input line 984.
 
 (./build/cap18/_minted/926AD13BB0D7F4B5DD5A496011CA4907.highlight.minted)
 (./build/cap18/_minted/9962DF59CF3BB346CC8D8BA4F54DC052.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 985.
-LaTeX Info: Redefining \% on input line 985.
-Package cleveref Info: loaded `spanish' language definitions on input line 985.
+LaTeX Info: Redefining \. on input line 987.
+LaTeX Info: Redefining \% on input line 987.
+Package cleveref Info: loaded `spanish' language definitions on input line 987.
 
 [35]
-Overfull \hbox (2.87718pt too wide) in paragraph at lines 1006--1007
- [][] 
- []
 
-
-
-LaTeX Info: Redefining \. on input line 1020.
-LaTeX Info: Redefining \% on input line 1020.
-Package cleveref Info: loaded `spanish' language definitions on input line 1020
+LaTeX Info: Redefining \. on input line 1022.
+LaTeX Info: Redefining \% on input line 1022.
+Package cleveref Info: loaded `spanish' language definitions on input line 1022
 .
 [36]
 \openout6 = cap18.listing
  (./build/cap18/_minted/5E1F084FE64FF55DAB013B688E469A4D.highlight.minted)
 
-LaTeX Warning: Reference `cap:00' on page 1 undefined on input line 1031.
+LaTeX Warning: Reference `cap:00' on page 1 undefined on input line 1033.
 
 
-LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 1037.
+LaTeX Warning: Reference `cap:09' on page 1 undefined on input line 1039.
 
 
 Underfull \vbox (badness 1596) has occurred while \output is active []
 
 
 
-LaTeX Info: Redefining \. on input line 1038.
-LaTeX Info: Redefining \% on input line 1038.
-Package cleveref Info: loaded `spanish' language definitions on input line 1038
+LaTeX Info: Redefining \. on input line 1040.
+LaTeX Info: Redefining \% on input line 1040.
+Package cleveref Info: loaded `spanish' language definitions on input line 1040
 .
 [37]
 \openout6 = cap18.listing
@@ -3260,90 +3249,88 @@ Package cleveref Info: loaded `spanish' language definitions on input line 1038
 
 (./build/cap18/_minted/F5BCC19AD606A3179773DA330998F178.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 1070.
-LaTeX Info: Redefining \% on input line 1070.
-Package cleveref Info: loaded `spanish' language definitions on input line 1070
+LaTeX Info: Redefining \. on input line 1072.
+LaTeX Info: Redefining \% on input line 1072.
+Package cleveref Info: loaded `spanish' language definitions on input line 1072
 .
 [38]
 
-LaTeX Warning: Reference `cap:02' on page 1 undefined on input line 1073.
-
-
-Overfull \hbox (10.92317pt too wide) in paragraph at lines 1088--1088
- [][][]\TU/FiraMono(0)/m/n/8 R1/R2.fastq.gz[] 
- []
+LaTeX Warning: Reference `cap:02' on page 1 undefined on input line 1075.
 
 
 
-LaTeX Info: Redefining \. on input line 1103.
-LaTeX Info: Redefining \% on input line 1103.
-Package cleveref Info: loaded `spanish' language definitions on input line 1103
+LaTeX Info: Redefining \. on input line 1106.
+LaTeX Info: Redefining \% on input line 1106.
+Package cleveref Info: loaded `spanish' language definitions on input line 1106
 .
 [39]
+Underfull \vbox (badness 6445) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 1112.
-LaTeX Info: Redefining \% on input line 1112.
-Package cleveref Info: loaded `spanish' language definitions on input line 1112
+
+
+LaTeX Info: Redefining \. on input line 1115.
+LaTeX Info: Redefining \% on input line 1115.
+Package cleveref Info: loaded `spanish' language definitions on input line 1115
 .
 [40]
-Overfull \hbox (12.6625pt too wide) in paragraph at lines 1150--1151
+Overfull \hbox (0.71283pt too wide) in paragraph at lines 1153--1154
  [][] 
  []
 
 
+Underfull \vbox (badness 1859) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 1160.
-LaTeX Info: Redefining \% on input line 1160.
-Package cleveref Info: loaded `spanish' language definitions on input line 1160
+
+
+LaTeX Info: Redefining \. on input line 1161.
+LaTeX Info: Redefining \% on input line 1161.
+Package cleveref Info: loaded `spanish' language definitions on input line 1161
 .
 [41]
-Overfull \hbox (57.44356pt too wide) detected at line 1192
-\TU/LibertinusMath-Regular.otf(1)/m/n/10.95 𝑁 = 0[]20 ⋅ 4 + 0[]20 ⋅ 3 + 
-0[]15 ⋅ 3 + 0[]15 ⋅ 4 + 0[]15 ⋅ 2 + 0[]15 ⋅ 3 = 0[]80 + 0[]60 + 0[]45 + 0[]60 + 0[]30 + 0[]45 = 3[]20,
- []
-
-
-
-LaTeX Info: Redefining \. on input line 1194.
-LaTeX Info: Redefining \% on input line 1194.
-Package cleveref Info: loaded `spanish' language definitions on input line 1194
-.
-[42]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
+
+LaTeX Info: Redefining \. on input line 1171.
+LaTeX Info: Redefining \% on input line 1171.
+Package cleveref Info: loaded `spanish' language definitions on input line 1171
+.
+[42]
 
 LaTeX Info: Redefining \. on input line 1198.
 LaTeX Info: Redefining \% on input line 1198.
 Package cleveref Info: loaded `spanish' language definitions on input line 1198
 .
 [43]
+Underfull \vbox (badness 2635) has occurred while \output is active []
 
-LaTeX Info: Redefining \. on input line 1213.
-LaTeX Info: Redefining \% on input line 1213.
-Package cleveref Info: loaded `spanish' language definitions on input line 1213
+
+
+LaTeX Info: Redefining \. on input line 1214.
+LaTeX Info: Redefining \% on input line 1214.
+Package cleveref Info: loaded `spanish' language definitions on input line 1214
 .
 [44]
 
-LaTeX Warning: Reference `cap:07' on page 1 undefined on input line 1214.
+LaTeX Warning: Reference `cap:07' on page 1 undefined on input line 1218.
 
 (./build/cap18/_minted/A12DB3D743A0766659FA7ED66807B9BC.highlight.minted)
 
-LaTeX Info: Redefining \. on input line 1223.
-LaTeX Info: Redefining \% on input line 1223.
-Package cleveref Info: loaded `spanish' language definitions on input line 1223
+LaTeX Info: Redefining \. on input line 1224.
+LaTeX Info: Redefining \% on input line 1224.
+Package cleveref Info: loaded `spanish' language definitions on input line 1224
 .
 [45]
 
-LaTeX Info: Redefining \. on input line 1223.
-LaTeX Info: Redefining \% on input line 1223.
-Package cleveref Info: loaded `spanish' language definitions on input line 1223
+LaTeX Info: Redefining \. on input line 1227.
+LaTeX Info: Redefining \% on input line 1227.
+Package cleveref Info: loaded `spanish' language definitions on input line 1227
 .
 [46]
 
-LaTeX Info: Redefining \. on input line 1223.
-LaTeX Info: Redefining \% on input line 1223.
-Package cleveref Info: loaded `spanish' language definitions on input line 1223
+LaTeX Info: Redefining \. on input line 1227.
+LaTeX Info: Redefining \% on input line 1227.
+Package cleveref Info: loaded `spanish' language definitions on input line 1227
 .
 [47])
 
@@ -3370,16 +3357,16 @@ Package logreq Info: Writing requests to 'cap18.run.xml'.
 )
 
 Here is how much of LuaTeX's memory you used:
- 82026 strings out of 475506
+ 82044 strings out of 475506
  244212,3417909 words of node,token memory allocated
- 1817 words of node memory still in use:
-   31 hlist, 2 vlist, 14 rule, 4 glue, 4 kern, 1 glyph, 192 attribute, 81 glue_s
-pec, 134 attribute_list, 2 write, 24 pdf_literal, 7 pdf_action, 24 pdf_colorstac
+ 1799 words of node memory still in use:
+   31 hlist, 2 vlist, 14 rule, 2 glue, 4 kern, 1 glyph, 191 attribute, 81 glue_s
+pec, 133 attribute_list, 2 write, 24 pdf_literal, 7 pdf_action, 24 pdf_colorstac
 k nodes
-   avail lists: 1:31,2:18008,3:6208,4:1156,5:855,6:232,7:9205,8:92,9:2550,10:31,
-11:979
- 102940 multiletter control sequences out of 65536+600000
- 194 fonts using 65189991 bytes
+   avail lists: 1:32,2:18011,3:6208,4:1168,5:851,6:232,7:9299,8:71,9:2550,10:31,
+11:1000
+ 102958 multiletter control sequences out of 65536+600000
+ 196 fonts using 65781111 bytes
  121i,19n,123p,1285b,2811s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/opentype/public/libertinus-fonts/Liber
 tinusSerif-Regular.otf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public
@@ -3406,7 +3393,7 @@ ve/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSansPro-Semibold.otf
 ></usr/local/texlive/2025/texmf-dist/fonts/opentype/adobe/sourcesanspro/SourceSa
 nsPro-ExtraLight.otf></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsf
 onts/symbols/msam10.pfb>
-Output written on cap18.pdf (48 pages, 331423 bytes).
+Output written on cap18.pdf (48 pages, 331326 bytes).
 
 PDF statistics: 706 PDF objects out of 1000 (max. 8388607)
  558 compressed objects within 6 object streams

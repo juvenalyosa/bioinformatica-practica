@@ -37,7 +37,7 @@ El ADN es un polímero de cuatro nucleótidos, que se distinguen por su base nit
 
 Desde el punto de vista computacional, una molécula de ADN bicatenario es una cadena sobre un alfabeto de cuatro letras, más una regla determinista para obtener su pareja.
 
-\begin{definicion}{Secuencia y complemento reverso}{complemento}
+\begin{definicion}{Secuencia y complemento reverso}{01-complemento}
 Una secuencia de ADN es una palabra $x = x_1x_2\cdots x_n$ sobre el alfabeto $\mathcal{A}=\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$, leída de 5' a 3'. Su \emph{complemento reverso} es
 \begin{equation}\label{eq:01-rc}
 \overline{x} = \kappa(x_n)\,\kappa(x_{n-1})\cdots\kappa(x_1),
@@ -150,7 +150,7 @@ Empecemos por un juego. Alguien elige una base al azar y usted debe adivinarla c
 
 Pero la capacidad es solo un techo. Si las bases no fueran equiprobables (por ejemplo, si el 70\,\% fueran \nuc{A}), usted podría empezar preguntando ``¿es \nuc{A}?'' y acertar a la primera la mayoría de las veces. El número \emph{medio} de preguntas bajaría, y con él la información que realmente aporta cada base. Shannon definió esa cantidad media como la entropía.
 
-\begin{definicion}{Entropía de Shannon}{entropia}
+\begin{definicion}{Entropía de Shannon}{01-entropia}
 Sea $X$ una variable aleatoria que toma valores en un alfabeto finito $\mathcal{A}$ con probabilidades $p_a=\Prob(X=a)$. Su entropía, en bits, es
 \begin{equation}\label{eq:01-entropia}
 H(X) = -\sum_{a\in\mathcal{A}} p_a \log_2 p_a,
@@ -167,7 +167,7 @@ con el convenio $0\log_2 0 = 0$. La cantidad $-\log_2 p_a$ se llama \emph{sorpre
 
 La definición no es arbitraria. Shannon demostró que $H$ es, salvo una constante multiplicativa, la \emph{única} función que es continua en las probabilidades, crece con el número de alternativas equiprobables y se descompone de forma aditiva cuando una elección se hace en dos etapas, como en nuestro juego de preguntas \parencite{c01-shannon1948}. Sus cotas fundamentales se derivan en pocas líneas.
 
-\begin{teorema}{Cotas de la entropía}{cotas}
+\begin{teorema}{Cotas de la entropía}{01-cotas}
 Para cualquier distribución sobre un alfabeto de $K$ símbolos,
 \begin{equation}\label{eq:01-cotas}
 0 \;\le\; H(X) \;\le\; \log_2 K,
@@ -183,7 +183,7 @@ H(X) - \log_2 K = \sum_a p_a \log_2\frac{1}{K p_a}
 \]
 y la igualdad exige $Kp_a=1$ para todo $a$. Para el ADN, $K=4$ y el techo es 2 bits; para las proteínas, $K=20$ y el techo es $\log_2 20\approx 4{,}32$ bits.
 
-\begin{ejemplo}{La entropía de SARS-CoV-2}{entropia-sars}
+\begin{ejemplo}{La entropía de SARS-CoV-2}{01-entropia-sars}
 El genoma de SARS-CoV-2 tiene \num{29903} nucleótidos con composición $p_\texttt{A}=0{,}2994$, $p_\texttt{C}=0{,}1837$, $p_\texttt{G}=0{,}1961$ y $p_\texttt{T}=0{,}3208$: es rico en \nuc{A} y \nuc{T}. Aplicando la \cref{eq:01-entropia},
 \[
 \begin{aligned}
@@ -290,7 +290,7 @@ Cuando la ADN polimerasa se equivoca, cambia una base por otra. En una región c
 
 Contemos todas las posibilidades. Hay 61 codones con sentido y cada uno tiene $3\times3=9$ vecinos que difieren en una sola base, de modo que existen $61\times9=549$ mutaciones puntuales. Un recuento directo sobre la tabla estándar (\py{CODIGO} en \archivo{dogma.py}) da 134 sinónimas (24,4\,\%), 23 sin sentido y 392 de sentido erróneo. Pero el promedio esconde una enorme diferencia entre posiciones.
 
-\begin{ejemplo}{Mutaciones en el gen de Spike}{spike-mut}
+\begin{ejemplo}{Mutaciones en el gen de Spike}{01-spike-mut}
 Tomemos los \num{1273} codones con sentido del gen \gen{S} de SARS-CoV-2 y apliquemos, a cada uno, las nueve mutaciones puntuales posibles: \num{11457} mutaciones en total. Clasificándolas por posición del codón se obtiene:
 \begin{center}
 \small
@@ -309,7 +309,7 @@ En la segunda posición \emph{ninguna} mutación es silenciosa; en la tercera, c
 
 La pregunta profunda es otra: cuando una mutación \emph{sí} cambia el aminoácido, ¿lo cambia por uno parecido? Si el código se hubiera fijado al azar, un error cambiaría con la misma facilidad un aminoácido hidrofóbico, que suele ir enterrado en el interior de la proteína, por uno cargado, que prefiere el agua; y eso suele destruir el plegamiento. \textcite{c01-haig1991} convirtieron esta intuición en una prueba estadística. La idea es definir un \emph{costo} que mida el daño medio que causan las mutaciones puntuales y comparar el código real con una población de códigos alternativos.
 
-\begin{definicion}{Costo de error de un código}{costo}
+\begin{definicion}{Costo de error de un código}{01-costo}
 Sea $g$ un código genético (una función de los 61 codones con sentido en los 20 aminoácidos) y $h(\cdot)$ una propiedad fisicoquímica de los aminoácidos. Sea $M$ el conjunto de pares $(c,c')$ de codones con sentido que difieren en una sola base. El costo de $g$ es
 \begin{equation}\label{eq:01-costo}
 \Phi(g) = \frac{1}{|M|}\sum_{(c,\,c')\in M}\Bigl(h\bigl(g(c)\bigr) - h\bigl(g(c')\bigr)\Bigr)^2 .
@@ -455,7 +455,7 @@ Además, los genes bacterianos suelen organizarse en \emph{operones}: varios CDS
 
 Como los codones se leen de tres en tres sin separadores, una misma secuencia puede cortarse en codones de tres maneras en cada hebra, según la letra en que empecemos. Con las dos hebras, hay seis \emph{marcos de lectura} (\cref{fig:01-marcos}).
 
-\begin{definicion}{Marco abierto de lectura (ORF)}{orf}
+\begin{definicion}{Marco abierto de lectura (ORF)}{01-orf}
 Sea $s$ una de las dos hebras de un genoma (la directa $x$ o su complemento reverso $\overline{x}$) y $f\in\{0,1,2\}$ un desplazamiento. El marco $(s,f)$ es la sucesión de codones $c_k = s_{f+3k+1}\,s_{f+3k+2}\,s_{f+3k+3}$, $k=0,1,\ldots$. Dados un conjunto de codones de inicio $\mathcal{I}$ y de parada $\mathcal{T}$, un \emph{marco abierto de lectura} es un tramo de codones $c_a,\ldots,c_b$ de un mismo marco tal que
 \begin{equation}\label{eq:01-orf}
 c_a\in\mathcal{I},\qquad c_b\in\mathcal{T},\qquad c_k\notin\mathcal{T}\ \ \text{para}\ a\le k<b ,
@@ -526,7 +526,7 @@ p = \sum_{c\in\mathcal{T}} \pi_{c_1}\,\pi_{c_2}\,\pi_{c_3},
 \end{equation}
 que con bases equiprobables vale $p=3/64\approx 0{,}0469$. Recorriendo un marco codón a codón, cada codón es un ensayo de Bernoulli con probabilidad de ``éxito'' (parada) $p$, independiente de los demás. La longitud de un tramo entre dos paradas consecutivas es el número de fracasos antes del primer éxito.
 
-\begin{teorema}{Longitud de un ORF aleatorio}{geometrica}
+\begin{teorema}{Longitud de un ORF aleatorio}{01-geometrica}
 Bajo el modelo de bases independientes, la longitud $L$ (en codones) de un tramo sin paradas sigue una distribución geométrica:
 \begin{equation}\label{eq:01-geom}
 \Prob(L=\ell) = (1-p)^{\ell}\,p,\qquad
@@ -577,7 +577,7 @@ En los micoplasmas, \texttt{UGA} no es un codón de parada sino que codifica tri
 
 El detalle tiene consecuencias dramáticas. Si traducimos las 504 CDS de \especie{M.\,genitalium} con la tabla 4, las 504 proteínas coinciden con la anotación. Con la tabla bacteriana estándar (11), solo 145 (el 28,8\,\%) salen completas: las otras 359 contienen al menos un \texttt{TGA} interno y se truncan en él. Un anotador automático que ignorara la tabla de traducción predeciría cientos de genes fragmentados.
 
-\begin{ejemplo}{El umbral de longitud para \emph{M.\,genitalium}}{umbral}
+\begin{ejemplo}{El umbral de longitud para \emph{M.\,genitalium}}{01-umbral}
 Con la composición real del genoma ($\pi_\texttt{A}=0{,}3457$, $\pi_\texttt{C}=0{,}1578$, $\pi_\texttt{G}=0{,}1591$, $\pi_\texttt{T}=0{,}3374$) y las dos paradas de la tabla 4, la \cref{eq:01-pstop} da
 \[
 p = \pi_\texttt{T}\pi_\texttt{A}\pi_\texttt{A} + \pi_\texttt{T}\pi_\texttt{A}\pi_\texttt{G}
@@ -612,7 +612,7 @@ Por debajo de 100 codones, en cambio, el azar produce unos $N(1-p)^{100}\approx 
   \node[etiqueta, anchor=south west, rotate=90] at (axis cs:96,2e-6) {100 codones};
 \end{axis}
 \end{tikzpicture}
-\caption[Supervivencia de los ORFs de \emph{M.\,genitalium}]{Longitud de los tramos sin codones de parada en los seis marcos de \especie{M.\,genitalium} (tabla 4). El genoma barajado (naranja), que conserva la composición pero no el orden, sigue casi exactamente la recta geométrica del \cref{teo:geometrica} (discontinua) y no produce ningún tramo de más de 200 codones. El genoma real (azul) coincide con el azar para tramos cortos, pero a partir de unos 60 codones se separa y mantiene una cola pesada que llega a cientos de codones: ahí viven los genes. A 100 codones, la cola real es 6,4 veces más frecuente que la barajada; a 200, la barajada ya es cero.}
+\caption[Supervivencia de los ORFs de \emph{M.\,genitalium}]{Longitud de los tramos sin codones de parada en los seis marcos de \especie{M.\,genitalium} (tabla 4). El genoma barajado (naranja), que conserva la composición pero no el orden, sigue casi exactamente la recta geométrica del \cref{teo:01-geometrica} (discontinua) y no produce ningún tramo de más de 200 codones. El genoma real (azul) coincide con el azar para tramos cortos, pero a partir de unos 60 codones se separa y mantiene una cola pesada que llega a cientos de codones: ahí viven los genes. A 100 codones, la cola real es 6,4 veces más frecuente que la barajada; a 200, la barajada ya es cero.}
 \label{fig:01-supervivencia}
 \end{figure}
 
@@ -687,7 +687,7 @@ Imagine que lleva la cuenta de un cajero que, a lo largo del día, recibe billet
 
 La medida de composición más sencilla es la proporción de bases que son \nuc{G} o \nuc{C}.
 
-\begin{definicion}{Contenido GC}{gc}
+\begin{definicion}{Contenido GC}{01-gc}
 Para una secuencia (o una ventana) con $n_\texttt{A}$, $n_\texttt{C}$, $n_\texttt{G}$ y $n_\texttt{T}$ bases de cada tipo,
 \begin{equation}\label{eq:01-gc}
 \mathrm{GC} = \frac{n_\texttt{G}+n_\texttt{C}}{n_\texttt{A}+n_\texttt{C}+n_\texttt{G}+n_\texttt{T}} .
@@ -755,7 +755,7 @@ La citosina tiene un punto débil químico: puede perder su grupo amino y conver
 
 Un modelo mínimo permite ver cuánto sesgo produce una asimetría pequeña. Consideremos una hebra dentro de un replicor y fijémonos solo en las \nuc{G} y las \nuc{C}. Sea $c$ la tasa de mutación \nuc{C}$\to$\nuc{T} en esa hebra y $a$ la tasa de \nuc{G}$\to$\nuc{A} (que no es otra cosa que \nuc{C}$\to$\nuc{T} en la hebra complementaria). Supongamos que las \nuc{G} y las \nuc{C} se reponen a partir de \nuc{A} y \nuc{T} con una misma tasa $u$, y que la hebra tiene aproximadamente tantas \nuc{A} como \nuc{T}.
 
-\begin{teorema}{Sesgo de equilibrio}{skew-equilibrio}
+\begin{teorema}{Sesgo de equilibrio}{01-skew-equilibrio}
 En el modelo anterior, las frecuencias de equilibrio satisfacen $u\,\pi_\texttt{A} = a\,\pi_\texttt{G}$ y $u\,\pi_\texttt{T} = c\,\pi_\texttt{C}$, de modo que, si $\pi_\texttt{A}\approx\pi_\texttt{T}$,
 \begin{equation}\label{eq:01-skew-eq}
 \frac{\pi_\texttt{G}}{\pi_\texttt{C}} = \frac{c}{a},
@@ -777,7 +777,7 @@ La derivación es un balance de flujos: en equilibrio, las \nuc{G} que se pierde
 
 Para medir la huella necesitamos un número que, a diferencia del contenido GC, distinga entre las dos hebras.
 
-\begin{definicion}{Sesgo GC y sesgo acumulado}{skew}
+\begin{definicion}{Sesgo GC y sesgo acumulado}{01-skew}
 El \emph{sesgo GC} (\ingles{GC skew}) de una ventana de la hebra leída es
 \begin{equation}\label{eq:01-skew}
 S = \frac{n_\texttt{G}-n_\texttt{C}}{n_\texttt{G}+n_\texttt{C}} \in [-1, 1].
@@ -800,7 +800,7 @@ Por la complementariedad, leer la otra hebra invierte el signo de $S$ en cada ve
 \end{equation}
 así que $C$ sube con pendiente $gs$ en el replicor de sesgo positivo y baja con pendiente $g|s|$ en el otro. El resultado es una curva en forma de V (o de V invertida) con el \emph{mínimo en oriC y el máximo en ter}.
 
-\begin{ejemplo}{Sesgo a mano}{skew-mano}
+\begin{ejemplo}{Sesgo a mano}{01-skew-mano}
 Tomemos la ventana \secuencia{GGCAGCTGGA}. Las \nuc{G} están en las posiciones 1, 2, 5, 8 y 9, así que $n_\texttt{G}=5$; las \nuc{C}, en las posiciones 3 y 6, así que $n_\texttt{C}=2$. Por la \cref{eq:01-skew},
 \[
 S = \frac{5-2}{5+2} = \frac{3}{7}\approx 0{,}43 .
@@ -865,7 +865,7 @@ Apliquemos el método al genoma de referencia de \especie{E.\,coli} K-12 MG1655 
 
 La \cref{fig:01-skew} muestra el resultado. El sesgo por ventana es pequeño (en promedio $+0{,}032$ en un replicor y $-0{,}033$ en el otro) y ruidoso: 224 de las 464 ventanas son positivas, casi la mitad, pero no están mezcladas al azar sino agrupadas en dos bloques. El sesgo acumulado convierte ese patrón en una curva inequívoca. Su mínimo global está en la posición \num{3925597}: a solo 262 pb del centro del \emph{oriC} anotado, un error del 0,006\,\% del genoma. Su máximo está en \num{1552389}, a 132 kb del gen \gen{tus}; los dos replicores miden 2,37 y 2,27 Mb, casi iguales, como corresponde a dos horquillas que avanzan a velocidades parecidas. Con un cálculo de una línea sobre la secuencia, sin pipetas ni geles, hemos localizado el origen de replicación.
 
-\begin{ejemplo}{¿Cuadra la amplitud de la V?}{amplitud}
+\begin{ejemplo}{¿Cuadra la amplitud de la V?}{01-amplitud}
 La \cref{eq:01-pendiente} permite predecir cuánto desciende el saldo entre el máximo y el mínimo. El arco que va de \emph{ter} ($\approx$\num{1552389}) a \emph{oriC} ($\approx$\num{3925597}) mide \num{2373208} pb, el contenido GC es $g=0{,}5079$ y el sesgo medio de ese replicor es $s=-0{,}0327$. El descenso esperado es
 \[
 |\Delta C| \approx g\,|s|\,\Delta j = 0{,}5079\times0{,}0327\times\num{2373208}\approx \num{39400}.
@@ -888,7 +888,7 @@ Como el cromosoma es circular, la forma natural de representarlo es como la esfe
 
 ¿Por qué el sesgo por ventana es tan ruidoso, y cuánto hay que agrandar la ventana para ver la señal? Supongamos que una ventana contiene $m$ bases que son \nuc{G} o \nuc{C} y que no hay ningún sesgo real: cada una es \nuc{G} con probabilidad $1/2$, independientemente de las demás. Entonces el número de guaninas es $K\sim\mathrm{Bin}(m,1/2)$, y el sesgo es $S=(K-(m-K))/m = (2K-m)/m$.
 
-\begin{teorema}{Ruido del sesgo en una ventana}{ruido}
+\begin{teorema}{Ruido del sesgo en una ventana}{01-ruido}
 Sin sesgo real, $\E[S]=0$ y
 \begin{equation}\label{eq:01-ruido}
 \mathrm{DE}(S) = \frac{2}{m}\,\mathrm{DE}(K) = \frac{2}{m}\sqrt{m\cdot\tfrac12\cdot\tfrac12} = \frac{1}{\sqrt{m}},
@@ -905,7 +905,7 @@ Si además existe un sesgo real que varía entre ventanas con desviación típic
 \simbolo{$\sigma_s$}{Variabilidad real del sesgo entre ventanas (señal biológica).}
 \end{simbolos}
 
-Con ventanas de 1 kb en \especie{E.\,coli}, $m\approx508$ y el ruido es $\pm0{,}044$, mayor que la señal de $\pm0{,}03$: la señal queda enterrada. Con ventanas de 100 kb el ruido baja a $\pm0{,}0044$ y la señal destaca con claridad. La \cref{fig:01-ruido} compara la dispersión observada con la predicción del \cref{teo:ruido}.
+Con ventanas de 1 kb en \especie{E.\,coli}, $m\approx508$ y el ruido es $\pm0{,}044$, mayor que la señal de $\pm0{,}03$: la señal queda enterrada. Con ventanas de 100 kb el ruido baja a $\pm0{,}0044$ y la señal destaca con claridad. La \cref{fig:01-ruido} compara la dispersión observada con la predicción del \cref{teo:01-ruido}.
 
 \begin{figure}[t]
 \centering

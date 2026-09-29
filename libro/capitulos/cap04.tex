@@ -23,7 +23,7 @@ Este capítulo recorre el camino que va de un conjunto de secuencias emparentada
 % ---------------------------------------------------------------------
 \section{Alineamiento múltiple: el método progresivo}\label{sec:04-msa}
 % ---------------------------------------------------------------------
-\enlacerepo{4.1 · MSA: alineamiento progresivo}
+\enlacecolab{modulo-04-msa-motivos-hmm/4.1_alineamiento_multiple.ipynb}{4.1 · MSA: alineamiento progresivo}
 
 \begin{intuicion}[La receta de la abuela]
 Cinco primos conservan, cada uno, una copia manuscrita de la receta de pan de la abuela. Con los años, cada copia ha acumulado cambios: alguien sustituyó la manteca por aceite, otro añadió una pizca de anís, otro olvidó copiar una línea entera. Si quisiera reconstruir la receta original, no empezaría comparando las copias más distintas. Empezaría por las de las dos hermanas que viven juntas, casi idénticas, y fijaría entre ambas una versión común; luego la compararía con la del primo que vive en la misma ciudad; y solo al final se enfrentaría a la copia del pariente lejano. Cada decisión que tome en los primeros pasos (``esta línea se perdió aquí'') condicionará todas las siguientes. Ese procedimiento, con sus virtudes y su punto débil, es exactamente el alineamiento progresivo.
@@ -33,7 +33,7 @@ Cinco primos conservan, cada uno, una copia manuscrita de la receta de pan de la
 
 Un alineamiento múltiple extiende la idea del alineamiento por pares: se escriben $k$ secuencias una debajo de otra, insertando huecos, de modo que los residuos que descienden de un mismo residuo ancestral queden en la misma columna.
 
-\begin{definicion}{Alineamiento múltiple de secuencias}{msa}
+\begin{definicion}{Alineamiento múltiple de secuencias}{04-msa}
 Sean $x^{(1)},\dots,x^{(k)}$ secuencias sobre un alfabeto $\mathcal{A}$. Un \emph{alineamiento múltiple} es una matriz $\mathbf{M}$ de $k$ filas y $L$ columnas con entradas en $\mathcal{A}\cup\{\texttt{-}\}$ tal que (i) al eliminar los huecos de la fila $p$ se recupera exactamente $x^{(p)}$ y (ii) ninguna columna está formada solo por huecos. Cada columna es una hipótesis de homología posicional.
 \end{definicion}
 
@@ -74,7 +74,7 @@ w_p \;\propto\; \sum_{c=1}^{L}\frac{1}{r_c\;n_c(M_{pc})},
 
 \noindent Una secuencia que comparte cada residuo con otras nueve recibe, en esa columna, una décima parte del crédito que recibe una que tiene un residuo único. Los pesos se normalizan después para que sumen uno.
 
-\begin{ejemplo}{Suma de pares de cuatro columnas de globinas}{sp}
+\begin{ejemplo}{Suma de pares de cuatro columnas de globinas}{04-sp}
 Las cuatro primeras columnas del alineamiento de cinco globinas que construiremos en esta sección (\cref{fig:04-msa}) son
 \begin{center}
 \ttfamily\small
@@ -161,7 +161,7 @@ Para las cinco globinas de este capítulo ($n\approx150$) eso son unas $151^5\ap
 
 ¿Se trata solo de que no hemos encontrado un algoritmo más astuto? Probablemente no.
 
-\begin{teorema}{Intratabilidad del MSA}{np}
+\begin{teorema}{Intratabilidad del MSA}{04-np}
 Encontrar el alineamiento múltiple de puntuación SP óptima es un problema NP-difícil; su versión de decisión es NP-completa aun con matrices de puntuación sencillas \parencite{c04-wang1994}.
 \end{teorema}
 
@@ -213,7 +213,7 @@ S(P_u, Q_v) \;=\; \sum_{a\in\mathcal{A}}\sum_{b\in\mathcal{A}} f^{P}_u(a)\;f^{Q}
 \label{fig:04-arbol}
 \end{figure}
 
-\begin{ejemplo}{El árbol guía de cinco globinas}{upgma}
+\begin{ejemplo}{El árbol guía de cinco globinas}{04-upgma}
 Las distancias de la \cref{fig:04-arbol} muestran dos parejas muy cercanas: las mioglobinas de humano y cachalote ($d=0{,}156$) y las $\beta$-globinas de humano y ratón ($d=0{,}197$). UPGMA procede así:
 \begin{enumerate}
   \item Une las mioglobinas, a altura $0{,}156/2=0{,}078$.
@@ -307,7 +307,7 @@ print("pesos =", pesos_henikoff(filas))
 % ---------------------------------------------------------------------
 \section{Motivos, matrices de peso posicional y logos}\label{sec:04-motivos}
 % ---------------------------------------------------------------------
-\enlacerepo{4.2 · Motivos, PWM, entropía y logos}
+\enlacecolab{modulo-04-msa-motivos-hmm/4.2_motivos_pwm_logos.ipynb}{4.2 · Motivos, PWM, entropía y logos}
 
 \begin{intuicion}[Reconocer una firma]
 Nadie firma dos veces exactamente igual. Aun así, un empleado de banco experimentado reconoce la firma de un cliente: sabe que la inicial siempre tiene el mismo bucle, que el trazo final a veces sube y a veces no, y que el punto sobre la \emph{i} es opcional. En su cabeza no hay una firma ``correcta'', sino una idea de qué rasgos son obligatorios, cuáles son frecuentes y cuáles dan igual. Una proteína que se une al ADN hace algo muy parecido: tolera variación en algunas posiciones de su sitio de unión y es muy exigente en otras. Esta sección enseña a escribir esa ``idea de la firma'' como una tabla de números.
@@ -375,7 +375,7 @@ Las matrices de peso nacieron antes que su interpretación probabilística. \tex
 \label{fig:04-pwm}
 \end{figure}
 
-\begin{ejemplo}{La columna 3 del perfil de TBP}{pwm}
+\begin{ejemplo}{La columna 3 del perfil de TBP}{04-pwm}
 En la posición 3 del perfil MA0108.2 los conteos son $n_{\texttt{A}}=352$, $n_{\texttt{C}}=0$, $n_{\texttt{G}}=2$, $n_{\texttt{T}}=35$ ($N=389$). Con $\alpha_b=0{,}5$ el denominador de la \cref{eq:04-pseudo} es $389+2=391$ y
 \begin{align*}
 f_{\texttt{A},3}&=\tfrac{352{,}5}{391}=0{,}9015, & f_{\texttt{C},3}&=\tfrac{0{,}5}{391}=0{,}0013,\\
@@ -424,7 +424,7 @@ D_i \;=\; D_{\mathrm{KL}}\!\left(f_{\cdot,i}\,\middle\|\,q\right) \;=\; \sum_b f
 \end{equation}
 que se reduce a $R_i$ (sin corrección) cuando $q_b=1/4$. Esta cantidad tiene una interpretación que conecta las dos mitades de la sección.
 
-\begin{teorema}{Puntuación esperada de una PWM}{kl}
+\begin{teorema}{Puntuación esperada de una PWM}{04-kl}
 Si los sitios se generan con las frecuencias $f_{b,i}$ del propio modelo, la puntuación esperada de la \cref{eq:04-pwm} es $\E_f[S]=\sum_{i} D_{\mathrm{KL}}(f_{\cdot,i}\|q)$. Si las ventanas proceden del fondo, $\E_q[S]=-\sum_i D_{\mathrm{KL}}(q\|f_{\cdot,i})\le 0$.
 \end{teorema}
 
@@ -483,7 +483,7 @@ Con la PWM en la mano, buscar sitios es sencillo: se desliza una ventana de long
   \node[etiqueta, text=rojooscuro, anchor=south] at (axis cs:121,14) {sitio 1: 4,2 bits (perdido)};
 \end{axis}
 \end{tikzpicture}
-\caption[Detección de sitios con una PWM]{\textbf{Arriba}: distribución de $S(y)$ para \num{20000} sitios generados a partir de las frecuencias de TBP (azul) y \num{20000} ventanas de fondo uniforme (gris). Sus medias coinciden con las predicciones del \cref{teo:kl}. Con $\tau=6$ bits se recupera el 87\,\% de los sitios y solo pasa el 0,19\,\% de las ventanas aleatorias. \textbf{Abajo}: barrido de una secuencia aleatoria en la que se implantaron dos sitios muestreados del perfil. El sitio 2 (\secuencia{GTATAAGTAGCGAGG}) destaca claramente; el sitio 1 (\secuencia{CCATAATAACTAGCG}), también muestreado del modelo, puntúa solo 4,2 bits y cae bajo el umbral: un falso negativo tan legítimo como inevitable.}
+\caption[Detección de sitios con una PWM]{\textbf{Arriba}: distribución de $S(y)$ para \num{20000} sitios generados a partir de las frecuencias de TBP (azul) y \num{20000} ventanas de fondo uniforme (gris). Sus medias coinciden con las predicciones del \cref{teo:04-kl}. Con $\tau=6$ bits se recupera el 87\,\% de los sitios y solo pasa el 0,19\,\% de las ventanas aleatorias. \textbf{Abajo}: barrido de una secuencia aleatoria en la que se implantaron dos sitios muestreados del perfil. El sitio 2 (\secuencia{GTATAAGTAGCGAGG}) destaca claramente; el sitio 1 (\secuencia{CCATAATAACTAGCG}), también muestreado del modelo, puntúa solo 4,2 bits y cae bajo el umbral: un falso negativo tan legítimo como inevitable.}
 \label{fig:04-scan}
 \end{figure}
 
@@ -507,7 +507,7 @@ for pos, score in pssm.search(prom, threshold=6.0):
     print(pos, hebra, f"{score:.2f}")          # 5 + 15.55
 \end{codigo}
 
-\noindent El módulo \py{Bio.motifs} de Biopython \parencite{c04-cock2009} implementa las \cref{eq:04-pseudo,eq:04-pwm}; su método \py{mean()} devuelve precisamente la puntuación esperada del \cref{teo:kl}. La secuencia \py{prom} es un fragmento sintético con una caja TATA en la posición 5 (contando desde cero).
+\noindent El módulo \py{Bio.motifs} de Biopython \parencite{c04-cock2009} implementa las \cref{eq:04-pseudo,eq:04-pwm}; su método \py{mean()} devuelve precisamente la puntuación esperada del \cref{teo:04-kl}. La secuencia \py{prom} es un fragmento sintético con una caja TATA en la posición 5 (contando desde cero).
 
 \begin{cuidado}[El supuesto de independencia]
 La \cref{eq:04-pwm} supone que cada posición contribuye de forma independiente a la unión. Es una aproximación sorprendentemente buena para muchos factores, pero falla cuando dos bases vecinas interactúan (por ejemplo, por la flexibilidad del ADN) o cuando el factor se une como dímero con espaciadores variables. En esos casos se usan modelos con dependencias entre posiciones, o los modelos de Márkov de la sección siguiente.
@@ -520,7 +520,7 @@ Hasta ahora partimos de sitios ya alineados. El problema inverso, encontrar un m
 % ---------------------------------------------------------------------
 \section{Modelos ocultos de Márkov y perfiles (HMMER)}\label{sec:04-hmm}
 % ---------------------------------------------------------------------
-\enlacerepo{4.3 · HMM y perfiles con HMMER}
+\enlacecolab{modulo-04-msa-motivos-hmm/4.3_modelos_ocultos_markov.ipynb}{4.3 · HMM y perfiles con HMMER}
 
 \begin{intuicion}[Un partido por la radio]
 Imagine que escucha un partido de fútbol por una radio extranjera, en un idioma que no entiende. No ve el campo, pero oye el rugido del público: murmullo, silbidos, gritos. Cuando el equipo local ataca, los gritos son frecuentes; cuando defiende, predominan los silbidos. Además, la posesión no cambia a cada segundo: quien ataca suele seguir atacando un rato. Con esas dos regularidades (qué sonidos produce cada situación y cuánto duran las situaciones) usted puede reconstruir, con bastante acierto, la historia del partido que no vio. Un modelo oculto de Márkov formaliza exactamente ese razonamiento: estados que no se observan, que persisten y cambian con ciertas probabilidades, y que emiten señales que sí se observan.
@@ -530,7 +530,7 @@ Imagine que escucha un partido de fútbol por una radio extranjera, en un idioma
 
 En bioinformática los ``sonidos'' son nucleótidos o aminoácidos, y los estados ocultos son categorías biológicas: región codificante o intergénica, isla CpG o ADN ordinario, hélice o lámina, posición 17 de un dominio o inserción. \textcite{c04-eddy2004} ofrece una introducción breve y muy clara; el tutorial de \textcite{c04-rabiner1989}, escrito para el reconocimiento del habla, sigue siendo la referencia clásica.
 
-\begin{definicion}{Modelo oculto de Márkov}{hmm}
+\begin{definicion}{Modelo oculto de Márkov}{04-hmm}
 Un HMM con $K$ estados sobre un alfabeto $\mathcal{A}$ es una terna $\theta=(\boldsymbol{\pi}, \mathbf{A}, \mathbf{E})$ que genera un camino de estados $\pi_1\pi_2\cdots\pi_L$ y una secuencia $x_1\cdots x_L$: el primer estado se elige con probabilidad $\pi_k$; cada estado siguiente depende solo del anterior, con probabilidad $a_{kl}$; y cada estado $\pi_i$ emite el símbolo $x_i$ con probabilidad $e_{\pi_i}(x_i)$. Se observa $x$; el camino permanece oculto.
 \end{definicion}
 
@@ -613,7 +613,7 @@ b_k(L)=1,\qquad b_k(i) = \sum_{l=1}^{K} a_{kl}\,e_l(x_{i+1})\,b_l(i+1),\qquad i=
 \Prob(\pi_i = k\mid x,\theta) \;=\; \frac{f_k(i)\,b_k(i)}{\Prob(x\mid\theta)}.
 \end{equation}
 
-\begin{ejemplo}{Forward a mano}{forward}
+\begin{ejemplo}{Forward a mano}{04-forward}
 Con el modelo de la \cref{fig:04-hmm2} y $x={}$\secuencia{GCGCATTAT}:
 \[
 f_{\textsf{H}}(1)=0{,}5\times0{,}35=0{,}175,\qquad f_{\textsf{L}}(1)=0{,}5\times0{,}15=0{,}075.
@@ -636,7 +636,7 @@ Las probabilidades forward decrecen exponencialmente con $L$. Para una secuencia
 
 Si en lugar de sumar sobre caminos queremos el \emph{más probable}, basta con cambiar la suma de la \cref{eq:04-fwd} por un máximo y recordar de dónde vino cada máximo. El algoritmo fue propuesto por \textcite{c04-viterbi1967} para decodificar códigos convolucionales en telecomunicaciones.
 
-\begin{teorema}{Algoritmo de Viterbi}{viterbi}
+\begin{teorema}{Algoritmo de Viterbi}{04-viterbi}
 Sea $v_k(i)$ la probabilidad del camino más probable que emite $x_1\cdots x_i$ y termina en el estado $k$. Entonces
 \begin{align}
 v_k(1) &= \pi_k\,e_k(x_1), \label{eq:04-vit-ini}\\
@@ -660,7 +660,7 @@ y $\Prob(x,\boldsymbol{\pi}^*)=\max_k v_k(L)$, donde $\boldsymbol{\pi}^*$ es el 
 \label{fig:04-trellis}
 \end{figure}
 
-\begin{ejemplo}{Viterbi frente a posterior}{viterbi}
+\begin{ejemplo}{Viterbi frente a posterior}{04-viterbi}
 En la \cref{fig:04-trellis}, $\log_2 v_{\textsf{L}}(9)=-19{,}98$ supera a $\log_2 v_{\textsf{H}}(9)=-22{,}42$, así que el camino termina en \textsf{L}. Su probabilidad conjunta es $2^{-19{,}98}$, y como $\Prob(x)=2^{-17{,}58}$, la probabilidad posterior del camino completo es
 \[
 \Prob(\boldsymbol{\pi}^*\mid x)=\frac{2^{-19{,}98}}{2^{-17{,}58}}=2^{-2{,}40}\approx0{,}19.
@@ -741,7 +741,7 @@ Para cada posición $i$ definimos la probabilidad posterior de una transición c
 
 Se calculan forward y backward con los parámetros actuales (paso E), se reestiman los parámetros con la \cref{eq:04-bw} (paso M) y se itera hasta que la verosimilitud deja de aumentar. Baum-Welch es un caso particular del algoritmo EM, formulado en general años después por \textcite{c04-dempster1977}, y hereda su propiedad fundamental.
 
-\begin{teorema}{Monotonía de Baum-Welch}{bw}
+\begin{teorema}{Monotonía de Baum-Welch}{04-bw}
 Cada iteración de la \cref{eq:04-bw} cumple $\Prob(x\mid\hat\theta)\ge\Prob(x\mid\theta)$, con igualdad solo en un punto estacionario de la verosimilitud \parencite{c04-baum1970}.
 \end{teorema}
 
@@ -768,7 +768,7 @@ Cada iteración de la \cref{eq:04-bw} cumple $\Prob(x\mid\hat\theta)\ge\Prob(x\m
   \addplot[aqua, dashed, domain=0:59] {0.35};
 \end{groupplot}
 \end{tikzpicture}
-\caption[Convergencia de Baum-Welch]{Baum-Welch aplicado a \num{5000} bases simuladas con $a_{\textsf{HH}}=a_{\textsf{LL}}=0{,}98$, partiendo de parámetros deliberadamente erróneos ($a_{\textsf{HH}}=0{,}6$; emisiones casi uniformes). \textbf{Izquierda}: la log-verosimilitud aumenta en cada iteración, como garantiza el \cref{teo:bw}, desde $-9991$ hasta $-9712$ bits; tras 47 iteraciones queda a menos de 0,1 bits de su valor final. Termina \emph{por encima} de la de los parámetros verdaderos (línea roja, $-9718$): el modelo se ajusta a las fluctuaciones de la muestra. \textbf{Derecha}: los parámetros convergen a $\hat a_{\textsf{HH}}=0{,}981$ y $\hat e_{\textsf{H}}(\texttt{G})=0{,}328$, cerca de los valores verdaderos (discontinuas).}
+\caption[Convergencia de Baum-Welch]{Baum-Welch aplicado a \num{5000} bases simuladas con $a_{\textsf{HH}}=a_{\textsf{LL}}=0{,}98$, partiendo de parámetros deliberadamente erróneos ($a_{\textsf{HH}}=0{,}6$; emisiones casi uniformes). \textbf{Izquierda}: la log-verosimilitud aumenta en cada iteración, como garantiza el \cref{teo:04-bw}, desde $-9991$ hasta $-9712$ bits; tras 47 iteraciones queda a menos de 0,1 bits de su valor final. Termina \emph{por encima} de la de los parámetros verdaderos (línea roja, $-9718$): el modelo se ajusta a las fluctuaciones de la muestra. \textbf{Derecha}: los parámetros convergen a $\hat a_{\textsf{HH}}=0{,}981$ y $\hat e_{\textsf{H}}(\texttt{G})=0{,}328$, cerca de los valores verdaderos (discontinuas).}
 \label{fig:04-bw}
 \end{figure}
 
@@ -783,7 +783,7 @@ s(a,b)=\log\frac{p_{ab}}{q_aq_b}+\text{cte.},\qquad d_o\approx-\log\delta,\qquad
 
 Un perfil (\cref{eq:04-perfil}) asigna una distribución propia a cada columna de un MSA; una PWM hace lo mismo para motivos sin huecos. Lo que les falta a ambos es una forma principiada de modelar inserciones y deleciones que dependan de la posición: en una familia de proteínas, los bucles superficiales aceptan inserciones con facilidad, mientras que el núcleo hidrofóbico casi nunca las tolera. \textcite{c04-krogh1994} resolvieron el problema con una arquitectura de HMM que hoy llamamos \emph{HMM de perfil}, y \textcite{c04-eddy1998} la convirtió en una herramienta de uso general.
 
-\begin{definicion}{HMM de perfil}{phmm}
+\begin{definicion}{HMM de perfil}{04-phmm}
 Un HMM de perfil de longitud $m$ tiene, para cada posición consenso $j=1,\dots,m$, tres estados: un estado de \emph{coincidencia} $M_j$, que emite un residuo con distribución $e_{M_j}(\cdot)$ específica de la posición; un estado de \emph{inserción} $I_j$, que emite residuos extra entre las posiciones $j$ y $j+1$ con una distribución cercana al fondo; y un estado \emph{silencioso} de \emph{deleción} $D_j$, que salta la posición $j$ sin emitir. Estados inicial ($B$) y final ($E$) completan el modelo.
 \end{definicion}
 
@@ -821,7 +821,7 @@ Un HMM de perfil de longitud $m$ tiene, para cada posición consenso $j=1,\dots,
   \node[etiqueta, anchor=west, align=left] at (-0.35,-0.85) {\textcolor{azul}{$\blacksquare$} coincidencia (emite con $e_{M_j}$)\quad \textcolor{verde}{$\blacklozenge$} inserción (emite $\approx$ fondo)\quad \textcolor{naranja}{$\bullet$} deleción (silencioso)};
   \node[etiqueta, anchor=west, text=rojo] at (-0.35,-1.25) {camino de \texttt{CAACT-}:\ $B\,M_1\,M_2\,I_2\,I_2\,M_3\,D_4\,E$};
 \end{tikzpicture}
-\caption[Arquitectura de un HMM de perfil]{Arquitectura de un HMM de perfil de longitud 4, en la variante \emph{Plan7} de HMMER, que no permite transiciones directas entre estados de inserción y deleción. Los estados $M_j$ (cuadrados) y $D_j$ (círculos) forman la columna vertebral; los $I_j$ (rombos) cuelgan entre posiciones y tienen un bucle que permite inserciones de cualquier longitud. En rojo, el camino que recorre la secuencia \texttt{CAACT} del \cref{ej:phmm}: dos residuos insertados tras la posición 2 y una deleción de la posición 4. Toda secuencia alineada al MSA corresponde a un camino, y viceversa.}
+\caption[Arquitectura de un HMM de perfil]{Arquitectura de un HMM de perfil de longitud 4, en la variante \emph{Plan7} de HMMER, que no permite transiciones directas entre estados de inserción y deleción. Los estados $M_j$ (cuadrados) y $D_j$ (círculos) forman la columna vertebral; los $I_j$ (rombos) cuelgan entre posiciones y tienen un bucle que permite inserciones de cualquier longitud. En rojo, el camino que recorre la secuencia \texttt{CAACT} del \cref{ej:04-phmm}: dos residuos insertados tras la posición 2 y una deleción de la posición 4. Toda secuencia alineada al MSA corresponde a un camino, y viceversa.}
 \label{fig:04-phmm}
 \end{figure}
 
@@ -841,7 +841,7 @@ a_{kl} = \frac{C_{kl}+\beta}{\sum_{l'}\big(C_{kl'}+\beta\big)}.
 
 \noindent Los conteos se ponderan (por ejemplo, con los pesos de la \cref{eq:04-henikoff}) para que las subfamilias sobrerrepresentadas no dominen el modelo.
 
-\begin{ejemplo}{Un HMM de perfil de juguete}{phmm}
+\begin{ejemplo}{Un HMM de perfil de juguete}{04-phmm}
 Consideremos el MSA de cinco secuencias de ADN y seis columnas:
 \begin{center}
 \ttfamily\small
@@ -956,7 +956,7 @@ HMM de perfil: una distribución por posición, con huecos que también dependen
 
 \begin{ejercicios}
 \ej{1} Calcule a mano la puntuación SP (BLOSUM62, $d=8$) de la columna \texttt{K}, \texttt{K}, \texttt{R}, \texttt{-}, \texttt{E}. ¿Cuánto cambia si se asigna peso $0{,}5$ a cada una de las dos primeras secuencias y peso 1 a las demás?
-\ej{1} Escriba la función \py{suma_de_pares(filas, d)} que implementa la \cref{eq:04-sp} con penalización lineal y compruebe que las cuatro primeras columnas del \cref{ej:sp} suman 62.
+\ej{1} Escriba la función \py{suma_de_pares(filas, d)} que implementa la \cref{eq:04-sp} con penalización lineal y compruebe que las cuatro primeras columnas del \cref{ej:04-sp} suman 62.
 \ej{1} Una columna de un motivo tiene frecuencias $(0{,}5;\ 0{,}5;\ 0;\ 0)$ y otra $(0{,}7;\ 0{,}1;\ 0{,}1;\ 0{,}1)$. ¿Cuál tiene más contenido de información? Dibuje a mano sus pilas en un \ingles{logo}.
 \ej{2} Con la matriz de distancias de la \cref{fig:04-arbol}, construya el árbol por \ingles{neighbor-joining} en lugar de UPGMA. ¿Cambia el orden en que se alinean los perfiles? Alinee las globinas con Clustal Omega y MAFFT y cuente las columnas en que difieren.
 \ej{2} Descargue de JASPAR la matriz de conteos de otro factor (por ejemplo, CTCF, MA0139) y calcule su contenido total de información. ¿Cada cuántas bases esperaría un sitio por azar? Compare con el número de sitios de CTCF que se conocen en el genoma humano.

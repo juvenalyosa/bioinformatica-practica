@@ -138,7 +138,7 @@ El empalme alternativo hace que un mismo gen produzca varios transcritos (\emph{
 
 Para repartir con criterio necesitamos un modelo de cómo se generan los fragmentos. El modelo de RSEM \parencite{c11-li2011}, que heredan kallisto y Salmon, es el siguiente. Hay $T$ transcritos; el transcrito $t$ tiene longitud $\ell_t$ y está presente en la muestra en una fracción molar $\tau_t$ (fracción de \emph{moléculas}, $\sum_t\tau_t=1$). Un fragmento se genera eligiendo primero un transcrito y después una posición de inicio uniforme a lo largo de él. Como un transcrito largo ofrece más posiciones de inicio, la probabilidad de que un fragmento venga de $t$ no es $\tau_t$ sino $\alpha_t\propto\tau_t\tilde\ell_t$.
 
-\begin{definicion}{Longitud efectiva}{leff}
+\begin{definicion}{Longitud efectiva}{11-leff}
 Si la longitud de los fragmentos sigue una distribución $P_F$, el número esperado de posiciones de inicio válidas en el transcrito $t$ es
 \begin{equation}\label{eq:11-leff}
 \tilde\ell_t=\sum_{l=1}^{\ell_t} P_F(l)\,(\ell_t-l+1)\;\approx\;\ell_t-\mu_F+1,
@@ -183,7 +183,7 @@ La segunda igualdad es la observación que hace rápidos a los cuantificadores m
 
 Maximizar la \cref{eq:11-veros} directamente es incómodo: el logaritmo de una suma no se separa. Pero si supiéramos de qué transcrito vino cada fragmento (una variable \emph{latente} $z_j$), la estimación sería trivial: $\hat\alpha_t$ sería la fracción de fragmentos con $z_j=t$. El algoritmo \ingles{Expectation-Maximization} de \textcite{c11-dempster1977} convierte esa intuición en un método: alterna entre adivinar, de forma probabilística, los $z_j$ (paso E) y reestimar $\alpha$ como si esa adivinanza fuera cierta (paso M).
 
-\begin{teorema}{EM para cuantificación de transcritos}{em}
+\begin{teorema}{EM para cuantificación de transcritos}{11-em}
 Partiendo de $\alpha^{(0)}$ (por ejemplo, uniforme), repita hasta convergencia:
 \begin{align}
 \text{Paso E:}\quad & \hat n_{Ct}^{(k)} = n_C\,\frac{\alpha_t^{(k)}/\tilde\ell_t}{\sum_{u\in C}\alpha_u^{(k)}/\tilde\ell_u}\quad (t\in C),\label{eq:11-estep}\\[2pt]
@@ -208,7 +208,7 @@ Observe la \cref{eq:11-estep} con atención, porque es el lugar donde más se eq
 \end{equation}
 con igualdad cuando $\alpha=\alpha^{(k)}$. El lado derecho, sumado sobre $j$, es una cota inferior de $\log\mathcal L(\alpha)$ que toca a la curva en $\alpha^{(k)}$; el paso M la maximiza (es un problema de multinomial con solución cerrada, la \cref{eq:11-mstep}), y como la cota está por debajo de la curva, la verosimilitud en el nuevo punto es al menos tan alta como en el anterior. La \cref{eq:11-veros} es, además, cóncava en $\alpha$, así que EM converge al máximo global, aunque puede hacerlo con lentitud cuando dos isoformas son casi indistinguibles.
 
-\begin{ejemplo}{EM paso a paso con tres isoformas}{em}
+\begin{ejemplo}{EM paso a paso con tres isoformas}{11-em}
 Tomemos el gen de la \cref{fig:11-isoformas} con fragmentos de $\mu_F=200$: las longitudes efectivas son $\tilde\ell=(1301,\,801,\,1801)$. Se observaron $N=1200$ fragmentos repartidos así:
 \begin{center}\small
 \begin{tabular}{@{}lcccccc@{}}
@@ -244,7 +244,7 @@ $n_C$ & 120 & 30 & 200 & 250 & 150 & 450\\
   \node[etiqueta,anchor=south west] at (axis cs:3,-8.6) {monótona creciente};
 \end{groupplot}
 \end{tikzpicture}
-\caption[Convergencia del algoritmo EM]{El algoritmo EM aplicado al \cref{ej:em}. \textbf{Izquierda}: trayectoria de las fracciones de fragmentos $\alpha_t^{(k)}$ desde el punto de partida uniforme. En la primera iteración T2 gana peso porque es corto y absorbe más de lo que le corresponde de las lecturas ambiguas; las lecturas exclusivas de T1 (clase \{T1\}, 120 fragmentos) y las de la unión \texttt{E1}--\texttt{E4} (solo 30) terminan corrigiendo ese exceso. \textbf{Derecha}: la log-verosimilitud sube en cada paso, como garantiza el \cref{teo:em}; la mayor parte de la ganancia se obtiene en las primeras cinco iteraciones. Datos: \archivo{figuras/cap11/generar.py}.}
+\caption[Convergencia del algoritmo EM]{El algoritmo EM aplicado al \cref{ej:11-em}. \textbf{Izquierda}: trayectoria de las fracciones de fragmentos $\alpha_t^{(k)}$ desde el punto de partida uniforme. En la primera iteración T2 gana peso porque es corto y absorbe más de lo que le corresponde de las lecturas ambiguas; las lecturas exclusivas de T1 (clase \{T1\}, 120 fragmentos) y las de la unión \texttt{E1}--\texttt{E4} (solo 30) terminan corrigiendo ese exceso. \textbf{Derecha}: la log-verosimilitud sube en cada paso, como garantiza el \cref{teo:11-em}; la mayor parte de la ganancia se obtiene en las primeras cinco iteraciones. Datos: \archivo{figuras/cap11/generar.py}.}
 \label{fig:11-em}
 \end{figure}
 
@@ -309,7 +309,7 @@ El archivo \archivo{quant.sf} ofrece dos columnas de abundancia que conviene no 
 
 La diferencia parece cosmética, pero no lo es. Los TPM de una muestra suman siempre $10^6$, y por la \cref{eq:11-alfatau} estiman directamente $10^6\,\tau_t$. Los RPKM suman $10^9/\bar\ell$, donde $\bar\ell$ es la longitud media, ponderada por fragmentos, de lo que se expresa en esa muestra, y esa media cambia de una muestra a otra. \textcite{c11-wagner2012} mostraron que por eso los RPKM no son consistentes entre muestras: un mismo valor no significa la misma proporción de moléculas, y recomendaron usar TPM.
 
-\begin{ejemplo}{El mismo gen, dos unidades, dos historias}{tpm}
+\begin{ejemplo}{El mismo gen, dos unidades, dos historias}{11-tpm}
 Dos muestras expresan cuatro genes de longitudes 1, 2, 4 y \SI{0,5}{kb} y se secuencian a 10 millones de fragmentos. En A, los cuatro tienen el mismo número de moléculas; en B, el gen 4 (el corto) tiene cuatro veces más moléculas que en A y los otros tres no cambian en números absolutos. En A, los fragmentos se reparten en proporción a moléculas $\times$ longitud: $1{,}33$, $2{,}67$, $5{,}33$ y $0{,}67$ millones; los cuatro RPKM valen $\num{133333}$ y los cuatro TPM, $\num{250000}$. En B, los fragmentos son $1{,}11$, $2{,}22$, $4{,}44$ y $2{,}22$ millones; los RPKM de los genes 1--3 bajan a $\num{111111}$ y el del gen 4 sube a $\num{444444}$, con una suma total de $\num{777778}$ frente a $\num{533333}$ en A. Los TPM son $\num{142857}$ para los genes 1--3 y $\num{571429}$ para el 4, con suma $10^6$. La proporción real de moléculas del gen 1 en B es $10/70=0{,}143$: exactamente lo que dice su TPM. Su RPKM, en cambio, sugiere una caída del \SI{17}{\percent} cuando la fracción molar cayó un \SI{43}{\percent}.
 \end{ejemplo}
 
@@ -330,7 +330,7 @@ Dos muestras expresan cuatro genes de longitudes 1, 2, 4 y \SI{0,5}{kb} y se sec
   \addplot[fill=naranja!70,draw=naranja!70!black] table[x=g,y=B]{figuras/cap11/tpm.dat};
 \end{groupplot}
 \end{tikzpicture}
-\caption[RPKM frente a TPM]{Los datos del \cref{ej:tpm}. Entre A y B, solo el gen 4 cambió su número absoluto de moléculas (se multiplicó por cuatro). Como el total de lecturas es fijo, los otros tres genes pierden lecturas en ambas unidades, pero los RPKM de cada muestra suman cantidades distintas y no pueden leerse como proporciones de moléculas. Los TPM suman siempre un millón y reflejan la fracción molar de cada transcrito. Ninguna de las dos unidades distingue ``el gen 1 bajó'' de ``el gen 4 subió'': ese problema de \emph{composición} se trata en la \cref{sec:11-norm}.}
+\caption[RPKM frente a TPM]{Los datos del \cref{ej:11-tpm}. Entre A y B, solo el gen 4 cambió su número absoluto de moléculas (se multiplicó por cuatro). Como el total de lecturas es fijo, los otros tres genes pierden lecturas en ambas unidades, pero los RPKM de cada muestra suman cantidades distintas y no pueden leerse como proporciones de moléculas. Los TPM suman siempre un millón y reflejan la fracción molar de cada transcrito. Ninguna de las dos unidades distingue ``el gen 1 bajó'' de ``el gen 4 subió'': ese problema de \emph{composición} se trata en la \cref{sec:11-norm}.}
 \label{fig:11-tpm}
 \end{figure}
 
@@ -430,7 +430,7 @@ El recorte cumple el papel de la mediana: vuelve el estimador inmune a los genes
 
 La mediana se calcula solo sobre genes sin ceros, porque un cero anula la media geométrica. Como la media geométrica es simétrica respecto a todas las muestras, no hace falta elegir una referencia, y el producto de los factores es aproximadamente 1. En la \cref{fig:11-composicion} ambos métodos coinciden hasta la tercera cifra decimal.
 
-\begin{ejemplo}{Factores de tamaño a mano}{mor}
+\begin{ejemplo}{Factores de tamaño a mano}{11-mor}
 Cinco genes en tres muestras:
 \begin{center}\small
 \begin{tabular}{@{}lrrrcr@{}}
@@ -472,7 +472,7 @@ TMM y la mediana de razones suponen que la mayoría de los genes no cambia, o qu
 
 Una vez normalizados, ¿cuánto varían los conteos? Si una biblioteca contiene un gen en proporción $p$ y secuenciamos $N$ fragmentos, el número de lecturas del gen sigue una binomial $\mathrm{Bin}(N,p)$; con $N$ enorme y $p$ diminuta, eso es prácticamente una Poisson de media $\mu=Np$, cuya varianza es \emph{igual} a la media. Las réplicas técnicas, secuenciar dos veces la misma biblioteca, se comportan en efecto así. Pero las réplicas biológicas añaden una segunda fuente de variación: la proporción $p$ misma varía de un individuo a otro. El modelo natural es jerárquico.
 
-\begin{teorema}{Mezcla gamma-Poisson}{nb}
+\begin{teorema}{Mezcla gamma-Poisson}{11-nb}
 Si $\lambda\sim\mathrm{Gamma}(\text{forma}=1/\alpha,\ \text{escala}=\alpha\mu)$ y, condicionado a $\lambda$, $K\sim\mathrm{Poisson}(\lambda)$, entonces $K$ sigue una binomial negativa con
 \begin{equation}\label{eq:11-nbpmf}
 \Prob(K=k)=\frac{\Gamma(k+1/\alpha)}{\Gamma(1/\alpha)\,k!}\left(\frac{1}{1+\alpha\mu}\right)^{1/\alpha}\left(\frac{\alpha\mu}{1+\alpha\mu}\right)^{k},
@@ -607,7 +607,7 @@ La cantidad de contracción se regula sola. Con pocas réplicas, la verosimilitu
 \label{fig:11-dispersion}
 \end{figure}
 
-\begin{ejemplo}{Un gen con media 20}{disp}
+\begin{ejemplo}{Un gen con media 20}{11-disp}
 En la simulación de la \cref{fig:11-dispersion}, un gen con media normalizada $\bar\mu=20{,}0$ tiene una dispersión verdadera de $0{,}162$. Su estimación gen a gen es $0{,}351$: más del doble, por el azar de tres réplicas. La tendencia en ese nivel de expresión vale $0{,}136$, y la estimación contraída, $0{,}183$, un compromiso entre ambas mucho más cercano a la verdad. Con $0{,}351$ el gen habría perdido potencia; con la tendencia sola, se habría ignorado que es algo más variable que sus vecinos. La varianza previa usada fue $\hat\sigma_d^2=0{,}257$: la varianza robusta de los residuos logarítmicos alrededor de la tendencia ($0{,}950^2=0{,}903$) menos la que se espera solo por muestreo con cuatro grados de libertad residuales ($0{,}645$).
 \end{ejemplo}
 
@@ -628,7 +628,7 @@ Una playa se divide en diez mil cuadrículas y en cada una se pasa un detector d
 
 Con el GLM de la \cref{eq:11-glm} ajustado, la pregunta ``¿cambia la expresión del gen $i$ entre condiciones?'' se convierte en la hipótesis nula $H_0:\beta_{i,\mathrm{cond}}=0$. DESeq2 ofrece dos contrastes \parencite{c11-love2014}.
 
-\begin{definicion}{Prueba de Wald}{wald}
+\begin{definicion}{Prueba de Wald}{11-wald}
 El estadístico de Wald divide el coeficiente estimado por su error estándar, obtenido de la matriz de información de la \cref{eq:11-irls}:
 \begin{equation}\label{eq:11-wald}
 z_i=\frac{\hat\beta_{i,\mathrm{cond}}}{\widehat{\mathrm{SE}}(\hat\beta_{i,\mathrm{cond}})},\qquad p_i=2\,\Phi\!\left(-|z_i|\right).
@@ -641,7 +641,7 @@ z_i=\frac{\hat\beta_{i,\mathrm{cond}}}{\widehat{\mathrm{SE}}(\hat\beta_{i,\mathr
 \simbolo{$\Phi$}{Función de distribución de la normal estándar.}
 \end{simbolos}
 
-\begin{definicion}{Prueba de razón de verosimilitudes (LRT)}{lrt}
+\begin{definicion}{Prueba de razón de verosimilitudes (LRT)}{11-lrt}
 Se ajustan un modelo completo y uno reducido sin los términos de interés, y se compara su log-verosimilitud:
 \begin{equation}\label{eq:11-lrt}
 D_i=2\left[\ell_i\big(\hat\beta^{\,\mathrm{completo}}\big)-\ell_i\big(\hat\beta^{\,\mathrm{reducido}}\big)\right]\;\overset{H_0}{\sim}\;\chi^2_{\,p_c-p_r}.
@@ -670,7 +670,7 @@ El LFC de máxima verosimilitud tiene un defecto grave para genes con pocas lect
 
 El factor de contracción depende del error estándar: los genes muy expresados, con $\mathrm{SE}$ pequeño, apenas cambian; los poco expresados se acercan mucho a cero. La previa normal tiene un inconveniente: también encoge los efectos grandes \emph{y bien medidos}, porque la cola normal considera muy improbables los cambios de 5 o 6 unidades $\log_2$. \textcite{c11-zhu2019} la reemplazaron por una previa de colas pesadas (Cauchy) en el método apeglm, que contrae con fuerza el ruido pero deja casi intactos los efectos grandes con evidencia sólida; es la opción que recomiendan hoy DESeq2 y PyDESeq2. Una idea importante: la contracción cambia la \emph{estimación} del tamaño de efecto, pero en DESeq2 los valores $p$ siguen saliendo de la prueba de Wald sobre el LFC sin contraer.
 
-\begin{ejemplo}{Un gen ruidoso}{shr}
+\begin{ejemplo}{Un gen ruidoso}{11-shr}
 En la simulación (\num{9992} genes, 3 frente a 3 réplicas, \num{946} genes con cambio real), un gen \emph{sin} cambio real y con media normalizada de $3{,}15$ lecturas obtuvo un LFC de máxima verosimilitud de $4{,}20$, con error estándar $1{,}76$ y $p=0{,}017$. Con la previa estimada, $\sigma_p=0{,}650$, su LFC contraído es $4{,}20\times0{,}650^2/(0{,}650^2+1{,}76^2)\approx0{,}51$. En el conjunto de genes con media mayor que 1, el error cuadrático medio del LFC respecto al valor verdadero baja de $1{,}24$ (máxima verosimilitud) a $0{,}117$ (contraído).
 \end{ejemplo}
 
@@ -734,7 +734,7 @@ total & $m-R$ & $R$ & $m$\\
 \end{center}
 Solo $m$ y $R$ son observables. La corrección clásica controla la \emph{tasa de error por familia}, $\mathrm{FWER}=\Prob(V\ge1)$; el método de Bonferroni lo consigue declarando significativos los genes con $p_i\le\alpha/m$. Es una exigencia apropiada cuando un único falso positivo es costoso, pero en genómica es excesiva: con $m=\num{10000}$, un gen necesita $p<10^{-5}$ para ser significativo al nivel 0,1.
 
-\begin{definicion}{Tasa de falsos descubrimientos}{fdr}
+\begin{definicion}{Tasa de falsos descubrimientos}{11-fdr}
 La FDR es la proporción esperada de falsos positivos entre los descubrimientos,
 \begin{equation}\label{eq:11-fdr}
 \mathrm{FDR}=\E\!\left[\frac{V}{\max(R,1)}\right].
@@ -749,7 +749,7 @@ La FDR es la proporción esperada de falsos positivos entre los descubrimientos,
 
 \textcite{c11-benjamini1995} propusieron controlar esta cantidad, mucho más adecuada para un experimento de cribado: lo que importa no es evitar todo error, sino que la lista de candidatos que pasará a validación sea mayoritariamente correcta. Y dieron un procedimiento sorprendentemente sencillo.
 
-\begin{teorema}{Procedimiento de Benjamini-Hochberg}{bh}
+\begin{teorema}{Procedimiento de Benjamini-Hochberg}{11-bh}
 Ordene los valores $p$, $p_{(1)}\le p_{(2)}\le\cdots\le p_{(m)}$, y sea
 \begin{equation}\label{eq:11-bh}
 k^{*}=\max\left\{\,i:\ p_{(i)}\le\frac{i}{m}\,\alpha\,\right\}.
@@ -793,7 +793,7 @@ El umbral crece linealmente con el rango: el gen más significativo debe superar
 \label{fig:11-bh}
 \end{figure}
 
-\begin{ejemplo}{Tres criterios sobre el mismo experimento}{multiple}
+\begin{ejemplo}{Tres criterios sobre el mismo experimento}{11-multiple}
 En la simulación, con \num{9992} genes y \num{946} cambios reales:
 \begin{itemize}
   \item $p<0{,}05$ sin corrección: 915 genes, de los que 373 (\SI{41}{\percent}) no tienen cambio real.
@@ -902,7 +902,7 @@ En una ciudad donde uno de cada cincuenta habitantes es pelirrojo, sube a un aut
 
 Una lista de 400 genes no es un resultado biológico; para interpretarla necesitamos saber qué hacen esos genes, y hacerlo de forma sistemática. La \emph{Gene Ontology} \parencite{c11-ashburner2000} nació para dar a las bases de datos de organismos modelo un vocabulario común con el que describir los productos génicos. Se compone de tres ontologías independientes: \emph{proceso biológico} (lo que el gen contribuye a conseguir, como ``fosforilación oxidativa''), \emph{función molecular} (la actividad bioquímica, como ``actividad de citocromo c oxidasa'') y \emph{componente celular} (dónde actúa, como ``membrana mitocondrial interna''). Los términos se organizan en un \emph{grafo acíclico dirigido}: un término puede tener varios padres, conectados por relaciones como \texttt{is\_a} (es un tipo de) o \texttt{part\_of} (es parte de). Hoy el recurso reúne decenas de miles de términos y millones de anotaciones de miles de especies \parencite{c11-go2023}.
 
-\begin{definicion}{Regla del camino verdadero}{truepath}
+\begin{definicion}{Regla del camino verdadero}{11-truepath}
 Si un gen está anotado a un término, está implícitamente anotado a todos sus ancestros en el grafo. Por eso los términos generales (``proceso metabólico'') contienen miles de genes y los específicos, unas decenas.
 \end{definicion}
 
@@ -979,7 +979,7 @@ El modelo hipergeométrico supone que todos los genes tenían la misma probabili
 \label{fig:11-pwf}
 \end{figure}
 
-\begin{ejemplo}{Un enriquecimiento espurio}{hiper}
+\begin{ejemplo}{Un enriquecimiento espurio}{11-hiper}
 En la simulación creamos un ``término GO'' de $K=150$ genes elegidos entre el \SI{20}{\percent} más largo, con 14 genes con cambio real, tantos como los que corresponden por azar ($150\times0{,}095\approx14{,}2$): no hay enriquecimiento biológico. La lista tiene $n=404$ genes significativos entre $N=\num{9992}$. Se esperaba $\E[X]=404\times150/\num{9992}=6{,}06$ genes del término en la lista y se observan $k=12$. La tabla de Fisher es
 \begin{center}\small
 \begin{tabular}{@{}lcc@{}}
@@ -1021,7 +1021,7 @@ El análisis de sobrerrepresentación tiene dos debilidades. Depende de un umbra
 
 La idea es trabajar con la lista \emph{completa} de genes, ordenada por un estadístico de cambio (por ejemplo, el $z$ de Wald), y preguntar si los genes del conjunto $S$ tienden a concentrarse en uno de los extremos. Se recorre la lista de arriba abajo con un paseo que sube cada vez que encuentra un gen de $S$ y baja cuando encuentra uno que no está.
 
-\begin{definicion}{Puntuación de enriquecimiento}{es}
+\begin{definicion}{Puntuación de enriquecimiento}{11-es}
 Sean $r_1\ge r_2\ge\cdots\ge r_N$ los estadísticos ordenados, $N_H=|S|$ y $p\ge0$ un exponente de ponderación. Para cada posición $i$,
 \begin{equation}\label{eq:11-gsea}
 P_{\mathrm{hit}}(i)=\sum_{\substack{j\le i\\ g_j\in S}}\frac{|r_j|^{p}}{N_R},\qquad
@@ -1067,7 +1067,7 @@ Las dos sumas acumuladas valen 1 al final de la lista, así que el paseo empieza
 \label{fig:11-gsea}
 \end{figure}
 
-\begin{ejemplo}{Leer un resultado de GSEA}{gsea}
+\begin{ejemplo}{Leer un resultado de GSEA}{11-gsea}
 En la \cref{fig:11-gsea}, la ES es $0{,}668$ y la NES, $2{,}41$: el conjunto está mucho más concentrado en la cabeza de la lista que los conjuntos aleatorios del mismo tamaño. En \num{1000} permutaciones de genes, ninguna ES aleatoria positiva alcanzó el valor observado, así que $p\approx1/(n_{+}+1)=0{,}0016$, donde $n_{+}$ es el número de permutaciones con ES positiva: el valor $p$ está limitado por el número de permutaciones, no por la evidencia. El núcleo líder tiene 30 genes, que incluyen casi todos los realmente sobreexpresados. Con la versión sin pesos ($p=0$) la ES es solo $0{,}295$: los 52 genes sin cambio diluyen la señal cuando todos los genes pesan lo mismo, mientras que la ponderación deja que los pocos genes con cambios fuertes dominen el paseo.
 \end{ejemplo}
 
@@ -1112,13 +1112,13 @@ Un término enriquecido es una \emph{hipótesis}, no una conclusión. Las anotac
 \begin{ejercicios}
 \ej{1} Un transcrito de \SI{600}{pb} y otro de \SI{6000}{pb} reciben el mismo número de fragmentos, con fragmentos de longitud media 250. Calcule sus longitudes efectivas aproximadas y la razón de sus fracciones molares $\tau$. ¿Qué error se comete si se ignora la longitud efectiva?
 \ej{1} Demuestre que los TPM de una muestra suman $10^6$ y que la suma de sus RPKM es $10^9/\bar\ell$, donde $\bar\ell$ es la media de las longitudes ponderada por los conteos.
-\ej{2} Modifique \py{em_isoformas} para que el paso E reparta en proporción a $\alpha_t$ en lugar de $\alpha_t/\tilde\ell_t$ y aplíquelo al \cref{ej:em}. Compare las estimaciones de $\tau$ con las correctas y explique la dirección del sesgo.
+\ej{2} Modifique \py{em_isoformas} para que el paso E reparta en proporción a $\alpha_t$ en lugar de $\alpha_t/\tilde\ell_t$ y aplíquelo al \cref{ej:11-em}. Compare las estimaciones de $\tau$ con las correctas y explique la dirección del sesgo.
 \ej{2} Con la ley de la varianza total, derive la \cref{eq:11-nbvar}. Luego simule \num{10000} valores de una mezcla gamma-Poisson con $\mu=50$ y $\alpha=0{,}3$ y compruebe media y varianza empíricas.
 \ej{2} Tome una matriz de conteos real (por ejemplo, la del notebook de la lección) y calcule factores de tamaño por mediana de razones y por total de lecturas. Represente el gráfico MA entre dos muestras y marque ambos factores. ¿Cuál centra mejor la nube?
 \ej{2} Simule \num{10000} valores $p$ de los cuales \num{9000} son uniformes y \num{1000} proceden de una beta$(0{,}1;\,1)$. Aplique BH con $\alpha=0{,}1$ y calcule la proporción de falsos descubrimientos. Repita 200 veces y compare la media con $\pi_0\alpha$.
 \ej{3} Demuestre que filtrar genes por su valor $p$ antes de aplicar BH no controla la FDR, construyendo un contraejemplo con todas las hipótesis nulas verdaderas. ¿Por qué el filtrado por media global no sufre el mismo problema?
 \ej{3} Implemente GSEA con permutaciones de las etiquetas de muestra en un conjunto de datos con al menos seis réplicas por grupo, y compare los valores $p$ con los obtenidos permutando genes para un conjunto de genes muy correlacionados entre sí. Explique la diferencia.
-\ej{3} Para el \cref{ej:hiper}, implemente la corrección por longitud con la distribución hipergeométrica no central de Wallenius (en SciPy, la clase \py{nchypergeom_wallenius} del módulo \py{scipy.stats}), usando como peso del término la razón entre la PWF media de sus genes y la del resto. Compare el resultado con el obtenido por remuestreo.
+\ej{3} Para el \cref{ej:11-hiper}, implemente la corrección por longitud con la distribución hipergeométrica no central de Wallenius (en SciPy, la clase \py{nchypergeom_wallenius} del módulo \py{scipy.stats}), usando como peso del término la razón entre la PWF media de sus genes y la del resto. Compare el resultado con el obtenido por remuestreo.
 \end{ejercicios}
 
 \referenciascapitulo

@@ -68,7 +68,7 @@ ATTAAAGGTTTATACCTTCCCAGGTAACAAACCAACCAACTTTCGATCTCTTGTAGATCT
 GTTCTCTAAACGAACTTTAAAATCTGTGTGGCTGTCACTCGGCTGCATGCTTAGTGCACT
 \end{consola}
 
-\begin{definicion}{Registro FASTA}{fasta}
+\begin{definicion}{Registro FASTA}{02-fasta}
 Un archivo FASTA es una sucesión de registros. Cada registro comienza con una línea de encabezado que empieza por \texttt{>}; la primera palabra tras el \texttt{>} (hasta el primer espacio) es el \emph{identificador} y el resto es una descripción libre. Las líneas siguientes, hasta el próximo \texttt{>} o el fin del archivo, se concatenan para formar la secuencia, escrita con el alfabeto IUPAC de nucleótidos o de aminoácidos.
 \end{definicion}
 
@@ -99,7 +99,7 @@ Un secuenciador no solo dice \emph{qué} base leyó, sino \emph{cuán seguro est
 
 La calidad no se guarda como probabilidad, sino en una escala logarítmica introducida por el programa \cmd{phred}, que asignaba bases y calidades a las trazas de los secuenciadores capilares del Proyecto Genoma Humano \parencite{c02-ewing1998a,c02-ewing1998b}.
 
-\begin{definicion}{Calidad Phred}{phred}
+\begin{definicion}{Calidad Phred}{02-phred}
 Si $p$ es la probabilidad de que la base asignada sea incorrecta, su calidad Phred es
 \begin{equation}\label{eq:02-phred}
 Q = -10\,\log_{10} p \qquad\Longleftrightarrow\qquad p = 10^{-Q/10}.
@@ -183,7 +183,7 @@ Si además suponemos que los errores ocurren de forma independiente, la probabil
 \end{simbolos}
 donde la aproximación usa $\ln(1-p)\approx -p$ para $p$ pequeño: el número de errores es aproximadamente una variable de Poisson de media EE. Esta cantidad resume una lectura mucho mejor que la calidad \emph{media}, porque la media de $Q$ es la media de logaritmos y esconde las pocas bases malas que dominan la suma de probabilidades.
 
-\begin{ejemplo}{Errores esperados, a mano y en la \cref{fig:02-fastq}}{ee}
+\begin{ejemplo}{Errores esperados, a mano y en la \cref{fig:02-fastq}}{02-ee}
 Una lectura corta tiene calidades $Q=(40,30,20,20,10)$. Sus probabilidades de error son $(10^{-4},10^{-3},10^{-2},10^{-2},10^{-1})$ y
 \[
 \mathrm{EE} = 0{,}0001+0{,}001+0{,}01+0{,}01+0{,}1 = 0{,}1211.
@@ -267,7 +267,7 @@ Las coordenadas de GenBank son \emph{1-based e inclusivas}: el gen S ocupa las b
 
 Aquí está la fuente de errores más famosa de la bioinformática. Existen dos convenciones para numerar posiciones en una secuencia, y ambas son correctas a su manera (\cref{fig:02-coordenadas}).
 
-\begin{definicion}{Sistemas de coordenadas}{coordenadas}
+\begin{definicion}{Sistemas de coordenadas}{02-coordenadas}
 En el sistema \emph{1-based cerrado}, las posiciones numeran \emph{bases}: la primera base es la 1 y un intervalo $[s_1, e_1]$ incluye ambos extremos. Lo usan GenBank, GFF3/GTF, SAM (columna POS), VCF y los navegadores genómicos.
 En el sistema \emph{0-based semiabierto}, las posiciones numeran los \emph{bordes entre bases}, como las marcas de una regla: el primer borde es el 0 y un intervalo $[s_0, e_0)$ va del borde $s_0$ al borde $e_0$, incluyendo la base que sigue a $s_0$ pero no la que sigue a $e_0$. Lo usan BED, el formato binario BAM, Python (\py{seq[s:e]}) y la mayoría de las bibliotecas.
 \end{definicion}
@@ -327,7 +327,7 @@ Esta es la operación elemental de herramientas como BEDTools \parencite{c02-qui
 
 Finalmente, la hebra negativa. Si una secuencia tiene longitud $L$, el borde $x_0$ de la hebra positiva corresponde al borde $L-x_0$ de su reverso complementario, de modo que $[s_0,e_0) \mapsto [L-e_0,\ L-s_0)$. En el sistema 1-based, la base $x_1$ corresponde a la base $L-x_1+1$. Los formatos de anotación \emph{no} aplican esa transformación: GFF, BED y VCF expresan siempre las coordenadas sobre la hebra positiva y guardan la hebra en una columna aparte (\texttt{+}/\texttt{-}). Para obtener la secuencia de un gen en la hebra negativa se extrae el intervalo de la hebra positiva y luego se toma su reverso complementario.
 
-\begin{ejemplo}{El gen S en tres sistemas}{coordS}
+\begin{ejemplo}{El gen S en tres sistemas}{02-coordS}
 GenBank dice que el gen S de SARS-CoV-2 ocupa \texttt{21563..25384}. En BED se escribe \texttt{NC\_045512.2\quad 21562\quad 25384}, y en Python la secuencia es \py{ref[21562:25384]}, cuyas tres primeras letras son \secuencia{ATG}. Si por descuido escribimos \py{ref[21563:25384]}, obtenemos una secuencia que empieza en \secuencia{TGT}: el marco de lectura se desplaza y la traducción es basura. La longitud es $25384-21562=3822$ en ambos sistemas.
 
 En la otra dirección, el servicio \texttt{esummary} del NCBI informa para \gen{TP53} humano (hebra negativa del cromosoma 17) \texttt{chrstart = 7687489} y \texttt{chrstop = 7668420}, en coordenadas 0-based y en el sentido de lectura del gen. Sumando 1 a cada extremo y ordenándolos se obtiene $7\,668\,421$–$7\,687\,490$, que es exactamente lo que reporta Ensembl, en 1-based, para el transcrito canónico (\cref{sec:02-bases}).
@@ -415,7 +415,7 @@ La CIGAR (\ingles{Compact Idiosyncratic Gapped Alignment Report}) codifica el al
 \end{tabularx}
 \end{table}
 
-\begin{teorema}{Longitudes implícitas en una CIGAR}{cigar}
+\begin{teorema}{Longitudes implícitas en una CIGAR}{02-cigar}
 Sea una CIGAR $C = (n_1,o_1)\cdots(n_K,o_K)$. La longitud de la lectura almacenada en SEQ, el tramo de referencia cubierto y la última posición alineada son
 \begin{align}
 \ell_q &= \sum_{k:\ o_k \in \{\texttt{M},\texttt{I},\texttt{S},\texttt{=},\texttt{X}\}} n_k, \label{eq:02-lq}\\
@@ -438,7 +438,7 @@ La demostración es inmediata: al recorrer la CIGAR, un puntero avanza sobre la 
 \label{fig:02-cigar}
 \end{figure}
 
-\begin{ejemplo}{Leer una CIGAR}{cigar}
+\begin{ejemplo}{Leer una CIGAR}{02-cigar}
 Una lectura tiene \texttt{POS = 1000} y \texttt{CIGAR = 3S40M1I20M5D30M2S}. Según las \cref{eq:02-lq,eq:02-lr},
 \[
 \ell_q = 3+40+1+20+30+2 = 96,\qquad \ell_r = 40+20+5+30 = 95,
@@ -468,7 +468,7 @@ Como la representación binaria de un entero es única, la descomposición tambi
 \label{fig:02-flag}
 \end{figure}
 
-\begin{ejemplo}{Construir y descomponer una FLAG}{flag}
+\begin{ejemplo}{Construir y descomponer una FLAG}{02-flag}
 ¿Qué FLAG tiene la segunda lectura de un par, bien emparejada, alineada en la hebra reversa y marcada como duplicado? Encendemos los bits de valor 1 (pareada), 2 (par correcto), 16 (hebra reversa), 128 (R2) y 1024 (duplicado): $F = 1+2+16+128+1024 = 1171$.
 
 A la inversa, $F=83$: la mayor potencia de 2 que cabe es 64 (resta 19), luego 16 (resta 3), luego 2 (resta 1) y 1. Así, $83 = 64+16+2+1$: primera lectura del par, en la hebra reversa, par correcto. Su pareja típica es $163=128+32+2+1$.
@@ -491,7 +491,7 @@ Leer en $v$ significa: saltar al byte $c$, descomprimir un solo bloque y avanzar
 
 Falta saber \emph{qué} $v$ corresponde a una región del genoma. Si el BAM está ordenado por coordenada, el índice \archivo{.bai} lo responde con un esquema de \emph{casillas} (\ingles{bins}) heredado del navegador de UCSC \parencite{c02-kent2002}: el cromosoma se divide en una jerarquía de seis niveles, y cada alineamiento se asigna a la casilla más pequeña que lo contiene por completo (\cref{fig:02-bgzf}).
 
-\begin{teorema}{Esquema de casillas del índice BAI}{bins}
+\begin{teorema}{Esquema de casillas del índice BAI}{02-bins}
 En el nivel $l\in\{0,\dots,5\}$ hay $8^l$ casillas, cada una de $2^{29-3l}$ pares de bases, numeradas consecutivamente a partir de
 \begin{equation}\label{eq:02-bin}
 \mathrm{off}(l) = \frac{8^l-1}{7} \in \{0,\,1,\,9,\,73,\,585,\,4681\}.
@@ -550,7 +550,7 @@ Para cada casilla, el índice guarda los intervalos de desplazamientos virtuales
 \label{fig:02-bgzf}
 \end{figure}
 
-\begin{ejemplo}{¿En qué casilla cae \gen{TP53}?}{bin}
+\begin{ejemplo}{¿En qué casilla cae \gen{TP53}?}{02-bin}
 El transcrito canónico de \gen{TP53} ocupa $[\num{7668420}, \num{7687490})$ del cromosoma 17. En el nivel 5 sus extremos caen en casillas distintas ($\lfloor s/2^{14}\rfloor = 468$, $\lfloor (e-1)/2^{14}\rfloor = 469$); en el nivel 4 ambos dan $58$, así que su casilla es $\mathrm{off}(4)+58=585+58 = 643$. Una lectura de 150 nt en $[\num{7674219},\num{7674369})$ cabe en la casilla de nivel 5 número $4681+468 = 5149$.
 \end{ejemplo}
 
@@ -588,7 +588,7 @@ El campo \texttt{PL} resume la evidencia que llevó al genotipo, y es otra aplic
 \simbolo{$\mathrm{PL}_G$}{Verosimilitud del genotipo en escala Phred, normalizada para que el más verosímil valga 0.}
 \end{simbolos}
 
-\begin{ejemplo}{Del recuento de lecturas al campo PL}{pl}
+\begin{ejemplo}{Del recuento de lecturas al campo PL}{02-pl}
 Diez lecturas cubren la posición 101: seis dicen \nuc{C} (REF) y cuatro \nuc{T} (ALT), con $\varepsilon = 0{,}01$ ($Q=20$). Entonces
 \begin{align*}
 \Prob(D\mid 0/0) &= 0{,}99^{6}\,0{,}01^{4} = 9{,}41\times10^{-9},\\
@@ -663,7 +663,7 @@ Cada día, laboratorios de todo el mundo producen secuencias, estructuras y medi
 
 Si hay una lección que llevarse de esta sección es esta: \emph{un nombre de gen no es un identificador}. ``\gen{TP53}'' designa, según el contexto, un locus del cromosoma 17, cualquiera de sus decenas de transcritos, varias isoformas proteicas, el gen ortólogo de otra especie o la proteína p53 en general. Los identificadores de las bases de datos, en cambio, tienen dos propiedades que los hacen útiles:
 
-\begin{definicion}{Identificador estable versionado}{acceso}
+\begin{definicion}{Identificador estable versionado}{02-acceso}
 Un identificador estable es una cadena que designa siempre la misma entidad, que nunca se reasigna a otra y que se sigue resolviendo aunque la entidad quede obsoleta. Cuando el contenido de la entidad cambia, el identificador conserva su parte estable y se incrementa un número de versión: \texttt{acceso.versión}.
 \end{definicion}
 
@@ -734,7 +734,7 @@ La consecuencia práctica es que el único modo de acelerar una descarga grande 
 
 
 
-\begin{ejemplo}{Descargar \num{5000} proteínas}{descarga}
+\begin{ejemplo}{Descargar \num{5000} proteínas}{02-descarga}
 Queremos las secuencias FASTA de \num{5000} proteínas del NCBI. Pidiéndolas de una en una ($N=5000$) sin clave de API ($r=3$), la \cref{eq:02-tasa} da $T\ge \num{1667}$\,s, casi media hora; con clave ($r=10$), 500\,s. Si en cambio usamos el \ingles{History server} y lotes de 500 registros, bastan una petición \texttt{esearch} y $\lceil 5000/500\rceil=10$ peticiones \texttt{efetch}: $N=11$ y $T \ge 3{,}7$\,s. El cuello de botella deja de ser el límite de tasa y pasa a ser el volumen de datos transferido.
 \end{ejemplo}
 
@@ -789,7 +789,7 @@ El NCBI agrupa más de treinta bases de datos (Nucleotide, Protein, Gene, PubMed
 \end{tabularx}
 \end{center}
 
-El flujo típico es \texttt{esearch} $\to$ \texttt{esummary}/\texttt{elink} $\to$ \texttt{efetch}: primero se encuentra, luego se mira, al final se descarga. Para \gen{TP53}, \texttt{esearch} en la base Gene con la consulta \texttt{TP53[sym] AND human[orgn]} devuelve el UID \texttt{7157}; \texttt{esummary} devuelve su localización (\cref{ej:coordS}); \texttt{elink} con \texttt{linkname=gene\_protein\_refseq} lleva a sus proteínas RefSeq, y \texttt{efetch} descarga \texttt{NP\_000537.3} en FASTA, una proteína de 393 aminoácidos. Biopython envuelve estas llamadas en el módulo \texttt{Bio.Entrez}, que además respeta automáticamente el límite de tasa \parencite{c02-cock2009}.
+El flujo típico es \texttt{esearch} $\to$ \texttt{esummary}/\texttt{elink} $\to$ \texttt{efetch}: primero se encuentra, luego se mira, al final se descarga. Para \gen{TP53}, \texttt{esearch} en la base Gene con la consulta \texttt{TP53[sym] AND human[orgn]} devuelve el UID \texttt{7157}; \texttt{esummary} devuelve su localización (\cref{ej:02-coordS}); \texttt{elink} con \texttt{linkname=gene\_protein\_refseq} lleva a sus proteínas RefSeq, y \texttt{efetch} descarga \texttt{NP\_000537.3} en FASTA, una proteína de 393 aminoácidos. Biopython envuelve estas llamadas en el módulo \texttt{Bio.Entrez}, que además respeta automáticamente el límite de tasa \parencite{c02-cock2009}.
 
 \begin{codigo}[entrez\_tp53.py]
 from Bio import Entrez, SeqIO
@@ -857,7 +857,7 @@ UniProt es el recurso central para las proteínas \parencite{c02-uniprot2025}. S
 
 La \cref{fig:02-p53var} sugiere que las variantes no están repartidas al azar. Podemos cuantificarlo con una prueba binomial, un buen ejemplo de cómo los datos de una base de datos se convierten en una afirmación estadística.
 
-\begin{ejemplo}{¿Se concentran las variantes en el dominio de unión al ADN?}{binomial}
+\begin{ejemplo}{¿Se concentran las variantes en el dominio de unión al ADN?}{02-binomial}
 La entrada registra $N=1363$ variantes naturales en 332 posiciones distintas. El dominio de unión al ADN abarca 191 de los 393 residuos, una fracción $\pi_0=191/393=0{,}486$. Si las variantes cayeran al azar a lo largo de la proteína, el número dentro del dominio, $K$, seguiría una distribución $\mathrm{Bin}(N,\pi_0)$, con media $N\pi_0 = 662{,}4$ y desviación típica $\sqrt{N\pi_0(1-\pi_0)}=18{,}5$. Se observan $K=1052$ (el 77\,\%), lo que da
 \[
 z = \frac{1052 - 662{,}4}{18{,}5} = 21{,}1,
@@ -963,9 +963,9 @@ Sin esos cuatro datos, un análisis no es reproducible.
 \ej{1} Descomponga las FLAG \texttt{83}, \texttt{2064} y \texttt{3844}. ¿Qué filtro \texttt{-F} de \cmd{samtools view} excluye a la vez lecturas no alineadas, secundarias, duplicadas y suplementarias?
 \ej{2} Para la CIGAR \texttt{3S40M1I20M5D30M2S} con \texttt{POS=1000}: (a) ¿qué posición de la referencia queda frente a la base 50 de la lectura? (b) ¿Qué intervalo 0-based semiabierto devuelve \py{reference_start, reference_end} en \cmd{pysam}? Escriba una función que, dada una CIGAR y POS, devuelva el par de listas de posiciones alineadas.
 \ej{2} Usando la \cref{eq:02-p0}, calcule la calidad Phred uniforme mínima que debe tener una lectura de 150 nt para que la probabilidad de estar libre de errores sea al menos 0,9. Compare la aproximación de Poisson con el cálculo exacto.
-\ej{2} Implemente la función \py{reg2bin(beg, end)} del \cref{teo:bins} y verifique los resultados del \cref{ej:bin}. ¿Cuántas casillas hay que examinar como máximo para una región de \SI{100}{kb}?
+\ej{2} Implemente la función \py{reg2bin(beg, end)} del \cref{teo:02-bins} y verifique los resultados del \cref{ej:02-bin}. ¿Cuántas casillas hay que examinar como máximo para una región de \SI{100}{kb}?
 \ej{2} Escriba un cliente que obtenga para \gen{BRCA1} humano su UID de NCBI Gene (\texttt{esearch}), su identificador de Ensembl (endpoint \texttt{lookup/symbol}), su transcrito canónico y su acceso de UniProt (\texttt{xrefs}), respetando el límite de tasa de cada servicio y registrando la fecha y la versión de cada respuesta.
-\ej{3} Repita el \cref{ej:pl} para 20 lecturas con 3 alternativas y $\varepsilon=0{,}01$, y luego con $\varepsilon=0{,}05$. ¿Cómo cambia la decisión entre 0/0 y 0/1? Explique por qué una calidad mal calibrada (\cref{fig:02-calidad}) produce falsos heterocigotos.
+\ej{3} Repita el \cref{ej:02-pl} para 20 lecturas con 3 alternativas y $\varepsilon=0{,}01$, y luego con $\varepsilon=0{,}05$. ¿Cómo cambia la decisión entre 0/0 y 0/1? Explique por qué una calidad mal calibrada (\cref{fig:02-calidad}) produce falsos heterocigotos.
 \end{ejercicios}
 
 \referenciascapitulo

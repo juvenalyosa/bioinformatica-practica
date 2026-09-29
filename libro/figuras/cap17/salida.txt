@@ -1,0 +1,64 @@
+kmer: x                                  GATTACAGAT
+kmer: phi(x) no nulos                    {'AC': 1, 'AG': 1, 'AT': 2, 'CA': 1, 'GA': 2, 'TA': 1, 'TT': 1}
+kmer: phi(y) no nulos                    {'AC': 2, 'AG': 1, 'AT': 1, 'CA': 1, 'GA': 1, 'TA': 2, 'TT': 1}
+kmer: K(x,y)                             11.0
+kmer: K(x,x), K(y,y)                     (13.0, 13.0)
+kmer: K normalizado                      0.8462
+logreg: gradiente                        [0.0, -0.375, 0.0]
+logreg: w1                               [0.0, 0.375, 0.0]
+logreg: p1                               [0.6792, 0.5927, 0.5, 0.5]
+logreg: L0, L1                           (0.6931, 0.5741)
+frontera: acc LR (entrenamiento)         0.95
+frontera: acc SVM (entrenamiento)        0.957
+frontera: n vectores soporte             31
+frontera: CV10 LR / SVM                  (0.95, 0.936)
+sv: mejor profundidad, error CV          (6, 0.11)
+sv: error CV profundidad 15 / train      (0.132, 0.0)
+sv: error CV random forest               0.105
+fuga: regresión logística aleatoria / por familia (0.668, 0.409)
+fuga: random forest aleatoria / por familia (0.878, 0.47)
+fuga: 1-NN aleatoria / por familia       (0.969, 0.529)
+roc: AUC bal / des                       (0.852, 0.883)
+pr: AP bal / des                         (0.852, 0.127)
+roc: AUC teórico                         0.856
+ejemplo: precisión prev 1%               0.1538
+cnn: parámetros                          369
+cnn: pérdida final train/val             (0.327, 0.426)
+cnn: AUROC test                          0.896
+cnn: exactitud test                      0.822
+cnn: filtro elegido, ventanas            (4, 1115)
+cnn: IC aprendido por posición           [1.47, 1.44, 1.52, 0.67, 1.49, 1.53, 1.49, 0.0, 0.0, 0.0, 0.0]
+cnn: desfase del motivo en el filtro     0
+cnn: consenso aprendido                  TGAGTCATTAC
+cnn: rango de pesos del filtro           (-1.54, 1.11)
+sal: secuencia                           CCTGATCATCAAGAAAACCACGGCCAGTTGGGTGAGTGAGTCAGATACGTTCGGTGATCCAGGGAAAAGGGTGGCTTAGTATATATTCGTTCACCGACTC
+sal: motivo en posiciones                (37, 43, 'TGAGTCA')
+sal: fracción |sal| dentro del motivo    0.46399998664855957
+att: S = QK^T/sqrt(2)                    [[2.828, 0.0, 0.0, 2.828], [0.0, 0.707, 0.707, 0.0], [0.707, 0.707, 0.707, 0.707], [2.828, 0.0, 0.0, 2.828]]
+att: A                                   [[0.472, 0.028, 0.028, 0.472], [0.165, 0.335, 0.335, 0.165], [0.25, 0.25, 0.25, 0.25], [0.472, 0.028, 0.028, 0.472]]
+att: Z                                   [[0.944, 0.056], [0.33, 0.67], [0.5, 0.5], [0.944, 0.056]]
+esm: secuencia 1UBQ                      (76, 'MQIFVKTLTGKTITLEVEPSDTIENVKAKIQDKEGIPPDQQRLIFAGKQLEDGRTLSDYNIQKESTLHLVLRLRGG')
+mlm: 5 posiciones de mayor entropía      [('K63', 1.87), ('A28', 2.02), ('T55', 2.02), ('E24', 2.12), ('N25', 2.31)]
+mlm: top-6 en i44                        [('I', 0.993), ('V', 0.006), ('L', 0.0), ('T', 0.0), ('A', 0.0), ('F', 0.0)]
+mlm: top-6 en e24                        [('A', 0.387), ('N', 0.117), ('S', 0.1), ('L', 0.095), ('Q', 0.058), ('G', 0.043)]
+mlm: residuos 40-48                      QQRLIFAGK
+mlm: residuos 20-28                      SDTIENVKA
+mlm: pseudo-perplejidad                  1.783
+paisaje: 8 posiciones más intolerantes   [('G47', -11.47), ('I44', -11.46), ('K6', -10.6), ('K27', -10.42), ('F45', -10.2), ('G10', -10.07), ('L69', -10.04), ('V70', -9.96)]
+paisaje: 6 más tolerantes                [('P38', -2.78), ('N25', -2.65), ('K63', -2.24), ('D32', -1.99), ('A28', -1.37), ('E24', -0.64)]
+paisaje: LLR I44V, I44A, I44D            (-5.1, -9.54, -13.62)
+paisaje: LLR G76A, G75A, G47A            (-1.3, -7.18, -8.13)
+paisaje: fracción LLR<0                  0.976
+contactos: prec top-L (|i-j|>=6)         0.868
+contactos: prec top-L/2 (|i-j|>=12)      0.895
+contactos: prec top-L/5 (|i-j|>=24)      1.0
+contactos: n contactos reales |i-j|>=6   139
+  familia globinas: 486 secuencias, 30 elegidas
+  familia citocromo c: 251 secuencias, 30 elegidas
+  familia peptidasa S1: 493 secuencias, 30 elegidas
+  familia HSP20: 379 secuencias, 30 elegidas
+  familia tiorredoxinas: 342 secuencias, 30 elegidas
+emb: n secuencias                        150
+emb: 1-NN exactitud 3-mers               0.893
+emb: 1-NN exactitud ESM-2                0.953
+listo

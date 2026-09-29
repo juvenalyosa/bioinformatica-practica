@@ -375,13 +375,13 @@ w("logo_aprendido.tex", logo_tex(pfm_learn, marca=(off + 1, off + 7)))
 # pesos crudos del filtro (heatmap 4 x 11) para la figura
 Wf = net.conv.weight.detach().numpy()[fbest]  # (4, 11)
 vm = np.abs(Wf).max()
-t = [r"\begin{tikzpicture}[x=0.46cm,y=0.46cm]"]
+t = [r"\begin{tikzpicture}[x=0.4cm,y=0.4cm]"]
 for i, bse in enumerate(BASES):
     t.append(rf"\node[anchor=east,font=\ttfamily\bfseries\scriptsize,text={NUCCOL[bse]}] at (0.45,{-i}) {{{bse}}};")
     for j in range(11):
         v = Wf[i, j] / vm
         col = f"rojo!{int(90*v)}" if v > 0 else f"azulprofundo!{int(-90*v)}"
-        t.append(rf"\node[draw=white,fill={col},minimum size=0.46cm,inner sep=0pt] at ({j+1},{-i}) {{}};")
+        t.append(rf"\node[draw=white,fill={col},minimum size=0.4cm,inner sep=0pt] at ({j+1},{-i}) {{}};")
 for j in range(11):
     t.append(rf"\node[font=\sffamily\tiny,text=gris] at ({j+1},-3.75) {{{j+1}}};")
 t.append(r"\end{tikzpicture}")
@@ -404,7 +404,7 @@ say("sal: fracción |sal| dentro del motivo", round(np.abs(gx[at0:at0 + 7]).sum(
 # letras escaladas por contribución en ventana alrededor del motivo
 a, b = at0 - 8, at0 + 15
 vmax = np.abs(gx[a:b]).max()
-t = [r"\begin{tikzpicture}[x=0.5cm,y=1cm]"]
+t = [r"\begin{tikzpicture}[x=0.42cm,y=1cm]"]
 t.append(rf"\fill[amarillo!18] ({at0-a+0.5},-0.55) rectangle ({at0-a+7+0.5},1.05);")
 t.append(rf"\draw[base] (0.4,0) -- ({b-a+0.6},0);")
 for k in range(a, b):
@@ -412,9 +412,9 @@ for k in range(a, b):
     x = k - a + 1
     if abs(v) * 0.9 > 0.03:
         if v > 0:
-            t.append(rf"\node[anchor=south,inner sep=0pt,text={NUCCOL[c]}] at ({x},0) {{\resizebox{{0.42cm}}{{{v*0.9:.3f}cm}}{{\sffamily\bfseries {c}}}}};")
+            t.append(rf"\node[anchor=south,inner sep=0pt,text={NUCCOL[c]}] at ({x},0) {{\resizebox{{0.36cm}}{{{v*0.9:.3f}cm}}{{\sffamily\bfseries {c}}}}};")
         else:
-            t.append(rf"\node[anchor=north,inner sep=0pt,text={NUCCOL[c]}!55] at ({x},0) {{\scalebox{{1}}[-1]{{\resizebox{{0.42cm}}{{{-v*0.9:.3f}cm}}{{\sffamily\bfseries {c}}}}}}};")
+            t.append(rf"\node[anchor=north,inner sep=0pt,text={NUCCOL[c]}!55] at ({x},0) {{\scalebox{{1}}[-1]{{\resizebox{{0.36cm}}{{{-v*0.9:.3f}cm}}{{\sffamily\bfseries {c}}}}}}};")
     t.append(rf"\node[font=\ttfamily\tiny,text=gris] at ({x},-0.62) {{{c}}};")
 t.append(rf"\node[etiqueta,anchor=west] at ({b-a+0.8},0.45) {{contribución $+$}};")
 t.append(rf"\node[etiqueta,anchor=west] at ({b-a+0.8},-0.3) {{contribución $-$}};")

@@ -131,7 +131,7 @@ Una vez alineadas las lecturas, cada posición del genoma de referencia queda cu
   \node[etiqueta, text=rojooscuro, anchor=north] at (12,-6.5) {error aislado (Q8)};
   \node[etiqueta, anchor=north] at (8,-6.6) {columna 8};
 \end{tikzpicture}
-\caption[Un \ingles{pileup}]{Un \ingles{pileup} de seis lecturas (barras grises; la punta indica la hebra) sobre 15 posiciones de la referencia. Las bases que coinciden con la referencia se omiten y solo se muestran las que importan. En la columna 8 (sombreada) tres lecturas muestran la \nuc{A} de la referencia y tres una \nuc{G}; la intensidad del color codifica la calidad Phred de cada base, anotada a la derecha. En la columna 12 aparece una \nuc{C} aislada de baja calidad: un error de secuenciación típico que un buen modelo debe ignorar. Esta columna es el dato del \cref{ej:verosimilitud}.}
+\caption[Un \ingles{pileup}]{Un \ingles{pileup} de seis lecturas (barras grises; la punta indica la hebra) sobre 15 posiciones de la referencia. Las bases que coinciden con la referencia se omiten y solo se muestran las que importan. En la columna 8 (sombreada) tres lecturas muestran la \nuc{A} de la referencia y tres una \nuc{G}; la intensidad del color codifica la calidad Phred de cada base, anotada a la derecha. En la columna 12 aparece una \nuc{C} aislada de baja calidad: un error de secuenciación típico que un buen modelo debe ignorar. Esta columna es el dato del \cref{ej:09-verosimilitud}.}
 \label{fig:09-pileup}
 \end{figure}
 
@@ -139,7 +139,7 @@ La \cref{fig:09-pileup} muestra un caso sencillo pero instructivo. En la columna
 
 \subsection{El modelo de error de una base}
 
-\begin{definicion}{Genotipo}{genotipo}
+\begin{definicion}{Genotipo}{09-genotipo}
 En un organismo diploide, el \emph{genotipo} en un sitio es el par no ordenado de alelos $G=\{a_1,a_2\}$ presentes en los dos cromosomas homólogos. Para un sitio bialélico con alelo de referencia $R$ y alternativo $A$ hay tres genotipos: $RR$ (homocigoto de referencia, \texttt{0/0} en VCF), $RA$ (heterocigoto, \texttt{0/1}) y $AA$ (homocigoto alternativo, \texttt{1/1}).
 \end{definicion}
 
@@ -176,7 +176,7 @@ Para un homocigoto $a_1=a_2$ la ecuación se reduce a la \cref{eq:09-pbase}. Par
 
 Una columna contiene $n$ lecturas con bases $D=(b_1,\dots,b_n)$ y calidades $(Q_1,\dots,Q_n)$. Si los errores de lecturas distintas son independientes, y cada lectura proviene de un cromosoma elegido al azar independientemente de las demás, la probabilidad de toda la columna es el producto de las probabilidades individuales.
 
-\begin{teorema}{Verosimilitud de un genotipo diploide}{verosimilitud}
+\begin{teorema}{Verosimilitud de un genotipo diploide}{09-verosimilitud}
 Bajo los supuestos de errores independientes y muestreo equilibrado de los dos cromosomas,
 \begin{equation}\label{eq:09-lik}
 L(G) \;=\; P(D \mid G) \;=\; \prod_{i=1}^{n}\Bigl[\tfrac12\,P(b_i\mid a_1) + \tfrac12\,P(b_i\mid a_2)\Bigr],
@@ -206,7 +206,7 @@ L(g) = \frac{1}{m^{n}}\prod_{j=1}^{l}\Bigl[(m-g)\,\varepsilon_j + g\,(1-\varepsi
 
 Cada corchete es simplemente \cref{eq:09-pbaseG} generalizada: una lectura proviene de una de las $m$ copias (de ahí el factor $1/m$), de las cuales $g$ llevan la referencia. Hay una diferencia sutil con nuestra \cref{eq:09-pbase}: en la \cref{eq:09-li} un error convierte una base en \emph{el otro alelo} con probabilidad $\varepsilon$, no $\varepsilon/3$, porque el modelo es estrictamente bialélico. Las dos versiones dan resultados muy parecidos en la práctica; lo importante es no mezclarlas en un mismo cálculo.
 
-\begin{ejemplo}{Verosimilitudes de la columna 8}{verosimilitud}
+\begin{ejemplo}{Verosimilitudes de la columna 8}{09-verosimilitud}
 Tomemos la columna de la \cref{fig:09-pileup}: \nuc{A}(Q30), \nuc{A}(Q30), \nuc{A}(Q20), \nuc{G}(Q30), \nuc{G}(Q30), \nuc{G}(Q10), con $R=\texttt{A}$ y $A=\texttt{G}$, y usemos el modelo de cuatro bases (\cref{eq:09-pbase}). Las contribuciones de cada lectura son:
 \begin{center}
 \small
@@ -232,7 +232,7 @@ El heterocigoto explica los datos unos siete órdenes de magnitud mejor que cual
 
 Las verosimilitudes son números diminutos que se multiplican: con 30 lecturas, $L(RR)$ puede valer $10^{-90}$. Por eso los programas trabajan con logaritmos y, siguiendo la tradición de Phred, los expresan en una escala de decibanes normalizada.
 
-\begin{definicion}{Verosimilitudes en escala Phred (PL)}{pl}
+\begin{definicion}{Verosimilitudes en escala Phred (PL)}{09-pl}
 Para cada genotipo candidato $G$,
 \begin{equation}\label{eq:09-pl}
 \mathrm{PL}(G) = -10\log_{10}\frac{L(G)}{\max_{G'} L(G')},
@@ -245,7 +245,7 @@ redondeado al entero más próximo. El genotipo más verosímil tiene $\mathrm{P
 \simbolo{$\max_{G'}L(G')$}{Verosimilitud del genotipo que mejor explica los datos.}
 \end{simbolos}
 
-Para la columna del \cref{ej:verosimilitud}, $\log_{10}L = (-8{,}437;\ -1{,}840;\ -9{,}478)$ y, por tanto, $\mathrm{PL}=(66,\,0,\,76)$ en el orden $RR, RA, AA$ que usa el formato VCF. Un PL de 66 significa que $RR$ es $10^{6{,}6}\approx 4\times10^{6}$ veces menos verosímil que $RA$. En un VCF este vector aparece en el campo \texttt{FORMAT/PL} de cada muestra, y es la información mínima que hay que conservar si se desea recalcular genotipos más adelante.
+Para la columna del \cref{ej:09-verosimilitud}, $\log_{10}L = (-8{,}437;\ -1{,}840;\ -9{,}478)$ y, por tanto, $\mathrm{PL}=(66,\,0,\,76)$ en el orden $RR, RA, AA$ que usa el formato VCF. Un PL de 66 significa que $RR$ es $10^{6{,}6}\approx 4\times10^{6}$ veces menos verosímil que $RA$. En un VCF este vector aparece en el campo \texttt{FORMAT/PL} de cada muestra, y es la información mínima que hay que conservar si se desea recalcular genotipos más adelante.
 
 \begin{figure}[t]
 \centering
@@ -301,7 +301,7 @@ P(G\mid D) = \frac{P(D\mid G)\,P(G)}{\displaystyle\sum_{G'\in\{RR,RA,AA\}} P(D\m
 
 El genotipo que se informa es el de máxima posterior, $\hat G=\argmax_G P(G\mid D)$. Dos preguntas distintas se responden con dos números distintos del VCF:
 
-\begin{definicion}{QUAL y GQ}{qualgq}
+\begin{definicion}{QUAL y GQ}{09-qualgq}
 \begin{equation}\label{eq:09-qual}
 \mathrm{QUAL} = -10\log_{10} P(G=RR \mid D),\qquad
 \mathrm{GQ} = -10\log_{10}\bigl[1 - P(\hat G\mid D)\bigr].
@@ -317,8 +317,8 @@ QUAL mide la confianza en que el sitio es \emph{variable} (en alguna muestra); G
 
 Los programas difieren en los detalles. La especificación VCF define GQ como la calidad del genotipo \emph{condicionada} a que el sitio sea variable \parencite{c09-danecek2011}; GATK la aproxima como la diferencia entre los dos PL más pequeños, es decir, sin distribución \emph{a priori} \parencite{c09-depristo2011}. Como veremos en el ejemplo siguiente, ambas convenciones pueden dar números muy diferentes, y por eso conviene saber cuál usa el programa antes de fijar umbrales.
 
-\begin{ejemplo}{Posterior, QUAL y GQ de la columna 8}{posterior}
-Con $\theta=10^{-3}$, las probabilidades \emph{a priori} son $P(RR)=0{,}9985$, $P(RA)=0{,}001$ y $P(AA)=0{,}0005$. Multiplicando por las verosimilitudes del \cref{ej:verosimilitud}:
+\begin{ejemplo}{Posterior, QUAL y GQ de la columna 8}{09-posterior}
+Con $\theta=10^{-3}$, las probabilidades \emph{a priori} son $P(RR)=0{,}9985$, $P(RA)=0{,}001$ y $P(AA)=0{,}0005$. Multiplicando por las verosimilitudes del \cref{ej:09-verosimilitud}:
 \[
 \begin{aligned}
 P(D\mid RR)P(RR) &= 3{,}66\times10^{-9}\times0{,}9985 = 3{,}65\times10^{-9},\\
@@ -424,7 +424,7 @@ Bajo equilibrio de Hardy-Weinberg, la distribución \emph{a priori} del genotipo
 
 La \cref{eq:09-em} tiene una lectura muy intuitiva: el paso E calcula, para cada muestra, el número \emph{esperado} de copias alternativas dados sus datos y la frecuencia actual; el paso M promedia esos números sobre los $2N$ cromosomas. Cada iteración no puede disminuir la verosimilitud conjunta, y el algoritmo converge rápidamente.
 
-\begin{ejemplo}{Ocho muestras de baja cobertura}{em}
+\begin{ejemplo}{Ocho muestras de baja cobertura}{09-em}
 Ocho individuos se secuencian a 2--5$\times$ y en un sitio muestran (lecturas alternativas, profundidad) $=(1,3),(2,4),(0,3),(3,5),(1,2),(0,4),(2,3),(0,2)$, todas con Q20. Usando el modelo bialélico de la \cref{eq:09-li} y partiendo de $\psi^{(0)}=0{,}5$, el EM produce $0{,}354,\ 0{,}334,\ 0{,}331,\dots$ y converge en 12 iteraciones a $\hat\psi=0{,}331$. Considere la muestra M1, con una lectura alternativa de tres. Analizada sola, con la distribución \emph{a priori} de la \cref{eq:09-prior} y $\theta=10^{-3}$, su posterior es $P(RR)=0{,}987$: se la declararía homocigota de referencia. Analizada con las demás, cuya evidencia colectiva establece que la variante es común, su posterior pasa a $P(RA)=0{,}926$. La muestra no cambió; cambió lo que sabemos de la población.
 \end{ejemplo}
 
@@ -492,7 +492,7 @@ Un VCF tiene dos partes (\cref{fig:09-vcf}). La \emph{cabecera}, con líneas que
     \textbf{PL} \texttt{66,0,76}: $\mathrm{PL}(RR),\mathrm{PL}(RA),\mathrm{PL}(AA)$;\quad
     \textbf{QUAL} \texttt{36}: $-10\log_{10}P(RR\mid D)$};
 \end{tikzpicture}
-\caption[Anatomía de un registro VCF]{Anatomía de un VCF. La cabecera (líneas \texttt{\#\#}) declara el significado de cada campo; el cuerpo tiene una línea por sitio. Las ocho primeras columnas describen el sitio; \texttt{FORMAT} indica el orden de los campos por muestra. El registro corresponde a la columna 8 de la \cref{fig:09-pileup}: QUAL 36, PL $(66,0,76)$ y GQ 36, exactamente los valores calculados en los \cref{ej:verosimilitud,ej:posterior}. \texttt{POS} usa coordenadas que empiezan en 1, y \texttt{REF} debe coincidir con el genoma de referencia.}
+\caption[Anatomía de un registro VCF]{Anatomía de un VCF. La cabecera (líneas \texttt{\#\#}) declara el significado de cada campo; el cuerpo tiene una línea por sitio. Las ocho primeras columnas describen el sitio; \texttt{FORMAT} indica el orden de los campos por muestra. El registro corresponde a la columna 8 de la \cref{fig:09-pileup}: QUAL 36, PL $(66,0,76)$ y GQ 36, exactamente los valores calculados en los \cref{ej:09-verosimilitud,ej:09-posterior}. \texttt{POS} usa coordenadas que empiezan en 1, y \texttt{REF} debe coincidir con el genoma de referencia.}
 \label{fig:09-vcf}
 \end{figure}
 
@@ -569,7 +569,7 @@ Considere la referencia \secuencia{GGATCACACACAGT}, que contiene el microsatéli
 
 \textcite{c09-tan2015} formalizaron el problema y su solución.
 
-\begin{definicion}{Variante normalizada}{normalizada}
+\begin{definicion}{Variante normalizada}{09-normalizada}
 Una variante $(\mathrm{POS},\mathrm{REF},\mathrm{ALT})$ está \emph{normalizada} si y solo si es \emph{parsimoniosa} (se representa con los alelos más cortos posibles, sin bases compartidas superfluas) y está \emph{alineada a la izquierda} (su posición no puede desplazarse más hacia la izquierda sin cambiar el haplotipo que representa).
 \end{definicion}
 
@@ -614,7 +614,7 @@ El paso 1 ``empuja'' la variante hacia la izquierda a través de la repetición;
 \label{fig:09-norm}
 \end{figure}
 
-\begin{ejemplo}{Normalizar paso a paso}{norm}
+\begin{ejemplo}{Normalizar paso a paso}{09-norm}
 Tomemos el registro \texttt{POS=10, REF=ACA, ALT=A} de la \cref{fig:09-norm}. Paso 1: ambos alelos terminan en \texttt{A}; se elimina: \texttt{AC}/vacío. \texttt{ALT} quedó vacío, así que se antepone la base 9 (\texttt{C}): \texttt{POS=9}, \texttt{CAC}/\texttt{C}. Terminan en \texttt{C}: \texttt{CA}/vacío; se antepone la base 8 (\texttt{A}): \texttt{POS=8}, \texttt{ACA}/\texttt{A}. El ciclo se repite desplazando la deleción de dos en dos bases hasta \texttt{POS=4}, \texttt{TCA}/\texttt{T}: ahora terminan en \texttt{A} y \texttt{T}, distintas, y \texttt{T} no está vacío; el paso 1 se detiene. Paso 2: \texttt{T} tiene longitud 1, así que no hay nada que recortar. Resultado: \texttt{4\ TCA\ T}. El \cmd{generar.py} del capítulo comprueba que las seis representaciones de la figura convergen al mismo registro.
 \end{ejemplo}
 
@@ -683,7 +683,7 @@ La única forma rigurosa de medir la exactitud de un llamador es compararlo con 
 
 Comparar dos VCF no es trivial: las mismas variantes pueden estar representadas de forma diferente (\cref{fig:09-norm}), incluso más allá de la normalización, cuando varias variantes cercanas se escriben como una sola sustitución compleja. El equipo de evaluación de la Global Alliance for Genomics and Health estableció buenas prácticas y herramientas, como \cmd{hap.py}, que comparan \emph{haplotipos} en lugar de registros \parencite{c09-krusche2019}. Esos autores ilustran también por qué importa restringirse a las regiones de alta confianza: la concordancia de SNV entre dos métodos era del 99,7\,\% dentro de ellas y de solo el 76,5\,\% fuera. Las herramientas distinguen además varios niveles de coincidencia: que la variante esté (ignorando el genotipo), que el genotipo coincida, o que coincida la fase.
 
-\begin{definicion}{Métricas de evaluación}{metricas}
+\begin{definicion}{Métricas de evaluación}{09-metricas}
 Sean TP las variantes del conjunto de verdad correctamente llamadas, FP las llamadas ausentes de la verdad y FN las variantes de la verdad no llamadas, todas restringidas a las regiones de alta confianza. Entonces
 \begin{equation}\label{eq:09-metricas}
 \text{precisión} = \frac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FP}},\qquad
@@ -701,7 +701,7 @@ F_1 = \frac{2\,\mathrm{TP}}{2\,\mathrm{TP}+\mathrm{FP}+\mathrm{FN}}.
 
 Observe que no aparecen los verdaderos negativos: en un genoma hay miles de millones de posiciones sin variante, y cualquier métrica que los incluyera (como la especificidad) sería prácticamente 1 para cualquier llamador. Por la misma razón, en este contexto se prefieren las curvas de precisión-sensibilidad a las curvas ROC.
 
-\begin{ejemplo}{Leer un informe de \cmd{hap.py}}{happy}
+\begin{ejemplo}{Leer un informe de \cmd{hap.py}}{09-happy}
 Un llamador aplicado a HG002 produce, en las regiones de alta confianza, $\mathrm{TP}=\num{3290000}$ SNV, $\mathrm{FP}=\num{9800}$ y $\mathrm{FN}=\num{21500}$ (cifras redondas de orden realista). La precisión es $\num{3290000}/\num{3299800}=0{,}99703$, la sensibilidad $\num{3290000}/\num{3311500}=0{,}99351$ y $F_1=0{,}99527$. Todo parece excelente, pero en valores absolutos hay casi diez mil falsos positivos y más de veinte mil variantes perdidas. Por eso se informan las métricas por separado para SNV e \ingles{indels} y estratificadas por tipo de región.
 \end{ejemplo}
 
@@ -891,7 +891,7 @@ El segundo razonamiento pregunta cuál es la frecuencia \emph{máxima} que podr�
 \simbolo{$f_{\max}$}{Frecuencia alélica máxima compatible con que la variante sea causal.}
 \end{simbolos}
 
-\begin{ejemplo}{¿Demasiado común para ser causal?}{fmax}
+\begin{ejemplo}{¿Demasiado común para ser causal?}{09-fmax}
 Una miocardiopatía hipotética de herencia dominante tiene prevalencia $\pi=1/500$, penetrancia $\rho=0{,}5$, y ninguna variante explica más del 2\,\% de los casos ($h=0{,}02$). Entonces $f_{\max}=0{,}02\times0{,}002/(2\times0{,}5)=4\times10^{-5}$. Una variante candidata observada en gnomAD con $\mathrm{AF}=10^{-3}$ es 25 veces más frecuente de lo que permitiría ser causal con esa arquitectura; salvo que alguno de los supuestos sea muy erróneo, se descarta. Este tipo de argumento es la base de los criterios de frecuencia de las guías ACMG que veremos al final de la sección.
 \end{ejemplo}
 
@@ -935,7 +935,7 @@ SIFT, PolyPhen-2 y CADD están correlacionados entre sí (usan información pare
 
 \textbf{ClinVar} es el archivo público de las interpretaciones clínicas de variantes: laboratorios de diagnóstico, grupos de expertos e investigadores depositan sus clasificaciones con la evidencia que las respalda, y la base de datos muestra las discrepancias entre remitentes y un nivel de revisión (las ``estrellas'') que va desde una sola clasificación sin criterios hasta la revisión por un panel de expertos \parencite{c09-landrum2018}. Encontrar una variante en ClinVar como ``patogénica'' con varias estrellas es una evidencia fuerte; encontrarla con una sola estrella y clasificaciones contradictorias, no tanto.
 
-Para clasificar una variante de manera reproducible, el American College of Medical Genetics and Genomics y la Association for Molecular Pathology publicaron unas guías que hoy son el estándar internacional \parencite{c09-richards2015}. Proponen cinco categorías: patogénica, probablemente patogénica, de significado incierto (VUS), probablemente benigna y benigna. Cada tipo de evidencia recibe un código y una fuerza: \emph{muy fuerte} (PVS1: variante nula, como un \ingles{frameshift} o un \ingles{stop gained}, en un gen donde la pérdida de función causa la enfermedad), \emph{fuerte} (PS1--PS4; p.\,ej., PS2: aparición \emph{de novo} confirmada), \emph{moderada} (PM1--PM6; p.\,ej., PM2: ausente o extremadamente rara en controles poblacionales), y \emph{de apoyo} (PP1--PP5; p.\,ej., PP3: múltiples predictores computacionales coinciden en un efecto dañino). Del lado benigno hay criterios independientes (BA1: frecuencia alélica mayor del 5\,\%), fuertes (BS1--BS4; p.\,ej., BS1: frecuencia mayor de lo esperado para la enfermedad, como en el \cref{ej:fmax}) y de apoyo (BP1--BP7). La \cref{tab:09-acmg} resume las reglas de combinación.
+Para clasificar una variante de manera reproducible, el American College of Medical Genetics and Genomics y la Association for Molecular Pathology publicaron unas guías que hoy son el estándar internacional \parencite{c09-richards2015}. Proponen cinco categorías: patogénica, probablemente patogénica, de significado incierto (VUS), probablemente benigna y benigna. Cada tipo de evidencia recibe un código y una fuerza: \emph{muy fuerte} (PVS1: variante nula, como un \ingles{frameshift} o un \ingles{stop gained}, en un gen donde la pérdida de función causa la enfermedad), \emph{fuerte} (PS1--PS4; p.\,ej., PS2: aparición \emph{de novo} confirmada), \emph{moderada} (PM1--PM6; p.\,ej., PM2: ausente o extremadamente rara en controles poblacionales), y \emph{de apoyo} (PP1--PP5; p.\,ej., PP3: múltiples predictores computacionales coinciden en un efecto dañino). Del lado benigno hay criterios independientes (BA1: frecuencia alélica mayor del 5\,\%), fuertes (BS1--BS4; p.\,ej., BS1: frecuencia mayor de lo esperado para la enfermedad, como en el \cref{ej:09-fmax}) y de apoyo (BP1--BP7). La \cref{tab:09-acmg} resume las reglas de combinación.
 
 \begin{table}[t]
 \centering
@@ -954,7 +954,7 @@ Probablemente benigna & 1 benigno fuerte + 1 de apoyo;\quad $\ge$2 benignos de a
 \end{tabularx}
 \end{table}
 
-\begin{ejemplo}{Clasificar una variante}{acmg}
+\begin{ejemplo}{Clasificar una variante}{09-acmg}
 En un niño con un trastorno del neurodesarrollo, la secuenciación del trío revela una variante \texttt{stop\_gained} en heterocigosis, ausente en ambos padres (paternidad confirmada) y ausente en gnomAD. El gen tiene LOEUF muy bajo y la haploinsuficiencia es un mecanismo establecido de la enfermedad. Criterios: PVS1 (variante nula en un gen donde la pérdida de función es el mecanismo, muy fuerte), PS2 (\emph{de novo} confirmada, fuerte) y PM2 (ausente en controles, moderada). La regla ``1 MF + $\ge$1 F'' basta para clasificarla como \textbf{patogénica}. Si, en cambio, fuese una variante de sentido erróneo heredada de un progenitor sano, con CADD 24 y ausente de gnomAD, solo tendríamos PM2 y PP3: ninguna regla se cumple y la variante quedaría como \textbf{VUS}, a la espera de más evidencia (segregación familiar, estudios funcionales, nuevos casos).
 \end{ejemplo}
 
@@ -1003,7 +1003,7 @@ En la práctica, todo lo anterior se encadena en un \emph{embudo} que reduce mil
 \ej{2} Demuestre que, para un heterocigoto, $P(b\mid RA)=\tfrac12-\varepsilon/3$ tanto si $b=R$ como si $b=A$, y que para $b\notin\{R,A\}$ vale $\varepsilon/3$. Use este resultado para explicar por qué, a partir de cierta profundidad, $\log_{10}L(RR)-\log_{10}L(RA)$ decrece linealmente con el número de lecturas alternativas.
 \ej{2} Un conjunto de variantes de exoma tiene ti/tv $=2{,}4$. Si las variantes verdaderas de exoma tienen ti/tv $=3{,}0$, estime con la \cref{eq:09-titv} la fracción de falsos positivos. Discuta dos razones por las que esta estimación podría estar sesgada.
 \ej{2} Descargue un BAM de una región de HG002 (por ejemplo, un cromosoma pequeño) y la verdad de GIAB correspondiente. Ejecute el flujo de la \cref{fig:09-flujo} con y sin BAQ (\texttt{-B}) y compare precisión y sensibilidad para SNV e \ingles{indels} con \cmd{hap.py}. ¿Dónde se concentran las diferencias?
-\ej{3} Implemente el algoritmo EM de la \cref{eq:09-em} y reproduzca el \cref{ej:em}. Luego simule 200 muestras a $4\times$ con una variante de frecuencia $0{,}05$ y compare la sensibilidad de la llamada individual y la conjunta en función de la frecuencia. ¿Qué ocurre si la mitad de las muestras proceden de una población en la que la variante no existe?
+\ej{3} Implemente el algoritmo EM de la \cref{eq:09-em} y reproduzca el \cref{ej:09-em}. Luego simule 200 muestras a $4\times$ con una variante de frecuencia $0{,}05$ y compare la sensibilidad de la llamada individual y la conjunta en función de la frecuencia. ¿Qué ocurre si la mitad de las muestras proceden de una población en la que la variante no existe?
 \ej{3} Reproduzca la \cref{fig:09-snvcod} y extiéndala: pondere cada una de las 576 sustituciones por una tasa de mutación en la que las transiciones son el doble de probables que cada transversión. ¿Cómo cambia la fracción esperada de variantes sinónimas? Relacione el resultado con el cálculo de $d_N/d_S$.
 \end{ejercicios}
 

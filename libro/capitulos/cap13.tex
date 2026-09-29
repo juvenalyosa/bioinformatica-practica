@@ -122,7 +122,7 @@ Siempre se acompaña de un \emph{control}: normalmente el \ingles{input}, ADN fr
 
 El detalle clave del paso 4 es que la secuenciación lee solo las primeras decenas de bases de cada fragmento, desde su extremo 5'. Si el fragmento tiene longitud $\ell$ y está centrado en el sitio de unión $\mu$, la lectura de la hebra $+$ empieza en $\mu-\ell/2$ y la de la hebra $-$ en $\mu+\ell/2$. Con muchos fragmentos, las lecturas de cada hebra forman una ``montaña'' desplazada del sitio.
 
-\begin{teorema}{Perfiles esperados por hebra}{hebras}
+\begin{teorema}{Perfiles esperados por hebra}{13-hebras}
 Sea $c$ la posición del centro de un fragmento, con densidad $\varphi(c)$ centrada en el sitio $\mu$, y sea $\ell$ su longitud, independiente de $c$, con densidad $g(\ell)$. Las densidades esperadas de extremos 5' en cada hebra son
 \begin{equation}\label{eq:13-hebras}
 f_{+}(x) = \int g(\ell)\,\varphi\!\left(x+\tfrac{\ell}{2}\right)d\ell,\qquad
@@ -145,7 +145,7 @@ La demostración es un cambio de variable: una lectura $+$ cae en $x$ si el frag
 
 Una estimación de $d$ que no requiere elegir regiones de antemano usa \emph{todo} el genoma. Sean $n_+(x)$ y $n_-(x)$ los conteos de extremos 5' en cada posición. Si los sitios de unión dominan la señal, $n_-$ se parece a $n_+$ desplazado $d$ posiciones, y la correlación entre ambos perfiles será máxima en ese desplazamiento \parencite{c13-kharchenko2008}.
 
-\begin{definicion}{Correlación cruzada entre hebras}{xcor}
+\begin{definicion}{Correlación cruzada entre hebras}{13-xcor}
 Para cada desplazamiento $s\ge0$,
 \begin{equation}\label{eq:13-xcor}
 r(s) = \operatorname{corr}\bigl(n_{+}(x),\ n_{-}(x+s)\bigr)
@@ -207,7 +207,7 @@ Un RSC mayor que 1 indica que la señal biológica domina sobre el artefacto de 
 
 Una vez desplazadas las lecturas, la pregunta es estadística: ¿en qué ventanas del genoma hay \emph{más} lecturas de las que produciría el fondo? El modelo más simple supone que, en ausencia de unión, las $N$ lecturas se reparten uniformemente sobre las $G$ posiciones mapeables.
 
-\begin{teorema}{Conteo en una ventana bajo el fondo uniforme}{poisson}
+\begin{teorema}{Conteo en una ventana bajo el fondo uniforme}{13-poisson}
 Si cada una de las $N$ lecturas cae en una ventana de ancho $w$ con probabilidad $p=w/G$, de forma independiente, el número $X$ de lecturas en la ventana sigue una distribución binomial $\mathrm{Bin}(N,p)$. Cuando $N\to\infty$ y $p\to0$ con $Np=\lambda$ fijo,
 \begin{equation}\label{eq:13-poisson}
 \Prob(X=k) \;\longrightarrow\; \frac{e^{-\lambda}\lambda^{k}}{k!},\qquad \lambda=\frac{N\,w}{G},
@@ -234,7 +234,7 @@ y el primer factor tiende a 1 mientras que el último tiende a $e^{-\lambda}$. E
 
 El fondo uniforme, sin embargo, es falso. La sonicación rompe mejor la cromatina abierta; las regiones con más copias en la línea celular producen más lecturas; algunas zonas acumulan señal en cualquier experimento. Aplicar un $\lambda$ global en esas regiones llena la lista de picos de falsos positivos. La solución de MACS (\ingles{Model-based Analysis of ChIP-Seq}), propuesta por \textcite{c13-zhang2008}, es un \emph{Poisson dinámico}: para cada ventana candidata se toma como fondo el máximo de varias estimaciones, de modo que el modelo es conservador allí donde el control indica un sesgo.
 
-\begin{definicion}{Lambda local de MACS}{lambdalocal}
+\begin{definicion}{Lambda local de MACS}{13-lambdalocal}
 Para una ventana candidata de ancho $2d$,
 \begin{equation}\label{eq:13-lambdalocal}
 \lambda_{\text{local}} = \max\bigl(\lambda_{\text{BG}},\ \lambda_{1k},\ \lambda_{5k},\ \lambda_{10k}\bigr),
@@ -252,7 +252,7 @@ donde $\lambda_{\text{BG}}=N_T\,2d/G$ es el fondo global y $c_{w'}$ es el númer
 
 Tomar el \emph{máximo} tiene una lógica de protección: si cualquiera de las escalas indica que la región es ruidosa, el umbral sube. Las versiones posteriores, MACS2 y MACS3, conservan esta idea (por omisión con ventanas de $d$, 1 kb y 10 kb en el control) y añaden la corrección de Benjamini-Hochberg para obtener valores $q$, el modo de picos anchos para marcas como H3K27me3 y el uso directo de fragmentos pareados. El artículo original estimaba además la tasa de falsos descubrimientos de forma empírica, intercambiando los papeles de tratamiento y control: los ``picos'' que aparecen en el control frente al tratamiento dan una idea de cuántos falsos positivos produce el procedimiento con el mismo umbral \parencite{c13-zhang2008}.
 
-\begin{ejemplo}{Un pico, dos fondos}{macs}
+\begin{ejemplo}{Un pico, dos fondos}{13-macs}
 Un experimento tiene $N_T=2\times10^7$ lecturas tratadas y $N_C=2{,}5\times10^7$ de control; el tamaño efectivo del genoma es $G=2{,}7\times10^9$ y $d=200$, así que la ventana mide 400 pb. El fondo global es
 \[
 \lambda_{\text{BG}} = \frac{2\times10^7\times400}{2{,}7\times10^9} = 2{,}963 .
@@ -295,7 +295,7 @@ Ahora considere otra región, idéntica en el tratamiento, pero en una amplifica
   \node[etiqueta,anchor=south,text=rojooscuro] at (axis cs:18.5,1e-6) {$k\ge17$};
 \end{groupplot}
 \end{tikzpicture}
-\caption[Llamada de picos con Poisson local]{(a) Diez kilobases simuladas: el \ingles{pileup} del tratamiento (azul) muestra un pico fuerte cerca de 5,2 kb y un enriquecimiento débil cerca de 2,3 kb. La línea naranja es el fondo local estimado del control suavizado, que nunca baja del fondo global (roja discontinua), tal como impone el máximo de la \cref{eq:13-lambdalocal}. (b) Distribución de Poisson con $\lambda_{\text{local}}=3{,}2$ en escala logarítmica. Diecisiete lecturas en una ventana de 400 pb caen en la cola roja, cuya probabilidad total es $5{,}4\times10^{-8}$ (\cref{ej:macs}). Observe cuán rápido decae la cola: cada lectura adicional multiplica la evidencia.}
+\caption[Llamada de picos con Poisson local]{(a) Diez kilobases simuladas: el \ingles{pileup} del tratamiento (azul) muestra un pico fuerte cerca de 5,2 kb y un enriquecimiento débil cerca de 2,3 kb. La línea naranja es el fondo local estimado del control suavizado, que nunca baja del fondo global (roja discontinua), tal como impone el máximo de la \cref{eq:13-lambdalocal}. (b) Distribución de Poisson con $\lambda_{\text{local}}=3{,}2$ en escala logarítmica. Diecisiete lecturas en una ventana de 400 pb caen en la cola roja, cuya probabilidad total es $5{,}4\times10^{-8}$ (\cref{ej:13-macs}). Observe cuán rápido decae la cola: cada lectura adicional multiplica la evidencia.}
 \label{fig:13-poisson}
 \end{figure}
 
@@ -376,7 +376,7 @@ h(\ell) \;=\; \pi_0\,h_0(\ell) \;+\; \sum_{j=1}^{J}\pi_j\,\mathcal N\!\left(\ell
 \end{simbolos}
 \noindent A esta forma gruesa se superpone una oscilación fina de unos 10,5 pb, el paso de la doble hélice: Tn5 corta preferentemente el lado de la hélice expuesto, de modo que las distancias entre cortes favorecen múltiplos de una vuelta. La \cref{fig:13-atac}\,(a) muestra una distribución simulada con ese modelo, en la que el \SI{38}{\percent} de los fragmentos mide menos de 100 pb y el \SI{21}{\percent} cae en el intervalo mononucleosomal (180--247 pb).
 
-\begin{definicion}{Enriquecimiento en TSS}{tss}
+\begin{definicion}{Enriquecimiento en TSS}{13-tss}
 Sea $I(x)$ el número de inserciones de Tn5 acumuladas en la posición $x$ relativa a todos los sitios de inicio de la transcripción (TSS) del genoma, orientados según la hebra del gen. El perfil normalizado es
 \begin{equation}\label{eq:13-tss}
 E(x) = \frac{I(x)}{\tfrac{1}{2m}\left(\sum_{u=-2000}^{-2000+m-1} I(u) + \sum_{u=2000-m+1}^{2000} I(u)\right)},
@@ -443,7 +443,7 @@ En los mamíferos, la metilación del ADN consiste casi exclusivamente en añadi
 
 La metilación deja una huella en la propia secuencia del genoma. La 5mC tiende a desaminarse espontáneamente a timina, un error que la reparación corrige peor que la desaminación de la citosina normal a uracilo. A lo largo de la evolución, los CpG metilados se han ido convirtiendo en TpG (y CpA en la otra hebra), de modo que el genoma humano tiene alrededor de una cuarta parte de los CpG que esperaríamos por su composición. La excepción son las \emph{islas CpG}: tramos de cientos a miles de pares de bases con abundantes CpG no metilados, que \textcite{c13-bird1986} asoció con los extremos 5' de la mayoría de los genes de vertebrados y, en particular, de los genes de mantenimiento, cuya disponibilidad debe ser constante en el núcleo. \textcite{c13-gardinergarden1987} dieron el criterio operativo que todavía se usa, basado en la razón entre CpG observados y esperados.
 
-\begin{definicion}{Isla CpG (criterio de Gardiner-Garden y Frommer)}{islacpg}
+\begin{definicion}{Isla CpG (criterio de Gardiner-Garden y Frommer)}{13-islacpg}
 Una región de longitud $L\ge200$ pb es una isla CpG si su contenido de GC supera el \SI{50}{\percent} y
 \begin{equation}\label{eq:13-oe}
 \frac{\text{CpG obs.}}{\text{CpG esp.}} = \frac{n_{CG}}{n_C\,n_G/L} = \frac{n_{CG}\,L}{n_C\,n_G} > 0{,}6 .
@@ -456,7 +456,7 @@ Una región de longitud $L\ge200$ pb es una isla CpG si su contenido de GC super
 \simbolo{$L$}{Longitud de la región; $n_Cn_G/L$ es el número de CpG esperado si C y G se sucedieran al azar.}
 \end{simbolos}
 
-\begin{ejemplo}{Dos regiones de 100 pb}{oe}
+\begin{ejemplo}{Dos regiones de 100 pb}{13-oe}
 Generamos dos secuencias sintéticas de 100 pb que imitan la evolución de la desaminación: una rica en GC en la que se conserva el \SI{90}{\percent} de los CpG (``isla'') y otra con GC moderado en la que solo se conserva el \SI{22}{\percent} (``mar''). En la primera hay $n_C=37$, $n_G=32$ y $n_{CG}=12$: GC $=\SI{69}{\percent}$ y
 \[
 \frac{\text{obs.}}{\text{esp.}} = \frac{12\times100}{37\times32} = 1{,}01 > 0{,}6 .
@@ -547,7 +547,7 @@ Para un CpG cubierto por $n$ lecturas, de las cuales $c$ dicen ``C'', el modelo 
 
 Las micromatrices de Illumina (Infinium 450K y EPIC), aún muy usadas en estudios poblacionales, miden lo mismo de otra forma: para cada CpG hay dos intensidades de fluorescencia, $M_s$ para el alelo metilado y $U_s$ para el no metilado (tras la conversión, la sonda distingue C de T). \textcite{c13-du2010} compararon las dos métricas en uso.
 
-\begin{definicion}{Valores $\beta$ y $M$}{betam}
+\begin{definicion}{Valores $\beta$ y $M$}{13-betam}
 \begin{equation}\label{eq:13-beta}
 \beta = \frac{\max(M_s,0)}{\max(M_s,0)+\max(U_s,0)+\alpha},\qquad
 M = \log_2\frac{\max(M_s,0)+\alpha'}{\max(U_s,0)+\alpha'} .
@@ -600,7 +600,7 @@ Ignorando las constantes, $M=\log_2\dfrac{\beta}{1-\beta}$: el valor $M$ es la t
 
 Al comparar dos grupos (tumor y tejido normal, tratados y controles) buscamos CpG individuales (\ingles{differentially methylated loci}, DML) o regiones (DMR) cuyo nivel de metilación difiera. El modelo binomial captura el muestreo de lecturas, pero no la variación \emph{biológica} entre réplicas: dos individuos sanos no tienen exactamente la misma $\beta$ en un CpG. Ignorar esa variabilidad subestima la varianza y produce avalanchas de falsos positivos, exactamente el mismo fenómeno de sobredispersión que en RNA-seq obliga a pasar de la Poisson a la binomial negativa (\cref{cap:11}).
 
-\begin{teorema}{Varianza beta-binomial}{betabin}
+\begin{teorema}{Varianza beta-binomial}{13-betabin}
 Si en la réplica $r$ la fracción de metilación es $p_r\sim\mathrm{Beta}(a,b)$ con media $\mu=a/(a+b)$ y dispersión $\phi=1/(a+b+1)$, y $c_r\mid p_r\sim\mathrm{Bin}(n_r,p_r)$, entonces
 \begin{equation}\label{eq:13-betabin}
 \E[c_r]=n_r\,\mu,\qquad \operatorname{Var}(c_r) = n_r\,\mu(1-\mu)\,\bigl[1+(n_r-1)\,\phi\bigr].
@@ -628,7 +628,7 @@ z = \frac{\hat\mu_A-\hat\mu_B}{\sqrt{\widehat{\operatorname{Var}}(\hat\mu_A)+\wi
 \simbolo{$z$}{Estadístico de Wald; bajo $H_0$ sigue aproximadamente una normal estándar.}
 \end{simbolos}
 
-\begin{ejemplo}{Un CpG, tres réplicas por grupo}{wald}
+\begin{ejemplo}{Un CpG, tres réplicas por grupo}{13-wald}
 Primero, una sola muestra: 17 de 20 lecturas dicen ``C''. Entonces $\hat\beta=0{,}850$, con error estándar binomial $0{,}080$. El intervalo de Wald al \SI{95}{\percent}, $(0{,}694;\ 1{,}006)$, se sale de $[0,1]$: con proporciones cercanas a los extremos conviene un intervalo bayesiano de Jeffreys (a priori $\mathrm{Beta}(\tfrac12,\tfrac12)$), que da $(0{,}651;\ 0{,}956)$. El valor $M$, con $\alpha'=1$, es $\log_2(18/4)=2{,}17$.
 
 Ahora, el grupo A tiene conteos $17/20$, $22/25$ y $14/18$, y el grupo B, $6/21$, $9/24$ y $5/19$. Las medias son $\hat\mu_A=53/63=0{,}841$ y $\hat\mu_B=20/64=0{,}312$. Con $\hat\phi=0{,}05$, la \cref{eq:13-wald} da $\widehat{\operatorname{Var}}(\hat\mu_A)=0{,}00428$, $\widehat{\operatorname{Var}}(\hat\mu_B)=0{,}00680$ y
@@ -702,7 +702,7 @@ Un pico de ChIP-seq indica \emph{dónde} se une un factor, pero con una resoluci
 
 Sean $X_1,\dots,X_N$ secuencias de longitud $L$ y $W$ el ancho del motivo; cada secuencia tiene $m=L-W+1$ posiciones de inicio posibles. El modelo más sencillo, llamado OOPS (\ingles{one occurrence per sequence}), supone que cada secuencia contiene exactamente un sitio, cuyas $W$ bases se generan con la matriz $\theta$ (una distribución sobre $\{A,C,G,T\}$ por columna), mientras que el resto de las bases proviene de un fondo $p_0$. Introducimos variables \emph{ocultas} $Z_{ij}\in\{0,1\}$ que valen 1 si el sitio de la secuencia $i$ empieza en la posición $j$.
 
-\begin{definicion}{Verosimilitud del modelo OOPS}{oops}
+\begin{definicion}{Verosimilitud del modelo OOPS}{13-oops}
 Con un inicio uniforme ($\Prob(Z_{ij}=1)=1/m$), la razón de verosimilitudes de la secuencia $X_i$ frente al modelo de fondo puro es
 \begin{equation}\label{eq:13-oops}
 \frac{\Prob(X_i\mid\theta)}{\Prob(X_i\mid p_0)} = \frac{1}{m}\sum_{j=1}^{m} r_{ij}(\theta),\qquad
@@ -725,7 +725,7 @@ Las bases fuera del sitio se cancelan en el cociente, así que solo quedan las $
 
 \textcite{c13-dempster1977} formularon el algoritmo de esperanza-maximización (EM) en general para problemas con datos faltantes. Aplicado a motivos alterna dos pasos:
 
-\begin{teorema}{EM para el modelo OOPS}{em}
+\begin{teorema}{EM para el modelo OOPS}{13-em}
 Dada una estimación $\theta^{(t)}$:
 \begin{align}
 \text{Paso E:}\quad & Z_{ij}^{(t)} = \Prob\bigl(Z_{ij}=1\mid X_i,\theta^{(t)}\bigr) = \frac{r_{ij}(\theta^{(t)})}{\sum_{j'=1}^{m} r_{ij'}(\theta^{(t)})},\label{eq:13-estep}\\[2pt]
@@ -742,7 +742,7 @@ Con $\beta_b=0$, cada iteración no disminuye la verosimilitud: $\mathrm{LLR}(\t
 
 El paso E reparte cada secuencia entre sus posiciones posibles en proporción a cuánto se parecen al motivo actual: en vez de decidir dónde está el sitio, reparte ``votos''. El paso M construye una nueva PWM con esos votos fraccionarios. La garantía de monotonía viene de la desigualdad de Jensen: para cualquier distribución $q$ sobre las variables ocultas, $\log\Prob(X\mid\theta)\ge\sum_Z q(Z)\log\frac{\Prob(X,Z\mid\theta)}{q(Z)}$, con igualdad cuando $q$ es la posterior. El paso E hace la cota exacta en $\theta^{(t)}$; el paso M la maximiza en $\theta$; por tanto la verosimilitud en $\theta^{(t+1)}$ es al menos la cota, que es al menos la verosimilitud en $\theta^{(t)}$. Lo que EM \emph{no} garantiza es el máximo global.
 
-\begin{ejemplo}{Un paso E}{estep}
+\begin{ejemplo}{Un paso E}{13-estep}
 En una colección simulada de 30 secuencias de 80 pb con un motivo de tipo AP-1 implantado (consenso \secuencia{ATGASTCA}, $W=8$; hay $m=73$ posiciones por secuencia), la secuencia 18 contiene el sitio \secuencia{ATGACTCA}, idéntico al consenso. Con la matriz verdadera y fondo uniforme, su puntuación es
 \[
 \log_2 r = 1{,}26+1{,}77+1{,}77+1{,}82+0{,}91+1{,}77+1{,}77+1{,}82 \approx 12{,}87\ \text{bits},
@@ -797,7 +797,7 @@ La \cref{fig:13-em}\,(a) muestra por qué la inicialización importa. Seis corri
   \node[etiqueta,anchor=south,text=azulprofundo] at (axis cs:40,97) {\texttt{ATGACTCA}};
 \end{groupplot}
 \end{tikzpicture}
-\caption[Convergencia de EM y de Gibbs]{Descubrimiento de un motivo de 8 pb implantado en 30 secuencias de 80 pb. (a) Log-verosimilitud (\cref{eq:13-oops}) a lo largo de las iteraciones de EM desde seis puntos de partida: cinco semillas aleatorias y una subcadena de los datos (naranja discontinua), como hace MEME. Todas las curvas son crecientes, como garantiza el \cref{teo:em}, pero terminan en óptimos distintos; la mejor corrida con semilla aleatoria (azul) muestra la típica curva en S. (b) Cuatro cadenas del muestreador de Gibbs: la trayectoria es ruidosa porque cada paso es aleatorio. Una cadena (azul) encuentra el motivo en seis barridos; dos quedan desfasadas dos posiciones y una no encuentra nada. La línea roja es la verosimilitud de la matriz verdadera.}
+\caption[Convergencia de EM y de Gibbs]{Descubrimiento de un motivo de 8 pb implantado en 30 secuencias de 80 pb. (a) Log-verosimilitud (\cref{eq:13-oops}) a lo largo de las iteraciones de EM desde seis puntos de partida: cinco semillas aleatorias y una subcadena de los datos (naranja discontinua), como hace MEME. Todas las curvas son crecientes, como garantiza el \cref{teo:13-em}, pero terminan en óptimos distintos; la mejor corrida con semilla aleatoria (azul) muestra la típica curva en S. (b) Cuatro cadenas del muestreador de Gibbs: la trayectoria es ruidosa porque cada paso es aleatorio. Una cadena (azul) encuentra el motivo en seis barridos; dos quedan desfasadas dos posiciones y una no encuentra nada. La línea roja es la verosimilitud de la matriz verdadera.}
 \label{fig:13-em}
 \end{figure}
 
@@ -852,7 +852,7 @@ p = \Prob(K\ge k_t) = \sum_{k\ge k_t}\frac{\binom{k_t+k_b}{k}\binom{n_t+n_b-k_t-
 \end{simbolos}
 \noindent es decir, la probabilidad de que, repartiendo al azar las $k_t+k_b$ secuencias con motivo entre objetivo y fondo, al menos $k_t$ caigan en el objetivo.
 
-\begin{ejemplo}{Un motivo enriquecido}{homer}
+\begin{ejemplo}{Un motivo enriquecido}{13-homer}
 De \num{2000} picos, 640 (\SI{32}{\percent}) contienen el motivo; de \num{20000} secuencias de fondo emparejadas por GC, lo contienen \num{1200} (\SI{6}{\percent}). El enriquecimiento es $0{,}32/0{,}06=5{,}33$ veces, y la \cref{eq:13-hiper} da $p=6{,}8\times10^{-234}$ ($\ln p=-536{,}9$, la escala que HOMER reporta). La aproximación binomial, que trata el fondo como una proporción conocida sin error, da un valor aún menor ($2\times10^{-276}$). Valores tan extremos son habituales y no deben leerse literalmente: con miles de secuencias, cualquier sesgo sistemático de composición da $p$ astronómicos. Lo que importa es el \emph{orden} de los motivos y el tamaño del enriquecimiento.
 \end{ejemplo}
 

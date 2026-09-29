@@ -1,17 +1,17 @@
 % =====================================================================
 %  Capítulo 18 · Flujos reproducibles y proyecto final
 % =====================================================================
-\chapter{Flujos reproducibles y proyecto final}\label{cap:18}
+\chapter{Flujos reproducibles y \mbox{proyecto} final}\label{cap:18}
 
 % --- Macros y estilos propios del capítulo (prefijo \capdieciocho...) ---
 \newcommand{\capdieciochochip}[2]{\tikz[baseline=(c.base)]\node[fill=#1!14,
   draw=#1!70!black,rounded corners=1.5pt,inner sep=1.5pt,text height=1.5ex,
-  text depth=.35ex,font=\sffamily\scriptsize,text=tinta](c){#2};}
+  text depth=.35ex,font=\sffamily\tiny,text=tinta](c){#2};}
 \tikzset{
   capdieciochonodo/.style={caja=#1, font=\sffamily\scriptsize, inner sep=2pt,
     minimum width=1.22cm, minimum height=0.52cm},
   capdieciochoarista/.style={-{Stealth[length=1.7mm]}, thin, draw=tinta2},
-  capdieciochobus/.style={-{Stealth[length=1.7mm]}, thin, draw=#1,
+  capdieciochobus/.style={-{Stealth[length=1.7mm]}, semithick, draw=#1!85!black,
     rounded corners=2pt},
   capdieciochoproc/.style={caja=#1, font=\sffamily\scriptsize\bfseries,
     minimum width=1.55cm, minimum height=0.7cm, inner sep=2pt},
@@ -133,7 +133,7 @@ El punto \emph{(iii)} es la razón por la que todos los gestores de flujos recha
 \small
 \renewcommand{\arraystretch}{1.18}
 \input{figuras/cap18/kahn_tabla.tex}
-\caption[El algoritmo de Kahn paso a paso]{El algoritmo de Kahn aplicado al grafo de la \cref{fig:18-dag}, con una cola FIFO y desempate por el orden en que aparecen las reglas en el Snakefile. En el paso 0 la cola contiene las cuatro fuentes (grado de entrada 0). Cada fila extrae un trabajo, decrementa el grado de sus sucesores y encola los que llegan a cero. Observe tres detalles: \texttt{mapear\,\textsubscript{A}} solo se libera en el paso 2, cuando ya salieron sus \emph{dos} predecesores (el índice y \texttt{fastp\,\textsubscript{A}}); \texttt{multiqc} espera a los tres \cmd{fastp} (paso 4); y \cmd{llamar} espera a los tres \cmd{dedup} (paso 11). La columna central es, literalmente, la lista de trabajos que un planificador podría lanzar en ese instante. Tabla generada con \archivo{figuras/cap18/generar.py}.}
+\caption[El algoritmo de Kahn paso a paso]{El algoritmo de Kahn aplicado al grafo de la \cref{fig:18-dag}, con una cola FIFO y desempate por el orden en que aparecen las reglas en el Snakefile. En el paso 0 la cola contiene las cuatro fuentes (grado de entrada 0). Cada fila extrae un trabajo, decrementa el grado de sus sucesores y encola los que llegan a cero. Observe tres detalles: \texttt{mapear\,\textsubscript{A}} solo se libera en el paso 2, cuando ya salieron sus \emph{dos} predecesores (el índice y \texttt{fastp\,\textsubscript{A}}); \texttt{multiqc} espera a los tres \cmd{fastp} (paso 4); y \cmd{llamar} espera a los tres \cmd{dedup} (paso 11). La última columna es, literalmente, la lista de trabajos que un planificador podría lanzar en ese instante. Tabla generada con \archivo{figuras/cap18/generar.py}.}
 \label{fig:18-kahn}
 \end{figure}
 
@@ -187,7 +187,7 @@ Sea $\mathrm{pre}(t)$ el conjunto de prerrequisitos del objetivo $t$ y $\tau(f)$
 La definición es recursiva y se evalúa precisamente en orden topológico: cuando llegamos a $t$, ya sabemos si cada uno de sus prerrequisitos se rehace. Su consecuencia práctica es que un cambio se propaga a \emph{todos los descendientes} del archivo modificado en el grafo, y a nadie más. En la \cref{fig:18-dag}, modificar las lecturas de la muestra A obliga a rehacer 11 de los 18 trabajos reales (su \cmd{fastp}, su mapeo y su \cmd{dedup}, el llamado conjunto y todo lo que cuelga de él, y \cmd{multiqc}); cambiar el umbral de \cmd{filtrar}, solo 6; retocar \cmd{multiqc}, solo uno. Esta es la \ingles{mise en place} de la intuición inicial.
 
 \begin{historia}[De los compiladores al genoma]
-Feldman cuenta que \cmd{make} nació de la frustración de un colega que perdió una mañana depurando un programa que en realidad estaba bien: simplemente no había recompilado uno de sus archivos \parencite{c18-feldman1979}. Cuatro décadas después, el problema es idéntico con otros nombres: una tabla de conteos calculada con una versión vieja del GTF, una figura que no se regeneró tras corregir un filtro. Muchos bioinformáticos usaron \cmd{make} para sus flujos durante años, pero sus limitaciones (un único comodín \texttt{\%} por regla, un lenguaje propio poco expresivo, ninguna noción de clúster ni de entornos de software) motivaron la generación de gestores que estudiamos a continuación.
+La idea de \cmd{make} era sencilla: describir una vez las dependencias entre archivos y dejar que el programa, comparando fechas de modificación, decida qué recompilar \parencite{c18-feldman1979}. Cuatro décadas después, el problema que resuelve sigue vivo con otros nombres: una tabla de conteos calculada con una versión vieja del GTF, una figura que no se regeneró tras corregir un filtro. Muchos bioinformáticos usaron \cmd{make} para sus flujos durante años, pero sus limitaciones (un único comodín \texttt{\%} por regla, un lenguaje propio poco expresivo, ninguna noción de clúster ni de entornos de software) motivaron la generación de gestores que estudiamos a continuación.
 \end{historia}
 
 \subsection{Snakemake: reglas, comodines e inferencia hacia atrás}\label{sec:18-snakemake}
@@ -255,7 +255,7 @@ datos/A_R2.fastq.gz      <- (archivo fuente) {}
 limpio/A_R2.fq.gz        <- fastp            {'m': 'A'}
 \end{consola}
 
-Nuestra versión de juguete no distingue que \texttt{limpio/A\_R1.fq.gz} y \texttt{limpio/A\_R2.fq.gz} salen de \emph{un mismo} trabajo; Snakemake sí, porque agrupa todas las salidas de una regla con la misma asignación $\sigma$. Tampoco resuelve ambigüedades: si dos reglas pueden producir el mismo archivo, Snakemake se detiene con un error y pide al autor que las ordene (\texttt{ruleorder}) o que restrinja los comodines con expresiones regulares (\texttt{wildcard\_constraints}).
+Nuestra versión de juguete no distingue que los dos archivos de lecturas limpias de la muestra A salen de \emph{un mismo} trabajo; Snakemake sí, porque agrupa todas las salidas de una regla con la misma asignación $\sigma$. Tampoco resuelve ambigüedades: si dos reglas pueden producir el mismo archivo, Snakemake se detiene con un error y pide al autor que las ordene (\texttt{ruleorder}) o que restrinja los comodines con expresiones regulares (\texttt{wildcard\_constraints}).
 
 \paragraph{El flujo completo} El \emph{Snakefile} siguiente implementa el grafo de la \cref{fig:18-dag}. Cada regla es un paso que ya conocemos: \cmd{fastp} (\cref{cap:06}), BWA-MEM y \cmd{samtools} (\cref{cap:07}), \cmd{bcftools} y SnpEff (\cref{cap:09}) e IQ-TREE (\cref{cap:05}). Las muestras, la referencia y los umbrales se leen de un archivo de configuración, de modo que el mismo código sirve para 3 o para 300 aislados. Hemos evitado a propósito las tuberías con ``\texttt{|}'' dentro de las órdenes, para que cada archivo intermedio sea visible; en producción se sustituirían por tuberías o por la función \texttt{pipe()} de Snakemake.
 
@@ -389,13 +389,15 @@ rule filogenia:
     input:
         ref=REF,
         fas=expand("consenso/{m}.fa", m=MUESTRAS),
-    output: "resultados/arbol.treefile"
+    output:
+        arbol="resultados/arbol.treefile",
+        aln="resultados/aln.fa",
     threads: 4
     conda: "envs/filogenia.yaml"
     shell:
         """
-        cat {input.ref} {input.fas} > resultados/aln.fa
-        iqtree2 -s resultados/aln.fa -m GTR+G -B 1000 \
+        cat {input.ref} {input.fas} > {output.aln}
+        iqtree2 -s {output.aln} -m GTR+G -B 1000 \
             -T {threads} --prefix resultados/arbol
         """
 
@@ -446,27 +448,27 @@ La \cref{eq:18-disparos} explica el error más frecuente de quien empieza con Ne
 \centering
 \begin{tikzpicture}[font=\sffamily\scriptsize]
   % ---- fila 1: por muestra ----
-  \node[capdieciochoproc=gris, font=\sffamily\tiny\bfseries] (src) at (0.6,0) {fromFilePairs};
-  \node[capdieciochoproc=azul]  (fastp) at (3.55,0) {FASTP};
-  \node[capdieciochoproc=aqua]  (map)   at (6.55,0) {MAPEAR};
-  \node[capdieciochoproc=verde] (ded)   at (9.55,0) {DEDUP};
-  \node[draw=tinta2, fill=papel, diamond, aspect=1.6, inner sep=1pt, font=\sffamily\tiny] (col1) at (11.85,0) {collect};
+  \node[capdieciochoproc=gris, font=\sffamily\tiny\bfseries] (src) at (0.55,0) {fromFilePairs};
+  \node[capdieciochoproc=azul]  (fastp) at (3.35,0) {FASTP};
+  \node[capdieciochoproc=aqua]  (map)   at (6.25,0) {MAPEAR};
+  \node[capdieciochoproc=verde] (ded)   at (9.1,0) {DEDUP};
+  \node[draw=tinta2, fill=papel, diamond, aspect=1.6, inner sep=1pt, font=\sffamily\tiny] (col1) at (11.5,0) {collect};
   \draw[capdieciochocanal] (src) -- (fastp);
   \draw[capdieciochocanal] (fastp) -- (map);
   \draw[capdieciochocanal] (map) -- (ded);
   \draw[capdieciochocanal] (ded) -- (col1);
-  \foreach \x/\c/\l in {1.75/azul/A,2.15/naranja/B,2.55/aqua/C,
-                        4.55/azul/A,4.95/naranja/B,5.35/aqua/C,
-                        7.55/azul/A,7.95/naranja/B,8.35/aqua/C,
-                        10.6/azul/A,10.95/naranja/B}
+  \foreach \x/\c/\l in {1.62/azul/A,1.98/naranja/B,2.34/aqua/C,
+                        4.4/azul/A,4.8/naranja/B,5.2/aqua/C,
+                        7.3/azul/A,7.68/naranja/B,8.06/aqua/C,
+                        10.2/azul/A,10.56/naranja/B}
      \node[capdieciochotok=\c] at (\x,0) {\l};
   % ---- fuentes de valor ----
-  \node[capdieciochoproc=gris] (idx) at (6.55,1.65) {BWA\_INDEX};
+  \node[capdieciochoproc=gris] (idx) at (6.25,1.65) {BWA\_INDEX};
   \draw[capdieciochovalor=gris] (idx) -- node[right, etiqueta, pos=0.45]{canal de valor} (map);
-  \node[capdieciochoproc=azulprofundo] (mqc) at (3.55,1.65) {MULTIQC};
+  \node[capdieciochoproc=azulprofundo] (mqc) at (3.35,1.65) {MULTIQC};
   \draw[capdieciochovalor=azulprofundo] (fastp) -- node[left, etiqueta, pos=0.45, align=right]{json.collect()} (mqc);
   % ---- fila 2: conjunta ----
-  \node[capdieciochoproc=naranja]  (call) at (11.85,-2.1) {LLAMAR};
+  \node[capdieciochoproc=naranja]  (call) at (11.5,-2.1) {LLAMAR};
   \node[capdieciochoproc=amarillo] (fil)  at (9.05,-2.1) {FILTRAR};
   \node[capdieciochoproc=magenta]  (ann)  at (6.05,-1.35) {ANOTAR};
   \node[capdieciochoproc=violeta]  (cons) at (6.05,-2.85) {CONSENSO};
@@ -480,15 +482,15 @@ La \cref{eq:18-disparos} explica el error más frecuente de quien empieza con Ne
   \foreach \x/\c/\l in {4.35/azul/A,4.75/naranja/B}
      \node[capdieciochotok=\c] at (\x,-2.85) {\l};
   \draw[capdieciochovalor=tinta2] (col2) -- node[above, etiqueta]{[A,B,C]} (tree);
-  \node[capdieciochoproc=gris, font=\sffamily\tiny] (ids) at (6.05,-4.2) {lecturas.map\{id\}};
+  \node[capdieciochoproc=gris, font=\sffamily\tiny] (ids) at (6.05,-4.2) {\texttt{lecturas.map}};
   \draw[capdieciochocanal] (ids) -- (cons);
   % ---- leyenda ----
-  \draw[capdieciochocanal] (8.6,-3.75) -- (9.6,-3.75);
-  \node[etiqueta, anchor=west] at (9.7,-3.75) {canal de cola (se consume)};
-  \draw[capdieciochovalor=tinta2] (8.6,-4.3) -- (9.6,-4.3);
-  \node[etiqueta, anchor=west] at (9.7,-4.3) {canal de valor (se relee)};
-  \node[capdieciochotok=azul] at (8.8,-4.85) {A};
-  \node[etiqueta, anchor=west] at (9.7,-4.85) {elemento: \texttt{(id, archivos)}};
+  \draw[capdieciochocanal] (8.0,-3.75) -- (9.0,-3.75);
+  \node[etiqueta, anchor=west] at (9.1,-3.75) {canal de cola (se consume)};
+  \draw[capdieciochovalor=tinta2] (8.0,-4.3) -- (9.0,-4.3);
+  \node[etiqueta, anchor=west] at (9.1,-4.3) {canal de valor (se relee)};
+  \node[capdieciochotok=azul] at (8.5,-4.85) {A};
+  \node[etiqueta, anchor=west] at (9.1,-4.85) {elemento: \texttt{(id, archivos)}};
 \end{tikzpicture}
 \caption[Canales y procesos en Nextflow]{El mismo flujo de la \cref{fig:18-dag} visto como flujo de datos en Nextflow. Los procesos (cajas) están aislados y solo se comunican por canales. Por los canales de cola (tubos grises) circulan elementos, uno por muestra, que cada proceso consume en cuanto llegan: la muestra A puede estar ya en DEDUP mientras C sigue en FASTP. El índice de BWA viaja por un canal de valor (doble línea) que MAPEAR relee para cada muestra, y el operador \texttt{collect} convierte la cola de BAM en un único valor, la lista completa, que dispara una sola vez el llamado conjunto. Lo mismo ocurre con el VCF filtrado, que CONSENSO relee para cada identificador de muestra, y con las secuencias consenso, que se reúnen antes de la filogenia.}
 \label{fig:18-canales}
@@ -650,11 +652,11 @@ process MULTIQC {
 }
 
 workflow {
-    lecturas = Channel.fromFilePairs(params.lecturas)   // cola
-    ref = file(params.ref)                               // valor
+    lecturas = Channel.fromFilePairs(params.lecturas)  // cola
+    ref = file(params.ref)                              // valor
     FASTP(lecturas)
     MULTIQC(FASTP.out.json.collect())
-    BWA_INDEX(ref)                                       // valor
+    BWA_INDEX(ref)                                      // valor
     MAPEAR(FASTP.out.reads, BWA_INDEX.out)
     DEDUP(MAPEAR.out)
     bams = DEDUP.out.map { id, bam, bai -> [bam, bai] }.collect()
@@ -703,7 +705,7 @@ Comunidad & general & catálogo de flujos & nf-core & estándar multi-motor\\
 
 Un flujo que funciona en mi portátil y no en el suyo no es reproducible. La causa casi nunca es el código del flujo, sino el \emph{entorno}: la versión de \cmd{samtools}, de la biblioteca \cmd{htslib} contra la que se compiló, de Python, de la biblioteca matemática del sistema. \textcite{c18-ditommaso2017} mostraron que un mismo análisis ejecutado en sistemas operativos distintos podía producir resultados numéricamente diferentes, y que empaquetar las herramientas en contenedores eliminaba esa discrepancia. \textcite{c18-gruning2018practical} proponen pensar la reproducibilidad como una pila de capas, de los paquetes al sistema operativo, y fijar cada una con la herramienta adecuada.
 
-\paragraph{Gestores de paquetes} Conda instala binarios precompilados con todas sus dependencias en un entorno aislado, sin permisos de administrador. Bioconda \parencite{c18-gruning2018bioconda} es el canal comunitario de recetas para bioinformática: en el momento de su publicación ya reunía más de tres mil paquetes, y hoy es la forma estándar de instalar casi cualquier herramienta de este libro. Cada regla del Snakefile o proceso de \archivo{main.nf} apunta a un pequeño archivo de entorno con versiones \emph{exactas}:
+\paragraph{Gestores de paquetes} Conda instala binarios precompilados con todas sus dependencias en un entorno aislado, sin permisos de administrador. Bioconda \parencite{c18-gruning2018bioconda} es el canal comunitario de recetas para bioinformática: ya reúne miles de paquetes, y es la forma estándar de instalar casi cualquier herramienta de este libro. Cada regla del Snakefile o proceso de \archivo{main.nf} apunta a un pequeño archivo de entorno con versiones \emph{exactas}:
 
 \begin{codigo}[envs/mapeo.yaml]
 channels:
@@ -849,21 +851,21 @@ Asignemos al flujo de la \cref{fig:18-dag} duraciones ilustrativas (en minutos) 
   height=6.4cm, xmode=log, log basis x=2, xmin=1, xmax=64, ymin=0, ymax=11,
   xtick={1,2,4,8,16,32,64}, xticklabels={1,2,4,8,16,32,64},
   xlabel={núcleos $P$}, ylabel={aceleración $\psi(P)=T_1/T_P$},
-  legend pos=north west]
+  legend style={at={(0.5,-0.22)}, anchor=north}, legend columns=2]
   \addplot[gris, dashed, thin, domain=1:10.5, samples=60] {x};
   \addlegendentry{ideal $\psi=P$}
   \addplot[azul, thin, domain=1:64, samples=120] {1/(\capdieciochosb + (1-\capdieciochosb)/x)};
-  \addlegendentry{Amdahl, $s=\capdieciochosb$}
+  \addlegendentry{Amdahl, $s=\num{\capdieciochosb}$}
   \addplot[azul, only marks, mark=*, mark size=1.8pt] table[x=P, y=base] {figuras/cap18/speedup.dat};
   \addlegendentry{flujo simulado, llamado único}
   \addplot[naranja, thin, domain=1:64, samples=120] {1/(\capdieciochoss + (1-\capdieciochoss)/x)};
-  \addlegendentry{Amdahl, $s=\capdieciochoss$}
+  \addlegendentry{Amdahl, $s=\num{\capdieciochoss}$}
   \addplot[naranja, only marks, mark=square*, mark size=1.8pt] table[x=P, y=scatter] {figuras/cap18/speedup.dat};
   \addlegendentry{flujo simulado, 24 regiones}
   \addplot[azul, densely dotted, domain=1:64, samples=2] {4.08};
   \addplot[naranja, densely dotted, domain=1:64, samples=2] {7.99};
-  \node[etiqueta, anchor=south east, text=azulprofundo] at (axis cs:64,4.08) {$W/S=4{,}08$};
-  \node[etiqueta, anchor=south east, text=rojooscuro] at (axis cs:64,7.99) {$W/S=7{,}99$};
+  \node[etiqueta, anchor=south west, text=azulprofundo] at (axis cs:1.05,4.08) {$W/S=4{,}08$};
+  \node[etiqueta, anchor=south west, text=rojooscuro] at (axis cs:1.05,7.99) {$W/S=7{,}99$};
 \end{axis}
 \end{tikzpicture}
 \caption[Aceleración de un flujo y ley de Amdahl]{Aceleración del flujo de ejemplo con 24 muestras en función del número de núcleos, obtenida simulando un planificador voraz sobre el grafo de trabajos (puntos), junto a la curva de Amdahl (\cref{eq:18-amdahl}) con la fracción serial que mejor se ajusta (líneas continuas). Con el llamado de variantes como un único trabajo (azul) la aceleración se estanca en el paralelismo $W/S=4{,}08$ desde unos 32 núcleos. Dividir el llamado en 24 regiones (naranja) reduce la fracción serial a la mitad y casi duplica la aceleración alcanzable. La lección práctica: antes de pedir más núcleos, busque el camino crítico. Datos de \archivo{figuras/cap18/generar.py}.}
@@ -912,7 +914,7 @@ Todo proyecto empieza por una pregunta biológica concreta, y el resto (datos, m
 \textbf{Etapa} & \textbf{A: patógeno (ADN)} & \textbf{B: RNA-seq}\\
 \midrule
 Datos & FASTQ pareados de aislados (SRA/ENA) & FASTQ de un diseño con réplicas\\
-Calidad & \cmd{fastp}, MultiQC (\cref{cap:06}) & \cmd{fastp}, MultiQC (\cref{cap:06})\\
+Calidad & \leavevmode\cmd{fastp}, MultiQC (\cref{cap:06}) & \leavevmode\cmd{fastp}, MultiQC (\cref{cap:06})\\
 Lecturas $\to$ señal & BWA-MEM, \cmd{samtools} (\cref{cap:07}) & pseudoalineamiento o mapeo, algoritmo EM (\cref{cap:11})\\
 Inferencia & llamado y filtrado de variantes (\cref{cap:09}) & normalización, binomial negativa, FDR (\cref{cap:11})\\
 Interpretación & anotación funcional, resistencia (\cref{cap:09}) & enriquecimiento GO/KEGG (\cref{cap:11})\\
@@ -987,22 +989,22 @@ La \cref{eq:18-capas} es trivial de escribir y exigente de cumplir: \emph{cada} 
 \centering
 \begin{tikzpicture}[font=\sffamily\scriptsize]
   \foreach \i/\col/\capa/\como in {
-     0/gris/{Hardware y sistema operativo}/{se documenta (arquitectura, núcleo); resultados comparados con tolerancias},
-     1/azulprofundo/{Contenedor}/{imagen Docker o Singularity fijada por su \emph{digest} SHA-256},
-     2/azul/{Entorno de paquetes}/{Bioconda con versiones exactas y archivo de bloqueo},
-     3/aqua/{Código}/{\emph{commit} y etiqueta de Git; flujo Snakemake o Nextflow},
-     4/verde/{Datos}/{accesiones SRA/ENA, sumas SHA-256, referencia versionada},
-     5/amarillo/{Parámetros y semillas}/{\archivo{config.yaml} versionado; semillas explícitas}}{
+     0/gris/{Hardware y sistema operativo}/{se documenta; se compara con tolerancias},
+     1/azulprofundo/{Contenedor}/{imagen fijada por su \emph{digest} SHA-256},
+     2/azul/{Entorno de paquetes}/{Bioconda: versiones exactas y bloqueo},
+     3/aqua/{Código}/{\emph{commit} y etiqueta de Git},
+     4/verde/{Datos}/{accesiones SRA/ENA y sumas SHA-256},
+     5/amarillo/{Parámetros y semillas}/{\archivo{config.yaml} y semillas en Git}}{
     \fill[\col!18, draw=\col!70!black, rounded corners=2pt, thick]
       (0.2*\i, 0.78*\i) rectangle (5.4-0.2*\i, 0.78*\i+0.62);
     \node[font=\sffamily\scriptsize\bfseries, text=tinta] at (2.7, 0.78*\i+0.31) {\capa};
     \draw[\col!70!black, thin] (5.4-0.2*\i, 0.78*\i+0.31) -- (5.9, 0.78*\i+0.31);
-    \node[anchor=west, text width=4.6cm, align=left, text=tinta2, font=\sffamily\scriptsize] at (5.95, 0.78*\i+0.31) {\como};
+    \node[anchor=west, text=tinta2, font=\sffamily\scriptsize] at (5.95, 0.78*\i+0.31) {\como};
   }
   \node[caja=rojo, font=\sffamily\scriptsize\bfseries, align=center] (res) at (2.7, 5.35) {Resultado $R=f(C,\mathcal{E},D,\theta,\omega)$\\[-1pt]{\normalfont tablas, figuras, informe}};
   \draw[flecha=rojo] (2.7,4.55) -- (res.south);
   \draw[decorate, decoration={brace, amplitude=5pt}, tinta2] (-0.25,0) -- (-0.25,4.52)
-     node[midway, left=7pt, align=center, text=tinta2]{de lo más\\estable a lo\\más volátil};
+     node[midway, left=7pt, align=center, text=tinta2]{más\\volátil\\$\uparrow$\\más\\estable};
 \end{tikzpicture}
 \caption[Las capas de la reproducibilidad]{Las capas que determinan un resultado computacional (\cref{eq:18-capas}) y la herramienta que fija cada una. Las capas inferiores cambian con menos frecuencia pero son las más difíciles de reconstruir años después; las superiores cambian en cada análisis y son las más fáciles de olvidar. Un contenedor fija de una vez las capas de entorno y parte del sistema, pero no los datos ni los parámetros; Git fija el código y la configuración, pero no el software. Solo la combinación de todas cierra la \cref{eq:18-capas}. Adaptado de la discusión de \textcite{c18-gruning2018practical}.}
 \label{fig:18-capas}
@@ -1075,7 +1077,8 @@ Las lecturas crudas de cualquier estudio publicado deben depositarse en un archi
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[font=\sffamily\scriptsize,
-   niv/.style={caja=#1, font=\sffamily\scriptsize, text width=2.35cm, align=center, minimum height=1.05cm, inner sep=3pt}]
+   niv/.style={caja=#1, font=\sffamily\scriptsize, text width=2.35cm, align=center, minimum height=1.05cm, inner sep=3pt},
+   every node/.append style={execute at begin node={\hyphenpenalty=10000\exhyphenpenalty=10000}}]
   \node[niv=azul] (proj) at (0,0) {\textbf{Proyecto}\\BioProject\\\texttt{PRJNA\ldots}, \texttt{PRJEB\ldots}};
   \foreach \k/\y in {1/1.35,2/0,3/-1.35}{
     \node[niv=verde] (s\k) at (3.2,\y) {\textbf{Muestra \k}\\BioSample\\\texttt{SAMN\ldots}, \texttt{SAMEA\ldots}};
@@ -1085,11 +1088,11 @@ Las lecturas crudas de cualquier estudio publicado deben depositarse en un archi
   \node[niv=violeta] (run) at (9.6,0) {\textbf{Corrida}\\archivos\\\texttt{SRR\ldots}, \texttt{ERR\ldots}};
   \draw[flecha=tinta2] (s2) -- (exp);
   \draw[flecha=tinta2] (exp) -- (run);
-  \node[niv=violeta, text width=1.6cm, minimum height=0.6cm] (fq) at (9.6,-1.55) {\texttt{R1/R2.fastq.gz}};
+  \node[niv=violeta, text width=2.2cm, minimum height=0.6cm] (fq) at (9.6,-1.6) {\texttt{R1/R2.fastq.gz}};
   \draw[flecha=violeta] (run) -- (fq);
-  \node[text width=2.6cm, align=left, text=tinta2, anchor=north] at (0,-0.75) {título, objetivo, organismo, financiación, publicación};
+  \node[text width=2.9cm, align=left, text=tinta2, anchor=north] at (0,-0.75) {título, objetivo, organismo, financiación, publicación};
   \node[text width=2.9cm, align=left, text=tinta2, anchor=north] at (3.2,-2.05) {organismo, cepa, hospedero, fecha y lugar de colecta, tipo de muestra};
-  \node[text width=2.6cm, align=left, text=tinta2, anchor=north] at (6.4,-0.75) {plataforma, estrategia (WGS, RNA-Seq), selección, disposición pareada};
+  \node[text width=2.9cm, align=left, text=tinta2, anchor=north] at (6.4,-0.75) {plataforma, estrategia (WGS, RNA-Seq), selección, disposición pareada};
   \node[text width=2.2cm, align=left, text=tinta2, anchor=south] at (9.6,0.7) {número de lecturas y bases; MD5};
 \end{tikzpicture}
 \caption[La jerarquía de metadatos del SRA y el ENA]{La jerarquía de objetos del SRA y el ENA, con los prefijos de sus accesiones (NCBI / EBI) y los metadatos que se describen en cada nivel. Un proyecto contiene muestras; cada muestra puede secuenciarse en varios experimentos (bibliotecas), y cada experimento en varias corridas. Las muestras llevan la información biológica que hará reutilizables los datos; los experimentos, la técnica. El artículo debe citar la accesión del proyecto, y el flujo debe descargar las lecturas por la accesión de cada corrida.}
@@ -1121,7 +1124,7 @@ Un proyecto de este tamaño cabe en un semestre si se planifica con cuidado. Un 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[font=\sffamily\scriptsize]
-  \def\sx{0.6}
+  \def\sx{0.57}
   \foreach \w in {1,...,14}{
     \node[text=gris] at (3.3+\w*\sx-0.5*\sx, 0.45) {\w};
     \draw[rejilla] (3.3+\w*\sx, 0.25) -- (3.3+\w*\sx, -6.05);
@@ -1146,7 +1149,7 @@ Un proyecto de este tamaño cabe en un semestre si se planifica con cuidado. Un 
     \fill[rojooscuro] (3.3+\w*\sx, \y) +(0,0.14) -- +(0.14,0) -- +(0,-0.14) -- +(-0.14,0) -- cycle;
     \node[font=\sffamily\tiny\bfseries, text=rojooscuro, anchor=west] at (3.3+\w*\sx+0.14, \y) {\h};
   }
-  \node[anchor=north west, text width=12.4cm, align=left, text=tinta2] at (-0.9,-6.2) {\textbf{Hitos:} H1 propuesta aprobada (pregunta, datos, rúbrica); H2 el flujo corre de principio a fin sobre los datos mínimos de prueba; H3 resultados preliminares con todas las muestras; H4 un compañero reproduce el análisis desde el repositorio; H5 entrega: informe, repositorio etiquetado y presentación.};
+  \node[anchor=north west, text width=12.2cm, align=left, text=tinta2] at (-0.9,-6.2) {\textbf{Hitos:} H1 propuesta aprobada (pregunta, datos, rúbrica); H2 el flujo corre de principio a fin sobre los datos mínimos de prueba; H3 resultados preliminares con todas las muestras; H4 un compañero reproduce el análisis desde el repositorio; H5 entrega: informe, repositorio etiquetado y presentación.};
 \end{tikzpicture}
 \caption[Cronograma del proyecto integrador]{Cronograma orientativo del proyecto integrador en 14 semanas. Las tareas se solapan porque no todas dependen unas de otras: el esqueleto del flujo (con datos de prueba) se escribe mientras se descargan y curan los datos reales, y el informe se empieza a redactar en cuanto hay resultados preliminares. El camino crítico recorre diseño $\to$ esqueleto $\to$ mapeo $\to$ variantes $\to$ filogenia $\to$ informe: un retraso en cualquiera de ellos retrasa la entrega. El hito H4, en el que otra persona reproduce su análisis, es la prueba de fuego del capítulo; resérvele tiempo.}
 \label{fig:18-cronograma}
@@ -1187,9 +1190,10 @@ Informe y comunicación & 0,15 & figuras claras generadas por el flujo; conclusi
 
 \begin{ejemplo}{Aplicar la rúbrica}{18-rubrica}
 Un proyecto obtiene los niveles $x=(4,3,3,4,2,3)$ en los seis criterios, en el orden de la \cref{tab:18-rubrica}. Su nota es
-\[
-N = 0{,}20\cdot4 + 0{,}20\cdot3 + 0{,}15\cdot3 + 0{,}15\cdot4 + 0{,}15\cdot2 + 0{,}15\cdot3 = 0{,}80+0{,}60+0{,}45+0{,}60+0{,}30+0{,}45 = 3{,}20,
-\]
+\begin{align*}
+N &= 0{,}20\cdot4 + 0{,}20\cdot3 + 0{,}15\cdot3 + 0{,}15\cdot4 + 0{,}15\cdot2 + 0{,}15\cdot3\\
+  &= 0{,}80+0{,}60+0{,}45+0{,}60+0{,}30+0{,}45 = 3{,}20,
+\end{align*}
 es decir, un 80\,\% de la nota máxima (4,0 sobre 5). El punto débil está en datos, metadatos y ética ($x_5=2$): subirlo a 4, completando la tabla de metadatos y el plan de depósito, añadiría $0{,}15\times2=0{,}30$ puntos y llevaría la nota a 3,50 (87,5\,\%). La rúbrica no solo califica: indica dónde rinde más el esfuerzo que queda.
 \end{ejemplo}
 

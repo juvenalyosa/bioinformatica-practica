@@ -22,7 +22,7 @@ Avanzaremos en cuatro pasos. Primero miraremos las secuencias con los ojos, medi
 % ---------------------------------------------------------------------
 \section{Dot plots: mirar antes de calcular}\label{sec:03-dotplot}
 % ---------------------------------------------------------------------
-\enlacerepo{3.1 · Dot plots}
+\enlacecolab{modulo-03-alineamiento/3.1_dot_plots.ipynb}{3.1 · Dot plots}
 
 \begin{intuicion}[Dos manuscritos sobre la mesa]
 Imagine que recibe dos copias manuscritas de un mismo poema, copiadas por escribas distintos con siglos de diferencia. Para compararlas, podría escribir una copia a lo largo del borde superior de una hoja cuadriculada y la otra a lo largo del borde izquierdo, y marcar con un punto cada casilla donde las dos letras coinciden. Allí donde los escribas copiaron fielmente, aparecerá una línea diagonal limpia; donde uno de ellos saltó un verso, la diagonal se desplazará; donde repitió una estrofa, aparecerá una segunda diagonal paralela. Sin hacer una sola cuenta, la hoja le habrá contado la historia de las copias.
@@ -34,7 +34,7 @@ Esa hoja cuadriculada es exactamente un \ingles{dot plot} (matriz de puntos), la
 
 Sean $x = x_1x_2\cdots x_n$ e $y = y_1y_2\cdots y_m$ dos secuencias sobre un alfabeto $\mathcal{A}$ (por ejemplo, $\mathcal{A}=\{\texttt{A},\texttt{C},\texttt{G},\texttt{T}\}$).
 
-\begin{definicion}{Dot plot con ventana}{dotplot}
+\begin{definicion}{Dot plot con ventana}{03-dotplot}
 Dada una ventana de longitud impar $w$ y un umbral $t \le w$, el \ingles{dot plot} de $x$ contra $y$ es la matriz binaria $D \in \{0,1\}^{n\times m}$ con
 \begin{equation}\label{eq:03-dotplot}
 D_{ij} = \mathbb{1}\!\left[\;\sum_{k=-h}^{h} \mathbb{1}\left[x_{i+k} = y_{j+k}\right] \;\ge\; t\;\right],\qquad h=\frac{w-1}{2}.
@@ -73,7 +73,7 @@ La \cref{fig:03-dotplot} muestra un ejemplo construido a propósito: la secuenci
   \label{fig:03-dotplot}
 \end{figure}
 
-\begin{ejemplo}{Un dot plot en diez líneas}{dotplot-codigo}
+\begin{ejemplo}{Un dot plot en diez líneas}{03-dotplot-codigo}
 El siguiente fragmento calcula la matriz de la \cref{eq:03-dotplot} de forma vectorizada: en lugar de recorrer ventanas, se suman diagonales desplazadas de la matriz de identidad.
 \begin{codigo}[dotplot.py]
 import numpy as np
@@ -99,7 +99,7 @@ Un \ingles{dot plot} no produce un alineamiento ni una puntuación. Es una herra
 % ---------------------------------------------------------------------
 \section{Programación dinámica: Needleman-Wunsch y Smith-Waterman}\label{sec:03-dp}
 % ---------------------------------------------------------------------
-\enlacerepo{3.2 · Programación dinámica}
+\enlacecolab{modulo-03-alineamiento/3.2_programacion_dinamica.ipynb}{3.2 · Programación dinámica}
 
 \subsection{¿Qué es un alineamiento?}
 
@@ -135,7 +135,7 @@ La idea astuta proviene de la investigación de operaciones. \textcite{c03-bellm
 
 Sea $F(i,j)$ la puntuación del mejor alineamiento entre los prefijos $x_{1..i}$ e $y_{1..j}$. \textcite{c03-needleman1970} mostraron que $F$ se puede llenar como una tabla, fila por fila, con la recurrencia
 
-\begin{teorema}{Recurrencia de Needleman-Wunsch}{nw}
+\begin{teorema}{Recurrencia de Needleman-Wunsch}{03-nw}
 Con penalización lineal $d>0$ por posición de hueco,
 \begin{equation}\label{eq:03-nw}
 F(i,j) = \max\begin{cases}
@@ -163,7 +163,7 @@ La tabla se llena en $O(nm)$ operaciones, ya que cada celda consulta tres vecina
   \label{fig:03-nw}
 \end{figure}
 
-\begin{ejemplo}{Leyendo la matriz de la \cref{fig:03-nw}}{nw}
+\begin{ejemplo}{Leyendo la matriz de la \cref{fig:03-nw}}{03-nw}
 La puntuación óptima es $F(7,7)=2$. Siguiendo las flechas desde la esquina se obtiene
 \begin{center}
 \ttfamily\large
@@ -195,7 +195,7 @@ def needleman_wunsch(x, y, match=1, mismatch=-1, gap=2):
 
 El alineamiento global asume que las dos secuencias son homólogas de extremo a extremo. Muchas veces no es así: dos proteínas pueden compartir un único dominio en medio de regiones sin relación, o una lectura corta de secuenciación puede provenir de un pequeño trozo de un cromosoma. En esos casos queremos el \emph{par de subcadenas} más parecido. \textcite{c03-smith1981} lo consiguieron con un cambio mínimo pero profundo: permitir que un alineamiento ``vuelva a empezar'' en cualquier celda.
 
-\begin{teorema}{Recurrencia de Smith-Waterman}{sw}
+\begin{teorema}{Recurrencia de Smith-Waterman}{03-sw}
 \begin{equation}\label{eq:03-sw}
 H(i,j) = \max\begin{cases}
 0 & \text{(empezar de nuevo)}\\
@@ -241,7 +241,7 @@ Para alinear dos cromosomas bacterianos de \SI{5}{Mb}, una matriz $n\times m$ ne
 % ---------------------------------------------------------------------
 \section{Matrices de sustitución y penalización de gaps}\label{sec:03-matrices}
 % ---------------------------------------------------------------------
-\enlacerepo{3.3 · Matrices de sustitución}
+\enlacecolab{modulo-03-alineamiento/3.3_matrices_sustitucion.ipynb}{3.3 · Matrices de sustitución}
 
 Hasta ahora hemos usado puntuaciones arbitrarias: $+1$ para coincidencias, $-1$ para sustituciones. En ADN esa simplificación es tolerable; en proteínas, no. Cambiar una leucina por una isoleucina (ambas hidrofóbicas, casi del mismo tamaño) apenas altera una proteína, mientras que cambiar un triptófano por una glicina puede destruir su plegamiento. Necesitamos puntuaciones que reflejen la química y la evolución.
 
@@ -304,7 +304,7 @@ Las penalizaciones de hueco no son independientes de la matriz: ambas deben esta
 % ---------------------------------------------------------------------
 \section{BLAST y la estadística de Karlin-Altschul}\label{sec:03-blast}
 % ---------------------------------------------------------------------
-\enlacerepo{3.4 · BLAST y valores $E$}
+\enlacecolab{modulo-03-alineamiento/3.4_blast_estadistica.ipynb}{3.4 · BLAST y valores $E$}
 
 \subsection{El problema de escala}
 
@@ -363,7 +363,7 @@ Toda búsqueda produce un mejor resultado, incluso si la consulta es una secuenc
 
 Consideremos la puntuación máxima $S$ de un alineamiento local \emph{sin huecos} entre dos secuencias aleatorias de longitudes $m$ y $n$. La suma de puntuaciones a lo largo de una diagonal es un paseo aleatorio con deriva negativa (porque $\E[s]<0$). Los segmentos de alta puntuación son \emph{excursiones} excepcionales de ese paseo, y la teoría de valores extremos predice que su máximo sigue una distribución de Gumbel.
 
-\begin{teorema}{Karlin-Altschul}{ka}
+\begin{teorema}{Karlin-Altschul}{03-ka}
 Si $\sum_{a,b}p_a p_b\,s(a,b) < 0$ y existe al menos un par con $s(a,b)>0$, el número esperado de HSP distintos con puntuación $\ge S$ es, asintóticamente,
 \begin{equation}\label{eq:03-evalue}
 E = K\,m\,n\,e^{-\lambda S},
@@ -413,7 +413,7 @@ Esta forma es muy práctica: cada bit adicional de puntuación reduce a la mitad
 \label{fig:03-evalue}
 \end{figure}
 
-\begin{ejemplo}{Interpretar un resultado real}{blast}
+\begin{ejemplo}{Interpretar un resultado real}{03-blast}
 Una búsqueda \cmd{blastp} de una proteína de 350 aminoácidos contra una base de datos de $2\times10^{11}$ residuos devuelve un resultado con puntuación de 85 bits. El valor esperado es
 \[
 E = 350\times 2\times10^{11}\times 2^{-85} \approx 7\times10^{13}\times 2{,}6\times10^{-26} \approx 1{,}8\times10^{-12}.

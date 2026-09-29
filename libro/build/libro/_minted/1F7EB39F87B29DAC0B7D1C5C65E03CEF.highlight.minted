@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{} profundidad media en ventanas de 500 pb, solo MAPQ \PYGZgt{}= 20}
-mosdepth\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }\PYGZhy{}\PYGZhy{}by\PYG{+w}{ }\PYG{l+m}{500}\PYG{+w}{ }\PYGZhy{}Q\PYG{+w}{ }\PYG{l+m}{20}\PYG{+w}{ }m1\PYG{+w}{ }m1.bam
-zcat\PYG{+w}{ }m1.regions.bed.gz\PYG{+w}{ }\PYG{err}{|}\PYG{+w}{ }head\PYG{+w}{ }\PYGZhy{}3\PYG{+w}{       }\PYG{c+c1}{\PYGZsh{} crom inicio fin media}
-cat\PYG{+w}{ }m1.mosdepth.summary.txt\PYG{+w}{            }\PYG{c+c1}{\PYGZsh{} media por cromosoma}
-\end{MintedVerbatim}

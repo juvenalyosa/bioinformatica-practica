@@ -31,7 +31,7 @@ Piense en esas coreografías de las tribunas en las que cada espectador levanta 
 
 Todas las tecnologías de secuenciación resuelven el mismo problema: convertir una sucesión de bases químicamente casi idénticas en una señal física medible (una banda en un gel, un destello de luz, una variación de corriente) que pueda asignarse a una posición. La primera solución práctica, y la que dominó durante casi treinta años, fue la de \textcite{c06-sanger1977}. Su idea fue usar a la propia ADN polimerasa como ``lectora''. La enzima copia una hebra molde a partir de un cebador, pero en la mezcla se añade, junto a los desoxinucleótidos normales (dNTP), una pequeña proporción de \emph{didesoxinucleótidos} (ddNTP), que carecen del grupo hidroxilo 3' necesario para unir la siguiente base. Cada vez que la polimerasa incorpora un ddNTP, la síntesis se detiene. El resultado es una colección de fragmentos que terminan en cada posición donde aparece la base correspondiente; separándolos por tamaño con resolución de una base, se lee la secuencia.
 
-\begin{definicion}{Probabilidad de terminación}{sanger}
+\begin{definicion}{Probabilidad de terminación}{06-sanger}
 Sea $r$ la probabilidad de que, frente a una posición del molde que admite la base $b$, la polimerasa incorpore el ddNTP en lugar del dNTP. Si las incorporaciones son independientes, la probabilidad de que la síntesis termine exactamente en la $k$-ésima aparición de $b$ es geométrica:
 \begin{equation}\label{eq:06-sanger}
 \Prob(K=k) = (1-r)^{k-1}\,r,\qquad k=1,2,\dots
@@ -183,7 +183,7 @@ La tecnología que terminó por dominar el mercado combina dos ideas: amplificar
 
 Si todas las hebras de un clúster avanzaran en perfecta sincronía, la calidad sería la misma en el ciclo 1 que en el 150. No es así, y la razón es instructiva. En cada ciclo, una pequeña fracción de las hebras no incorpora ninguna base (por ejemplo, porque la escisión del bloqueador falló o la polimerasa no actuó): quedan \emph{retrasadas} una posición (\ingles{phasing}). Otra fracción incorpora dos bases, porque algún nucleótido carecía de bloqueador: quedan \emph{adelantadas} (\ingles{pre-phasing}). Las hebras desfasadas siguen emitiendo luz, pero del color equivocado, y contaminan la señal del clúster.
 
-\begin{teorema}{Decaimiento de la fracción en fase}{fase}
+\begin{teorema}{Decaimiento de la fracción en fase}{06-fase}
 Sea $\varepsilon = p + q$ la probabilidad, por ciclo y por hebra, de un evento de desfase (retraso con probabilidad $p$, adelanto con probabilidad $q$), independiente entre ciclos. La fracción de hebras que siguen exactamente en fase tras $n$ ciclos es
 \begin{equation}\label{eq:06-fase}
 \phi(n) = (1-\varepsilon)^{n} \approx e^{-\varepsilon n}.
@@ -234,7 +234,7 @@ Las plataformas de lecturas cortas leen clústeres, no moléculas; necesitan amp
 
 Esa aleatoriedad es la base de las lecturas HiFi. Si el inserto se circulariza con adaptadores en horquilla, la polimerasa da muchas vueltas a la misma molécula y cada vuelta (\ingles{pass}) es una lectura independiente del mismo molde. La secuencia consenso circular (CCS) combina las pasadas.
 
-\begin{ejemplo}{Cuántas pasadas hacen una lectura HiFi}{hifi}
+\begin{ejemplo}{Cuántas pasadas hacen una lectura HiFi}{06-hifi}
 Modelemos cada pasada como un voto independiente que acierta la base con probabilidad $1-e$ y supongamos, de forma pesimista, que basta que la mayoría de las pasadas se equivoque para que el consenso falle. Con $k$ pasadas (impar),
 \begin{equation}\label{eq:06-consenso}
 e_{\text{cons}}(k) = \sum_{j=\lceil k/2\rceil}^{k}\binom{k}{j}\,e^{\,j}\,(1-e)^{k-j}.
@@ -349,7 +349,7 @@ Un buen servicio meteorológico no dice ``mañana lloverá'': dice ``mañana hay
 
 Cuando el programa \cmd{phred} asignaba bases a partir de las curvas de fluorescencia de los secuenciadores capilares, calculaba para cada pico varios parámetros de la traza (espaciado entre picos, cociente entre la señal llamada y la no llamada, etc.) y, mediante una tabla calibrada con lecturas de secuencia conocida, los convertía en una probabilidad de error \parencite{c06-ewing1998a,c06-ewing1998b}. Para expresar esa probabilidad de forma compacta, los autores propusieron una escala logarítmica que hoy es universal.
 
-\begin{definicion}{Calidad Phred}{phred}
+\begin{definicion}{Calidad Phred}{06-phred}
 Si $p$ es la probabilidad de que la base asignada sea incorrecta, su calidad Phred es
 \begin{equation}\label{eq:06-phred}
 Q = -10\,\log_{10} p \qquad\Longleftrightarrow\qquad p = 10^{-Q/10}.
@@ -367,7 +367,7 @@ La escala tiene dos virtudes. Primero, es \emph{intuitiva en órdenes de magnitu
 
 Las lecturas se almacenan en archivos FASTQ, que \textcite{c06-cock2010} documentaron formalmente junto con sus variantes históricas. Cada lectura ocupa cuatro líneas: un identificador que empieza con \texttt{@}, la secuencia, una línea separadora que empieza con \texttt{+}, y una cadena de calidades \emph{de la misma longitud que la secuencia}, en la que cada carácter codifica el $Q$ de la base correspondiente.
 
-\begin{definicion}{Codificación ASCII de las calidades}{ascii}
+\begin{definicion}{Codificación ASCII de las calidades}{06-ascii}
 En la codificación estándar (llamada \emph{Sanger} o Phred+33), el carácter $\kappa$ de la línea de calidades representa
 \begin{equation}\label{eq:06-ascii}
 Q = \operatorname{ord}(\kappa) - 33,
@@ -403,7 +403,7 @@ que admite valores negativos y coincide con la escala Phred solo para calidades 
 
 Si conocemos la probabilidad de error de cada base, podemos resumir la calidad de toda una lectura. Considerando las bases independientes (una aproximación razonable), el número de errores de una lectura de longitud $L$ es una suma de variables de Bernoulli.
 
-\begin{teorema}{Errores esperados y probabilidad de lectura perfecta}{errores}
+\begin{teorema}{Errores esperados y probabilidad de lectura perfecta}{06-errores}
 Para una lectura con probabilidades de error $p_1,\dots,p_L$ independientes, el número de errores $X$ cumple
 \begin{equation}\label{eq:06-errores}
 \E[X] = \sum_{i=1}^{L} p_i = \sum_{i=1}^{L}10^{-Q_i/10},\qquad
@@ -419,7 +419,7 @@ Para una lectura con probabilidades de error $p_1,\dots,p_L$ independientes, el 
 
 La esperanza de una suma es la suma de las esperanzas, sin necesidad siquiera de independencia; la segunda fórmula, en cambio, sí la requiere. Un detalle importante es que el \emph{promedio de las calidades} no es un buen resumen: como $p$ es exponencial en $Q$, una sola base de $Q2$ aporta más errores esperados que treinta bases de $Q30$. Por eso algunos filtros (por ejemplo, en el análisis de amplicones) descartan lecturas según su $\E[X]$, no según su $Q$ medio.
 
-\begin{ejemplo}{La lectura de la \cref{fig:06-fastq}}{errores}
+\begin{ejemplo}{La lectura de la \cref{fig:06-fastq}}{06-errores}
 Las 24 calidades de la figura suman $\E[X] = 0{,}78$ errores esperados. Sin embargo, $0{,}63$ de ellos proceden de la última base ($Q2$, $p=10^{-0{,}2}\approx0{,}63$); las 20 primeras, todas con $Q\ge20$, aportan en conjunto menos de $0{,}02$. Recortar solo las cuatro últimas bases elimina más del \SI{95}{\percent} de los errores esperados.
 
 A mayor escala, comparemos dos lecturas de 150 bases con calidad uniforme. A $Q30$, $\E[X]=150\times10^{-3}=0{,}15$ y $\Prob(X=0)=0{,}999^{150}\approx0{,}86$: casi nueve de cada diez lecturas no tienen ningún error. A $Q20$, $\E[X]=1{,}5$ y $\Prob(X=0)=0{,}99^{150}\approx0{,}22$: casi cuatro de cada cinco lecturas llevan al menos un error. La diferencia entre $Q20$ y $Q30$, que parece modesta en la escala logarítmica, cambia por completo la naturaleza de los datos (\cref{fig:06-phred}).
@@ -448,7 +448,7 @@ A mayor escala, comparemos dos lecturas de 150 bases con calidad uniforme. A $Q3
   \addplot[only marks, mark=*, mark size=1.6pt, tinta2] coordinates {(150,0.861)(150,0.221)};
 \end{groupplot}
 \end{tikzpicture}
-\caption[La escala Phred]{\textbf{Izquierda}: la escala Phred es logarítmica; cada 10 unidades de $Q$ reducen el error en un factor 10. \textbf{Derecha}: probabilidad de que una lectura no contenga ningún error (\cref{eq:06-errores}) si todas sus bases tienen la misma calidad. Los puntos grises marcan las lecturas de 150 pb del \cref{ej:errores}: $0{,}86$ a $Q30$ frente a $0{,}22$ a $Q20$.}
+\caption[La escala Phred]{\textbf{Izquierda}: la escala Phred es logarítmica; cada 10 unidades de $Q$ reducen el error en un factor 10. \textbf{Derecha}: probabilidad de que una lectura no contenga ningún error (\cref{eq:06-errores}) si todas sus bases tienen la misma calidad. Los puntos grises marcan las lecturas de 150 pb del \cref{ej:06-errores}: $0{,}86$ a $Q30$ frente a $0{,}22$ a $Q20$.}
 \label{fig:06-phred}
 \end{figure}
 
@@ -496,7 +496,7 @@ Un proyecto real tiene decenas o cientos de muestras, y abrir cientos de informe
 
 Un duplicado es un par de lecturas que proceden de la \emph{misma molécula original}: copias creadas por la PCR de la preparación de la biblioteca, o duplicados ``ópticos'' en los que un mismo clúster se registró dos veces. Los duplicados no aportan información independiente y, si no se identifican, inflan artificialmente la confianza en lo que sea que esas copias contengan, incluido un error de la PCR temprana. Pero no todos los duplicados son artefactos: si la biblioteca tiene pocas moléculas distintas, incluso un muestreo perfecto las repetirá.
 
-\begin{teorema}{Moléculas distintas observadas}{complejidad}
+\begin{teorema}{Moléculas distintas observadas}{06-complejidad}
 Si una biblioteca contiene $M$ moléculas distintas igualmente representadas y se secuencian $N$ lecturas elegidas al azar, el número esperado de moléculas distintas observadas es
 \begin{equation}\label{eq:06-complejidad}
 \E[D] = M\left[1-\left(1-\tfrac{1}{M}\right)^{N}\right] \approx M\left(1-e^{-N/M}\right),
@@ -545,7 +545,7 @@ Si el inserto es más corto que la longitud de lectura, la polimerasa lo atravie
 
 Detectar el adaptador parece trivial, porque su secuencia es conocida (por ejemplo, el prefijo \secuencia{AGATCGGAAGAGC}, común a los adaptadores TruSeq de Illumina). La dificultad está en el extremo: cuando el adaptador empieza a solo $k$ bases del final de la lectura, apenas se ven sus primeras $k$ letras, y una coincidencia tan corta puede ser casual.
 
-\begin{definicion}{Coincidencia casual con el adaptador}{adaptador}
+\begin{definicion}{Coincidencia casual con el adaptador}{06-adaptador}
 Si las bases de la lectura son independientes y equiprobables, la probabilidad de que sus últimas $k$ bases coincidan por azar con las primeras $k$ del adaptador es
 \begin{equation}\label{eq:06-adaptador}
 \Prob(\text{coincidencia casual de longitud } k) = 4^{-k}.
@@ -605,7 +605,7 @@ Es exactamente el problema del segmento de suma máxima que vimos en el \cref{ca
 \label{fig:06-ventana}
 \end{figure}
 
-\begin{ejemplo}{Comparar los dos criterios}{recorte}
+\begin{ejemplo}{Comparar los dos criterios}{06-recorte}
 La \cref{fig:06-ventana} aplica ambos criterios a la misma lectura con $t=20$. Las medias de ventana de cuatro bases descienden lentamente ($37{,}75$, $37{,}25$, \ldots, $22{,}25$) hasta que la ventana que empieza en la posición 21, con calidades $(22,19,21,17)$, da $19{,}75<20$: \cmd{Trimmomatic} corta allí y conserva 20 bases. El criterio de BWA acumula desde el final: $20-6=14$, $+12=26$, $+10=36$, $+8=44$, $+2=46$, $+5=51$, $+3=54$ (posición 24), $-1=53$, $+1=54$, $-2=52$\ldots\ El máximo, 54, se alcanza por primera vez en la posición 24, así que se conservan las 23 primeras bases. La diferencia (tres bases) es pequeña aquí, pero ilustra por qué dos herramientas con el ``mismo'' umbral no producen los mismos archivos.
 \end{ejemplo}
 
@@ -672,7 +672,7 @@ Empieza a llover sobre una acera seca. Las primeras gotas dejan manchas aisladas
 
 Supongamos que secuenciamos $N$ lecturas de longitud $L$ de un genoma de tamaño $G$. La cantidad total de bases leídas es $NL$, y la definimos en relación con el tamaño del genoma.
 
-\begin{definicion}{Cobertura media}{cobertura}
+\begin{definicion}{Cobertura media}{06-cobertura}
 La \emph{cobertura} (o profundidad media) de un experimento es
 \begin{equation}\label{eq:06-cobertura}
 c = \frac{N\,L}{G},
@@ -701,7 +701,7 @@ Por construcción, la profundidad media sobre todas las posiciones es $c$; la pr
 
 \textcite{c06-lander1988} formularon el modelo que usamos hasta hoy. Aunque lo propusieron para el mapeo físico con clones, sus supuestos se trasladan sin cambios a las lecturas: (i) las lecturas comienzan en posiciones independientes y uniformemente distribuidas a lo largo del genoma; (ii) todas tienen la misma longitud $L$; (iii) el genoma es mucho mayor que las lecturas, $G\gg L$. Waterman desarrolla el modelo con detalle en su libro de texto \parencite{c06-waterman1995}.
 
-\begin{teorema}{Profundidad de Poisson}{poisson}
+\begin{teorema}{Profundidad de Poisson}{06-poisson}
 Bajo los supuestos (i)--(iii), la profundidad en una posición fija sigue, aproximadamente, una distribución de Poisson de media $c$:
 \begin{equation}\label{eq:06-poisson}
 \Prob(D_x = k) = \frac{e^{-c}\,c^{k}}{k!},\qquad k=0,1,2,\dots
@@ -741,7 +741,7 @@ La fórmula es implacable. Con $c=1$, el \SI{36,8}{\percent} del genoma queda si
 
 Para el ensamblaje, más que las bases no cubiertas importa cuántos fragmentos contiguos (\emph{islas} o \ingles{contigs}) podremos reconstruir. Dos lecturas solo pueden unirse si se solapan lo suficiente para detectarlo; llamemos $T$ al solapamiento mínimo detectable y $\sigma = 1-T/L$ a la fracción de la lectura que \emph{no} necesita solaparse.
 
-\begin{teorema}{Lander-Waterman: número y tamaño de las islas}{lw}
+\begin{teorema}{Lander-Waterman: número y tamaño de las islas}{06-lw}
 Bajo los supuestos anteriores y con solapamiento mínimo detectable $T=(1-\sigma)L$:
 \begin{align}
 \E[\text{número de islas}] &= N\,e^{-c\sigma},\label{eq:06-islas}\\
@@ -800,7 +800,7 @@ Al principio, cada lectura nueva suele caer en territorio virgen y \emph{crea} u
 \label{fig:06-lw}
 \end{figure}
 
-\begin{ejemplo}{Planificar el ensamblaje de una bacteria}{lw}
+\begin{ejemplo}{Planificar el ensamblaje de una bacteria}{06-lw}
 Queremos ensamblar un genoma bacteriano de $G=5\times10^6$ pb con lecturas de $L=150$ pb, y nuestro ensamblador necesita un solapamiento de al menos $T=30$ pb, de modo que $\sigma=0{,}8$. Aplicando las \cref{eq:06-poisson,eq:06-islas,eq:06-longisla}:
 
 \begin{center}
@@ -854,7 +854,7 @@ El sesgo mejor estudiado es el del \textbf{contenido de GC}. \textcite{c06-benja
 
 \paragraph{Un modelo para la sobredispersión} Si la tasa de muestreo varía de una posición a otra (por GC, mapeabilidad u otros factores), podemos modelarla como una variable aleatoria. La elección clásica es una tasa con distribución gamma.
 
-\begin{teorema}{Mezcla Poisson-gamma}{nb}
+\begin{teorema}{Mezcla Poisson-gamma}{06-nb}
 Si, en cada posición, $D\mid\lambda\sim\mathrm{Poisson}(\lambda)$ y la tasa local sigue $\lambda\sim\mathrm{Gamma}(r,\ c/r)$ (forma $r$, escala $c/r$), la profundidad marginal es binomial negativa:
 \begin{equation}\label{eq:06-nb}
 \Prob(D=k)=\frac{\Gamma(k+r)}{k!\,\Gamma(r)}\left(\frac{r}{r+c}\right)^{r}\left(\frac{c}{r+c}\right)^{k},
@@ -911,7 +911,7 @@ donde $F$ es la función de distribución acumulada del modelo elegido (Poisson 
 \simbolo{$F(\cdot\mid c)$}{Función de distribución acumulada de la profundidad con cobertura media $c$.}
 \end{simbolos}
 
-\begin{ejemplo}{Diseño de la profundidad de un genoma humano}{diseno}
+\begin{ejemplo}{Diseño de la profundidad de un genoma humano}{06-diseno}
 Queremos que el \SI{99}{\percent} del genoma tenga al menos 10 lecturas. Resolviendo la \cref{eq:06-diseno} numéricamente:
 \begin{itemize}
   \item con el modelo de Poisson basta $c\ge18{,}8\times$;

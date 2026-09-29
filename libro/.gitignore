@@ -1,0 +1,8 @@
+build/
+*.aux
+*.log
+*.bcf
+*.run.xml
+*.fdb_latexmk
+*.fls
+_minted*/

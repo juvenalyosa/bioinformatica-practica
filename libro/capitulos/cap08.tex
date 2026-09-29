@@ -34,7 +34,7 @@ Suponga que le entregan cuarenta fotocopias de un libro, cada una cortada en fra
 
 La lectura de un secuenciador es demasiado larga y demasiado ruidosa para compararla entera con todas las demás, y demasiado corta para situarla sola en el genoma. Casi todos los algoritmos de ensamblaje, y muchos de mapeo, clasificación metagenómica y detección de variantes, trabajan con una unidad intermedia: las subcadenas de longitud fija.
 
-\begin{definicion}{$k$-mer y $k$-mer canónico}{kmer}
+\begin{definicion}{$k$-mer y $k$-mer canónico}{08-kmer}
 Un \emph{$k$-mer} es una subcadena de longitud $k$ de una secuencia. Una lectura $s$ de longitud $L$ contiene $L-k+1$ $k$-mers, $s_{i..i+k-1}$ para $i=1,\dots,L-k+1$. Como no sabemos de qué hebra del ADN procede cada lectura, se identifica cada $k$-mer $x$ con su reverso complementario $\bar{x}$ y se representa la pareja por su \emph{$k$-mer canónico}
 \begin{equation}\label{eq:08-canonico}
 \kappa(x) = \min\{x,\ \bar{x}\},
@@ -101,7 +101,7 @@ Por eficiencia, los $k$-mers no se guardan como texto sino como enteros: cada ba
 
 En el \cref{cap:06} definimos la cobertura de un experimento como $c=NL/G$, el número medio de lecturas que cubren una base. Para los $k$-mers la cuenta es ligeramente distinta, porque una lectura cubre un $k$-mer solo si lo contiene \emph{entero}.
 
-\begin{teorema}{Cobertura de $k$-mers}{ck}
+\begin{teorema}{Cobertura de $k$-mers}{08-ck}
 Con $N$ lecturas de longitud $L$ tomadas al azar de un genoma de tamaño $G$ y una tasa de error por base $e$ independiente entre posiciones, el número medio de veces que se observa sin errores un $k$-mer del genoma es
 \begin{equation}\label{eq:08-ck}
 \lambda_k \;=\; \underbrace{\frac{N\,(L-k+1)}{G}}_{c_k \,=\, c\,\frac{L-k+1}{L}}\;\cdot\;(1-e)^{k}.
@@ -122,7 +122,7 @@ La \cref{eq:08-ck} tiene dos factores que crecen en direcciones opuestas con $k$
 
 \subsection{El espectro de \texorpdfstring{$k$}{k}-mers}
 
-\begin{definicion}{Espectro de $k$-mers}{espectro}
+\begin{definicion}{Espectro de $k$-mers}{08-espectro}
 Sea $n(x)$ el número de veces que el $k$-mer canónico $x$ aparece en el conjunto de lecturas. El \emph{espectro de $k$-mers} es la función
 \begin{equation}\label{eq:08-espectro}
 h(m) = \#\{\,x \;:\; n(x)=m\,\},\qquad m=1,2,3,\dots
@@ -148,7 +148,7 @@ Si el genoma fuera haploide, sin repeticiones y sin errores de secuenciación, c
 
 Formalicemos la heterocigosidad, que es la parte más útil del modelo. Sea $h$ la tasa de heterocigosidad: la probabilidad de que una posición del genoma difiera entre los dos haplotipos. Sea $\lambda$ la cobertura efectiva de $k$-mers \emph{por haplotipo}, de modo que un $k$-mer presente en los dos haplotipos se lee en promedio $2\lambda$ veces.
 
-\begin{teorema}{Espectro de un genoma diploide}{diploide}
+\begin{teorema}{Espectro de un genoma diploide}{08-diploide}
 Un $k$-mer del genoma cubre al menos un sitio heterocigoto con probabilidad
 \begin{equation}\label{eq:08-alfa}
 \alpha = 1-(1-h)^k .
@@ -226,7 +226,7 @@ Este es, en esencia, el modelo de GenomeScope \parencite{c08-vurture2017}, que a
 \label{fig:08-espectro}
 \end{figure}
 
-\begin{ejemplo}{Perfilar un genoma antes de ensamblarlo}{perfil}
+\begin{ejemplo}{Perfilar un genoma antes de ensamblarlo}{08-perfil}
 Tomamos el conjunto simulado de la \cref{fig:08-espectro}. El conteo produce \num{34666580} $21$-mers leídos, de los cuales \num{4535463} son distintos y \num{3297024} aparecen una sola vez.
 \begin{enumerate}
   \item \emph{Valle.} El mínimo local entre el pico de errores y el primer pico genómico está en $v=4$ ($h(4)=166$).
@@ -367,7 +367,7 @@ Formulado de la manera más ingenua, el ensamblaje busca la \emph{supercadena co
 
 \paragraph{De Bruijn} El enfoque alternativo cambia los papeles de nodos y aristas. En lugar de lecturas, los nodos son palabras cortas de longitud $k-1$, y cada $k$-mer leído es una arista entre su prefijo y su sufijo. \textcite{c08-idury1995} propusieron representar las lecturas de esta forma, y \textcite{c08-pevzner2001} mostraron que el ensamblaje se reduce entonces a una variante del problema de encontrar un \emph{camino euleriano}, que recorre cada arista una vez y se resuelve en tiempo lineal.
 
-\begin{definicion}{Grafo de De Bruijn de un conjunto de lecturas}{dbg}
+\begin{definicion}{Grafo de De Bruijn de un conjunto de lecturas}{08-dbg}
 Dado un conjunto de lecturas y un entero $k$, el \emph{grafo de De Bruijn} $G_k=(V,E)$ es el multigrafo dirigido en el que
 \begin{itemize}
   \item $V$ es el conjunto de $(k-1)$-mers distintos presentes en las lecturas;
@@ -414,7 +414,7 @@ Si un $k$-mer aparece varias veces en el genoma, se conserva una arista por apar
 
 La razón por la que el cambio de representación importa es un teorema de 1736. Leonhard Euler lo formuló al estudiar si era posible pasear por Königsberg cruzando cada uno de sus siete puentes exactamente una vez; la versión para grafos dirigidos es la que necesitamos.
 
-\begin{teorema}{Caminos eulerianos en grafos dirigidos}{euler}
+\begin{teorema}{Caminos eulerianos en grafos dirigidos}{08-euler}
 Sea $G=(V,E)$ un grafo dirigido conexo (ignorando la orientación de las aristas) y sean $d^{-}(v)$ y $d^{+}(v)$ el número de aristas que entran en y salen de $v$. Entonces:
 \begin{enumerate}
   \item $G$ tiene un \emph{ciclo} euleriano si y solo si $d^{-}(v)=d^{+}(v)$ para todo $v$ (el grafo está \emph{balanceado}).
@@ -743,7 +743,7 @@ La culminación de esta línea fue el primer genoma humano completo de telómero
 
 Un ensamblaje es una lista de secuencias de longitudes $\ell_1\ge\ell_2\ge\dots\ge\ell_n$ (ordenadas de mayor a menor), con longitud total $A=\sum_i\ell_i$. La media de las longitudes es una mala medida de calidad: la dominan los miles de \ingles{contigs} diminutos que casi todo ensamblaje produce. La comunidad adoptó en su lugar una medida ponderada por longitud.
 
-\begin{definicion}{N$x$, L$x$ y NG$x$}{nx}
+\begin{definicion}{N$x$, L$x$ y NG$x$}{08-nx}
 Para $0<x\le100$, el \emph{N$x$} es la longitud $\ell_j$ del \ingles{contig} en el que la suma acumulada alcanza el $x\,\%$ del total:
 \begin{equation}\label{eq:08-nx}
 \mathrm{N}x = \ell_{j^\ast},\qquad j^\ast = \min\Bigl\{\, j \;:\; \sum_{i=1}^{j}\ell_i \;\ge\; \tfrac{x}{100}\,A \Bigr\},
@@ -770,7 +770,7 @@ que es además el área bajo la curva N$x$ (dividida por 100) cuando $x$ recorre
 \simbolo{auN}{Longitud media del \ingles{contig} ``visto desde una base''; resume toda la curva N$x$.}
 \end{simbolos}
 
-\begin{ejemplo}{Calcular N50, NG50 y auN a mano}{n50}
+\begin{ejemplo}{Calcular N50, NG50 y auN a mano}{08-n50}
 Un ensamblaje tiene diez \ingles{contigs} de 320, 250, 180, 120, 90, 60, 40, 25, 10 y \SI{5}{kb}; total $A=\SI{1100}{kb}$. El genoma estimado con el espectro de $k$-mers mide $G=\SI{1300}{kb}$.
 \begin{itemize}
   \item \emph{N50}: la mitad de $A$ es \SI{550}{kb}. Acumulando, $320$ y luego $320+250=570\ge550$. Por tanto N50 $=\SI{250}{kb}$ y L50 $=2$.
@@ -975,7 +975,7 @@ Anotar un genoma tiene dos niveles. La \emph{anotación estructural} asigna coor
 
 \subsection{Genes procariotas: marcos abiertos de lectura}
 
-\begin{definicion}{Marco abierto de lectura (ORF)}{orf}
+\begin{definicion}{Marco abierto de lectura (ORF)}{08-orf}
 Un \emph{marco abierto de lectura} (\ingles{open reading frame}, ORF) es un tramo de ADN que, leído en uno de los seis marcos posibles (tres por hebra), comienza en un codón de inicio (típicamente \texttt{ATG}, y en bacterias también \texttt{GTG} o \texttt{TTG}) y continúa sin codones de parada (\texttt{TAA}, \texttt{TAG}, \texttt{TGA}) hasta el primero que aparece en ese marco.
 \end{definicion}
 
@@ -1019,7 +1019,7 @@ En el genoma de \especie{E.~coli} K-12 (\SI{50,8}{\percent} de GC), $p=0{,}0456$
 
 Para los ORFs cortos, la longitud no basta: hay que mirar su composición. El ADN codificante tiene una periodicidad de tres bases que el no codificante no tiene, porque cada posición del codón está sometida a restricciones distintas (la tercera es la más libre y refleja el sesgo de uso de codones de cada especie). La forma más simple de explotarlo es un modelo de codones independientes.
 
-\begin{definicion}{Puntuación log-odds de codones}{codones}
+\begin{definicion}{Puntuación log-odds de codones}{08-codones}
 Sea $P_{\text{cod}}(c)$ la frecuencia del codón $c$ en genes conocidos y $P_{\text{nc}}(c)=f_{c_1}f_{c_2}f_{c_3}$ su probabilidad bajo un modelo nulo de bases independientes. La puntuación de un ORF $x=c_1c_2\cdots c_n$ es
 \begin{equation}\label{eq:08-logodds}
 S(x) = \frac{1}{n}\sum_{i=1}^{n}\log_2\frac{P_{\text{cod}}(c_i)}{P_{\text{nc}}(c_i)}\quad\text{(bits por codón)}.
@@ -1034,7 +1034,7 @@ S(x) = \frac{1}{n}\sum_{i=1}^{n}\log_2\frac{P_{\text{cod}}(c_i)}{P_{\text{nc}}(c
 
 Es la misma lógica de razón de verosimilitudes de las matrices de sustitución (\cref{cap:03}). ¿De dónde salen las frecuencias $P_{\text{cod}}$ de un genoma recién ensamblado, sin genes conocidos? De la \cref{fig:08-orfs}: los ORFs de más de 300 codones son genes casi con certeza, así que podemos \emph{autoentrenar} el modelo con ellos. En \especie{E.~coli}, los \num{2030} ORFs largos aportan casi un millón de codones. Los codones más favorecidos resultan ser \texttt{CTG} ($+1{,}76$ bits, el codón de leucina preferido por la bacteria), \texttt{GAA} ($+1{,}32$) y \texttt{AAA} ($+1{,}09$); los más desfavorecidos, los codones de arginina raros \texttt{AGG} ($-3{,}79$) y \texttt{AGA} ($-2{,}83$).
 
-\begin{ejemplo}{Puntuar un fragmento}{puntuar}
+\begin{ejemplo}{Puntuar un fragmento}{08-puntuar}
 Con el modelo autoentrenado en \especie{E.~coli}, el fragmento \texttt{ATG AAA CGC ATT AGC ACC ACC ATT} recibe
 \[
 S = \tfrac{1}{8}\,(0{,}83+1{,}09+0{,}48+0{,}98+0{,}03+0{,}65+0{,}65+0{,}98) = \tfrac{5{,}69}{8} = 0{,}71\ \text{bits/codón},
