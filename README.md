@@ -137,9 +137,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 15 · Bioinformática estructural
 
-- 15.1 Estructura de proteínas y PDB · *próximamente*
-- 15.2 Predicción de estructura: AlphaFold/ESMFold · *próximamente*
-- 15.3 Docking molecular básico · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 15.1 | Estructura de proteínas y el PDB: Ramachandran, cristal frente a RMN (ubiquitina), Kabsch y RMSD | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-15-estructural/15.1_estructura_pdb.ipynb) |
+| 15.2 | Predicción de estructura: coevolución, AlphaFold (pLDDT, PAE) y ESMFold leyendo el modelo de p53 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-15-estructural/15.2_prediccion_alphafold.ipynb) |
+| 15.3 | Docking molecular: funciones de puntuación, búsqueda Monte Carlo y el caso de imatinib en ABL (leucemia mieloide crónica) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-15-estructural/15.3_docking_molecular.ipynb) |
 
 ### Módulo 16 · Biología de sistemas y redes
 
@@ -176,6 +178,7 @@ bioinformatica-practica/
 ├── modulo-12-celula-unica/
 ├── modulo-13-epigenomica/
 ├── modulo-14-metagenomica/
+├── modulo-15-estructural/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

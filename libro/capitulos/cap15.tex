@@ -34,7 +34,7 @@ El capítulo avanza en tres lecciones. En la \cref{sec:15-estructura} construire
 % ---------------------------------------------------------------------
 \section{Estructura de proteínas y el Protein Data Bank}\label{sec:15-estructura}
 % ---------------------------------------------------------------------
-\enlacerepo{15.1 · Estructura de proteínas y PDB}
+\enlacecolab{modulo-15-estructural/15.1_estructura_pdb.ipynb}{15.1 · Estructura de proteínas y PDB}
 
 \begin{intuicion}[Un collar de cuentas con bisagras rígidas]
 Tome un collar hecho de pequeñas placas planas, unidas por sus esquinas con remaches que solo pueden girar. Cada placa es rígida; toda la flexibilidad del collar está en los remaches. Si lo deja caer sobre la mesa adopta una forma cualquiera, pero si las placas llevaran imanes de distintas intensidades, algunas formas serían mucho más estables que otras, y el collar tendería a ``encontrarlas'' por sí solo. Una proteína es ese collar. Las placas son los enlaces peptídicos, planos por razones químicas; los remaches son los dos enlaces de cada carbono alfa, alrededor de los cuales la cadena puede girar; y los imanes son los puentes de hidrógeno, el efecto hidrofóbico y las interacciones electrostáticas. Describir una estructura, en el fondo, es dar la lista de los ángulos de giro de cada remache.
@@ -425,7 +425,7 @@ Todo lo anterior supone que sabemos qué residuo corresponde a cuál. Cuando com
 % ---------------------------------------------------------------------
 \section{Predicción de estructura: de la homología a AlphaFold y ESMFold}\label{sec:15-prediccion}
 % ---------------------------------------------------------------------
-\enlacerepo{15.2 · Predicción de estructura: AlphaFold y ESMFold}
+\enlacecolab{modulo-15-estructural/15.2_prediccion_alphafold.ipynb}{15.2 · Predicción de estructura: AlphaFold y ESMFold}
 
 \begin{intuicion}[Reconstruir un edificio a partir de sus reformas]
 Suponga que quiere saber la forma de un edificio antiguo que nunca ha visto, pero dispone de los registros de reformas de cientos de edificios hermanos construidos con el mismo plano. Observa algo curioso: cada vez que alguien cambió una viga en la tercera planta, casi siempre cambió también un pilar de la séptima, en otro ala. La explicación más sencilla es que la viga y el pilar se \emph{tocan}: modificar uno obliga a ajustar el otro. Con suficientes registros podría reconstruir qué partes están en contacto y, de ahí, la forma del edificio, sin haberlo medido nunca. Así funciona la predicción de estructura moderna: las familias de proteínas son los edificios hermanos, las mutaciones son las reformas, y las mutaciones correlacionadas delatan qué residuos están juntos en el espacio.
@@ -694,7 +694,7 @@ El problema del plegamiento se formuló, en su versión moderna, con el experime
 % ---------------------------------------------------------------------
 \section{Acoplamiento molecular (docking)}\label{sec:15-docking}
 % ---------------------------------------------------------------------
-\enlacerepo{15.3 · Docking molecular básico}
+\enlacecolab{modulo-15-estructural/15.3_docking_molecular.ipynb}{15.3 · Docking molecular básico}
 
 \begin{intuicion}[Una llave en la oscuridad]
 Imagine que debe encontrar, a oscuras, cuál de mil llaves abre una cerradura, y en qué posición entra. Puede palpar la forma de la cerradura, pero no ver. Para cada llave tiene que hacer dos cosas: \emph{probar} posiciones (girarla, inclinarla, empujarla, doblar las llaves articuladas) y \emph{juzgar} cada posición (¿encaja sin forzar?, ¿hace contacto con los pernos?). Si prueba pocas posiciones, puede descartar la llave correcta porque nunca la metió bien; si su tacto es torpe, puede aceptar una llave que entra pero no gira. El acoplamiento molecular tiene exactamente esos dos componentes, la búsqueda y la puntuación, y casi todos sus fracasos provienen de uno de ellos.
