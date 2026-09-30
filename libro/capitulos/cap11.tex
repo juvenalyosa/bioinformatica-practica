@@ -23,7 +23,7 @@ Pero contar bien es difícil. Una lectura puede ser compatible con varias isofor
 % ---------------------------------------------------------------------
 \section{Cuantificación de transcritos}\label{sec:11-cuant}
 % ---------------------------------------------------------------------
-\enlacerepo{11.1 · Cuantificación (Salmon)}
+\enlacecolab{modulo-11-rnaseq/11.1_cuantificacion_salmon.ipynb}{11.1 · Cuantificación (Salmon)}
 
 \begin{intuicion}[Tiras de papel de varias ediciones]
 Imagine que una trituradora ha convertido en tiras la biblioteca de una escuela y que le piden estimar cuántos ejemplares había de cada libro. Muchas tiras son inconfundibles: contienen una frase que solo aparece en un libro. Pero la biblioteca tenía tres ediciones de \emph{Cien años de soledad}, que comparten casi todo el texto y difieren en el prólogo o en un capítulo añadido. Una tira del capítulo tercero pudo salir de cualquiera de las tres. ¿Qué hacer con ella? Descartarla desperdicia información; asignarla al azar introduce ruido. Lo sensato es repartirla \emph{en proporción} a lo que ya sabemos: si las tiras exclusivas del prólogo de la segunda edición abundan, es probable que la tira ambigua también venga de ella. Y como ese reparto cambia nuestra estimación de cuántos ejemplares hay de cada edición, conviene repetir el razonamiento hasta que deje de cambiar. Ese ir y venir entre ``repartir'' y ``volver a contar'' es exactamente el algoritmo EM con el que se cuantifican las isoformas.
@@ -345,7 +345,7 @@ Los TPM sirven para describir y visualizar, pero no deben alimentar un modelo de
 % ---------------------------------------------------------------------
 \section{Normalización y binomial negativa}\label{sec:11-norm}
 % ---------------------------------------------------------------------
-\enlacerepo{11.2 · Normalización y binomial negativa}
+\enlacecolab{modulo-11-rnaseq/11.2_normalizacion_binomial_negativa.ipynb}{11.2 · Normalización y binomial negativa}
 
 \begin{intuicion}[El reparto de la pizza]
 Seis amigos piden una pizza de ocho porciones y cada uno come aproximadamente lo mismo. Al día siguiente vuelven con un séptimo invitado, un adolescente hambriento que se come la mitad de la pizza. Si solo le enseñan la \emph{fracción} de pizza que comió cada uno, usted concluirá que los seis amigos perdieron el apetito: cada uno comió un doceavo en lugar de un sexto. Pero nadie cambió de hábitos salvo el invitado; lo que cambió es el denominador. El RNA-seq mide exactamente fracciones de una pizza de tamaño fijo, las lecturas de la muestra, y un puñado de genes muy expresados puede hacer que todos los demás parezcan disminuir.
@@ -618,7 +618,7 @@ Los conteos divididos por $\hat s_j$ son útiles para gráficos y tablas, pero n
 % ---------------------------------------------------------------------
 \section{Expresión diferencial y FDR}\label{sec:11-de}
 % ---------------------------------------------------------------------
-\enlacerepo{11.3 · Expresión diferencial y FDR}
+\enlacecolab{modulo-11-rnaseq/11.3_expresion_diferencial_fdr.ipynb}{11.3 · Expresión diferencial y FDR}
 
 \begin{intuicion}[Diez mil detectores de metales]
 Una playa se divide en diez mil cuadrículas y en cada una se pasa un detector de metales que pita, por error, una vez de cada veinte cuando no hay nada enterrado. Si en la playa hay quinientas monedas, el detector pitará sobre muchas de ellas, pero también sobre unas quinientas cuadrículas vacías. Excavar todas las que pitaron significa que la mitad de las excavaciones serán inútiles. Si solo nos preocupara no excavar \emph{nunca} en vano, podríamos exigir un pitido tan fuerte que casi ninguna cuadrícula vacía lo produjera, pero perderíamos la mayoría de las monedas. Hay un término medio razonable: aceptar que, de todas las excavaciones, una fracción pequeña y conocida (digamos un diez por ciento) sea en balde. Esa fracción es la tasa de falsos descubrimientos.
@@ -892,7 +892,7 @@ print(res.head())
 % ---------------------------------------------------------------------
 \section{Enriquecimiento funcional}\label{sec:11-enriq}
 % ---------------------------------------------------------------------
-\enlacerepo{11.4 · Enriquecimiento (GO, KEGG, GSEA)}
+\enlacecolab{modulo-11-rnaseq/11.4_enriquecimiento_funcional.ipynb}{11.4 · Enriquecimiento (GO, KEGG, GSEA)}
 
 \begin{intuicion}[Demasiados pelirrojos en el autobús]
 En una ciudad donde uno de cada cincuenta habitantes es pelirrojo, sube a un autobús de cuarenta pasajeros y cuenta siete pelirrojos. Algo pasa: quizá el autobús viene de un congreso de pelirrojos. Pero antes de concluirlo conviene hacerse dos preguntas. ¿Cuántos pelirrojos cabría esperar por azar en un autobús de ese tamaño? (Menos de uno.) ¿Y el autobús recoge a la gente al azar, o solo pasa por un barrio donde los pelirrojos abundan? La primera pregunta es la prueba hipergeométrica; la segunda, el sesgo de selección que obliga a corregirla. Cambie ``pelirrojos'' por ``genes de la fosforilación oxidativa'' y ``autobús'' por ``lista de genes diferencialmente expresados''.

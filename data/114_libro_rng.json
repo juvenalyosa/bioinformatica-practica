@@ -1,0 +1,12 @@
+{
+ "description": "Estado del generador PCG64 (numpy.random.default_rng(11)) del script libro/figuras/cap11/generar.py justo antes de la secci\u00f3n 11.4 (t\u00e9rmino GO sesgado, remuestreo ponderado y GSEA). Con la tabla 114_libro_sim.tsv.gz reproduce exactamente las cifras del libro.",
+ "rng_11_4": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 139968246966647166409406326943059915082,
+   "inc": 7937318808080196428804369945471644491
+  },
+  "has_uint32": 1,
+  "uinteger": 944118110
+ }
+}

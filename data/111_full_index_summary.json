@@ -1,0 +1,12 @@
+{
+ "SRR1039508": {
+  "num_processed": 500000,
+  "num_mapped_full": 472212,
+  "percent_mapped_full": 94.442
+ },
+ "SRR1039509": {
+  "num_processed": 500000,
+  "num_mapped_full": 469572,
+  "percent_mapped_full": 93.914
+ }
+}
