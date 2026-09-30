@@ -22,7 +22,7 @@ Estas dos ideas, que las frecuencias derivan y que los alelos vecinos se heredan
 % ---------------------------------------------------------------------
 \section{Hardy-Weinberg y deriva génica}\label{sec:10-hw}
 % ---------------------------------------------------------------------
-\enlacerepo{10.1 · Hardy-Weinberg y deriva génica}
+\enlacecolab{modulo-10-poblaciones-gwas/10.1_hardy_weinberg_deriva.ipynb}{10.1 · Hardy-Weinberg y deriva génica}
 
 \begin{intuicion}[Una bolsa de canicas que se rellena a ciegas]
 Imagine una bolsa con cien canicas, cincuenta azules y cincuenta naranjas. Cada generación se construye así: se saca una canica al azar, se anota su color, se devuelve a la bolsa, y se repite cien veces; la nueva bolsa contendrá exactamente los colores anotados. Nadie prefiere un color, y sin embargo la proporción no se queda quieta: una generación puede salir con 54 azules, la siguiente con 49, luego con 57\dots{} Tarde o temprano, por pura acumulación de pequeños accidentes, un color desaparece y la bolsa queda de un solo color para siempre. Si la bolsa tuviera diez mil canicas, los accidentes serían proporcionalmente más pequeños y el proceso mucho más lento, pero el destino final sería el mismo. Esta bolsa es la población; las canicas son las copias de un gen; el muestreo es la reproducción. La sección entera trata de responder con precisión a dos preguntas: ¿qué ocurre en \emph{una} extracción?, y ¿qué ocurre al repetirla indefinidamente?
@@ -434,7 +434,7 @@ La deriva no tiene dirección, pero sí destino: cada generación reduce la hete
 % ---------------------------------------------------------------------
 \section{Desequilibrio de ligamiento y PCA}\label{sec:10-ld}
 % ---------------------------------------------------------------------
-\enlacerepo{10.2 · Desequilibrio de ligamiento y PCA}
+\enlacecolab{modulo-10-poblaciones-gwas/10.2_ligamiento_pca.ipynb}{10.2 · Desequilibrio de ligamiento y PCA}
 
 \begin{intuicion}[Una baraja que nunca se mezcla del todo]
 Piense en una baraja nueva, ordenada por palos y números, que se mezcla con un único corte al azar por ronda. Tras la primera ronda, casi todas las cartas siguen junto a sus vecinas originales; solo el par que quedó a ambos lados del corte se separó. Tras diez rondas, las cartas lejanas ya se han separado muchas veces, pero el as y el dos de corazones, que eran contiguos, probablemente siguen juntos. Un cromosoma se hereda así: cada generación, la recombinación hace uno o pocos cortes, y los alelos que estaban cerca en el cromosoma de un antepasado siguen viajando juntos durante cientos de generaciones. Si conozco la carta que tiene usted en la mano, puedo adivinar con bastante acierto la que viene detrás. Ese ``poder adivinar'' es el desequilibrio de ligamiento, y sin él los estudios de asociación serían imposibles.
@@ -672,7 +672,7 @@ El PCA supone implícitamente que los SNP son independientes. Una región larga 
 % ---------------------------------------------------------------------
 \section{GWAS: Manhattan, QQ plots y corrección múltiple}\label{sec:10-gwas}
 % ---------------------------------------------------------------------
-\enlacerepo{10.3 · GWAS}
+\enlacecolab{modulo-10-poblaciones-gwas/10.3_gwas.ipynb}{10.3 · GWAS}
 
 \begin{intuicion}[La encuesta de los paraguas]
 Suponga que quiere saber si llevar paraguas protege contra los resfriados. Encuesta a mil personas en dos ciudades: una lluviosa, donde casi todos llevan paraguas, y otra seca. Si en la ciudad lluviosa, por su clima frío, también hay más resfriados, encontrará una asociación fuerte entre paraguas y resfriados, sin que el paraguas tenga nada que ver: la ciudad es una variable de confusión que se correlaciona con ambos. Un estudio de asociación genética es exactamente esta encuesta repetida un millón de veces, una por cada variante, y con el mismo peligro: si los casos y los controles provienen en proporciones distintas de poblaciones con frecuencias alélicas distintas, \emph{todas} las variantes diferenciadas entre esas poblaciones parecerán asociadas con la enfermedad. La mitad de esta sección trata de cómo encontrar asociaciones; la otra mitad, de cómo no engañarse.

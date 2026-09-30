@@ -1,0 +1,21 @@
+{
+ "description": "Estado del generador PCG64 (numpy.random.default_rng(1908)) del script libro/figuras/cap10/generar.py justo antes de la simulación de bloques de haplotipos (ld) y del PCA de tres poblaciones (pca). Permite reproducir exactamente las figuras del libro sin re-ejecutar las secciones anteriores.",
+ "ld": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 300716042751943526921156090286095188308,
+   "inc": 38205920064953761438366016820578654413
+  },
+  "has_uint32": 0,
+  "uinteger": 0
+ },
+ "pca": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 30671965698372218516550947458420715510,
+   "inc": 38205920064953761438366016820578654413
+  },
+  "has_uint32": 0,
+  "uinteger": 119433510
+ }
+}

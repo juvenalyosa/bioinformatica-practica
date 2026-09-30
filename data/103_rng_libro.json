@@ -1,0 +1,30 @@
+{
+ "descripcion": "Estado del generador PCG64 del libro (semilla 1908, figuras/cap10/generar.py) justo antes de cada simulaci\u00f3n de la secci\u00f3n 10.3",
+ "estratificacion": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 54603615576762658280920729546439316740,
+   "inc": 38205920064953761438366016820578654413
+  },
+  "has_uint32": 0,
+  "uinteger": 119433510
+ },
+ "manhattan": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 116407851947805763809510220857171785708,
+   "inc": 38205920064953761438366016820578654413
+  },
+  "has_uint32": 1,
+  "uinteger": 1787267695
+ },
+ "bonferroni_bh": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 108125952570800648380434940731852191738,
+   "inc": 38205920064953761438366016820578654413
+  },
+  "has_uint32": 1,
+  "uinteger": 1787267695
+ }
+}
