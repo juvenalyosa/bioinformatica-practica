@@ -1,0 +1,57 @@
+ 14.82	2223	2223	U	0	unclassified
+ 85.18	12777	0	R	1	root
+ 85.18	12777	0	R1	131567	  cellular organisms
+ 85.18	12777	0	D	2	    Bacteria
+ 46.81	7022	0	K	1783272	      Bacillati
+ 46.81	7022	0	P	1239	        Bacillota
+ 46.81	7022	2	C	91061	          Bacilli
+ 26.93	4039	2	O	1385	            Caryophanales
+  9.63	1445	0	F	186820	              Listeriaceae
+  9.63	1445	43	G	1637	                Listeria
+  7.71	1156	0	S	1639	                  Listeria monocytogenes
+  7.71	1156	1156	S1	169963	                    Listeria monocytogenes EGD-e
+  1.64	246	0	S	1642	                  Listeria innocua
+  1.64	246	246	S1	272626	                    Listeria innocua Clip11262
+  8.96	1344	0	F	90964	              Staphylococcaceae
+  8.96	1344	0	G	1279	                Staphylococcus
+  8.96	1344	0	S	1280	                  Staphylococcus aureus
+  8.96	1344	1344	S1	93061	                    Staphylococcus aureus subsp. aureus NCTC 8325
+  8.32	1248	0	F	186817	              Bacillaceae
+  8.32	1248	0	G	1386	                Bacillus
+  8.32	1248	0	G1	653685	                  Bacillus subtilis group
+  8.32	1248	0	S	1423	                    Bacillus subtilis
+  8.32	1248	0	S1	135461	                      Bacillus subtilis subsp. subtilis
+  8.32	1248	1248	S2	224308	                        Bacillus subtilis subsp. subtilis str. 168
+ 19.87	2981	1	O	186826	            Lactobacillales
+ 10.11	1516	0	F	81852	              Enterococcaceae
+ 10.11	1516	0	G	1350	                Enterococcus
+ 10.11	1516	0	S	1351	                  Enterococcus faecalis
+ 10.11	1516	1516	S1	226185	                    Enterococcus faecalis V583
+  9.76	1464	0	F	33958	              Lactobacillaceae
+  9.76	1464	0	G	2742598	                Limosilactobacillus
+  9.76	1464	0	S	1613	                  Limosilactobacillus fermentum
+  9.76	1464	1464	S1	334390	                    Limosilactobacillus fermentum IFO 3956
+ 38.37	5755	0	K	3379134	      Pseudomonadati
+ 38.37	5755	0	P	1224	        Pseudomonadota
+ 38.37	5755	0	C	1236	          Gammaproteobacteria
+ 23.86	3579	0	O	91347	            Enterobacterales
+ 23.86	3579	440	F	543	              Enterobacteriaceae
+ 12.39	1859	0	G	590	                Salmonella
+ 12.39	1859	0	S	28901	                  Salmonella enterica
+ 12.39	1859	0	S1	59201	                    Salmonella enterica subsp. enterica
+ 12.39	1859	0	S2	90371	                      Salmonella enterica subsp. enterica serovar Typhimurium
+ 12.39	1859	1859	S3	99287	                        Salmonella enterica subsp. enterica serovar Typhimurium str. LT2
+  7.83	1175	0	G	561	                Escherichia
+  7.83	1175	0	S	562	                  Escherichia coli
+  7.83	1175	0	S1	83333	                    Escherichia coli K-12
+  7.83	1175	1175	S2	511145	                      Escherichia coli str. K-12 substr. MG1655
+  0.70	105	0	G	620	                Shigella
+  0.70	105	0	S	623	                  Shigella flexneri
+  0.70	105	0	S1	42897	                    Shigella flexneri 2a
+  0.70	105	105	S2	198214	                      Shigella flexneri 2a str. 301
+ 14.51	2176	0	O	72274	            Pseudomonadales
+ 14.51	2176	0	F	135621	              Pseudomonadaceae
+ 14.51	2176	0	G	286	                Pseudomonas
+ 14.51	2176	0	G1	136841	                  Pseudomonas aeruginosa group
+ 14.51	2176	0	S	287	                    Pseudomonas aeruginosa
+ 14.51	2176	2176	S1	208964	                      Pseudomonas aeruginosa PAO1

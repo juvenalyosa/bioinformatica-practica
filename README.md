@@ -129,9 +129,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 14 · Metagenómica y microbioma
 
-- 14.1 16S rRNA y ASVs · *próximamente*
-- 14.2 Diversidad alfa y beta · *próximamente*
-- 14.3 Metagenómica shotgun (Kraken2) · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 14.1 | El gen 16S rRNA y las ASV: modelo de errores tipo DADA2 y clasificador bayesiano ingenuo (MiSeq SOP) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-14-metagenomica/14.1_16s_asv.ipynb) |
+| 14.2 | Diversidad alfa y beta: Hill, Chao1, rarefacción, Bray-Curtis, UniFrac, PCoA y PERMANOVA en el intestino de ratón | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-14-metagenomica/14.2_diversidad_alfa_beta.ipynb) |
+| 14.3 | Metagenómica shotgun: clasificación por k-mers con LCA (tipo Kraken2), Bracken, binning y MIMAG con una comunidad simulada real | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-14-metagenomica/14.3_metagenomica_shotgun.ipynb) |
 
 ### Módulo 15 · Bioinformática estructural
 
@@ -173,6 +175,7 @@ bioinformatica-practica/
 ├── modulo-11-rnaseq/
 ├── modulo-12-celula-unica/
 ├── modulo-13-epigenomica/
+├── modulo-14-metagenomica/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
