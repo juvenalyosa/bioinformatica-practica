@@ -121,9 +121,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 13 · Epigenómica y regulación
 
-- 13.1 ChIP-seq y ATAC-seq · *próximamente*
-- 13.2 Metilación del ADN · *próximamente*
-- 13.3 Descubrimiento de motivos regulatorios · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 13.1 | ChIP-seq y ATAC-seq con datos de ENCODE: correlación cruzada, llamado de picos tipo MACS, IDR, FRiP y patrón nucleosomal | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-13-epigenomica/13.1_chipseq_atacseq.ipynb) |
+| 13.2 | Metilación del ADN: islas CpG, bisulfito, valores β/M, prueba de Wald y una DMR real en el promotor de GSTP1 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-13-epigenomica/13.2_metilacion_adn.ipynb) |
+| 13.3 | Descubrimiento de motivos: EM (MEME), Gibbs, enriquecimiento y centralidad redescubriendo CTCF frente a JASPAR | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-13-epigenomica/13.3_descubrimiento_motivos.ipynb) |
 
 ### Módulo 14 · Metagenómica y microbioma
 
@@ -170,6 +172,7 @@ bioinformatica-practica/
 ├── modulo-10-poblaciones-gwas/
 ├── modulo-11-rnaseq/
 ├── modulo-12-celula-unica/
+├── modulo-13-epigenomica/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

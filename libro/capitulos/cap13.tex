@@ -22,7 +22,7 @@ La secuenciación masiva convirtió la epigenómica en una disciplina cuantitati
 % ---------------------------------------------------------------------
 \section{ChIP-seq y ATAC-seq}\label{sec:13-chip}
 % ---------------------------------------------------------------------
-\enlacerepo{13.1 · ChIP-seq y ATAC-seq}
+\enlacecolab{modulo-13-epigenomica/13.1_chipseq_atacseq.ipynb}{13.1 · ChIP-seq y ATAC-seq}
 
 \begin{intuicion}[Huellas en la nieve]
 Imagine que quiere saber dónde se detienen los ciervos en un bosque nevado, pero nunca los ve: solo encuentra huellas al amanecer. Si caminara al azar por el bosque, vería huellas dispersas por todas partes; pero alrededor de los comederos las huellas se amontonan, llegan desde el norte por un lado y se van hacia el sur por el otro. Para decidir si un amontonamiento es un comedero o una casualidad necesita saber cuántas huellas \emph{esperaría} en esa zona si los ciervos pasearan sin rumbo (el fondo), y ese fondo no es igual en todo el bosque: junto al arroyo siempre hay más tránsito. ChIP-seq es exactamente esto. Las lecturas son huellas de fragmentos de ADN que estuvieron unidos a una proteína; se amontonan alrededor del sitio de unión, llegan por la hebra $+$ desde un lado y por la hebra $-$ desde el otro, y la estadística consiste en compararlas con un fondo local bien estimado.
@@ -431,7 +431,7 @@ Un pico es un exceso de lecturas sobre un fondo \emph{local}. La geometría de h
 % ---------------------------------------------------------------------
 \section{Metilación del ADN}\label{sec:13-metil}
 % ---------------------------------------------------------------------
-\enlacerepo{13.2 · Metilación del ADN}
+\enlacecolab{modulo-13-epigenomica/13.2_metilacion_adn.ipynb}{13.2 · Metilación del ADN}
 
 \begin{intuicion}[Post-its en un libro de recetas]
 Piense en un libro de recetas compartido por toda una familia. Nadie reescribe las recetas, pero cada cocinero pega notas adhesivas sobre las que no quiere que se usen: ``no preparar'', ``solo en Navidad''. Las notas no cambian el texto, se copian cuando alguien fotocopia el libro para un hijo, y pueden despegarse. La metilación del ADN funciona de manera parecida: un grupo metilo sobre una citosina no altera la secuencia, se hereda en cada división celular gracias a una enzima que copia el patrón de la hebra vieja a la nueva, y puede borrarse. El problema técnico es que las fotocopias normales, es decir, la PCR y la secuenciación, no copian las notas. Hay que encontrar una tinta que revele dónde estaban antes de fotocopiar.
@@ -690,7 +690,7 @@ El bisulfito convierte una marca química invisible en una diferencia de secuenc
 % ---------------------------------------------------------------------
 \section{Descubrimiento de motivos regulatorios}\label{sec:13-motivos}
 % ---------------------------------------------------------------------
-\enlacerepo{13.3 · Descubrimiento de motivos}
+\enlacecolab{modulo-13-epigenomica/13.3_descubrimiento_motivos.ipynb}{13.3 · Descubrimiento de motivos}
 
 \begin{intuicion}[La contraseña escondida en treinta cartas]
 Suponga que intercepta treinta cartas escritas en un alfabeto de cuatro letras, casi todas con texto sin sentido. Le han dicho que en cada una hay escondida, en algún lugar, una misma contraseña de ocho letras, pero copiada con errores. Si supiera dónde está en cada carta, bastaría alinear los fragmentos y contar letras. Si conociera la contraseña, bastaría buscarla en cada carta. No sabe ninguna de las dos cosas. La salida es circular pero funciona: adivine una contraseña aproximada, busque en cada carta el fragmento que más se le parece, reconstruya la contraseña a partir de esos fragmentos, y repita. Cada vuelta mejora un poco las dos conjeturas a la vez, hasta que dejan de cambiar.

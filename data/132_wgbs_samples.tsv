@@ -1,0 +1,7 @@
+sample	group	description	experiment	file	donor
+liver_hep	normal	hepatocitos primarios	ENCSR351IPU	ENCFF789HII	ENCDO222AAA
+liver_OMA	normal	hígado (tejido)	ENCSR713WYJ	ENCFF505YJQ	ENCDO478OMA
+liver_LXB	normal	lóbulo derecho del hígado	ENCSR108ESU	ENCFF613NEE	ENCDO793LXB
+HepG2_a1	tumor	HepG2, experimento 1 réplica 1	ENCSR881XOU	ENCFF067KKG	ENCDO000AAC
+HepG2_a2	tumor	HepG2, experimento 1 réplica 2	ENCSR881XOU	ENCFF857YRG	ENCDO000AAC
+HepG2_b1	tumor	HepG2, experimento 2 réplica 1	ENCSR786DCL	ENCFF848FTR	ENCDO000AAC
