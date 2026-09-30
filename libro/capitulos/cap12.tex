@@ -24,7 +24,7 @@ Todos los ejemplos usan datos \emph{simulados} con una estructura conocida: unas
 % ---------------------------------------------------------------------
 \section{Control de calidad y normalización}\label{sec:12-qc}
 % ---------------------------------------------------------------------
-\enlacerepo{12.1 · Control de calidad y normalización (Scanpy)}
+\enlacecolab{modulo-12-celula-unica/12.1_qc_normalizacion.ipynb}{12.1 · Control de calidad y normalización (Scanpy)}
 
 \begin{intuicion}[El licuado y la ensalada de frutas]
 Imagine que alguien le entrega un vaso de licuado y le pregunta qué frutas lleva. Por el color y el sabor puede adivinar que hay fresa y plátano, quizá algo de mango; pero si el licuado de hoy sabe más a fresa que el de ayer, no sabrá si cada fresa era más dulce o si simplemente pusieron más fresas. Ahora imagine que, en lugar del licuado, le entregan la ensalada de frutas antes de licuarla: puede contar las piezas, separarlas por tipo y probar cada una. El RNA-seq \ingles{bulk} es el licuado; el de célula única es la ensalada. La ensalada, eso sí, llega con trozos magullados, piezas pegadas entre sí y jugo de todas las frutas en el fondo del plato: antes de analizarla hay que limpiarla.
@@ -387,7 +387,7 @@ La selección de HVG con \texttt{flavor="seurat\_v3"} espera cuentas \emph{cruda
 % ---------------------------------------------------------------------
 \section{PCA, t-SNE y UMAP}\label{sec:12-reduccion}
 % ---------------------------------------------------------------------
-\enlacerepo{12.2 · PCA, t-SNE y UMAP}
+\enlacecolab{modulo-12-celula-unica/12.2_pca_tsne_umap.ipynb}{12.2 · PCA, t-SNE y UMAP}
 
 \begin{intuicion}[Sombras chinescas]
 Un titiritero proyecta en la pared la sombra de sus manos. De una misma mano, según cómo la gire frente a la lámpara, puede salir un conejo, un perro o un borrón irreconocible. Toda proyección pierde información; la cuestión es qué ángulo conserva lo que nos importa. Reducir la dimensión de los datos de célula única es buscar ese ángulo: pasar de miles de genes a dos coordenadas que quepan en una página. El PCA elige el ángulo en el que la sombra es más \emph{grande}; t-SNE y UMAP renuncian a la proyección rígida y moldean una sombra nueva en la que los vecinos siguen siendo vecinos, aunque las distancias largas dejen de significar algo.
@@ -558,7 +558,7 @@ En Scanpy, \texttt{sc.tl.umap} no recalcula vecinos: usa el grafo de \texttt{sc.
 % ---------------------------------------------------------------------
 \section{Clustering y genes marcadores}\label{sec:12-clustering}
 % ---------------------------------------------------------------------
-\enlacerepo{12.3 · Clustering y genes marcadores}
+\enlacecolab{modulo-12-celula-unica/12.3_clustering_marcadores.ipynb}{12.3 · Clustering y genes marcadores}
 
 \begin{intuicion}[Grupos de amigos en una fiesta]
 En una fiesta grande nadie conoce a todos, pero cada invitado conoce bien a unas pocas personas. Si dibujamos a cada invitado como un punto y unimos a los que se conocen, sin mirar edades ni profesiones, aparecen solos los grupos: los compañeros de la oficina, la familia, los amigos del colegio. Dentro de cada grupo hay muchas líneas; entre grupos, pocas, casi siempre a través de alguien que pertenece a dos mundos. Agrupar células funciona igual: no definimos de antemano qué es un linfocito T; dejamos que cada célula «conozca» a sus vecinas más parecidas y buscamos comunidades densas en esa red.
@@ -753,7 +753,7 @@ sc.tl.umap(adata)
 % ---------------------------------------------------------------------
 \section{Trayectorias y pseudotiempo}\label{sec:12-trayectorias}
 % ---------------------------------------------------------------------
-\enlacerepo{12.4 · Trayectorias y pseudotiempo}
+\enlacecolab{modulo-12-celula-unica/12.4_trayectorias_pseudotiempo.ipynb}{12.4 · Trayectorias y pseudotiempo}
 
 \begin{intuicion}[Una fotografía de un maratón]
 Suponga que un dron toma una única fotografía aérea de un maratón una hora después de la salida. No hay película: solo una imagen congelada. Aun así, puede reconstruir el recorrido. Los corredores forman una línea continua sobre las calles; los más adelantados marcan el camino hacia la meta; donde la carrera se divide en dos recorridos (el maratón y la media maratón) la línea se bifurca. Si además cada corredor tuviera en la camiseta un velocímetro, sabría hacia dónde se mueve cada uno. Un experimento de célula única es esa fotografía: las células de un tejido en diferenciación están, en el mismo instante, en todas las etapas del proceso. El pseudotiempo ordena a los corredores por la distancia recorrida; la velocidad de ARN es el velocímetro.

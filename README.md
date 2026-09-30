@@ -112,10 +112,12 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 12 · Transcriptómica de célula única
 
-- 12.1 Control de calidad y normalización (Scanpy) · *próximamente*
-- 12.2 PCA, t-SNE y UMAP · *próximamente*
-- 12.3 Clustering y genes marcadores · *próximamente*
-- 12.4 Trayectorias y pseudotiempo · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 12.1 | Control de calidad y normalización de célula única: matrices dispersas, rodilla, MAD, dobletes y HVG (PBMC 3k) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-12-celula-unica/12.1_qc_normalizacion.ipynb) |
+| 12.2 | PCA, t-SNE (desde cero) y UMAP: perplejidad, vecinos y las distorsiones de los mapas | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-12-celula-unica/12.2_pca_tsne_umap.ipynb) |
+| 12.3 | Clustering (Louvain/Leiden) y genes marcadores (Wilcoxon): inmunofenotipo de la sangre periférica | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-12-celula-unica/12.3_clustering_marcadores.ipynb) |
+| 12.4 | Trayectorias y pseudotiempo: mapas de difusión, DPT, PAGA y velocidad de ARN en la hematopoyesis | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-12-celula-unica/12.4_trayectorias_pseudotiempo.ipynb) |
 
 ### Módulo 13 · Epigenómica y regulación
 
@@ -167,6 +169,7 @@ bioinformatica-practica/
 ├── modulo-09-variantes/
 ├── modulo-10-poblaciones-gwas/
 ├── modulo-11-rnaseq/
+├── modulo-12-celula-unica/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
