@@ -95,9 +95,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 10 · Genómica de poblaciones y GWAS
 
-- 10.1 Hardy-Weinberg y deriva génica (Wright-Fisher) · *próximamente*
-- 10.2 Desequilibrio de ligamiento y PCA · *próximamente*
-- 10.3 GWAS: Manhattan, QQ plots y corrección múltiple · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 10.1 | Hardy-Weinberg y deriva génica: pruebas χ² y exacta, Wright-Fisher, Kimura y 26 poblaciones de 1000 Genomas | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-10-poblaciones-gwas/10.1_hardy_weinberg_deriva.ipynb) |
+| 10.2 | Desequilibrio de ligamiento y PCA: D, D′, r², el barrido de la lactasa (LCT), F_ST y ancestría | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-10-poblaciones-gwas/10.2_ligamiento_pca.ipynb) |
+| 10.3 | GWAS: modelo aditivo, estratificación (el caso LCT–estatura), Bonferroni/BH, QQ y Manhattan | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-10-poblaciones-gwas/10.3_gwas.ipynb) |
 
 ### Módulo 11 · Transcriptómica (RNA-seq)
 
@@ -161,6 +163,7 @@ bioinformatica-practica/
 ├── modulo-07-mapeo/
 ├── modulo-08-ensamblaje/
 ├── modulo-09-variantes/
+├── modulo-10-poblaciones-gwas/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
