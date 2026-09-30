@@ -1,0 +1,1 @@
+{"descripcion": "Asignaci\u00f3n familia->bloque de GroupKFold(5) con la versi\u00f3n de scikit-learn usada por el libro (cap. 17, fig. fuga). 60 familias.", "familia_a_bloque": [4, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 2, 4, 0, 1, 1, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 2, 0, 2, 4, 3, 2, 1, 0, 4, 3, 2, 1, 0, 4, 3, 1, 0]}

@@ -150,9 +150,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 17 · Machine Learning e IA en bioinformática
 
-- 17.1 Clasificación de secuencias con ML clásico · *próximamente*
-- 17.2 Deep learning para ADN · *próximamente*
-- 17.3 Modelos de lenguaje de proteínas (ESM) · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 17.1 | Clasificación de secuencias con ML clásico: k-mers, núcleo de espectro, SVM, fuga de datos y prevalencia (promotores y CTCF) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-17-machine-learning/17.1_ml_clasico_secuencias.ipynb) |
+| 17.2 | Deep learning para ADN: redes convolucionales en PyTorch, filtros como motivos y saliencia sobre picos de CTCF | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-17-machine-learning/17.2_deep_learning_adn.ipynb) |
+| 17.3 | Modelos de lenguaje de proteínas: atención, ESM-2, contactos y el paisaje mutacional de la ubiquitina | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-17-machine-learning/17.3_modelos_lenguaje_proteinas.ipynb) |
 
 ### Módulo 18 · Flujos reproducibles y proyecto final
 
@@ -179,6 +181,7 @@ bioinformatica-practica/
 ├── modulo-13-epigenomica/
 ├── modulo-14-metagenomica/
 ├── modulo-15-estructural/
+├── modulo-17-machine-learning/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
