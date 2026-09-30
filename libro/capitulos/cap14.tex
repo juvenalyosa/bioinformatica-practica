@@ -22,7 +22,7 @@ Existen dos grandes estrategias para leer una comunidad microbiana. La \emph{sec
 % ---------------------------------------------------------------------
 \section{El gen 16S rRNA y las variantes de secuencia de amplicón}\label{sec:14-16s}
 % ---------------------------------------------------------------------
-\enlacerepo{14.1 · 16S rRNA y ASVs}
+\enlacecolab{modulo-14-metagenomica/14.1_16s_asv.ipynb}{14.1 · 16S rRNA y ASVs}
 
 \begin{intuicion}[El censo por el apellido]
 Imagine que debe hacer el censo de una ciudad enorme, pero nadie le abre la puerta. Lo único que puede hacer es recoger las cartas que llegan a los buzones y anotar los apellidos de los destinatarios. Con suerte, cada familia tiene un apellido distintivo; en la práctica, algunos apellidos se repiten entre familias no emparentadas, el cartero a veces escribe mal un nombre (``Gonzales'' por ``González'') y, de vez en cuando, dos sobres pegados producen un apellido compuesto que no existe. Si se toma en serio cada grafía distinta, el censo inventará cientos de familias ficticias; si se agrupan los apellidos ``parecidos'', se fundirán familias reales. El análisis de amplicones del 16S enfrenta exactamente este dilema: el gen es el apellido, los errores de secuenciación son las erratas del cartero y las quimeras de la PCR son los sobres pegados.
@@ -374,7 +374,7 @@ Una OTU es un promedio de secuencias parecidas; una ASV es una secuencia exacta 
 % ---------------------------------------------------------------------
 \section{Diversidad alfa y beta}\label{sec:14-diversidad}
 % ---------------------------------------------------------------------
-\enlacerepo{14.2 · Diversidad alfa y beta}
+\enlacecolab{modulo-14-metagenomica/14.2_diversidad_alfa_beta.ipynb}{14.2 · Diversidad alfa y beta}
 
 \begin{intuicion}[Dos bosques con veinte especies]
 Dos bosques tienen exactamente veinte especies de árboles. En el primero, cada especie aporta la misma cantidad de ejemplares: caminar por él es encontrarse a cada paso con algo distinto. En el segundo, un único pino representa el 95\,\% de los árboles y las otras diecinueve especies aparecen, con suerte, una vez por hectárea. ¿Son igual de diversos? Contar especies dice que sí; la experiencia de cualquier caminante dice que no. Y aún hay otra pregunta: si el primer bosque se muestreara solo durante una hora, ¿cuántas de sus veinte especies llegaríamos a ver? La ecología lleva un siglo afinando respuestas a estas dos preguntas (cómo medir la diversidad y cómo corregir por el esfuerzo de muestreo), y la microbiología las heredó con el mismo entusiasmo con que heredó sus trampas.
@@ -734,7 +734,7 @@ El consorcio del \ingles{Human Microbiome Project} secuenció el 16S y los metag
 % ---------------------------------------------------------------------
 \section{Metagenómica shotgun}\label{sec:14-shotgun}
 % ---------------------------------------------------------------------
-\enlacerepo{14.3 · Metagenómica shotgun (Kraken2)}
+\enlacecolab{modulo-14-metagenomica/14.3_metagenomica_shotgun.ipynb}{14.3 · Metagenómica shotgun (Kraken2)}
 
 \begin{intuicion}[La biblioteca triturada]
 Suponga que alguien pasa por una trituradora de papel todos los libros de una biblioteca de barrio (novelas, recetarios, manuales de fontanería, algunos volúmenes únicos que no existen en ninguna otra parte) y le entrega a usted una bolsa con millones de tiras de papel. Hay dos cosas que puede hacer. Si tiene acceso al catálogo de una gran biblioteca nacional, puede tomar cada tira, buscar sus palabras en el catálogo y anotar de qué libro proviene; las tiras de los libros que el catálogo no conoce quedarán sin identificar. O bien puede ignorar el catálogo y empezar a pegar tiras que se solapan hasta reconstruir páginas, y luego agrupar las páginas por el tipo de letra y el color del papel hasta recomponer libros enteros, incluidos los que nadie había catalogado. La metagenómica shotgun hace ambas cosas: la primera es la \emph{clasificación de lecturas}; la segunda, el \emph{ensamblaje y binning}.

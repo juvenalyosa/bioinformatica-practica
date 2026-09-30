@@ -1,0 +1,12 @@
+{
+ "note": "Estado de numpy.random.default_rng(1977) de libro/figuras/cap14/generar.py justo antes de las curvas de rarefacci\u00f3n (sec. 14.2)",
+ "rare": {
+  "bit_generator": "PCG64",
+  "state": {
+   "state": 306739709534914032928134168423341619291,
+   "inc": 104900691200605020874204131251709949007
+  },
+  "has_uint32": 1,
+  "uinteger": 3039390877
+ }
+}

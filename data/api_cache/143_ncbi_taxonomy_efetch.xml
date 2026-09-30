@@ -1,0 +1,755 @@
+<?xml version="1.0" ?>
+<!DOCTYPE TaxaSet PUBLIC "-//NLM//DTD Taxon, 14th January 2002//EN" "https://www.ncbi.nlm.nih.gov/entrez/query/DTD/taxon.dtd">
+<TaxaSet><Taxon>
+    <TaxId>208964</TaxId>
+    <ScientificName>Pseudomonas aeruginosa PAO1</ScientificName>
+    <OtherNames>
+        <EquivalentName>Pseudomonas sp. PAO1</EquivalentName>
+        <Name>
+            <ClassCDE>misspelling</ClassCDE>
+            <DispName>Pseudomonas aeruginosa PA01</DispName>
+        </Name>
+    </OtherNames>
+    <ParentTaxId>287</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Pseudomonadales; Pseudomonadaceae; Pseudomonas; Pseudomonas aeruginosa group; Pseudomonas aeruginosa</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>3379134</TaxId>
+            <ScientificName>Pseudomonadati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1224</TaxId>
+            <ScientificName>Pseudomonadota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1236</TaxId>
+            <ScientificName>Gammaproteobacteria</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>72274</TaxId>
+            <ScientificName>Pseudomonadales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>135621</TaxId>
+            <ScientificName>Pseudomonadaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>286</TaxId>
+            <ScientificName>Pseudomonas</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>136841</TaxId>
+            <ScientificName>Pseudomonas aeruginosa group</ScientificName>
+            <Rank>species group</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>287</TaxId>
+            <ScientificName>Pseudomonas aeruginosa</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2002/05/08 12:00:00</CreateDate>
+    <UpdateDate>2019/05/03 12:00:56</UpdateDate>
+    <PubDate>2002/09/29 19:03:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>511145</TaxId>
+    <ScientificName>Escherichia coli str. K-12 substr. MG1655</ScientificName>
+    <OtherNames>
+        <Synonym>Escherichia coli MG1655</Synonym>
+        <EquivalentName>Escherichia coli str. K12 substr. MG1655</EquivalentName>
+        <EquivalentName>Escherichia coli str. MG1655</EquivalentName>
+        <EquivalentName>Escherichia coli strain MG1655</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>83333</ParentTaxId>
+    <Rank>no rank</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Enterobacteriaceae; Escherichia; Escherichia coli; Escherichia coli K-12</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>3379134</TaxId>
+            <ScientificName>Pseudomonadati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1224</TaxId>
+            <ScientificName>Pseudomonadota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1236</TaxId>
+            <ScientificName>Gammaproteobacteria</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91347</TaxId>
+            <ScientificName>Enterobacterales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>543</TaxId>
+            <ScientificName>Enterobacteriaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>561</TaxId>
+            <ScientificName>Escherichia</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>562</TaxId>
+            <ScientificName>Escherichia coli</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>83333</TaxId>
+            <ScientificName>Escherichia coli K-12</ScientificName>
+            <Rank>strain</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2008/03/13 14:46:36</CreateDate>
+    <UpdateDate>2018/11/23 17:31:12</UpdateDate>
+    <PubDate>2008/03/16 18:00:08</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>99287</TaxId>
+    <ScientificName>Salmonella enterica subsp. enterica serovar Typhimurium str. LT2</ScientificName>
+    <OtherNames>
+        <Synonym>Salmonella typhimurium LT2</Synonym>
+        <EquivalentName>Salmonella enterica subsp. enterica serovar Typhimurium LT2</EquivalentName>
+        <EquivalentName>Salmonella enterica subsp. enterica serovar Typhimurium strain LT2</EquivalentName>
+        <EquivalentName>Salmonella enterica subsp. enterica serovar Typhimurium strain LT2-LTL2</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>90371</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Enterobacteriaceae; Salmonella; Salmonella enterica; Salmonella enterica subsp. enterica; Salmonella enterica subsp. enterica serovar Typhimurium</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>3379134</TaxId>
+            <ScientificName>Pseudomonadati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1224</TaxId>
+            <ScientificName>Pseudomonadota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1236</TaxId>
+            <ScientificName>Gammaproteobacteria</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91347</TaxId>
+            <ScientificName>Enterobacterales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>543</TaxId>
+            <ScientificName>Enterobacteriaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>590</TaxId>
+            <ScientificName>Salmonella</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>28901</TaxId>
+            <ScientificName>Salmonella enterica</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>59201</TaxId>
+            <ScientificName>Salmonella enterica subsp. enterica</ScientificName>
+            <Rank>subspecies</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>90371</TaxId>
+            <ScientificName>Salmonella enterica subsp. enterica serovar Typhimurium</ScientificName>
+            <Rank>no rank</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>1999/07/01 17:02:00</CreateDate>
+    <UpdateDate>2018/11/23 17:31:12</UpdateDate>
+    <PubDate>1999/10/05 01:00:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>334390</TaxId>
+    <ScientificName>Limosilactobacillus fermentum IFO 3956</ScientificName>
+    <OtherNames>
+        <Synonym>Lactobacillus fermentum IFO 3956</Synonym>
+        <Synonym>Lactobacillus fermentum NBRC 3956</Synonym>
+        <EquivalentName>Lactobacillus fermentum str. IFO 3956</EquivalentName>
+        <EquivalentName>Lactobacillus fermentum strain IFO 3956</EquivalentName>
+        <Name>
+            <ClassCDE>misspelling</ClassCDE>
+            <DispName>Lactobacillus fermentum IFO3956</DispName>
+        </Name>
+    </OtherNames>
+    <ParentTaxId>1613</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Lactobacillales; Lactobacillaceae; Limosilactobacillus; Limosilactobacillus fermentum</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>186826</TaxId>
+            <ScientificName>Lactobacillales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>33958</TaxId>
+            <ScientificName>Lactobacillaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2742598</TaxId>
+            <ScientificName>Limosilactobacillus</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1613</TaxId>
+            <ScientificName>Limosilactobacillus fermentum</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2005/06/27 12:51:53</CreateDate>
+    <UpdateDate>2021/08/02 13:18:34</UpdateDate>
+    <PubDate>2005/07/04 18:00:26</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>226185</TaxId>
+    <ScientificName>Enterococcus faecalis V583</ScientificName>
+    <OtherNames>
+        <EquivalentName>Enterococcus faecalis str. V583</EquivalentName>
+        <EquivalentName>Enterococcus faecalis strain V583</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>1351</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Lactobacillales; Enterococcaceae; Enterococcus; Enterococcus faecalis</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>186826</TaxId>
+            <ScientificName>Lactobacillales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>81852</TaxId>
+            <ScientificName>Enterococcaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1350</TaxId>
+            <ScientificName>Enterococcus</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1351</TaxId>
+            <ScientificName>Enterococcus faecalis</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2002/05/08 12:00:00</CreateDate>
+    <UpdateDate>2018/11/23 17:53:12</UpdateDate>
+    <PubDate>2003/03/31 18:02:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>93061</TaxId>
+    <ScientificName>Staphylococcus aureus subsp. aureus NCTC 8325</ScientificName>
+    <OtherNames>
+        <Synonym>Staphylococcus aureus NCTC 8325</Synonym>
+        <EquivalentName>Staphylococcus aureus subsp. aureus str. NCTC 8325</EquivalentName>
+        <EquivalentName>Staphylococcus aureus subsp. aureus strain NCTC 8325</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>1280</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Caryophanales; Staphylococcaceae; Staphylococcus; Staphylococcus aureus</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1385</TaxId>
+            <ScientificName>Caryophanales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>90964</TaxId>
+            <ScientificName>Staphylococcaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1279</TaxId>
+            <ScientificName>Staphylococcus</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1280</TaxId>
+            <ScientificName>Staphylococcus aureus</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>1999/04/30 12:48:00</CreateDate>
+    <UpdateDate>2018/11/23 17:31:12</UpdateDate>
+    <PubDate>2001/05/08 19:02:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>169963</TaxId>
+    <ScientificName>Listeria monocytogenes EGD-e</ScientificName>
+    <OtherNames>
+        <Synonym>Listeria monocytogenes ATCC BAA-679</Synonym>
+        <EquivalentName>Listeria monocytogenes EGDe</EquivalentName>
+        <EquivalentName>Listeria monocytogenes str. EGD-e</EquivalentName>
+        <EquivalentName>Listeria monocytogenes strain EGD-e</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>1639</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Caryophanales; Listeriaceae; Listeria; Listeria monocytogenes</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1385</TaxId>
+            <ScientificName>Caryophanales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>186820</TaxId>
+            <ScientificName>Listeriaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1637</TaxId>
+            <ScientificName>Listeria</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1639</TaxId>
+            <ScientificName>Listeria monocytogenes</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2001/08/28 13:19:00</CreateDate>
+    <UpdateDate>2018/11/23 17:31:12</UpdateDate>
+    <PubDate>2001/09/17 11:40:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>224308</TaxId>
+    <ScientificName>Bacillus subtilis subsp. subtilis str. 168</ScientificName>
+    <OtherNames>
+        <Synonym>Bacillus subtilis 168</Synonym>
+        <Synonym>Bacillus subtilis subsp. subtilis 168</Synonym>
+        <Synonym>Bacillus subtilis subsp. subtilis str. BGSC 1A700</Synonym>
+    </OtherNames>
+    <ParentTaxId>135461</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Caryophanales; Bacillaceae; Bacillus; Bacillus subtilis group; Bacillus subtilis; Bacillus subtilis subsp. subtilis</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1385</TaxId>
+            <ScientificName>Caryophanales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>186817</TaxId>
+            <ScientificName>Bacillaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1386</TaxId>
+            <ScientificName>Bacillus</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>653685</TaxId>
+            <ScientificName>Bacillus subtilis group</ScientificName>
+            <Rank>species group</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1423</TaxId>
+            <ScientificName>Bacillus subtilis</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>135461</TaxId>
+            <ScientificName>Bacillus subtilis subsp. subtilis</ScientificName>
+            <Rank>subspecies</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2002/05/08 12:00:00</CreateDate>
+    <UpdateDate>2015/07/30 14:00:50</UpdateDate>
+    <PubDate>2003/03/15 18:01:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>198214</TaxId>
+    <ScientificName>Shigella flexneri 2a str. 301</ScientificName>
+    <OtherNames>
+        <Synonym>Shigella flexneri serotype 2a str. 301</Synonym>
+    </OtherNames>
+    <ParentTaxId>42897</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Pseudomonadati; Pseudomonadota; Gammaproteobacteria; Enterobacterales; Enterobacteriaceae; Shigella; Shigella flexneri; Shigella flexneri 2a</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>3379134</TaxId>
+            <ScientificName>Pseudomonadati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1224</TaxId>
+            <ScientificName>Pseudomonadota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1236</TaxId>
+            <ScientificName>Gammaproteobacteria</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91347</TaxId>
+            <ScientificName>Enterobacterales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>543</TaxId>
+            <ScientificName>Enterobacteriaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>620</TaxId>
+            <ScientificName>Shigella</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>623</TaxId>
+            <ScientificName>Shigella flexneri</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>42897</TaxId>
+            <ScientificName>Shigella flexneri 2a</ScientificName>
+            <Rank>serotype</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2002/05/08 12:00:00</CreateDate>
+    <UpdateDate>2005/01/19 15:15:00</UpdateDate>
+    <PubDate>2002/10/28 20:03:00</PubDate>
+</Taxon>
+<Taxon>
+    <TaxId>272626</TaxId>
+    <ScientificName>Listeria innocua Clip11262</ScientificName>
+    <OtherNames>
+        <EquivalentName>Listeria innocua str. Clip11262</EquivalentName>
+        <EquivalentName>Listeria innocua strain Clip11262</EquivalentName>
+    </OtherNames>
+    <ParentTaxId>1642</ParentTaxId>
+    <Rank>strain</Rank>
+    <Division>Bacteria</Division>
+    <GeneticCode>
+        <GCId>11</GCId>
+        <GCName>Bacterial, Archaeal and Plant Plastid</GCName>
+    </GeneticCode>
+    <MitoGeneticCode>
+        <MGCId>0</MGCId>
+        <MGCName>Unspecified</MGCName>
+    </MitoGeneticCode>
+    <Lineage>cellular organisms; Bacteria; Bacillati; Bacillota; Bacilli; Caryophanales; Listeriaceae; Listeria; Listeria innocua</Lineage>
+    <LineageEx>
+        <Taxon>
+            <TaxId>131567</TaxId>
+            <ScientificName>cellular organisms</ScientificName>
+            <Rank>cellular root</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>2</TaxId>
+            <ScientificName>Bacteria</ScientificName>
+            <Rank>domain</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1783272</TaxId>
+            <ScientificName>Bacillati</ScientificName>
+            <Rank>kingdom</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1239</TaxId>
+            <ScientificName>Bacillota</ScientificName>
+            <Rank>phylum</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>91061</TaxId>
+            <ScientificName>Bacilli</ScientificName>
+            <Rank>class</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1385</TaxId>
+            <ScientificName>Caryophanales</ScientificName>
+            <Rank>order</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>186820</TaxId>
+            <ScientificName>Listeriaceae</ScientificName>
+            <Rank>family</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1637</TaxId>
+            <ScientificName>Listeria</ScientificName>
+            <Rank>genus</Rank>
+        </Taxon>
+        <Taxon>
+            <TaxId>1642</TaxId>
+            <ScientificName>Listeria innocua</ScientificName>
+            <Rank>species</Rank>
+        </Taxon>
+    </LineageEx>
+    <CreateDate>2004/04/20 15:21:48</CreateDate>
+    <UpdateDate>2018/11/23 17:31:12</UpdateDate>
+    <PubDate>2004/04/25 18:06:12</PubDate>
+</Taxon>
+
+</TaxaSet>
