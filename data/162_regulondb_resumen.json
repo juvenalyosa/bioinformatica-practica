@@ -1,0 +1,230 @@
+{
+ "version": "Release: 11.0 Date:  08/22/2022",
+ "cita": "Tierrafría, V. H. et al. (2022). RegulonDB 11.0: Comprehensive high-throughput datasets on transcriptional regulation in Escherichia coli K-12, Microb Genom. 2022 May;8(5). doi: 10.1099/mgen.0.000833. PMID: 35584008. https://doi.org/10.1099/mgen.0.000833",
+ "forma": [
+  4775,
+  7
+ ],
+ "n_tf": 216,
+ "n_genes": 1870,
+ "efectos": {
+  "+": 2511,
+  "-": 2244,
+  "?": 20
+ },
+ "evidencia": {
+  "STRONG": 4612,
+  "WEAK": 163
+ },
+ "mapeo": {
+  "asociados": 166,
+  "sin_asociar": 50
+ },
+ "signos_pares": {
+  "+": 2293,
+  "-": 2020,
+  "±": 216,
+  "?": 5
+ },
+ "auto_n": 128,
+ "auto_signos": {
+  "-": 87,
+  "+": 30,
+  "±": 11
+ },
+ "auto_nombrados": {
+  "LexA": "-",
+  "Fur": "-",
+  "FNR": "-",
+  "AraC": "±",
+  "CRP": "±"
+ },
+ "n_nodos": 1919,
+ "n_aristas": 4406,
+ "ffl_real": 2176,
+ "cyc_real": 10,
+ "azar_ffl_ciclos": [
+  [
+   886,
+   3
+  ],
+  [
+   828,
+   4
+  ],
+  [
+   781,
+   3
+  ],
+  [
+   856,
+   3
+  ],
+  [
+   690,
+   2
+  ],
+  [
+   719,
+   3
+  ],
+  [
+   746,
+   1
+  ],
+  [
+   846,
+   1
+  ],
+  [
+   807,
+   3
+  ],
+  [
+   995,
+   1
+  ],
+  [
+   887,
+   6
+  ],
+  [
+   742,
+   2
+  ],
+  [
+   823,
+   6
+  ],
+  [
+   779,
+   3
+  ],
+  [
+   816,
+   1
+  ],
+  [
+   804,
+   8
+  ],
+  [
+   889,
+   6
+  ],
+  [
+   892,
+   3
+  ],
+  [
+   850,
+   0
+  ],
+  [
+   1031,
+   2
+  ],
+  [
+   750,
+   4
+  ],
+  [
+   648,
+   2
+  ],
+  [
+   639,
+   1
+  ],
+  [
+   898,
+   4
+  ],
+  [
+   699,
+   0
+  ],
+  [
+   1084,
+   7
+  ],
+  [
+   863,
+   4
+  ],
+  [
+   865,
+   7
+  ],
+  [
+   693,
+   3
+  ],
+  [
+   872,
+   5
+  ]
+ ],
+ "n_ffl": 2176,
+ "n_ffl_signos": 1694,
+ "ffl_tipos": [
+  {
+   "tipo": "+++",
+   "clase": "coherente",
+   "n": 423
+  },
+  {
+   "tipo": "-+-",
+   "clase": "coherente",
+   "n": 371
+  },
+  {
+   "tipo": "+-+",
+   "clase": "incoherente",
+   "n": 230
+  },
+  {
+   "tipo": "---",
+   "clase": "incoherente",
+   "n": 222
+  },
+  {
+   "tipo": "-++",
+   "clase": "incoherente",
+   "n": 155
+  },
+  {
+   "tipo": "--+",
+   "clase": "coherente",
+   "n": 126
+  },
+  {
+   "tipo": "++-",
+   "clase": "incoherente",
+   "n": 97
+  },
+  {
+   "tipo": "+--",
+   "clase": "coherente",
+   "n": 70
+  }
+ ],
+ "ffl_ara": {
+  "+++": 4,
+  "+±+": 3,
+  "++±": 1
+ },
+ "top10_grado_salida": {
+  "CRP": 545,
+  "FNR": 302,
+  "Fis": 238,
+  "IHF": 232,
+  "H-NS": 199,
+  "ArcA": 180,
+  "Fur": 131,
+  "NarL": 125,
+  "Lrp": 105,
+  "NsrR": 86
+ },
+ "frac_ffl_global": 0.7205882352941176
+}

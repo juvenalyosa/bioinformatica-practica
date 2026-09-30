@@ -1,0 +1,31 @@
+{
+ "seeds": [
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "genie3": [
+  0.599,
+  0.549,
+  0.439,
+  0.613,
+  0.514
+ ],
+ "cor": [
+  0.571,
+  0.522,
+  0.476,
+  0.67,
+  0.426
+ ],
+ "azar": [
+  0.281,
+  0.272,
+  0.272,
+  0.254,
+  0.246
+ ],
+ "note": "AUPR de GENIE3 y |correlaci\u00f3n| en las cinco redes sint\u00e9ticas de generar.py (semillas 3-7), recalculadas con scikit-learn 1.9 / NumPy 2.0.2; RandomForestRegressor(n_estimators=300, max_features='sqrt', random_state=0)"
+}

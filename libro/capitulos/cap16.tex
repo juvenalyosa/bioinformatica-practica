@@ -23,7 +23,7 @@ La biología de sistemas estudia esas relaciones con dos miradas complementarias
 % ---------------------------------------------------------------------
 \section{Redes de interacción proteína-proteína}\label{sec:16-ppi}
 % ---------------------------------------------------------------------
-\enlacerepo{16.1 · Redes proteína-proteína}
+\enlacecolab{modulo-16-sistemas-redes/16.1_redes_ppi.ipynb}{16.1 · Redes proteína-proteína}
 
 \begin{intuicion}[El mapa del metro]
 Un mapa del metro no respeta distancias ni la forma de las calles: solo dice qué estaciones están conectadas. Y sin embargo, con esa información mínima podemos responder preguntas muy útiles. ¿Cuántos transbordos hay entre dos estaciones? ¿Qué estación, si se cierra, desconecta media ciudad? ¿Qué líneas forman barrios bien comunicados entre sí pero mal comunicados con el resto? Un mapa de interacciones proteicas funciona igual: olvida la química, la estructura tridimensional y la cinética, y guarda solo quién toca a quién. A cambio, nos permite preguntar qué proteínas son ``estaciones de transbordo'', cuán lejos está una proteína de otra o qué grupos de proteínas trabajan juntos.
@@ -379,7 +379,7 @@ print(max(bc, key=bc.get))                        # FUS3
 % ---------------------------------------------------------------------
 \section{Redes de regulación génica y modelos dinámicos}\label{sec:16-grn}
 % ---------------------------------------------------------------------
-\enlacerepo{16.2 · Regulación génica y modelos ODE}
+\enlacecolab{modulo-16-sistemas-redes/16.2_redes_regulacion_ode.ipynb}{16.2 · Regulación génica y modelos ODE}
 
 \begin{intuicion}[El termostato y la bañera]
 Piense en una bañera con el grifo abierto y el desagüe destapado. El nivel del agua sube hasta que lo que entra por el grifo iguala lo que sale por el desagüe, y ahí se estabiliza. Si queremos llenarla más rápido sin cambiar el nivel final, hay un truco: abrir el grifo a tope al principio y cerrarlo a medida que el agua se acerca a la marca, como hace un termostato. La concentración de una proteína en una célula se comporta exactamente como esa bañera: se sintetiza (el grifo), se degrada y se diluye al dividirse la célula (el desagüe), y un gen que reprime su propio promotor es un termostato molecular. Con dos o tres ``bañeras'' que se abren y cierran los grifos unas a otras, la célula construye memorias, relojes y filtros.
