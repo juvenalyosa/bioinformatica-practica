@@ -1,0 +1,33 @@
+{
+ "versions": {
+  "bwa": "Version: 0.7.19-r1273",
+  "samtools": "samtools 1.24",
+  "bcftools": "bcftools 1.24"
+ },
+ "stderr": {
+  "mpileup": "[mpileup] 1 samples in 1 input files\n[mpileup] maximum number of reads per input file set to -d 250",
+  "call (diploide, como en el libro)": "Note: none of --samples-file, --ploidy or --ploidy-file given, assuming all sites are diploid",
+  "call --ploidy 1": "",
+  "norm": "[W::bcf_hdr_check_sanity] MQ should be declared as Type=Float\nLines   total/split/joined/realigned/mismatch_removed/dup_removed/skipped:\t38/0/0/4/0/0/0",
+  "filter": "[W::bcf_hdr_check_sanity] MQ should be declared as Type=Float",
+  "index": "",
+  "stats": "[W::bcf_hdr_check_sanity] MQ should be declared as Type=Float"
+ },
+ "seconds": {
+  "bwa index": 0.8395891189575195,
+  "samtools faidx": 0.02725982666015625,
+  "bwa mem | sort": 2.557072162628174,
+  "samtools index": 0.04375410079956055,
+  "mpileup": 0.8690547943115234,
+  "call (diploide, como en el libro)": 0.06379008293151855,
+  "call --ploidy 1": 0.09710311889648438,
+  "norm": 0.03955674171447754,
+  "filter": 0.04202532768249512,
+  "index": 0.03318619728088379,
+  "stats": 0.05387592315673828
+ },
+ "TSTV": [
+  "TSTV\t0\t5\t15\t0.33\t5\t15\t0.33\n"
+ ],
+ "norm_line": "Lines   total/split/joined/realigned/mismatch_removed/dup_removed/skipped:\t38/0/0/4/0/0/0"
+}

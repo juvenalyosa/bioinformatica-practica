@@ -87,9 +87,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 9 · Detección de variantes
 
-- 9.1 Verosimilitud de genotipos · *próximamente*
-- 9.2 Pipeline con bcftools · *próximamente*
-- 9.3 Anotación funcional de variantes · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 9.1 | Verosimilitud de genotipos: modelo de error, PL, prior, posterior, QUAL/GQ y llamada conjunta | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-09-variantes/9.1_verosimilitud_genotipos.ipynb) |
+| 9.2 | Pipeline con bcftools sobre el clon LTEE: VCF, normalización, filtrado, ti/tv y evaluación tipo GIAB | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-09-variantes/9.2_pipeline_bcftools.ipynb) |
+| 9.3 | Anotación funcional: consecuencias en el codón, VEP, gnomAD, SIFT/CADD, ClinVar y ACMG | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-09-variantes/9.3_anotacion_variantes.ipynb) |
 
 ### Módulo 10 · Genómica de poblaciones y GWAS
 
@@ -158,6 +160,7 @@ bioinformatica-practica/
 ├── modulo-06-ngs/
 ├── modulo-07-mapeo/
 ├── modulo-08-ensamblaje/
+├── modulo-09-variantes/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
