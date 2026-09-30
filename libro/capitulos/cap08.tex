@@ -24,7 +24,7 @@ El capítulo sigue ese orden. Empezaremos por la unidad mínima de casi todos lo
 % ---------------------------------------------------------------------
 \section{\texorpdfstring{$k$}{k}-mers y espectros de \texorpdfstring{$k$}{k}-mers}\label{sec:08-kmers}
 % ---------------------------------------------------------------------
-\enlacerepo{8.1 · k-mers y espectros de k-mers}
+\enlacecolab{modulo-08-ensamblaje/8.1_kmers_espectros.ipynb}{8.1 · k-mers y espectros de k-mers}
 
 \begin{intuicion}[Medir un libro sin leerlo]
 Suponga que le entregan cuarenta fotocopias de un libro, cada una cortada en frases sueltas, todo mezclado en una caja. No sabe cuántas páginas tiene el libro, pero puede contar cuántas veces aparece cada frase de, digamos, seis palabras. La mayoría aparecerá unas cuarenta veces, una por fotocopia; si cuenta el total de frases de la caja y lo divide entre cuarenta, obtendrá la longitud del libro sin haberlo leído. Además, las frases que aparecen una sola vez delatan erratas de la fotocopiadora; las que aparecen ochenta veces, estribillos que el autor repitió; y si el libro es en realidad \emph{dos} ediciones ligeramente distintas mezcladas, habrá un grupo de frases que aparece veinte veces, las que difieren entre ediciones. Todo eso está escrito en un solo histograma.
@@ -191,7 +191,7 @@ La heterocigosidad $\alpha$ se cancela. Basta sumar el espectro por encima del v
 \simbolo{$N_{\text{het}},\ N_{\text{hom}}$}{Número de $k$-mers distintos asignados a cada componente del ajuste.}
 \end{simbolos}
 
-Este es, en esencia, el modelo de GenomeScope \parencite{c08-vurture2017}, que ajusta por mínimos cuadrados no lineales una mezcla de binomiales negativas en $\lambda$, $2\lambda$, $3\lambda$ y $4\lambda$ (esta última para capturar las repeticiones de dos copias) y devuelve el tamaño del genoma, la heterocigosidad, la fracción repetitiva y la tasa de error a partir de lecturas sin procesar. Sus autores lo validaron con 324 conjuntos de datos simulados y 16 reales. GenomeScope~2.0 generalizó el modelo a poliploides mediante un razonamiento combinatorio sobre cuántos haplotipos comparten cada $k$-mer, y lo acompañó de Smudgeplot, que estima la ploidía a partir de pares de $k$-mers heterocigotos \parencite{c08-ranallo2020}.
+Este es, en esencia, el modelo de GenomeScope \parencite{c08-vurture2017}, que ajusta por mínimos cuadrados no lineales una mezcla de binomiales negativas en $\lambda$, $2\lambda$, $3\lambda$ y $4\lambda$ (las dos últimas para capturar las repeticiones de dos copias) y devuelve el tamaño del genoma, la heterocigosidad, la fracción repetitiva y la tasa de error a partir de lecturas sin procesar. Sus autores lo validaron con 324 conjuntos de datos simulados y 16 reales. GenomeScope~2.0 generalizó el modelo a poliploides mediante un razonamiento combinatorio sobre cuántos haplotipos comparten cada $k$-mer, y lo acompañó de Smudgeplot, que estima la ploidía a partir de pares de $k$-mers heterocigotos \parencite{c08-ranallo2020}.
 
 \begin{figure}[t]
 \centering
@@ -311,7 +311,7 @@ p_{\text{azar}}\ll 1 \iff k \gg \log_4(2G).
 \simbolo{$\log_4(2G)$}{Longitud a partir de la cual los $k$-mers aleatorios empiezan a ser únicos.}
 \end{simbolos}
 
-Para una bacteria de \SI{5}{Mb}, $\log_4 G \approx 11{,}1$; para el genoma humano, $\approx15{,}8$. Con $k=17$, un $k$-mer bacteriano tiene una probabilidad de coincidencia casual de $6\times10^{-4}$, pero uno humano, del \SI{30}{\percent}. Con $k=21$ ambas son despreciables ($2\times10^{-6}$ y $1{,}4\times10^{-3}$), y por eso $k=21$ es un valor habitual para perfilar genomas. La \cref{fig:08-kelec} muestra el compromiso completo. Por supuesto, los genomas reales no son aleatorios: sus repeticiones biológicas (transposones, familias génicas, duplicaciones) son mucho más largas que cualquier $k$ razonable, y ningún $k$ las resuelve. Lo retomaremos en la \cref{sec:08-debruijn}.
+Para una bacteria de \SI{5}{Mb}, $\log_4 (2G) \approx 11{,}6$; para el genoma humano, $\approx16{,}3$. Con $k=17$, un $k$-mer bacteriano tiene una probabilidad de coincidencia casual de $6\times10^{-4}$, pero uno humano, del \SI{30}{\percent}. Con $k=21$ ambas son despreciables ($2\times10^{-6}$ y $1{,}4\times10^{-3}$), y por eso $k=21$ es un valor habitual para perfilar genomas. La \cref{fig:08-kelec} muestra el compromiso completo. Por supuesto, los genomas reales no son aleatorios: sus repeticiones biológicas (transposones, familias génicas, duplicaciones) son mucho más largas que cualquier $k$ razonable, y ningún $k$ las resuelve. Lo retomaremos en la \cref{sec:08-debruijn}.
 
 \begin{figure}[t]
 \centering
@@ -353,7 +353,7 @@ El espectro de $k$-mers es una radiografía gratuita del genoma: el pico en $2\l
 % ---------------------------------------------------------------------
 \section{Grafos de De Bruijn}\label{sec:08-debruijn}
 % ---------------------------------------------------------------------
-\enlacerepo{8.2 · Grafos de De Bruijn}
+\enlacecolab{modulo-08-ensamblaje/8.2_grafos_de_bruijn.ipynb}{8.2 · Grafos de De Bruijn}
 
 \begin{intuicion}[El cartero y el inspector]
 Dos funcionarios municipales reciben el plano de un barrio. El cartero debe recorrer \emph{cada calle} exactamente una vez; el inspector debe visitar \emph{cada casa} exactamente una vez. Parecen tareas hermanas, pero no lo son. El cartero tiene una regla sencilla para saber si su ruta existe: basta con que en cada esquina entren tantas calles como salen, y cualquier estudiante puede construir el recorrido en un par de minutos. El inspector, en cambio, no dispone de ninguna regla general: para un barrio grande, ni el mejor ordenador del mundo garantiza encontrar su ruta en un tiempo razonable. Durante dos décadas, los ensambladores de genomas trabajaron como el inspector. El gran avance consistió en redibujar el plano para que el problema fuera el del cartero.
@@ -543,7 +543,7 @@ El ejemplo anterior era limpio: una lectura perfecta de cada $k$-mer. Con datos 
 \begin{itemize}
   \item \textbf{Puntas} (\ingles{tips}). Un error cerca del extremo de una lectura crea un camino corto que se desprende del grafo y termina en un callejón sin salida, con cobertura muy baja.
   \item \textbf{Burbujas} (\ingles{bubbles}). Un error en el interior de una lectura crea un camino alternativo de $k$ aristas que se separa y vuelve a unirse al camino principal. Un sitio heterocigoto produce exactamente la misma forma, pero con las dos ramas a cobertura parecida (cada una a $\lambda$, frente a $2\lambda$ del resto).
-  \item \textbf{Marañas} (\ingles{tangles}). Una repetición más larga que $k$ se colapsa en un solo camino por el que pasan varios recorridos del genoma; el tramo colapsado tiene una cobertura igual a la de una región única multiplicada por el número de copias.
+  \item \textbf{Marañas} (\ingles{tangles}). Una repetición más larga que $k-1$ se colapsa en un solo camino por el que pasan varios recorridos del genoma; el tramo colapsado tiene una cobertura igual a la de una región única multiplicada por el número de copias.
 \end{itemize}
 
 \begin{figure}[t]
@@ -604,7 +604,7 @@ El ejemplo anterior era limpio: una lectura perfecta de cada $k$-mer. Con datos 
 \simbolo{$k$}{Cada error contamina hasta $k$ $k$-mers consecutivos.}
 \end{simbolos}
 
-Para un genoma humano a $30\times$ ($NL=9{,}3\times10^{10}$) con $e=0{,}1\,\%$ y $k=31$, la \cref{eq:08-espurios} da unos $2{,}9\times10^{9}$ $k$-mers espurios: casi tantos como los $3\times10^9$ verdaderos. El grafo ``en bruto'' es el doble de grande de lo necesario. De ahí que el primer paso de todo ensamblador sea corregir las lecturas o descartar los $k$-mers por debajo del valle del espectro (\cref{sec:08-kmers}).
+Para un genoma humano a $30\times$ ($NL=9{,}3\times10^{10}$) con $e=0{,}1\,\%$ y $k=31$, la \cref{eq:08-espurios} da unos $2{,}9\times10^{9}$ $k$-mers espurios: casi tantos como los $3\times10^9$ verdaderos. El grafo ``en bruto'' es el doble de grande de lo necesario. De ahí que el primer paso de todo ensamblador sea corregir las lecturas o descartar los $k$-mers por debajo del valle del espectro (\cref{sec:08-kmers}). La \cref{eq:08-espurios} es una aproximación de primer orden: la forma exacta, que cuenta las ventanas con al menos un error y no los errores multiplicados por $k$, es $N(L-k+1)\,[1-(1-e)^k]$; con $e\,k$ pequeño y $k\ll L$ ambas coinciden. En el ejemplo humano, con lecturas de $L=150$, la forma exacta da unos $2{,}3\times10^{9}$ en lugar de $2{,}9\times10^{9}$: el orden de magnitud, y la conclusión, no cambian.
 
 \paragraph{Velvet y la limpieza del grafo} \textcite{c08-zerbino2008} publicaron Velvet, el primer ensamblador de De Bruijn de uso generalizado para las lecturas muy cortas (25--50 pb) de los primeros secuenciadores Solexa/Illumina. Su aportación principal fue un conjunto de operaciones de limpieza: fusionar los caminos no ramificados, podar las puntas cortas y de baja cobertura, eliminar las burbujas con un recorrido del grafo que compara caminos paralelos y conserva el mejor cubierto, y usar después la información de las lecturas pareadas para atravesar repeticiones. En simulaciones de genomas procariotas, Velvet alcanzó \ingles{contigs} con N50 de hasta \SI{50}{kb} usando lecturas pareadas; con datos reales de Solexa sin pares, unos \SI{8}{kb} en una bacteria.
 
@@ -620,7 +620,7 @@ El análisis del ejemplo de juguete se generaliza. Una repetición de longitud $
   \item un par de lecturas cuya distancia (el tamaño del inserto) sea mayor que $R$, de modo que una lectura caiga a cada lado;
   \item una lectura larga, de PacBio u Oxford Nanopore, que contenga la repetición completa.
 \end{itemize}
-Por eso las limitaciones del ensamblaje con lecturas cortas no se superan secuenciando \emph{más}, sino secuenciando \emph{más largo}. La teoría de Lander-Waterman (\cref{cap:06}) predice un único \ingles{contig} para una bacteria a $30\times$; en la práctica se obtienen decenas, uno por cada repetición más larga que la lectura, como los operones de ARN ribosómico de unos \SI{5}{kb}, que las bacterias suelen tener en varias copias. \textcite{c08-nagarajan2013} ofrecen una revisión muy clara de cómo interactúan cobertura, longitud de lectura y repeticiones.
+Por eso las limitaciones del ensamblaje con lecturas cortas no se superan secuenciando \emph{más}, sino secuenciando \emph{más largo}. La teoría de Lander-Waterman (\cref{cap:06}) predice un único \ingles{contig} para una bacteria a $30\times$; en la práctica se obtienen decenas, uno por cada repetición más larga que la lectura (o que el inserto, si se usan pares), como los operones de ARN ribosómico de unos \SI{5}{kb}, que las bacterias suelen tener en varias copias. \textcite{c08-nagarajan2013} ofrecen una revisión muy clara de cómo interactúan cobertura, longitud de lectura y repeticiones.
 
 \begin{historia}[De los puentes de Königsberg al genoma]
 La idea de convertir lecturas en palabras y palabras en aristas surgió en el contexto de la secuenciación por hibridación, una tecnología que nunca llegó a imponerse. \textcite{c08-idury1995} la trasladaron al ensamblaje de fragmentos, y \textcite{c08-pevzner2001} la llevaron a su forma madura con EULER, que, según sus autores, en lugar de enmascarar las repeticiones las usaba como herramienta de ensamblaje. Durante unos años la idea pareció una curiosidad académica, porque las lecturas de Sanger (\cref{cap:06}) eran largas y los ensambladores OLC funcionaban bien. Cuando llegaron las lecturas de 36 pb de Solexa, calcular $N^2$ solapamientos entre cientos de millones de lecturas se volvió imposible, y el grafo de De Bruijn pasó a ser la estructura dominante.
@@ -633,7 +633,7 @@ OLC: lecturas como nodos, camino hamiltoniano (NP-completo). De Bruijn: $k$-mers
 % ---------------------------------------------------------------------
 \section{Ensamblaje con SPAdes y evaluación con QUAST}\label{sec:08-spades}
 % ---------------------------------------------------------------------
-\enlacerepo{8.3 · Ensamblaje con SPAdes y evaluación con QUAST}
+\enlacecolab{modulo-08-ensamblaje/8.3_spades_quast.ipynb}{8.3 · Ensamblaje con SPAdes y evaluación con QUAST}
 
 \begin{intuicion}[El rompecabezas sin la foto de la caja]
 Cuando termina un rompecabezas de mil piezas, sabe si lo hizo bien porque compara el resultado con la foto de la caja. Ahora imagine que no hay caja. Puede contar cuántos bloques sueltos le quedaron y medir el más grande, pero eso no le dice si algún bloque está mal armado: dos piezas de cielo azul encajan igual de bien en muchos sitios, y forzarlas produce un bloque grande y falso. Para juzgar su trabajo necesita otras pistas: que no le sobren ni le falten piezas de los bordes, que ciertas piezas que sabe que existen (la firma del pintor, el sol) aparezcan una sola vez, que los colores de cada unión sean coherentes. Evaluar un ensamblaje es exactamente esto: combinar medidas de tamaño, de exactitud y de completitud, sabiendo que ninguna basta por sí sola.
@@ -724,6 +724,10 @@ ls spades_cepa/
 # contigs muy cortos o poco cubiertos suelen ser basura: filtrar
 seqkit seq -m 500 spades_cepa/contigs.fasta > contigs_500.fasta
 \end{consola}
+
+\begin{cuidado}
+El esquema de la \cref{fig:08-spades} describe el flujo general, con la corrección de errores (BayesHammer) como primer paso. En las versiones recientes (SPAdes~4), el modo \texttt{--isolate}, pensado para aislados con cobertura alta y uniforme, \emph{omite} por defecto esa corrección y el registro lo anuncia como \texttt{Mode: ONLY assembling (without read error correction)}; los $k$-mers erróneos se eliminan entonces al simplificar el grafo. Revise siempre \texttt{spades.log} para saber qué pasos se ejecutaron.
+\end{cuidado}
 
 Los nombres de los \ingles{contigs} de SPAdes llevan la información más útil para una primera inspección, por ejemplo \texttt{>NODE\_1\_length\_812345\_cov\_41.2}: longitud y cobertura de $k$-mers. Un \ingles{contig} con cobertura cercana al doble de la mediana es probablemente una repetición colapsada de dos copias; uno con cobertura diez veces mayor puede ser un plásmido multicopia; y uno con cobertura muy baja, un contaminante o un artefacto.
 
@@ -935,7 +939,7 @@ Un ensamblaje se juzga en tres ejes: contigüidad (N50, NG50, auN), exactitud (e
 % ---------------------------------------------------------------------
 \section{Anotación genómica}\label{sec:08-anotacion}
 % ---------------------------------------------------------------------
-\enlacerepo{8.4 · Anotación genómica}
+\enlacecolab{modulo-08-ensamblaje/8.4_anotacion_genomica.ipynb}{8.4 · Anotación genómica}
 
 \begin{intuicion}[Encontrar palabras en un texto sin espacios]
 Lea esta línea:\par\centerline{\texttt{ELQUEMUCHOABARCAPOCOAPRIETAYXQWZKTRBLAMPENCIAHJXV}}\noindent Sin que nadie le haya dicho dónde termina cada palabra, usted separa el refrán al principio y reconoce que el final es ruido. Lo consigue porque conoce el español: sabe qué combinaciones de letras son frecuentes (\texttt{QUE}, \texttt{CHO}), cuáles son casi imposibles (\texttt{XQWZ}) y qué forma tiene una palabra. Un programa de predicción génica hace lo mismo con el ADN. No sabe biología; sabe estadística: aprende cómo ``suena'' el ADN codificante de un organismo y busca en el genoma los tramos que suenan así, respetando una gramática (un gen empieza con un codón de inicio, no puede contener codones de parada en su marco y, en eucariotas, sus intrones empiezan y terminan con señales características).
@@ -1011,7 +1015,7 @@ En el genoma de \especie{E.~coli} K-12 (\SI{50,8}{\percent} de GC), $p=0{,}0456$
   \node[etiqueta, anchor=north west, text=rojooscuro] at (axis cs:105,6000) {100 codones};
 \end{axis}
 \end{tikzpicture}
-\caption[Longitud de los ORFs: genoma real frente a barajado]{Distribución de longitudes de los ORFs (de \texttt{ATG} a codón de parada, seis marcos, $\ge30$ codones) en el genoma de \especie{E.~coli} K-12 MG1655 (azul) y en el mismo genoma barajado base a base (naranja). El genoma barajado sigue la ley geométrica de la \cref{eq:08-orf} (línea discontinua): su ORF más largo tiene 251 codones. El genoma real muestra una cola de miles de ORFs largos, los genes. Por debajo de unos 100 codones las dos distribuciones se confunden: allí la longitud ya no basta y hace falta el contenido de la secuencia. Datos: NC\_000913.3; generado con \archivo{figuras/cap08/generar.py}.}
+\caption[Longitud de los ORFs: genoma real frente a barajado]{Distribución de longitudes de los ORFs (de \texttt{ATG} a codón de parada, seis marcos, $\ge30$ codones) en el genoma de \especie{E.~coli} K-12 MG1655 (azul) y en el mismo genoma barajado base a base (naranja). El genoma barajado sigue la ley geométrica de la \cref{eq:08-orf} (línea discontinua): su ORF más largo tiene unos 250 codones (251 con el barajado usado aquí; la cifra exacta depende de la semilla). El genoma real muestra una cola de miles de ORFs largos, los genes. Por debajo de unos 100 codones las dos distribuciones se confunden: allí la longitud ya no basta y hace falta el contenido de la secuencia. Datos: NC\_000913.3; generado con \archivo{figuras/cap08/generar.py}.}
 \label{fig:08-orfs}
 \end{figure}
 
@@ -1039,7 +1043,7 @@ Con el modelo autoentrenado en \especie{E.~coli}, el fragmento \texttt{ATG AAA C
 \[
 S = \tfrac{1}{8}\,(0{,}83+1{,}09+0{,}48+0{,}98+0{,}03+0{,}65+0{,}65+0{,}98) = \tfrac{5{,}69}{8} = 0{,}71\ \text{bits/codón},
 \]
-un valor típico de genes muy expresados. Un fragmento del mismo tamaño que contuviera \texttt{AGG}, \texttt{AGA} y \texttt{CGA} acumularía casi $-9$ bits solo por esos tres codones. Aplicado a los ORFs de 60 a 149 codones, la región de la \cref{fig:08-orfs} donde las dos distribuciones se confunden, el \SI{27,8}{\percent} de los ORFs reales supera $0{,}1$ bits/codón, frente al \SI{0,22}{\percent} de los ORFs del genoma barajado (\cref{fig:08-puntuacion}).
+un valor claramente codificante. Un fragmento del mismo tamaño que contuviera \texttt{AGG}, \texttt{AGA} y \texttt{CGA} acumularía casi $-9$ bits solo por esos tres codones. Aplicado a los ORFs de 60 a 149 codones, la región de la \cref{fig:08-orfs} donde las dos distribuciones se confunden, el \SI{27,8}{\percent} de los ORFs reales supera $0{,}1$ bits/codón, frente al \SI{0,22}{\percent} de los ORFs del genoma barajado (\cref{fig:08-puntuacion}).
 \end{ejemplo}
 
 \begin{figure}[t]
