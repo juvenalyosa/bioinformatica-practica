@@ -1,0 +1,2 @@
+
+{ "downloadTime": "2026:09:30T18:07:20Z", "downloadTimeStamp": 1790791640, "genome": "hg38", "dataTime": "2022-10-18T23:39:38", "dataTimeStamp": 1666161578, "trackType": "bed 4 +", "track": "cpgIslandExt", "start": 24953800, "end": 24956300, "chrom": "chr15", "cpgIslandExt": [ { "bin": 775, "chrom": "chr15", "chromStart": 24954888, "chromEnd": 24955907, "name": "CpG: 77", "length": 1019, "cpgNum": 77, "gcNum": 638, "perCpg": 15.1, "perGc": 62.6, "obsExp": 0.88} ] , "itemsReturned": 1} 

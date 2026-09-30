@@ -1,0 +1,828 @@
+{
+ "ENCSR000AKB": {
+  "accession": "ENCSR000AKB",
+  "assay_title": "TF ChIP-seq",
+  "target": "CTCF",
+  "biosample": "Homo sapiens GM12878",
+  "lab": "Bradley Bernstein, Broad",
+  "description": "CTCF ChIP-seq on human GM12878",
+  "date_released": "2011-02-10",
+  "files": [
+   {
+    "accession": "ENCFF453EJM",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 746711189,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF284XKV",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 2720941,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF067RMO",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 755314149,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF551LHV",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 1344517497,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF355CYX",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 327141442,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF454PQP",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 472928,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF875FTQ",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 3289834,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF313NRK",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 1365823579,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF994NWU",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 674838876,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF834CAH",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 755390746,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF538VCH",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 285968431,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF356LIU",
+    "file_format": "bed",
+    "output_type": "optimal IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 666122,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF536RGD",
+    "file_format": "bed",
+    "output_type": "conservative IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 636383,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF061OYK",
+    "file_format": "bed",
+    "output_type": "peaks and background as input for IDR",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 2585473,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF933NTR",
+    "file_format": "bed",
+    "output_type": "peaks and background as input for IDR",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 4477240,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF445FMQ",
+    "file_format": "bed",
+    "output_type": "peaks and background as input for IDR",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 3995400,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF509LNG",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 2046215,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF559WJC",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 3626194,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF797SDL",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 666961,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF719URH",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 592340,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF017XLW",
+    "file_format": "bed",
+    "output_type": "conservative IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 654278,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   }
+  ]
+ },
+ "ENCSR000AKJ": {
+  "accession": "ENCSR000AKJ",
+  "assay_title": "Control ChIP-seq",
+  "target": null,
+  "biosample": "Homo sapiens GM12878",
+  "lab": "Bradley Bernstein, Broad",
+  "description": "Control ChIP-seq on human GM12878",
+  "date_released": "2011-02-10",
+  "files": [
+   {
+    "accession": "ENCFF850RIE",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 257041985,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF066RCS",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 230901067,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF231IAK",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 612709131,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF651UIO",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 320260128,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF858ORL",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 532014436,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF684NLR",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 290092543,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF303HPA",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 501603001,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF797ARJ",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 230128333,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF434HLD",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 275102004,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF611CHF",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 411191882,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF852TVX",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 576718243,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF873ZWP",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 206294477,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF953EVD",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 466846824,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF547XEQ",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 307165993,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF183LKB",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 612709168,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF559AEN",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 290092578,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF044ATK",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 532014471,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF908JTQ",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 320260163,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF383MXY",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 625857991,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF321WRZ",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 541986340,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF346JZP",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 336327776,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF045SJL",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 306961755,
+    "mapped_read_length": 51,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF480WOE",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 459478464,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF107WQV",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 404219226,
+    "mapped_read_length": 36,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF708SHO",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 320846978,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF834GHC",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 290693373,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF903YLX",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 581869678,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF154PRI",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 505559622,
+    "mapped_read_length": 47,
+    "mapped_run_type": "single-ended",
+    "assembly": "GRCh38"
+   }
+  ]
+ },
+ "ENCSR095QNB": {
+  "accession": "ENCSR095QNB",
+  "assay_title": "ATAC-seq",
+  "target": null,
+  "biosample": "Homo sapiens GM12878",
+  "lab": "Michael Snyder, Stanford",
+  "description": null,
+  "date_released": "2020-08-05",
+  "files": [
+   {
+    "accession": "ENCFF504FJP",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 8612830,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF273WUQ",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 11499158,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF290DWH",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 5048707761,
+    "mapped_read_length": 101,
+    "mapped_run_type": "paired-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF878MKE",
+    "file_format": "bam",
+    "output_type": "unfiltered alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 4906261739,
+    "mapped_read_length": 101,
+    "mapped_run_type": "paired-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF415FEC",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 2515550487,
+    "mapped_read_length": 101,
+    "mapped_run_type": "paired-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF646NWY",
+    "file_format": "bam",
+    "output_type": "alignments",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 2828953464,
+    "mapped_read_length": 101,
+    "mapped_run_type": "paired-ended",
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF917REN",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 2427146,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF945SYZ",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 3476303,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF203QDA",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 9952690,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF614SMH",
+    "file_format": "bed",
+    "output_type": "IDR thresholded peaks",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 2797797,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF110QWR",
+    "file_format": "bed",
+    "output_type": "IDR ranked peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 11368535,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF158ORB",
+    "file_format": "bed",
+    "output_type": "pseudoreplicated peaks",
+    "biological_replicates": [
+     2
+    ],
+    "file_size": 4754761,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF470YYO",
+    "file_format": "bed",
+    "output_type": "pseudoreplicated peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 5453458,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF346CZA",
+    "file_format": "bed",
+    "output_type": "conservative IDR thresholded peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 3214602,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF851FBD",
+    "file_format": "bed",
+    "output_type": "pseudoreplicated peaks",
+    "biological_replicates": [
+     1
+    ],
+    "file_size": 4181128,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   },
+   {
+    "accession": "ENCFF478ZAW",
+    "file_format": "bed",
+    "output_type": "replicated peaks",
+    "biological_replicates": [
+     1,
+     2
+    ],
+    "file_size": 5280723,
+    "mapped_read_length": null,
+    "mapped_run_type": null,
+    "assembly": "GRCh38"
+   }
+  ]
+ }
+}
