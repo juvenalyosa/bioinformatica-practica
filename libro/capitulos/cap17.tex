@@ -29,7 +29,7 @@ El recorrido tiene tres etapas. En la \cref{sec:17-clasico} convertiremos secuen
 % ---------------------------------------------------------------------
 \section{Clasificación de secuencias con ML clásico}\label{sec:17-clasico}
 % ---------------------------------------------------------------------
-\enlacerepo{17.1 · ML clásico para secuencias}
+\enlacecolab{modulo-17-machine-learning/17.1_ml_clasico_secuencias.ipynb}{17.1 · ML clásico para secuencias}
 
 \begin{intuicion}[El catador que nunca leyó un manual]
 Un catador experto distingue un Rioja de un Burdeos con un sorbo, pero sería incapaz de escribir las reglas que usa. Aprendió probando miles de vinos \emph{etiquetados}, y su cerebro ajustó poco a poco una frontera entre ``esto es Rioja'' y ``esto no''. Si solo hubiera probado vinos de tres bodegas, confundiría ``Rioja'' con ``el estilo de esas tres bodegas'' y fracasaría ante la cuarta. El aprendizaje supervisado hace lo mismo con secuencias, y comparte el mismo riesgo: aprender las bodegas en lugar de la región.
@@ -464,7 +464,7 @@ En ML para biología, la pregunta decisiva no es ``¿qué modelo uso?'', sino ``
 % ---------------------------------------------------------------------
 \section{Deep learning para ADN}\label{sec:17-dl}
 % ---------------------------------------------------------------------
-\enlacerepo{17.2 · Deep learning para ADN}
+\enlacecolab{modulo-17-machine-learning/17.2_deep_learning_adn.ipynb}{17.2 · Deep learning para ADN}
 
 \begin{intuicion}[El corrector de pruebas con una plantilla]
 Un corrector de imprenta busca una palabra prohibida en un libro. No lee cada página de principio a fin: desliza una pequeña plantilla transparente con la palabra impresa sobre cada renglón y se detiene donde las letras coinciden. No importa en qué renglón esté la palabra; la plantilla la encuentra igual. Si le damos varias plantillas, una por palabra, y anotamos para cada una ``¿apareció en algún lugar de la página?'', habremos resumido la página en unas pocas respuestas. Una red convolucional hace eso con el ADN, con una diferencia decisiva: nadie le da las plantillas; las aprende.
@@ -831,7 +831,7 @@ En 2012 una red convolucional profunda ganó por un margen enorme el concurso de
 % ---------------------------------------------------------------------
 \section{Modelos de lenguaje de proteínas (ESM)}\label{sec:17-plm}
 % ---------------------------------------------------------------------
-\enlacerepo{17.3 · Modelos de lenguaje de proteínas}
+\enlacecolab{modulo-17-machine-learning/17.3_modelos_lenguaje_proteinas.ipynb}{17.3 · Modelos de lenguaje de proteínas}
 
 \begin{intuicion}[Completar la palabra que falta]
 En la frase ``El gato persiguió al \rule{1.2cm}{0.4pt} por el jardín'' casi cualquiera escribiría ``ratón''. Para acertar no hace falta una regla gramatical explícita: basta haber leído mucho. Y quien acierta sistemáticamente este tipo de huecos ha aprendido, sin proponérselo, sintaxis, semántica y bastante sobre gatos. Ahora imagine el mismo juego con proteínas: ocultamos un aminoácido y pedimos adivinarlo a partir del resto. Para acertar en el núcleo hidrofóbico de una proteína globular hay que ``saber'' qué residuos están en contacto en la estructura tridimensional. Ese es el experimento que están haciendo, a escala evolutiva, los modelos de lenguaje de proteínas.
