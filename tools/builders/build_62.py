@@ -348,22 +348,31 @@ problema es que la química no es perfecta: en cada ciclo, una pequeña fracció
 pero del color "equivocado", y ensucian la señal. Es como un coro de mil voces en el que, en cada compás, unas pocas
 personas se pierden y ya no vuelven a entrar a tiempo: al principio apenas se nota; al final, el coro suena confuso.
 
-Si una fracción $p$ de las copias se desfasa en cada ciclo, la fracción que sigue sincronizada después de $c$ ciclos es
+Llamemos $p$ a la probabilidad, por ciclo y por copia, de quedarse atrás y $q$ a la de adelantarse; la probabilidad
+total de un evento de desfase en un ciclo es $\varepsilon = p + q$. Una copia sigue en fase tras $n$ ciclos si **no**
+sufrió ningún evento en ninguno de ellos, y eso ocurre con probabilidad $(1-\varepsilon)$ multiplicada $n$ veces
+(es el teorema «Decaimiento de la fracción en fase» del capítulo 6 del libro):
 
 $$
-f(c) \;=\; (1 - p)^{\,c}
+\phi(n) \;=\; (1 - \varepsilon)^{\,n} \;\approx\; e^{-\varepsilon n}
 $$
 
 | Símbolo | Significado |
 |---|---|
-| $p$ | fracción de copias que se desfasa en cada ciclo (típicamente 0.1–0.3 %) |
-| $c$ | número de ciclo (posición en la lectura) |
-| $f(c)$ | fracción de copias del *cluster* que todavía emite la base correcta en el ciclo $c$ |
+| $p$ | probabilidad por ciclo de **no** incorporar ninguna base (*phasing*, la copia se atrasa) |
+| $q$ | probabilidad por ciclo de incorporar **dos** bases (*pre-phasing*, la copia se adelanta) |
+| $\varepsilon$ | tasa total de desfase por ciclo, $p + q$ (típicamente del orden de una milésima) |
+| $n$ | número de ciclos completados (posición en la lectura) |
+| $\phi(n)$ | fracción de copias del *cluster* que nunca se desfasaron y emiten la base correcta en el ciclo $n$ |
 
-**Ejemplo a mano.** Con $p = 0.003$: en el ciclo 10, $f = 0.997^{10} = 0.970$; en el ciclo 150,
-$f = 0.997^{150} = e^{150 \ln 0.997} = e^{-0.451} = 0.637$. Al final de la lectura, **más de un tercio** de las copias
-emiten una señal desfasada: el programa que asigna las bases (el *basecaller*) está menos seguro y lo refleja con un
-$Q$ más bajo. Por eso la caída es **gradual y sistemática**, no un accidente de algunas lecturas.
+Un matiz: una copia que se atrasa en un ciclo y se adelanta en otro vuelve a estar en fase, así que $\phi(n)$ es una
+**cota inferior** de la fracción en fase; con $\varepsilon$ pequeño, esa compensación es rara y la cota es muy ajustada.
+
+**Ejemplo a mano.** Con $\varepsilon = 0.002$: en el ciclo 10, $\phi = 0.998^{10} = 0.980$; en el ciclo 150,
+$\phi = 0.998^{150} = e^{150 \ln 0.998} = e^{-0.300} = 0.74$; y en el ciclo 300, $\phi = 0.998^{300} = 0.55$. Al final
+de una lectura de 150 pb, **una de cada cuatro** copias emite una señal desfasada, y en 300 ciclos casi la mitad: el
+programa que asigna las bases (el *basecaller*) está menos seguro y lo refleja con un $Q$ más bajo. Por eso la caída
+es **gradual y sistemática**, no un accidente de algunas lecturas.
 
 ### 3.2 El gráfico de calidad por posición, ahora con datos reales
 
@@ -766,24 +775,37 @@ como si fueran dos vecinos (duplicado óptico). Los duplicados inflan la cobertu
 parezca una variante confirmada por muchas lecturas.
 
 Pero no toda coincidencia es un duplicado: dos fragmentos **distintos** pueden empezar, por azar, en la misma posición
-del genoma. ¿Cuántas coincidencias así esperamos? Si hay $M$ posiciones de inicio posibles y repartimos $N$ lecturas al
-azar, el número esperado de posiciones ocupadas es $M(1 - e^{-N/M})$, así que
+del genoma. ¿Cuántas coincidencias así esperamos? El libro responde una pregunta gemela: si una biblioteca tiene $M$
+moléculas distintas y secuenciamos $N$ lecturas al azar, una molécula concreta no es elegida por ninguna lectura con
+probabilidad $(1 - 1/M)^N \approx e^{-N/M}$, así que el número esperado de moléculas **distintas** observadas es
 
 $$
-D \;=\; N - M\left(1 - e^{-N/M}\right) \;\approx\; \frac{N^2}{2M} \quad (\text{si } N \ll M)
+\mathbb{E}[D] \;=\; M\left[1 - \left(1 - \tfrac{1}{M}\right)^{N}\right] \;\approx\; M\left(1 - e^{-N/M}\right),
+\qquad \text{tasa de duplicación esperada} \;=\; 1 - \frac{\mathbb{E}[D]}{N}.
+$$
+
+Aquí aplicamos la misma fórmula con otro "universo": en lugar de moléculas, las $M = 2G$ **posiciones de inicio**
+posibles (dos hebras). Entonces $\mathbb{E}[D]$ es el número esperado de inicios distintos y lo que falta hasta $N$ son
+las lecturas que repiten, por puro azar, el inicio de otra:
+
+$$
+R \;=\; N - \mathbb{E}[D] \;=\; N - M\left(1 - e^{-N/M}\right) \;\approx\; \frac{N^2}{2M} \quad (\text{si } N \ll M)
 $$
 
 | Símbolo | Significado |
 |---|---|
-| $N$ | número de lecturas (30 000) |
-| $M$ | número de posiciones de inicio posibles: $2G$ (dos hebras) para lecturas sueltas |
+| $N$ | número de lecturas secuenciadas (30 000) |
+| $M$ | tamaño del "universo" del que se muestrea: en el libro, moléculas distintas de la biblioteca; aquí, posiciones de inicio posibles, $2G$ para lecturas sueltas |
 | $G$ | tamaño del genoma (≈ 4.63 Mb para REL606) |
-| $D$ | número esperado de lecturas que repiten el inicio de otra por azar |
+| $D$ | número de elementos distintos (moléculas o inicios) observados al menos una vez; $\mathbb{E}[D]$ es su valor esperado |
+| $R$ | número esperado de lecturas que repiten el inicio de otra por azar, $N - \mathbb{E}[D]$ |
 
-**Ejemplo a mano.** Para R1 sola: $M = 2 \times 4.63 \times 10^6 = 9.26 \times 10^6$ y
-$D \approx 30\,000^2 / (2 \times 9.26 \times 10^6) = 9 \times 10^8 / 1.85 \times 10^7 \approx 49$ lecturas (0.16 %).
+**Ejemplo a mano.** Primero el del libro: con $M = 10^7$ moléculas y $N = 2 \times 10^7$ lecturas,
+$\mathbb{E}[D] = 10^7(1 - e^{-2}) \approx 8.65 \times 10^6$ y la tasa de duplicación es $1 - 8.65/20 \approx 57\,\%$.
+Ahora nuestro caso, R1 sola: $M = 2 \times 4.63 \times 10^6 = 9.26 \times 10^6$ y
+$R \approx 30\,000^2 / (2 \times 9.26 \times 10^6) = 9 \times 10^8 / 1.85 \times 10^7 \approx 49$ lecturas (0.16 %).
 Para **pares**, además del inicio de R1 tendría que coincidir el de R2, es decir, el tamaño de inserto; con unos
-~300 tamaños de inserto posibles, $M$ se multiplica por 300 y $D$ cae a $\approx 0.16$: prácticamente **cero**. Por eso
+~300 tamaños de inserto posibles, $M$ se multiplica por 300 y $R$ cae a $\approx 0.16$: prácticamente **cero**. Por eso
 los programas que evalúan duplicados en datos pareados (Picard, fastp) usan **los dos extremos**.
 """)
 
@@ -798,11 +820,13 @@ def duplication_levels(keys):
 
 G_REL606 = 4_629_812                                # longitud del genoma de E. coli B REL606 (NC_012967.1)
 M = 2 * G_REL606
-D_exp = N - M * (1 - np.exp(-N / M))
+E_D = M * (1 - np.exp(-N / M))                     # inicios distintos esperados, E[D]
+R_exp = N - E_D                                     # lecturas que repiten un inicio por azar
+print(f"Ejemplo del libro: M = 1e7, N = 2e7 → tasa de duplicación = {1 - 1e7 * (1 - np.exp(-2)) / 2e7:.0%}")
 cnt_r1, lev_r1 = duplication_levels(seqs1)
 cnt_pair, lev_pair = duplication_levels(zip(seqs1, seqs2))
 dup_r1 = N - len(cnt_r1); dup_pair = N - len(cnt_pair)
-print(f"Esperado por azar (R1 sola): D = {D_exp:.1f} lecturas ({D_exp / N:.2%})")
+print(f"Esperado por azar (R1 sola): E[D] = {E_D:,.1f} inicios distintos → R = N − E[D] = {R_exp:.1f} lecturas ({R_exp / N:.2%})")
 print(f"Observado, R1 sola (150 nt idénticos): {dup_r1} lecturas ({dup_r1 / N:.2%})")
 print(f"Observado, pares R1+R2 idénticos:     {dup_pair} lecturas ({dup_pair / N:.2%})")
 
@@ -849,7 +873,7 @@ nb.md(r"""
 > **duplicado óptico**, el mismo *cluster* detectado dos veces. Picard (`MarkDuplicates`) considera ópticos los
 > duplicados a menos de 100 píxeles en celdas de flujo como la del HiSeq 2500.
 >
-> Con millones de lecturas la historia cambia: $D$ crece con $N^2$, y en un transcriptoma (donde unos pocos genes muy
+> Con millones de lecturas la historia cambia: $R$ crece con $N^2$, y en un transcriptoma (donde unos pocos genes muy
 > expresados acaparan las lecturas) la duplicación "natural" puede superar el 50 % sin que haya nada malo.
 
 ### 5.3 Secuencias sobrerrepresentadas y *k*-meros
@@ -996,94 +1020,108 @@ nb.md(r"""
 
 Ya vimos que muchas lecturas empiezan bien y terminan mal. La solución no es tirarlas, sino **recortar** la parte mala
 y quedarnos con el tramo confiable. Hay que decidir **dónde cortar**, y para eso existen varios algoritmos. Los tres más
-usados se entienden con la misma idea: fijamos un umbral de calidad $q$ (por ejemplo 20, es decir, 1 error en 100) y
-buscamos el tramo de la lectura que "vale la pena" conservar.
+usados se entienden con la misma idea: fijamos un umbral de calidad $t$ (por ejemplo 20, es decir, 1 error en 100) y
+buscamos el tramo de la lectura que "vale la pena" conservar. (Usamos $t$, como el libro, porque $q$ ya designa la
+probabilidad de *pre-phasing* de la sección 3.)
 
 ### 7.1 Los tres algoritmos
 
-**(a) Ventana deslizante** (Trimmomatic `SLIDINGWINDOW:w:q`, fastp `--cut_right`). Recorremos la lectura de izquierda
+**(a) Ventana deslizante** (Trimmomatic `SLIDINGWINDOW:w:t`, fastp `--cut_right`). Recorremos la lectura de izquierda
 a derecha con una ventana de $w$ bases y calculamos la calidad media dentro de la ventana. En cuanto una ventana tiene
-media menor que $q$, cortamos **al principio de esa ventana** y tiramos todo lo que sigue. Es como caminar por un
+media menor que $t$, cortamos **al principio de esa ventana** y tiramos todo lo que sigue. Es como caminar por un
 sendero mirando los próximos cuatro pasos: en cuanto el tramo que viene se ve demasiado embarrado, damos la vuelta.
+La lectura se trunca en
 
 $$
-\hat{x}_{\text{ventana}} \;=\; \min\Big\{\, j \;:\; \tfrac{1}{w}\textstyle\sum_{i=j}^{j+w-1} Q_i < q \,\Big\} - 1
+x^{\star} \;=\; \min\Big\{\, x \;:\; \tfrac{1}{w}\textstyle\sum_{i=x}^{x+w-1} Q_i < t \,\Big\},
+\qquad \text{y se conservan las bases } 1, \ldots, x^{\star} - 1 .
 $$
 
-**(b) Recorte del extremo 3′ de BWA** (`bwa aln -q`, también en Cutadapt `-q`). En lugar de detenerse en la primera
-zona mala, mira **toda la cola** de la lectura. Para cada posible punto de corte $x$ suma, sobre las bases que
-quedarían fuera, cuánto les falta para llegar al umbral, $q - Q_i$. Las bases malas suman (conviene quitarlas); las
-buenas restan (cuesta perderlas). Se elige el corte que maximiza esa suma:
+**(b) Suma acumulada desde el extremo 3′** (heredada de BWA, `bwa aln -q`, y usada por `cutadapt -q`). En lugar de
+detenerse en la primera zona mala, mira **toda la cola** de la lectura. Para cada posible punto de corte $x$ suma,
+sobre las bases que quedarían fuera ($x, \ldots, L$), cuánto les falta para llegar al umbral, $t - Q_i$. Las bases
+malas suman (conviene quitarlas); las buenas restan (cuesta perderlas). Se corta donde esa suma es máxima:
 
 $$
-\hat{x}_{\text{BWA}} \;=\; \underset{x}{\operatorname{arg\,max}} \; S(x), \qquad S(x) \;=\; \sum_{i=x+1}^{L} (q - Q_i)
-\qquad (\text{si } \max_x S(x) \le 0, \text{ no se recorta})
+x^{\star} \;=\; \underset{x}{\operatorname{arg\,max}} \; S(x), \qquad S(x) \;=\; \sum_{i=x}^{L} (t - Q_i),
+\qquad \text{y se conservan las bases } 1, \ldots, x^{\star} - 1 .
 $$
+
+Dos detalles que el libro hace explícitos y que cambian el resultado: **(i)** si varios $x$ empatan en el máximo, se
+elige el **más cercano al extremo 3′**, que conserva más bases; **(ii)** las implementaciones reales recorren la
+lectura desde 3′ y **se detienen en cuanto la suma acumulada se vuelve negativa** (y si el máximo no es positivo, no se
+recorta nada). Es el problema del segmento de suma máxima de Smith-Waterman, restringido a sufijos.
 
 **(c) Segmento de máxima suma de Mott** (el método clásico de *phred*, usado por `seqtk trimfq`). Busca el tramo
-contiguo $[a, b]$ que maximiza la suma de $Q_i - q$: cada base buena aporta lo que le sobra por encima del umbral y
-cada base mala resta lo que le falta. A diferencia de los anteriores, puede recortar **los dos extremos**:
+contiguo $[a, b]$ con la mayor "ganancia" total, y por eso puede recortar **los dos extremos**. En *phred* y en
+`seqtk trimfq` la ganancia de cada base se mide en **probabilidades de error**: $p_{\text{lím}} - p_i$, con
+$p_i = 10^{-Q_i/10}$ y un límite $p_{\text{lím}}$ (0.05 por defecto en `seqtk trimfq`). En esta lección usamos la
+**variante en escala Phred**, que mide la ganancia como $Q_i - t$; el algoritmo es idéntico, sólo cambia la puntuación:
 
 $$
-(\hat a, \hat b) \;=\; \underset{a \le b}{\operatorname{arg\,max}} \; \sum_{i=a}^{b} (Q_i - q)
+(\hat a, \hat b) \;=\; \underset{a \le b}{\operatorname{arg\,max}} \; \sum_{i=a}^{b} (Q_i - t)
+\qquad\Big(\text{en } \textit{phred}/\texttt{seqtk}: \; \underset{a \le b}{\operatorname{arg\,max}} \sum_{i=a}^{b} (p_{\text{lím}} - p_i)\Big)
 $$
 
-Se resuelve en una sola pasada con la suma acumulada $C_j = \sum_{i \le j}(Q_i - q)$: el mejor tramo que termina en
+Se resuelve en una sola pasada con la suma acumulada $C_j = \sum_{i \le j}(Q_i - t)$: el mejor tramo que termina en
 $b$ empieza justo después del **mínimo** de $C$ anterior a $b$ (es el algoritmo de Kadane para el subarreglo de máxima
 suma).
 
 | Símbolo | Significado |
 |---|---|
 | $Q_i$ | calidad Phred de la base en la posición $i$ (1 … $L$) |
-| $q$ | umbral de calidad (típicamente 15–20) |
+| $t$ | umbral de calidad (típicamente 15–20) |
 | $w$ | tamaño de la ventana (típicamente 4) |
-| $\hat{x}$ | número de bases que se **conservan** desde el extremo 5′ (se conserva $1 \ldots \hat x$) |
-| $S(x)$ | "ganancia" de BWA por eliminar las bases $x+1 \ldots L$ |
+| $x^{\star}$ | **primera posición eliminada**; se conservan las bases $1 \ldots x^{\star}-1$ (nuestras funciones de Python devuelven directamente ese número de bases conservadas, $x^{\star}-1$) |
+| $S(x)$ | "ganancia" de eliminar las bases $x \ldots L$ en el criterio de suma acumulada |
 | $\hat a,\ \hat b$ | inicio y fin del tramo que se conserva en el método de Mott |
-| $C_j$ | suma acumulada de $Q_i - q$ hasta la posición $j$ |
+| $C_j$ | suma acumulada de $Q_i - t$ hasta la posición $j$ |
+| $p_i,\ p_{\text{lím}}$ | probabilidad de error de la base $i$ y límite de probabilidad en la versión de *phred*/`seqtk` |
 
 ### 7.2 Ejemplo a mano: una lectura de 15 bases
 
-Tomemos $q = 20$, $w = 4$ y esta lectura, con una base mala al principio, un "bache" en las posiciones 6–7 y una cola
+Tomemos $t = 20$, $w = 4$ y esta lectura, con una base mala al principio, un "bache" en las posiciones 6–7 y una cola
 mala:
 
 | Posición $i$ | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | $Q_i$ | 8 | 38 | 37 | 36 | 35 | 10 | 6 | 30 | 33 | 32 | 31 | 15 | 12 | 10 | 8 |
 | media de la ventana $i \ldots i{+}3$ | 29.75 | 36.5 | 29.5 | 21.75 | 20.25 | **19.75** | 25.25 | 31.5 | 27.75 | 22.5 | 17.0 | 11.25 | | | |
-| $q - Q_i$ | 12 | −18 | −17 | −16 | −15 | 10 | 14 | −10 | −13 | −12 | −11 | 5 | 8 | 10 | 12 |
-| $S(i-1) = \sum_{k \ge i} (q - Q_k)$ | −41 | −53 | −35 | −18 | −2 | 13 | 3 | −11 | −1 | 12 | 24 | **35** | 30 | 22 | 12 |
-| $C_i = \sum_{k \le i}(Q_k - q)$ | −12 | 6 | 23 | 39 | 54 | 44 | 30 | 40 | 53 | 65 | **76** | 71 | 63 | 53 | 41 |
+| $t - Q_i$ | 12 | −18 | −17 | −16 | −15 | 10 | 14 | −10 | −13 | −12 | −11 | 5 | 8 | 10 | 12 |
+| $S(i) = \sum_{k \ge i} (t - Q_k)$ | −41 | −53 | −35 | −18 | −2 | 13 | 3 | −11 | −1 | 12 | 24 | **35** | 30 | 22 | 12 |
+| $C_i = \sum_{k \le i}(Q_k - t)$ | −12 | 6 | 23 | 39 | 54 | 44 | 30 | 40 | 53 | 65 | **76** | 71 | 63 | 53 | 41 |
 
-* **Ventana deslizante:** la primera ventana con media < 20 es la que empieza en la posición 6 (19.75). Se conservan
-  las posiciones **1–5** (5 bases). El bache la hizo detenerse, aunque después venían 4 bases excelentes.
-* **BWA:** el máximo de $S$ es 35, al eliminar desde la posición 12. Se conservan **1–11** (11 bases): el bache
-  se queda, porque quitarlo obligaría a quitar también 30, 33, 32, 31, que valen más.
-* **Mott:** el mínimo de $C$ antes del máximo ($C_{11} = 76$) es $C_1 = -12$; el tramo es **2–11** con suma
-  $76 - (-12) = 88$ (10 bases). Como BWA, conserva el bache; pero además elimina la base mala del principio.
+* **Ventana deslizante:** la primera ventana con media < 20 es la que empieza en la posición 6 (19.75), así que
+  $x^{\star} = 6$ y se conservan las posiciones **1–5** (5 bases). El bache la hizo detenerse, aunque después venían
+  4 bases excelentes.
+* **Suma acumulada (BWA/cutadapt):** el máximo de $S$ es 35, en $x^{\star} = 12$. Se conservan **1–11** (11 bases):
+  el bache se queda, porque quitarlo obligaría a quitar también 30, 33, 32, 31, que valen más.
+* **Mott (escala Phred):** el mínimo de $C$ antes del máximo ($C_{11} = 76$) es $C_1 = -12$; el tramo es **2–11** con
+  suma $76 - (-12) = 88$ (10 bases). Como BWA, conserva el bache; pero además elimina la base mala del principio.
 
 Tres algoritmos razonables, tres respuestas distintas: 5, 11 y 10 bases. Ninguno es "el correcto"; cada uno encarna un
 compromiso distinto entre perder bases buenas y conservar bases malas.
 """)
 
 nb.code(r'''
-def trim_sliding(q_read, w=4, q=20):
-    """Ventana deslizante: nº de bases conservadas desde el 5′ (corta al inicio de la 1.ª ventana con media < q)."""
+def trim_sliding(q_read, w=4, t=20):
+    """Ventana deslizante: nº de bases conservadas (x* − 1), cortando al inicio de la 1.ª ventana con media < t."""
     for j in range(len(q_read) - w + 1):
-        if np.mean(q_read[j:j + w]) < q:
+        if np.mean(q_read[j:j + w]) < t:
             return j
     return len(q_read)
 
-def trim_bwa(q_read, q=20):
-    """BWA -q: corte del 3′ que maximiza la suma de (q − Q) de las bases eliminadas."""
-    S = np.cumsum((q - np.asarray(q_read))[::-1])[::-1]         # S[x] = suma de q − Q desde x hasta el final
-    x = int(np.argmax(S))
-    return x if S[x] > 0 else len(q_read)
+def trim_bwa(q_read, t=20):
+    """Suma acumulada desde 3′ (BWA / cutadapt -q): nº de bases conservadas, x* − 1.
+    x* maximiza S(x) = Σ_{i≥x} (t − Q_i); los empates se resuelven hacia el extremo 3′ (se conservan más bases)."""
+    S = np.cumsum((t - np.asarray(q_read))[::-1])[::-1]         # S[k] = suma de t − Q desde k (base 0) hasta el final
+    k = len(S) - 1 - int(np.argmax(S[::-1]))                     # argmax buscando desde 3′ → el máximo más a la derecha
+    return k if S[k] > 0 else len(q_read)
 
-def trim_mott(q_read, q=20):
-    """Mott / Kadane: (inicio, fin) del tramo contiguo con máxima suma de (Q − q). Intervalo semiabierto [a, b)."""
+def max_segment(scores):
+    """Kadane: (inicio, fin) del tramo contiguo de máxima suma. Intervalo semiabierto [a, b)."""
     best, a_best, b_best, run, start = 0, 0, 0, 0, 0
-    for i, v in enumerate(np.asarray(q_read) - q):
+    for i, v in enumerate(scores):
         if run + v <= 0:
             run, start = 0, i + 1                                # empezar de nuevo después de esta base
         else:
@@ -1092,19 +1130,30 @@ def trim_mott(q_read, q=20):
                 best, a_best, b_best = run, start, i + 1
     return a_best, b_best
 
+def trim_mott(q_read, t=20):
+    """Mott en escala Phred: tramo de máxima suma de (Q − t)."""
+    return max_segment(np.asarray(q_read) - t)
+
+def trim_mott_prob(q_read, p_lim=0.05):
+    """Mott como en phred / seqtk trimfq: tramo de máxima suma de (p_lím − p_i), con p_i = 10^(−Q/10)."""
+    return max_segment(p_lim - 10 ** (-np.asarray(q_read) / 10))
+
 toy = np.array([8, 38, 37, 36, 35, 10, 6, 30, 33, 32, 31, 15, 12, 10, 8])
 a, b = trim_mott(toy)
-print("Ventana deslizante (w=4, q=20): conserva posiciones 1 –", trim_sliding(toy))
-print("BWA (q=20):                     conserva posiciones 1 –", trim_bwa(toy))
-print(f"Mott (q=20):                    conserva posiciones {a + 1} – {b}  (suma = {np.sum(toy[a:b] - 20)})")
+print("Ventana deslizante (w=4, t=20): conserva posiciones 1 –", trim_sliding(toy))
+print("Suma desde 3′ (t=20):           conserva posiciones 1 –", trim_bwa(toy))
+print(f"Mott, escala Phred (t=20):      conserva posiciones {a + 1} – {b}  (suma = {np.sum(toy[a:b] - 20)})")
+for p_lim in (0.01, 0.05):
+    ap, bp = trim_mott_prob(toy, p_lim)
+    print(f"Mott, probabilidades (p_lím={p_lim}): conserva posiciones {ap + 1} – {bp}")
 ''')
 
 nb.code(r'''
 fig, axes = plt.subplots(3, 1, figsize=(11, 7.8), sharex=True)
 x = np.arange(1, len(toy) + 1)
 results = [("Ventana deslizante (w = 4)", 0, trim_sliding(toy), ec.BLUE),
-           ("BWA (extremo 3′)", 0, trim_bwa(toy), ec.ORANGE),
-           ("Mott (máxima suma)", a, b, ec.AQUA)]
+           ("Suma desde 3′ (BWA)", 0, trim_bwa(toy), ec.ORANGE),
+           ("Mott (escala Phred)", a, b, ec.AQUA)]
 for ax, (lab, lo, hi, col) in zip(axes, results):
     keep = (x > lo) & (x <= hi)
     ax.bar(x, toy, color=np.where(keep, col, ec.GRID), width=0.8)
@@ -1112,7 +1161,7 @@ for ax, (lab, lo, hi, col) in zip(axes, results):
         ax.text(xi, qi + 1, str(qi), ha="center", fontsize=9, color=ec.INK if (lo < xi <= hi) else ec.MUTED)
     ax.axhline(20, color=ec.INK_2, ls="--", lw=1)
     ax.axvspan(lo + 0.5, hi + 0.5, color=col, alpha=0.08, lw=0)
-    ax.text(15.45, 21.5, "q = 20", va="bottom", ha="right", fontsize=9, color=ec.INK_2)
+    ax.text(15.45, 21.5, "t = 20", va="bottom", ha="right", fontsize=9, color=ec.INK_2)
     ax.set_ylim(0, 46); ax.set_ylabel("Q")
     ax.set_title(f"{lab}: conserva {lo + 1}–{hi} ({hi - lo} bases)", fontsize=11.5, loc="left", color=col)
 axes[-1].set_xticks(x); axes[-1].set_xlabel("Posición en la lectura")
@@ -1123,41 +1172,123 @@ plt.show()
 
 nb.md(r"""
 > 🔎 **Qué observamos.** La ventana deslizante es **miope y prudente**: se detiene en el primer tramo malo, aunque lo
-> que viene después sea bueno. BWA y Mott hacen **balance**: toleran un bache corto si detrás hay suficientes bases
-> buenas que lo compensen. Mott, además, limpia el extremo 5′. En la práctica, con lecturas Illumina el extremo 5′ casi
-> siempre es bueno y los tres métodos dan resultados parecidos en la mayoría de las lecturas; las diferencias aparecen
-> justo en las lecturas "difíciles".
+> que viene después sea bueno. La suma acumulada (BWA) y Mott hacen **balance**: toleran un bache corto si detrás hay
+> suficientes bases buenas que lo compensen. Mott, además, limpia el extremo 5′. La salida de la celda anterior muestra
+> también que **la escala de la puntuación importa**: con probabilidades ($p_{\text{lím}} - p_i$, como *phred* y
+> `seqtk`), una base Q38 y una Q30 aportan casi lo mismo (≈ $p_{\text{lím}}$), mientras que una base Q6 resta
+> muchísimo ($p = 0.25$). Por eso el bache 6–7 ya no se "compra" con cuatro bases buenas y el tramo elegido cambia. En
+> la práctica, con lecturas Illumina el extremo 5′ casi siempre es bueno y los métodos dan resultados parecidos en la
+> mayoría de las lecturas; las diferencias aparecen justo en las lecturas "difíciles".
 
-✅ **Compruebe su comprensión.** Si subimos el umbral a $q = 30$ en la lectura de ejemplo, ¿qué conservará BWA? (Pista:
-calcule $S$ de derecha a izquierda. Respuesta: la ganancia máxima se alcanza al eliminar desde la posición 6, y se
-conservan las posiciones 1–5. Compruébelo con `trim_bwa(toy, q=30)`.)
+✅ **Compruebe su comprensión.** Si subimos el umbral a $t = 30$ en la lectura de ejemplo, ¿qué conservará BWA? (Pista:
+calcule $S$ de derecha a izquierda. Respuesta: el máximo, $S(6) = 123$, está en $x^{\star} = 6$, y se conservan las
+posiciones 1–5. Compruébelo con `trim_bwa(toy, t=30)`.)
 
-### 7.3 Versiones vectorizadas para 30 000 lecturas
+### 7.3 Un empate que cambia el resultado: la lectura de 30 bases del libro
+
+La fórmula del argmax parece no dejar lugar a dudas, pero ¿qué pasa si **dos** cortes empatan? Pasa más de lo que uno
+creería, porque las calidades son enteros. El libro compara los dos criterios sobre una lectura de 30 bases con
+$t = 20$ y $w = 4$ (figura «Recorte por calidad» del capítulo 6). Rehagamos el cálculo a mano, sumando $t - Q_i$
+**desde el final**:
+
+| Posición $i$ | 30 | 29 | 28 | 27 | 26 | 25 | **24** | 23 | **22** | 21 | 20 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| $Q_i$ | 6 | 8 | 10 | 12 | 18 | 15 | 17 | 21 | 19 | 22 | 27 |
+| $t - Q_i$ | 14 | 12 | 10 | 8 | 2 | 5 | 3 | −1 | 1 | −2 | −7 |
+| $S(i)$ (acumulada desde 3′) | 14 | 26 | 36 | 44 | 46 | 51 | **54** | 53 | **54** | 52 | 45 |
+
+El máximo, 54, aparece **dos veces**: en $x = 24$ y en $x = 22$. La regla del libro (y de `cutadapt`) elige el más
+cercano al extremo 3′, $x^{\star} = 24$, y conserva **23 bases**: las bases 21–23 ($Q = 22, 19, 21$) tienen en conjunto
+una calidad neta por encima del umbral, así que no vale la pena perderlas. Si en cambio tomamos el **primer** máximo
+leyendo de izquierda a derecha, que es lo que hace `np.argmax`, cortamos en $x = 22$ y conservamos sólo 21. La
+ventana deslizante, por su parte, encuentra su primera ventana mala en la posición 21 (medias
+$37.75, 37.25, \ldots, 22.25$ y luego $19.75 < 20$) y conserva **20**.
+
+La celda siguiente comprueba las tres cifras e implementa, además, el bucle **tal como lo escribe `cutadapt`**: recorre
+la lectura desde 3′, acumula $t - Q_i$, actualiza el mejor corte sólo si la suma **supera** estrictamente al máximo
+anterior (así, en un empate gana el primero encontrado desde 3′) y **se detiene en cuanto la suma se vuelve
+negativa**. Si `cutadapt` está instalado (no viene en Colab; `pip install cutadapt`), también llamamos a su función.
+""")
+
+nb.code(r'''
+def trim_cutadapt_rule(q_read, t=20):
+    """Bucle de cutadapt -q: desde 3′, s += t − Q; se detiene si s < 0; el máximo estricto fija el corte."""
+    s, best, keep = 0, 0, len(q_read)
+    for i in range(len(q_read) - 1, -1, -1):
+        s += t - q_read[i]
+        if s < 0:
+            break                                           # regla de parada: la cola ya no es "mala en neto"
+        if s > best:                                        # estricto: en un empate gana el más cercano a 3′
+            best, keep = s, i
+    return keep
+
+book_q = np.array([38, 38, 37, 38, 36, 37, 35, 36, 34, 35, 33, 34, 32, 30, 31,
+                   28, 29, 26, 24, 27, 22, 19, 21, 17, 15, 18, 12, 10, 8, 6])   # lectura de 30 bases del libro
+S_book = np.cumsum((20 - book_q)[::-1])[::-1]
+print("S(x) para x = 20 … 30:", dict(zip(range(20, 31), S_book[19:].tolist())))
+naive = int(np.argmax(S_book))                              # primer máximo desde 5′ (el error a evitar)
+res_book = {"ventana deslizante (w=4)": trim_sliding(book_q),
+            "argmax ingenuo (np.argmax, empate hacia 5′)": naive,
+            "suma desde 3′, empate hacia 3′ (trim_bwa)": trim_bwa(book_q),
+            "bucle de cutadapt -q (con parada)": trim_cutadapt_rule(book_q)}
+try:
+    from cutadapt.qualtrim import quality_trim_index        # sólo si cutadapt está instalado
+    qual = "".join(chr(int(v) + 33) for v in book_q)
+    res_book["cutadapt real: quality_trim_index"] = quality_trim_index(qual, 0, 20)[1]
+except ImportError:
+    print("(cutadapt no está instalado: se omite la comparación con su función)")
+for lab, k in res_book.items():
+    print(f"  {lab:<46} conserva {k} bases")
+assert res_book["ventana deslizante (w=4)"] == 20 and naive == 21
+assert trim_bwa(book_q) == trim_cutadapt_rule(book_q) == 23
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** Las cifras coinciden con las del libro: la ventana conserva 20 bases y la suma desde 3′
+> conserva **23**, no 21. Un `np.argmax` sin más, aplicado a $S$ indexada de 5′ a 3′, devuelve el primer máximo y
+> recorta dos bases buenas de más: un error silencioso que ninguna prueba con un ejemplo sin empates detectaría. La
+> regla de parada no cambia nada en esta lectura (la suma nunca se vuelve negativa antes del máximo), pero sí en otras:
+> si la **última** base es buena, la suma empieza negativa y `cutadapt` no recorta nada, aunque más adentro haya un
+> tramo malo. Enseguida contaremos cuántas lecturas reales están en esa situación.
+
+### 7.4 Versiones vectorizadas para 30 000 lecturas
 
 Los bucles de Python son claros pero lentos. Las tres ideas se pueden escribir con operaciones de matrices:
 
 * **Ventana:** las medias de todas las ventanas salen de una suma acumulada, $\bar Q_{j} = (C_{j+w} - C_j)/w$.
-* **BWA:** $S$ es una suma acumulada **desde la derecha**; `argmax` por fila.
+* **Suma desde 3′:** $S$ es una suma acumulada **desde la derecha**; el `argmax` se busca sobre la fila **invertida**
+  para que los empates se resuelvan hacia 3′. La regla de parada de `cutadapt` se añade enmascarando todo lo que queda
+  a la izquierda de la primera suma negativa.
 * **Mott:** el mejor tramo que termina en $b$ vale $C_b - \min_{a \le b} C_a$, y `np.minimum.accumulate` calcula ese
   mínimo corrido de una vez.
 """)
 
 nb.code(r'''
-def vec_sliding(Q, w=4, q=20):
+def vec_sliding(Q, w=4, t=20):
     """Nº de bases conservadas por la ventana deslizante en cada lectura (matriz n × L)."""
     C = np.c_[np.zeros(len(Q)), np.cumsum(Q, 1)]
     means = (C[:, w:] - C[:, :-w]) / w
-    bad = means < q
+    bad = means < t
     return np.where(bad.any(1), bad.argmax(1), Q.shape[1])
 
-def vec_bwa(Q, q=20):
-    S = np.cumsum((q - Q)[:, ::-1], 1)[:, ::-1]
-    x = S.argmax(1)
-    return np.where(S.max(1) > 0, x, Q.shape[1])
+def vec_bwa(Q, t=20):
+    """Suma desde 3′ con empate hacia 3′: S se acumula sobre la fila invertida y argmax da el primer máximo desde 3′."""
+    S_rev = np.cumsum((t - Q)[:, ::-1], 1)                  # S_rev[:, j] = S(L − j) en notación 1-based
+    k = S_rev.argmax(1)
+    return np.where(S_rev.max(1) > 0, Q.shape[1] - 1 - k, Q.shape[1])
 
-def vec_mott(Q, q=20):
+def vec_cutadapt(Q, t=20):
+    """Igual que vec_bwa, pero con la regla de parada de cutadapt: sólo cuenta lo anterior a la primera suma negativa."""
+    S_rev = np.cumsum((t - Q)[:, ::-1], 1)
+    neg = S_rev < 0
+    stop = np.where(neg.any(1), neg.argmax(1), Q.shape[1])
+    S_rev = np.where(np.arange(Q.shape[1]) < stop[:, None], S_rev, -np.inf)
+    k = S_rev.argmax(1)
+    return np.where(S_rev.max(1) > 0, Q.shape[1] - 1 - k, Q.shape[1])
+
+def vec_mott(Q, t=20):
     """Devuelve (a, b): tramo conservado [a, b) de cada lectura (a = b si no queda nada)."""
-    C = np.c_[np.zeros(len(Q)), np.cumsum(Q - q, 1)]
+    C = np.c_[np.zeros(len(Q)), np.cumsum(Q - t, 1)]
     run_min = np.minimum.accumulate(C, 1)
     gain = C - run_min
     b = gain.argmax(1)
@@ -1167,9 +1298,11 @@ def vec_mott(Q, q=20):
     ok = gain.max(1) > 0
     return np.where(ok, a, 0), np.where(ok, b, 0)
 
-# comprobación contra las versiones con bucles
-assert vec_sliding(toy[None])[0] == trim_sliding(toy) and vec_bwa(toy[None])[0] == trim_bwa(toy)
-assert tuple(int(v[0]) for v in vec_mott(toy[None])) == trim_mott(toy)
+# comprobación contra las versiones con bucles (la lectura del libro tiene un empate: vigila el desempate)
+for qq in (toy, book_q):
+    assert vec_sliding(qq[None])[0] == trim_sliding(qq) and vec_bwa(qq[None])[0] == trim_bwa(qq)
+    assert vec_cutadapt(qq[None])[0] == trim_cutadapt_rule(qq)
+    assert tuple(int(v[0]) for v in vec_mott(qq[None])) == trim_mott(qq)
 
 t0 = time.time()
 Qall = np.r_[Q1, Q2].astype(float)
@@ -1182,6 +1315,17 @@ for lab, kl in [("ventana", keep_sw), ("BWA", keep_bwa), ("Mott", keep_mott)]:
     print(f"{lab:>8}: longitud media conservada {kl.mean():6.1f} · bases conservadas {kl.sum() / Qall.size:.1%} "
           f"· lecturas intactas (150) {np.mean(kl == L):.1%} · lecturas < 36 nt {np.mean(kl < 36):.1%}")
 print(f"Mott recorta el 5′ en {np.mean(mott_a > 0):.1%} de las lecturas")
+
+# ¿Cuánto importan el desempate y la regla de parada en datos reales?
+S_rev_all = np.cumsum((20 - Qall)[:, ::-1], 1)
+keep_naive = np.where(S_rev_all.max(1) > 0, np.argmax(S_rev_all[:, ::-1], 1), L)   # primer máximo desde 5′
+keep_cut = vec_cutadapt(Qall)
+tie = keep_naive != keep_bwa
+print(f"Empates en el máximo que np.argmax resolvería mal: {tie.sum():,} lecturas ({tie.mean():.1%}); "
+      f"en ellas se perderían {np.mean(keep_bwa[tie] - keep_naive[tie]) if tie.any() else 0:.1f} bases de media")
+stop_diff = keep_cut != keep_bwa
+print(f"Regla de parada de cutadapt: cambia el corte en {stop_diff.sum():,} lecturas ({stop_diff.mean():.1%}); "
+      f"de ellas, {np.mean(keep_cut[stop_diff] == L) if stop_diff.any() else 0:.0%} quedan sin recortar")
 ''')
 
 nb.code(r'''
@@ -1197,7 +1341,7 @@ ax.set_xlim(0, L + 2); ax.set_ylim(0, 7.2)
 ax.set_xlabel("Longitud conservada tras el recorte (lecturas que sí se recortaron)")
 ax.set_ylabel("% de lecturas (bins de 5 nt)")
 ec.title(ax, "La ventana deslizante recorta más y deja más lecturas cortas que BWA y Mott",
-         "R1 + R2 (60 000 lecturas) · q = 20 · sólo se dibujan las lecturas recortadas · BWA y Mott casi se superponen")
+         "R1 + R2 (60 000 lecturas) · t = 20 · sólo se dibujan las lecturas recortadas · BWA y Mott casi se superponen")
 plt.show()
 ''')
 
@@ -1206,6 +1350,12 @@ nb.md(r"""
 > del final (colas malas cortas) y una cola de lecturas muy recortadas (las que se "rompieron" pronto y terminan en
 > `#`). La **ventana deslizante** produce más lecturas cortas, porque se detiene en el primer bache. BWA y Mott son casi
 > idénticos: en datos Illumina, el extremo 5′ rara vez está mal, así que la capacidad extra de Mott casi no se usa.
+>
+> Las dos últimas líneas de la celda anterior ponen cifra a los detalles de la sección 7.3. En ≈ 0.7 % de las lecturas
+> reales el máximo de $S$ está empatado, y un `np.argmax` ingenuo les quitaría ≈ 5 bases buenas de media. La regla de
+> parada de `cutadapt` cambia el corte en ≈ 1 % de las lecturas y, en cuatro de cada cinco, las deja **sin recortar**:
+> son lecturas cuya última base es buena, de modo que la suma empieza negativa y el recorrido se detiene enseguida,
+> aunque algo más adentro haya un tramo malo. Dos herramientas con el "mismo" umbral no producen los mismos archivos.
 """)
 
 nb.md(gif(MOD, "6.2_ventana_deslizante",
@@ -1235,7 +1385,7 @@ def update(f):
     kind, j = plan[f]
     ax.clear()
     ax.axhline(qthr, color=ec.INK_2, ls="--", lw=1)
-    ax.text(L + 1, qthr, "q = 20", va="center", fontsize=9, color=ec.INK_2)
+    ax.text(L + 1, qthr, "t = 20", va="center", fontsize=9, color=ec.INK_2)
     if kind == "win":
         cols = [ec.SEQ_BLUE[5] if i < j else ec.GRID for i in range(L)]
         ax.bar(xx, qd, color=cols, width=0.9)
@@ -1254,7 +1404,7 @@ def update(f):
         ax.bar(xx, qd, color=np.where(keep, col, ec.GRID), width=0.9)
         msg = f"{lab}: conserva {lo + 1}–{hi} ({hi - lo} bases de {L})"
     ax.set_xlim(0, L + 10); ax.set_ylim(0, 44)
-    ax.set_xlabel(f"Posición en la lectura (ciclo) · lectura real {names1[demo_i]} (R1) · w = 4 · q = 20")
+    ax.set_xlabel(f"Posición en la lectura (ciclo) · lectura real {names1[demo_i]} (R1) · w = 4 · t = 20")
     ax.set_ylabel("Calidad Phred")
     ax.set_title(msg, fontsize=12, loc="left")
     return []
@@ -1267,9 +1417,9 @@ nb.md(r"""
 > cuanto encuentra una ventana con media menor (rojo), corta ahí. BWA y Mott, que hacen un balance de toda la cola,
 > conservan más bases: el bache que detuvo a la ventana está seguido de bases suficientemente buenas.
 
-### 7.4 Explorador interactivo: mueva el umbral
+### 7.5 Explorador interactivo: mueva el umbral
 
-Cuatro lecturas reales con comportamientos distintos. Mueva el deslizador para cambiar el umbral $q$ y observe dónde
+Cuatro lecturas reales con comportamientos distintos. Mueva el deslizador para cambiar el umbral $t$ y observe dónde
 corta cada algoritmo (las barras horizontales bajo cada lectura muestran el tramo conservado). Pase el cursor por las
 barras de calidad para ver la base, su $Q$ y su probabilidad de error.
 """)
@@ -1324,9 +1474,9 @@ for s in steps:                                            # conservar los títu
     s["args"][0]["annotations"] = title_annots + s["args"][0]["annotations"]
 fig.update_layout(
     sliders=[dict(active=int(np.where(thresholds == 20)[0][0]), steps=steps, y=-0.075, len=0.9, x=0.05,
-                  currentvalue=dict(prefix="umbral q = ", font=dict(size=14)))],
+                  currentvalue=dict(prefix="umbral t = ", font=dict(size=14)))],
     title=dict(text="¿Dónde corta cada algoritmo? Explorador de recorte por calidad<br>"
-                    "<sup>Cuatro lecturas reales de R1 · barras de color = base · línea discontinua = umbral q · "
+                    "<sup>Cuatro lecturas reales de R1 · barras de color = base · línea discontinua = umbral t · "
                     "barras horizontales = tramo conservado (w = 4)</sup>"),
     height=980, margin=dict(t=150, l=60, r=120, b=150), bargap=0.1,
     legend=dict(orientation="h", yanchor="bottom", y=1.035, x=1, xanchor="right"))
@@ -1628,7 +1778,10 @@ de un 20 % de diferencias (los criterios por defecto de fastp; Chen *et al.*, 20
 
 Si el mejor $I$ es menor que $L$, todo lo que hay después de la posición $I$ en **ambas** lecturas es adaptador. Lo
 bonito de este método es que no necesita saber qué adaptador se usó y funciona aunque el adaptador aparezca sólo en
-las últimas 1–2 bases, donde ninguna búsqueda por secuencia puede verlo.
+las últimas 1–2 bases, donde ninguna búsqueda por secuencia puede verlo. Trimmomatic aprovecha la misma propiedad en
+su modo **palíndromo** (`ILLUMINACLIP` con lecturas pareadas): cuando el inserto es corto, R1 y R2 son complementarios
+inversos entre sí, adaptadores incluidos, y eso permite localizar el punto de corte con mucha más confianza que
+buscando el adaptador en cada lectura por separado.
 """)
 
 nb.md(r"""
@@ -1752,7 +1905,26 @@ DADA2, por ejemplo, usa $E_{\max} = 2$.
 $\mathrm{EE} = 90 \times 10^{-3.5} + 10 \times 10^{-2} = 0.028 + 0.100 = 0.128$: pasa holgadamente. Si en lugar de
 recortarla hubiéramos conservado 30 bases más con Q5 ($P = 0.316$ cada una), EE subiría en $30 \times 0.316 = 9.5$:
 esa lectura sin recortar tendría unos 10 errores esperados. El recorte y el filtro trabajan juntos.
+
+**Los ejemplos del libro.** La lectura FASTQ de 24 bases del capítulo 6 tiene calidades
+`34 35 37 37 38 38 37 36 38 37 36 35 36 33 32 30 31 27 25 22 20 14 11 2`. Sus errores esperados suman
+$\mathrm{EE} = 0.78$, pero $0.63$ vienen de **una sola base**, la última ($Q2$, $p = 10^{-0.2} \approx 0.63$); las 20
+primeras, todas con $Q \ge 20$, aportan menos de $0.02$. Recortar las cuatro últimas bases elimina más del 95 % de los
+errores esperados. A mayor escala, con 150 bases de calidad uniforme, la probabilidad de una lectura **sin ningún
+error** es $\Pr(X = 0) = (1 - p)^{150}$: $0.999^{150} \approx 0.86$ a Q30, pero $0.99^{150} \approx 0.22$ a Q20. Diez
+unidades de Phred separan "casi todas las lecturas son perfectas" de "casi cuatro de cada cinco tienen algún error".
 """)
+
+nb.code(r'''
+# Ejemplos del libro: errores esperados de la lectura de 24 bases y lecturas perfectas a Q20 y Q30
+q24 = np.array([34, 35, 37, 37, 38, 38, 37, 36, 38, 37, 36, 35, 36, 33, 32, 30, 31, 27, 25, 22, 20, 14, 11, 2])
+p24 = 10 ** (-q24 / 10)
+print(f"EE total = {p24.sum():.2f} · última base (Q2) = {p24[-1]:.2f} · 20 primeras = {p24[:20].sum():.3f} · "
+      f"eliminado al recortar las 4 últimas = {p24[-4:].sum() / p24.sum():.1%}")
+for Qu in (30, 20):
+    pu = 10 ** (-Qu / 10)
+    print(f"150 bases a Q{Qu}: EE = {150 * pu:.2f} · P(X = 0) = (1 − {pu})^150 = {(1 - pu) ** 150:.2f}")
+''')
 
 nb.code(r'''
 def complexity(S, keep):
@@ -1784,7 +1956,7 @@ final se **filtra**.
 
 1. **Adaptadores:** el corte es el menor entre la búsqueda del adaptador Nextera (10 % de errores) y el tamaño de
    inserto por solapamiento de pares, si este es menor que 150.
-2. **Calidad:** ventana deslizante de 4 bases con $q = 20$ (la misma regla que `fastp --cut_right`, para poder
+2. **Calidad:** ventana deslizante de 4 bases con $t = 20$ (la misma regla que `fastp --cut_right`, para poder
    comparar en la sección 11).
 3. **Filtros:** longitud ≥ 36, como mucho 5 N, complejidad ≥ 30 % y EE ≤ 2, exigidos a **las dos** lecturas del par.
 """)
@@ -1797,14 +1969,14 @@ nb.md(r"""
 nb.code(r'''
 MIN_LEN, MAX_N, MIN_COMPLEXITY, MAX_EE = 36, 5, 0.30, 2.0
 
-def clean_pairs(S1, Q1, S2, Q2, cut_ad1, cut_ad2, ins, w=4, q=20):
+def clean_pairs(S1, Q1, S2, Q2, cut_ad1, cut_ad2, ins, w=4, t=20):
     """Devuelve las longitudes conservadas de R1 y R2 y una tabla con el motivo de descarte de cada par."""
     Lr = S1.shape[1]
     out = {}
     for mate, S, Q, cut_ad in [("R1", S1, Q1, cut_ad1), ("R2", S2, Q2, cut_ad2)]:
         cut = np.minimum(cut_ad, np.where((ins > 0) & (ins < Lr), ins, Lr))          # 1) adaptadores
         Qm = np.where(np.arange(Lr)[None, :] < cut[:, None], Q, 40).astype(float)    # lo ya cortado no cuenta
-        keep = np.minimum(cut, vec_sliding(Qm, w, q))                                # 2) calidad
+        keep = np.minimum(cut, vec_sliding(Qm, w, t))                                # 2) calidad
         out[mate] = dict(adapter_cut=cut < Lr, keep=keep,
                          short=keep < MIN_LEN, many_n=n_count(S, keep) > MAX_N,       # 3) filtros
                          low_cx=complexity(S, keep) < MIN_COMPLEXITY,
@@ -1845,7 +2017,7 @@ for y, v, r in zip(ypos, vals, funnel["pares eliminados"]):
 ax.set_yticks(ypos, labels); ax.set_xlim(0, N * 1.3); ax.grid(False)
 ax.set_xlabel("Pares que quedan después de cada filtro")
 ec.title(ax, "Sólo la longitud mínima elimina pares: las lecturas que el recorte dejó casi vacías",
-         "Cascada de filtros tras recortar adaptadores y calidad (ventana 4, q = 20) · un par se elimina si falla R1 o R2")
+         "Cascada de filtros tras recortar adaptadores y calidad (ventana 4, t = 20) · un par se elimina si falla R1 o R2")
 plt.show()
 ''')
 
@@ -2137,11 +2309,11 @@ En Colab puede probarlo después de ejecutar fastp: `!pip install -q multiqc && 
 nb.md(r"""
 ## ✍️ Ejercicios
 
-**Ejercicio 1 — Mott a mano.** Para la lectura con calidades `(12, 30, 35, 18, 36, 38, 14, 10, 31, 9)` y $q = 20$,
+**Ejercicio 1 — Mott a mano.** Para la lectura con calidades `(12, 30, 35, 18, 36, 38, 14, 10, 31, 9)` y $t = 20$,
 calcule a mano el tramo que conserva el método de Mott y el corte de BWA. Compruebe con `trim_mott` y `trim_bwa`.
 
 **Ejercicio 2 — Sensibilidad al umbral.** Para las 60 000 lecturas, calcule la fracción de bases conservadas por la
-ventana deslizante y por BWA para $q = 10, 15, 20, 25, 30$. Dibuje ambas curvas. ¿A partir de qué umbral se pierde
+ventana deslizante y por BWA para $t = 10, 15, 20, 25, 30$. Dibuje ambas curvas. ¿A partir de qué umbral se pierde
 más de la mitad de las bases?
 
 **Ejercicio 3 — Adaptador TruSeq.** Modifique `vec_adapter_cut` para buscar el adaptador TruSeq
@@ -2155,28 +2327,28 @@ $E_{\max} = 0.5$ y $E_{\max} = 1$. ¿Cuántos pares se pierden en cada caso? ¿V
 nb.code(r'''
 #@title 🔑 Solución — Ejercicio 1 { display-mode: "form" }
 ex = np.array([12, 30, 35, 18, 36, 38, 14, 10, 31, 9])
-print("Q − q:", ex - 20, "→ suma acumulada C:", np.cumsum(ex - 20))
+print("Q − t:", ex - 20, "→ suma acumulada C:", np.cumsum(ex - 20))
 a_, b_ = trim_mott(ex)
 print(f"Mott conserva las posiciones {a_ + 1}–{b_} (suma {np.sum(ex[a_:b_] - 20)})")
 S_ = np.cumsum((20 - ex)[::-1])[::-1]
-print("S(x) de BWA (eliminar desde la posición x+1):", S_, "→ BWA conserva 1 –", trim_bwa(ex))
+print("S(x) de BWA, x = 1 … 10 (eliminar desde la posición x):", S_, "→ BWA conserva 1 –", trim_bwa(ex))
 print("Mott quita la base 1 (Q12) y todo desde la 7; BWA sólo puede recortar el extremo 3′.")
 ''')
 
 nb.code(r'''
 #@title 🔑 Solución — Ejercicio 2 { display-mode: "form" }
 qs = [10, 15, 20, 25, 30]
-frac_sw = [vec_sliding(Qall, 4, q).sum() / Qall.size for q in qs]
-frac_bwa = [vec_bwa(Qall, q).sum() / Qall.size for q in qs]
+frac_sw = [vec_sliding(Qall, 4, th).sum() / Qall.size for th in qs]
+frac_bwa = [vec_bwa(Qall, th).sum() / Qall.size for th in qs]
 fig, ax = plt.subplots(figsize=(8, 4))
 ax.plot(qs, 100 * np.array(frac_sw), "o-", color=ec.BLUE); ax.plot(qs, 100 * np.array(frac_bwa), "o-", color=ec.ORANGE)
 ec.label_end(ax, qs[-1], 100 * frac_sw[-1], "ventana", ec.BLUE); ec.label_end(ax, qs[-1], 100 * frac_bwa[-1], "BWA", ec.ORANGE)
 ax.axhline(50, color=ec.MUTED, ls=":"); ax.set_xlim(8, 34)
-ax.set_xlabel("Umbral q"); ax.set_ylabel("% de bases conservadas")
+ax.set_xlabel("Umbral t"); ax.set_ylabel("% de bases conservadas")
 ec.title(ax, "Cuanto más alto el umbral, más bases se pierden", "60 000 lecturas de SRR2584863")
 plt.show()
-print(pd.DataFrame({"q": qs, "ventana": np.round(frac_sw, 3), "BWA": np.round(frac_bwa, 3)}).to_string(index=False))
-print("En este rango ningún método pierde más de la mitad de las bases; la ventana con q = 30 se acerca (≈ 57 %).")
+print(pd.DataFrame({"t": qs, "ventana": np.round(frac_sw, 3), "BWA": np.round(frac_bwa, 3)}).to_string(index=False))
+print("En este rango ningún método pierde más de la mitad de las bases; la ventana con t = 30 se acerca (≈ 57 %).")
 ''')
 
 nb.code(r'''
@@ -2212,9 +2384,10 @@ nb.md(r"""
   Illumina), *tiles*, calidad media, contenido de bases, GC, N, duplicación, secuencias sobrerrepresentadas y
   adaptadores. Hay que **interpretarlos**: el sesgo de los primeros ~15 ciclos en bibliotecas Nextera (Tn5) o con
   hexámeros aleatorios es normal, y la duplicación en datos pareados debe medirse con **los dos extremos**.
-* La calidad cae a lo largo de la lectura por el **desfase** de los *clusters*: $f(c) = (1-p)^c$.
+* La calidad cae a lo largo de la lectura por el **desfase** de los *clusters*: $\phi(n) = (1-\varepsilon)^n$.
 * Recorte por calidad: **ventana deslizante** (se detiene en el primer tramo malo), **BWA** (maximiza
-  $\sum_{i > x}(q - Q_i)$ en el extremo 3′) y **Mott** (tramo contiguo de máxima $\sum (Q_i - q)$, ambos extremos).
+  $S(x) = \sum_{i \ge x}(t - Q_i)$ en el extremo 3′, con empate hacia 3′ y parada cuando la suma se vuelve negativa) y
+  **Mott** (tramo contiguo de máxima $\sum (Q_i - t)$, o de $\sum (p_{\text{lím}} - p_i)$ en *phred*/`seqtk`; ambos extremos).
 * Los **adaptadores** aparecen cuando el inserto es más corto que la lectura. Se detectan por **alineamiento
   semiglobal** con tasa de error (Cutadapt) o por el **solapamiento de los pares** (fastp), que además estima el
   tamaño de inserto.
