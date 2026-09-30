@@ -3,7 +3,7 @@
 Usage: python runnb.py <notebook.ipynb> [--inplace]
 GIFs of animations named via ec.animate(..., name=...) go to assets/<module_dir>/.
 """
-import base64, os, sys
+import base64, os, shutil, sys
 import nbformat
 from nbclient import NotebookClient
 
@@ -42,6 +42,8 @@ for f in set(os.listdir(nb_dir)) - before:            # borrar archivos generado
     p = os.path.join(nb_dir, f)
     if os.path.isfile(p) and not f.endswith(".ipynb"):  # nunca borrar notebooks (otra lección pudo crearse en paralelo)
         os.remove(p)
+    elif os.path.isdir(p) and not f.startswith("."):    # carpetas de trabajo creadas por el notebook
+        shutil.rmtree(p, ignore_errors=True)
 slim(nb)
 out = os.path.join(os.environ.get("RUN_DIR", "run"), name); os.makedirs(out, exist_ok=True)
 k = 0

@@ -103,10 +103,12 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 11 · Transcriptómica (RNA-seq)
 
-- 11.1 Cuantificación (Salmon) · *próximamente*
-- 11.2 Normalización y binomial negativa · *próximamente*
-- 11.3 Expresión diferencial y FDR · *próximamente*
-- 11.4 Enriquecimiento funcional (GO, KEGG, GSEA) · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 11.1 | Cuantificación de transcritos: EM de isoformas, TPM y Salmon con lecturas reales del experimento airway | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-11-rnaseq/11.1_cuantificacion_salmon.ipynb) |
+| 11.2 | Normalización y binomial negativa: factores de tamaño, dispersión y QC de 16 muestras (un probable intercambio de etiquetas) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-11-rnaseq/11.2_normalizacion_binomial_negativa.ipynb) |
+| 11.3 | Expresión diferencial y FDR: GLM binomial negativo, contracción, filtrado independiente y la respuesta a dexametasona | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-11-rnaseq/11.3_expresion_diferencial_fdr.ipynb) |
+| 11.4 | Enriquecimiento funcional: hipergeométrica, sesgo de longitud y GSEA con GO, KEGG y Hallmark | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-11-rnaseq/11.4_enriquecimiento_funcional.ipynb) |
 
 ### Módulo 12 · Transcriptómica de célula única
 
@@ -164,6 +166,7 @@ bioinformatica-practica/
 ├── modulo-08-ensamblaje/
 ├── modulo-09-variantes/
 ├── modulo-10-poblaciones-gwas/
+├── modulo-11-rnaseq/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
