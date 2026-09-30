@@ -31,3 +31,14 @@ Imprime `ok ... images N` o `ERROR cell ...`. Las PNG (incluye Plotly vía kalei
 
 ## Informe final (breve)
 Rutas (notebook, builder), datos añadidos, lista de figuras/animaciones/interactivos, celdas sólo-Colab no verificadas, cambios necesarios en archivos compartidos.
+
+## Coherencia con el libro (obligatorio desde el Módulo 7)
+- EL LIBRO MANDA: cada lección acompaña una sección de `libro/capitulos/capNN.tex`. Léala COMPLETA antes de escribir y use exactamente
+  sus símbolos, convenciones (índices 0/1, intervalos semiabiertos, normalizaciones), ecuaciones y los MISMOS ejemplos resueltos con las
+  mismas cifras (`libro/figuras/capNN/cifras.txt`). La notación propia del notebook no debe chocar con la del libro.
+- Progresión: cada sección empieza muy básica (situación cotidiana, palabras simples) y sube hasta nivel de maestría.
+- Ejemplos siempre con contexto práctico real (brote, clínica, el clon LTEE de *E. coli* SRR2584863 que recorre los Módulos 6–8…).
+- Antes de comitear un módulo: auditoría de solo lectura de los builders contra el capítulo (símbolos, cifras, referencias, afirmaciones
+  dudosas); corregir los notebooks, y anotar las erratas del libro que aparezcan para corregirlas en `capNN.tex` (compilar el capítulo aislado).
+- Herramientas que sólo existen en Colab: instalar protegido (`IN_COLAB`/`shutil.which`) y dejar SIEMPRE resultados precomputados en `data/`
+  como respaldo; verificar con `curl -I` las URLs de descarga.
