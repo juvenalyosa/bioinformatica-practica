@@ -45,6 +45,9 @@ for f in set(os.listdir(nb_dir)) - before:            # borrar archivos generado
     elif os.path.isdir(p) and not f.startswith("."):    # carpetas de trabajo creadas por el notebook
         shutil.rmtree(p, ignore_errors=True)
 slim(nb)
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from sanitize import sanitize_nb
+sanitize_nb(nb)                                   # sin rutas del equipo local en las salidas
 out = os.path.join(os.environ.get("RUN_DIR", "run"), name); os.makedirs(out, exist_ok=True)
 k = 0
 for i, c in enumerate(nb.cells):
