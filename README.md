@@ -78,10 +78,12 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 8 · Ensamblaje y anotación de genomas
 
-- 8.1 k-mers y espectros de k-mers · *próximamente*
-- 8.2 Grafos de De Bruijn · *próximamente*
-- 8.3 Ensamblaje con SPAdes y evaluación con QUAST · *próximamente*
-- 8.4 Anotación genómica · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 8.1 | k-mers y espectros: tamaño del genoma, heterocigosidad y errores sin ensamblar (modelo tipo GenomeScope) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-08-ensamblaje/8.1_kmers_espectros.ipynb) |
+| 8.2 | Grafos de De Bruijn: Euler, Hierholzer animado, unitigs, puntas, burbujas y el grafo real de SPAdes | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-08-ensamblaje/8.2_grafos_de_bruijn.ipynb) |
+| 8.3 | Ensamblaje con SPAdes y evaluación con QUAST: N50/NG50/auN, errores de ensamblaje y completitud | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-08-ensamblaje/8.3_spades_quast.ipynb) |
+| 8.4 | Anotación genómica: ORFs, modelos de Márkov, HMM de genes, Prodigal y la anotación del ensamblaje LTEE | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-08-ensamblaje/8.4_anotacion_genomica.ipynb) |
 
 ### Módulo 9 · Detección de variantes
 
@@ -155,6 +157,7 @@ bioinformatica-practica/
 ├── modulo-05-filogenetica/
 ├── modulo-06-ngs/
 ├── modulo-07-mapeo/
+├── modulo-08-ensamblaje/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
