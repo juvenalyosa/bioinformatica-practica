@@ -160,8 +160,10 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 18 · Flujos reproducibles y proyecto final
 
-- 18.1 Snakemake/Nextflow · *próximamente*
-- 18.2 Proyecto integrador · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 18.1 | Snakemake y Nextflow: grafos de tareas, algoritmo de Kahn, re-ejecución incremental y ley de Amdahl con el clon LTEE | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-18-flujos-proyecto/18.1_snakemake_nextflow.ipynb) |
+| 18.2 | Proyecto integrador: dimensionar, estructurar, automatizar, probar, documentar y evaluar un análisis reproducible | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-18-flujos-proyecto/18.2_proyecto_integrador.ipynb) |
 
 ## 🗂️ Estructura del repositorio
 
@@ -185,6 +187,7 @@ bioinformatica-practica/
 ├── modulo-15-estructural/
 ├── modulo-16-sistemas-redes/
 ├── modulo-17-machine-learning/
+├── modulo-18-flujos-proyecto/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
