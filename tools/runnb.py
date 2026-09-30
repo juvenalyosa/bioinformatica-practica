@@ -40,7 +40,8 @@ nb = nbformat.read(src, as_version=4)
 NotebookClient(nb, timeout=900, kernel_name="python3", resources={"metadata": {"path": nb_dir}}).execute()
 for f in set(os.listdir(nb_dir)) - before:            # borrar archivos generados por el notebook
     p = os.path.join(nb_dir, f)
-    if os.path.isfile(p): os.remove(p)
+    if os.path.isfile(p) and not f.endswith(".ipynb"):  # nunca borrar notebooks (otra lección pudo crearse en paralelo)
+        os.remove(p)
 slim(nb)
 out = os.path.join(os.environ.get("RUN_DIR", "run"), name); os.makedirs(out, exist_ok=True)
 k = 0

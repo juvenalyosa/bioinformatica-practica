@@ -23,7 +23,7 @@ El capítulo se organiza en tres lecciones que siguen el recorrido real de los d
 % ---------------------------------------------------------------------
 \section{Verosimilitud de genotipos}\label{sec:09-verosimilitud}
 % ---------------------------------------------------------------------
-\enlacerepo{9.1 · Verosimilitud de genotipos}
+\enlacecolab{modulo-09-variantes/9.1_verosimilitud_genotipos.ipynb}{9.1 · Verosimilitud de genotipos}
 
 \begin{intuicion}[Seis testigos de un mismo accidente]
 Un juez debe decidir de qué color era el coche que huyó de un accidente. Declaran seis testigos: tres dicen ``azul'' y tres dicen ``verde''. Pero no todos merecen la misma confianza: dos de los que dicen ``verde'' estaban a pocos metros y a plena luz, mientras que el tercero lo vio de noche y de lejos. El juez sensato no cuenta votos: pondera cada testimonio por la fiabilidad del testigo y se pregunta qué hipótesis explica mejor el \emph{conjunto} de declaraciones. Quizá la mejor explicación sea sorprendente: que había \emph{dos} coches, uno azul y otro verde. Además, antes de oír a nadie el juez ya sabe algo: en su ciudad los coches azules son mucho más comunes que los verdes. Cada lectura que cubre una posición del genoma es uno de esos testigos; su calidad Phred mide su fiabilidad; los dos coches son los dos cromosomas homólogos de un organismo diploide; y lo que el juez sabía de antemano es la distribución \emph{a priori}.
@@ -315,7 +315,7 @@ QUAL mide la confianza en que el sitio es \emph{variable} (en alguna muestra); G
 \simbolo{$\hat G$}{Genotipo de máxima posterior.}
 \end{simbolos}
 
-Los programas difieren en los detalles. La especificación VCF define GQ como la calidad del genotipo \emph{condicionada} a que el sitio sea variable \parencite{c09-danecek2011}; GATK la aproxima como la diferencia entre los dos PL más pequeños, es decir, sin distribución \emph{a priori} \parencite{c09-depristo2011}. Como veremos en el ejemplo siguiente, ambas convenciones pueden dar números muy diferentes, y por eso conviene saber cuál usa el programa antes de fijar umbrales.
+Los programas difieren en los detalles. La especificación VCF define GQ como la calidad del genotipo \emph{condicionada} a que el sitio sea variable \parencite{c09-danecek2011}; GATK la aproxima como la diferencia entre los dos PL más pequeños, es decir, sin distribución \emph{a priori} \parencite{c09-depristo2011}. La \cref{eq:09-qual} usa una tercera versión, incondicional (sobre todos los genotipos, sin condicionar a que el sitio sea variable), que es la que calcularemos a mano. Como veremos en el ejemplo siguiente, las convenciones pueden dar números muy diferentes, y por eso conviene saber cuál usa el programa antes de fijar umbrales.
 
 \begin{ejemplo}{Posterior, QUAL y GQ de la columna 8}{09-posterior}
 Con $\theta=10^{-3}$, las probabilidades \emph{a priori} son $P(RR)=0{,}9985$, $P(RA)=0{,}001$ y $P(AA)=0{,}0005$. Multiplicando por las verosimilitudes del \cref{ej:09-verosimilitud}:
@@ -445,7 +445,7 @@ Los primeros estudios con NGS llamaban variantes con reglas simples, del tipo ``
 % ---------------------------------------------------------------------
 \section{Pipeline con bcftools}\label{sec:09-bcftools}
 % ---------------------------------------------------------------------
-\enlacerepo{9.2 · Pipeline con bcftools}
+\enlacecolab{modulo-09-variantes/9.2_pipeline_bcftools.ipynb}{9.2 · Pipeline con bcftools}
 
 \begin{intuicion}[La cocina de un restaurante]
 En la cocina de un buen restaurante nadie cocina ``un plato'': hay una estación que prepara los ingredientes, otra que cocina, otra que emplata y un jefe que prueba cada plato antes de que salga. Cada estación recibe algo en un formato conocido y entrega algo en otro formato conocido; si un plato sale mal, se sabe en qué estación buscar el problema. Y, sobre todo, el restaurante no mide su calidad por lo bien que \emph{cree} que cocina, sino por lo que dicen los comensales. Un flujo de llamado de variantes es esa cocina: \cmd{mpileup} prepara las columnas, \cmd{call} cocina los genotipos, \cmd{norm} emplata las variantes de forma estándar, \cmd{filter} prueba el resultado, y un conjunto de verdad como Genome in a Bottle hace de comensal exigente.
@@ -615,7 +615,7 @@ El paso 1 ``empuja'' la variante hacia la izquierda a través de la repetición;
 \end{figure}
 
 \begin{ejemplo}{Normalizar paso a paso}{09-norm}
-Tomemos el registro \texttt{POS=10, REF=ACA, ALT=A} de la \cref{fig:09-norm}. Paso 1: ambos alelos terminan en \texttt{A}; se elimina: \texttt{AC}/vacío. \texttt{ALT} quedó vacío, así que se antepone la base 9 (\texttt{C}): \texttt{POS=9}, \texttt{CAC}/\texttt{C}. Terminan en \texttt{C}: \texttt{CA}/vacío; se antepone la base 8 (\texttt{A}): \texttt{POS=8}, \texttt{ACA}/\texttt{A}. El ciclo se repite desplazando la deleción de dos en dos bases hasta \texttt{POS=4}, \texttt{TCA}/\texttt{T}: ahora terminan en \texttt{A} y \texttt{T}, distintas, y \texttt{T} no está vacío; el paso 1 se detiene. Paso 2: \texttt{T} tiene longitud 1, así que no hay nada que recortar. Resultado: \texttt{4\ TCA\ T}. El \cmd{generar.py} del capítulo comprueba que las seis representaciones de la figura convergen al mismo registro.
+Tomemos el registro \texttt{POS=10, REF=ACA, ALT=A} de la \cref{fig:09-norm}. Paso 1: ambos alelos terminan en \texttt{A}; se elimina: \texttt{AC}/vacío. \texttt{ALT} quedó vacío, así que se antepone la base 9 (\texttt{C}): \texttt{POS=9}, \texttt{CAC}/\texttt{C}. Terminan en \texttt{C}: \texttt{CA}/vacío; se antepone la base 8 (\texttt{A}): \texttt{POS=8}, \texttt{ACA}/\texttt{A}. El ciclo se repite desplazando la deleción de dos en dos bases hasta \texttt{POS=4}, \texttt{TCA}/\texttt{T}: ahora terminan en \texttt{A} y \texttt{T}, distintas, y \texttt{T} no está vacío; el paso 1 se detiene. Paso 2: \texttt{T} tiene longitud 1, así que no hay nada que recortar. Resultado: \texttt{4\ TCA\ T}. El \cmd{generar.py} del capítulo comprueba que seis representaciones convergen al mismo registro: las cuatro primeras filas de la figura y otras dos equivalentes, \texttt{4\ TCACA\ TCA} (no parsimoniosa) y \texttt{11\ CAG\ G}.
 \end{ejemplo}
 
 \begin{codigo}[normalizar.py]
@@ -653,7 +653,7 @@ Los filtros más comunes para llamados de \cmd{bcftools} son:
   \item \textbf{MQ} medio bajo: el sitio está en una región de mapeo ambiguo.
   \item \textbf{Sesgo de hebra}: una variante real debe aparecer en lecturas de ambas hebras; si todas las lecturas alternativas vienen de la misma, sospeche de un artefacto.
   \item \textbf{Desequilibrio alélico}: en un heterocigoto germinal, la fracción alternativa $\mathrm{AD}_\text{alt}/\mathrm{DP}$ debe rondar $0{,}5$; un $0{,}1$ sugiere contaminación, un error sistemático o una variante somática en mosaico.
-  \item \textbf{Proximidad a \ingles{indels}} (\texttt{bcftools filter -g}) y \textbf{densidad de SNV} (\texttt{-G}): racimos de SNV alrededor de un \ingles{indel} suelen ser artefactos de alineamiento.
+  \item \textbf{Proximidad a \ingles{indels}} (\texttt{bcftools filter -g}, \texttt{--SnpGap}, que marca los SNV a menos de $n$ bases de un \ingles{indel}) y \textbf{racimos de \ingles{indels}} (\texttt{-G}, \texttt{--IndelGap}): los SNV apiñados alrededor de un \ingles{indel} suelen ser artefactos de alineamiento. La densidad de SNV en una ventana no tiene opción propia en \cmd{bcftools filter} y se evalúa aparte (por ejemplo, contando llamadas por ventana).
 \end{itemize}
 
 Los filtros ``duros'' son transparentes, pero fijan cada umbral por separado; VQSR, de GATK, aprende en cambio un modelo de mezcla gaussiana sobre las anotaciones de sitios de alta confianza, y requiere cohortes grandes o genomas completos \parencite{c09-depristo2011}.
@@ -738,7 +738,7 @@ Todo filtro establece un compromiso: subir el umbral elimina falsos positivos, p
 % ---------------------------------------------------------------------
 \section{Anotación funcional de variantes}\label{sec:09-anotacion}
 % ---------------------------------------------------------------------
-\enlacerepo{9.3 · Anotación funcional de variantes}
+\enlacecolab{modulo-09-variantes/9.3_anotacion_variantes.ipynb}{9.3 · Anotación funcional de variantes}
 
 \begin{intuicion}[Una errata en un libro de recetas]
 Una errata en un libro de cocina puede ser inocua o desastrosa según dónde caiga. En el prólogo, nadie la nota. En el nombre de un plato, confunde pero no arruina la cena. En la cantidad de sal (``500 g'' en lugar de ``5 g'') arruina el plato. Y si la errata borra una línea entera de instrucciones, todo lo que sigue queda desfasado y la receta se vuelve incomprensible. Además, el daño depende de si el plato es uno que se cocina todos los días o uno que casi nadie prepara, y de si otras ediciones del libro ya tenían esa misma errata sin que nadie se quejara. Anotar una variante es responder, con datos, a estas mismas preguntas: dónde cae, qué cambia, si se ha visto antes en personas sanas y qué sabemos de su efecto.
