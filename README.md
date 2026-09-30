@@ -70,9 +70,11 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 7 · Mapeo de lecturas
 
-- 7.1 Transformada de Burrows-Wheeler y FM-index · *próximamente*
-- 7.2 BWA, minimap2 y samtools · *próximamente*
-- 7.3 Visualización de alineamientos y cobertura · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 7.1 | Transformada de Burrows-Wheeler, arreglo de sufijos y FM-index: búsqueda hacia atrás animada | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-07-mapeo/7.1_bwt_fm_index.ipynb) |
+| 7.2 | BWA, minimap2 y samtools con lecturas reales del clon LTEE de *E. coli*: minimizadores, encadenamiento y MAPQ | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-07-mapeo/7.2_bwa_minimap2_samtools.ipynb) |
+| 7.3 | Ver para creer: pileup, vista tipo IGV, cobertura, variantes estructurales y deleciones detectables | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-07-mapeo/7.3_visualizacion_alineamientos.ipynb) |
 
 ### Módulo 8 · Ensamblaje y anotación de genomas
 
@@ -152,6 +154,7 @@ bioinformatica-practica/
 ├── modulo-04-msa-motivos-hmm/
 ├── modulo-05-filogenetica/
 ├── modulo-06-ngs/
+├── modulo-07-mapeo/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks

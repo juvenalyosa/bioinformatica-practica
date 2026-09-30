@@ -29,7 +29,7 @@ Empezaremos por la idea algorítmica más bella del área: una permutación de l
 % ---------------------------------------------------------------------
 \section{Transformada de Burrows-Wheeler y FM-index}\label{sec:07-bwt}
 % ---------------------------------------------------------------------
-\enlacerepo{7.1 · Transformada de Burrows-Wheeler y FM-index}
+\enlacecolab{modulo-07-mapeo/7.1_bwt_fm_index.ipynb}{7.1 · Transformada de Burrows-Wheeler y FM-index}
 
 \begin{intuicion}[Un diccionario de todos los finales]
 Imagine un diccionario muy extraño: en lugar de palabras, contiene \emph{todos los finales} de un libro. Cada entrada empieza en una letra distinta del texto y continúa hasta el punto final, y todas están ordenadas alfabéticamente. Si quiere saber dónde aparece la frase ``había una vez'', no necesita leer el libro: abre el diccionario por la mitad, decide si su frase va antes o después, vuelve a partir por la mitad, y en una veintena de saltos llega al bloque de entradas que empiezan con esa frase. Cada entrada, además, recuerda en qué página empezaba. El problema es que el diccionario pesa muchísimo más que el libro. La transformada de Burrows-Wheeler es el truco que permite quedarse con una sola columna de ese diccionario, tan delgada como el propio texto, sin perder la capacidad de buscar.
@@ -363,7 +363,7 @@ La BWT reordena el genoma de modo que buscar un patrón cuesta dos consultas por
 % ---------------------------------------------------------------------
 \section{BWA, minimap2 y samtools}\label{sec:07-herramientas}
 % ---------------------------------------------------------------------
-\enlacerepo{7.2 · BWA, minimap2 y samtools}
+\enlacecolab{modulo-07-mapeo/7.2_bwa_minimap2_samtools.ipynb}{7.2 · BWA, minimap2 y samtools}
 
 \begin{intuicion}[Huellas digitales de un texto copiado]
 Un profesor sospecha que un ensayo fue copiado de alguno de los millones de documentos de internet. No puede compararlo palabra por palabra con todos. En cambio, toma de cada documento unas pocas ``huellas'': por ejemplo, en cada tramo de diez frases, la que tenga el código más pequeño según una regla fija. Dos textos que compartan un párrafo largo compartirán, por fuerza, algunas huellas, porque la regla elige la misma frase en ambos. Con las huellas coincidentes en la mano, el profesor comprueba si aparecen en el mismo orden y a distancias parecidas; si es así, ha encontrado la fuente, y solo entonces lee con atención el pasaje sospechoso. Semilla, encadenamiento y extensión: así trabajan los mapeadores modernos.
@@ -699,7 +699,7 @@ samtools view m1.bam chr7:55019017-55211628 | head   # una región
 % ---------------------------------------------------------------------
 \section{Visualización de alineamientos y cobertura}\label{sec:07-cobertura}
 % ---------------------------------------------------------------------
-\enlacerepo{7.3 · Visualización de alineamientos y cobertura}
+\enlacecolab{modulo-07-mapeo/7.3_visualizacion_alineamientos.ipynb}{7.3 · Visualización de alineamientos y cobertura}
 
 \begin{intuicion}[Una autopista vista desde un helicóptero]
 Desde un helicóptero se ve el tráfico de una autopista de dos carriles como una densidad de coches más o menos uniforme. Si un tramo tiene un carril cerrado por obras, la densidad cae a la mitad; si el tramo entero está cortado, no pasa ningún coche; si se abre un tercer carril, la densidad sube un cincuenta por ciento. Y hay un tramo en que la autopista corre paralela a otra idéntica: desde el aire es imposible saber por cuál va cada coche, y el contador automático, prudente, no cuenta ninguno. Un perfil de cobertura es esa vista aérea del genoma: las lecturas son los coches, el número de copias son los carriles, y las repeticiones son las autopistas gemelas.

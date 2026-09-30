@@ -21,7 +21,7 @@ El capítulo recorre el camino que va de la molécula al archivo. Primero veremo
 % ---------------------------------------------------------------------
 \section{Tecnologías de secuenciación}\label{sec:06-tecnologias}
 % ---------------------------------------------------------------------
-\enlacerepo{6.1 · Tecnologías de secuenciación}
+\enlacecolab{modulo-06-ngs/6.1_tecnologias_secuenciacion.ipynb}{6.1 · Tecnologías de secuenciación}
 
 \begin{intuicion}[Un estadio que se fotografía a sí mismo]
 Piense en esas coreografías de las tribunas en las que cada espectador levanta una cartulina de color a una señal. Suponga ahora que en cada asiento hay una persona con un mazo de cuatro colores y una lista secreta, y que desde el techo del estadio una cámara toma una foto después de cada señal. Tras cien señales tendremos cien fotografías; si seguimos un mismo asiento a través de todas ellas, leeremos su lista secreta, color por color. Nadie tuvo que leer las listas una por una: bastó sincronizar a miles de personas y fotografiarlas a la vez. Esta es, en esencia, la idea de la secuenciación masiva en paralelo. Y ya se adivinan sus defectos: si alguien se retrasa una señal, sus colores se desfasan; si la foto está borrosa, los asientos vecinos se confunden; y cuanto más dura el espectáculo, más espectadores se distraen.
@@ -339,7 +339,7 @@ Cada plataforma convierte bases en una señal física distinta, y su perfil de e
 % ---------------------------------------------------------------------
 \section{Calidad Phred, control de calidad y \ingles{trimming}}\label{sec:06-calidad}
 % ---------------------------------------------------------------------
-\enlacerepo{6.2 · Calidad Phred y control de calidad}
+\enlacecolab{modulo-06-ngs/6.2_control_calidad_trimming.ipynb}{6.2 · Calidad Phred y control de calidad}
 
 \begin{intuicion}[El pronóstico del tiempo de cada base]
 Un buen servicio meteorológico no dice ``mañana lloverá'': dice ``mañana hay un 70\,\% de probabilidad de lluvia''. Y lo que lo hace bueno no es acertar siempre, sino estar \emph{calibrado}: de todos los días en que anunció un 70\,\%, llovió aproximadamente en siete de cada diez. Un secuenciador moderno hace lo mismo con cada base que entrega. Junto a la letra \nuc{A} escribe, en clave, algo como ``me equivoco en una de cada mil veces que digo esto''. Aprender a leer esa clave, y a desconfiar cuando el pronóstico empeora, es el primer paso de cualquier análisis.
@@ -662,7 +662,7 @@ $Q=-10\log_{10}p$. Resuma la calidad de una lectura con sus errores esperados $\
 % ---------------------------------------------------------------------
 \section{Cobertura y la teoría de Lander-Waterman}\label{sec:06-cobertura}
 % ---------------------------------------------------------------------
-\enlacerepo{6.3 · Cobertura y Lander-Waterman}
+\enlacecolab{modulo-06-ngs/6.3_cobertura_lander_waterman.ipynb}{6.3 · Cobertura y Lander-Waterman}
 
 \begin{intuicion}[Gotas sobre la acera]
 Empieza a llover sobre una acera seca. Las primeras gotas dejan manchas aisladas; al cabo de un rato las manchas se tocan y forman islas mojadas; mucho después, la acera está completamente oscura. Pero incluso cuando ya ha caído agua más que suficiente para cubrir la acera dos o tres veces, si mira con atención encontrará todavía algún rincón seco: las gotas caen al azar y el azar no reparte con justicia. La secuenciación de un genoma por fragmentos aleatorios se parece mucho a esa lluvia. ¿Cuántas ``gotas'' (lecturas) necesitamos para que no queden rincones secos? ¿Cuántas islas habrá mientras tanto? La respuesta es una de las aplicaciones más bellas de la distribución de Poisson.

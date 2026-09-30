@@ -21,7 +21,7 @@ El capítulo sigue ese orden. Primero construiremos el lenguaje probabilístico 
 % =====================================================================
 \section{Distancias evolutivas y modelos de sustitución}\label{sec:05-modelos}
 % =====================================================================
-\enlacerepo{5.1 · Distancias y modelos de sustitución}
+\enlacecolab{modulo-05-filogenetica/5.1_distancias_modelos.ipynb}{5.1 · Distancias y modelos de sustitución}
 
 \begin{intuicion}[La pared repintada]
 Imagine dos paredes que hace años se pintaron del mismo color. Desde entonces, cada cierto tiempo, alguien elige al azar uno de cuatro colores y repinta una de ellas. Hoy usted solo ve el color final de cada pared. Si los colores difieren, sabe que hubo al menos un repintado; pero si coinciden, no puede descartar que hayan pasado por rojo, azul y verde para volver, por casualidad, al mismo tono. Tras muchísimos repintados, las paredes coinciden una de cada cuatro veces, sin importar si pasaron diez o mil años. Contar diferencias visibles subestima la historia, y la subestima cada vez más cuanto más larga es. Para recuperar el número real de repintados hace falta un \emph{modelo} de cómo se repinta.
@@ -488,7 +488,7 @@ El modelo de sustitución es el puente entre ambos.
 % =====================================================================
 \section{UPGMA y Neighbor-Joining}\label{sec:05-distancias}
 % =====================================================================
-\enlacerepo{5.2 · UPGMA y Neighbor-Joining}
+\enlacecolab{modulo-05-filogenetica/5.2_upgma_neighbor_joining.ipynb}{5.2 · UPGMA y Neighbor-Joining}
 
 \begin{intuicion}[Reconstruir las carreteras desde la tabla de kilómetros]
 En la guantera de un coche viejo aparece una tabla con las distancias por carretera entre cinco pueblos, pero no hay mapa. ¿Es posible dibujar la red de carreteras? Si las carreteras forman un árbol, sin circuitos, y las distancias se midieron recorriéndolas, la respuesta es sí, y además de forma exacta: cada distancia es la suma de los tramos que la componen, y esa redundancia basta para deducir dónde están los cruces y cuánto mide cada tramo. Pero si alguien anotó las distancias en línea recta, o se equivocó al copiarlas, la tabla deja de ser coherente con ningún árbol, y hay que buscar el que mejor se le ajuste.
@@ -785,7 +785,7 @@ Cuando el reloj falla, el par más cercano no es necesariamente un par de herman
 % =====================================================================
 \section{Máxima verosimilitud y bootstrap}\label{sec:05-ml}
 % =====================================================================
-\enlacerepo{5.3 · Máxima verosimilitud y bootstrap}
+\enlacecolab{modulo-05-filogenetica/5.3_maxima_verosimilitud_bootstrap.ipynb}{5.3 · Máxima verosimilitud y bootstrap}
 
 \begin{intuicion}[El detective que mide la sorpresa]
 Un buen detective no se pregunta primero «¿cuál es la historia más probable?», porque no tiene forma de asignar probabilidades a historias que nunca ha visto. Se pregunta algo más modesto y más poderoso: «si esta historia fuera cierta, ¿qué tan probable sería encontrar exactamente las huellas, las colillas y las coartadas que tengo delante?». La historia bajo la cual las pruebas resultan \emph{menos sorprendentes} es su mejor candidata. Y si varias historias explican las pruebas casi igual de bien, un detective honesto lo dice: su confianza depende de cuánto cambiaría la conclusión con un poco menos de evidencia.
