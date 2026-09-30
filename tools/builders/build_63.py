@@ -22,7 +22,8 @@ Al terminar esta clase usted podrá:
    contigs y huecos, y **verificarlas** por simulación.
 5. **Reconocer** la **sobredispersión** de los datos reales (sesgo por GC, duplicados de PCR) y **ajustar** una
    distribución **binomial negativa** a una simulación sobre el genoma de *E. coli*.
-6. **Calcular** la profundidad necesaria para **detectar una variante heterocigota** con una probabilidad dada.
+6. **Resolver** la ecuación de diseño $P(D \geq k \mid c) \geq 1 - \alpha$ con Poisson y binomial negativa, y
+   **calcular** la profundidad necesaria para **detectar una variante heterocigota** con una probabilidad dada.
 7. **Interpretar** una **curva de saturación** (lecturas únicas frente a lecturas secuenciadas) y la tasa de duplicados.
 8. **Planificar** un experimento: cuántas lecturas y cuántas gigabases pedir para una bacteria, un exoma o un genoma
    humano a 30×.
@@ -37,10 +38,11 @@ Al terminar esta clase usted podrá:
 6. Lecturas largas y repeticiones
 7. El mundo real: sesgo por GC y sobredispersión en *E. coli*
 8. 🎛️ Poisson frente a binomial negativa
-9. ¿Cuánta profundidad para ver un heterocigoto? (puente al Módulo 9)
-10. Duplicados de PCR y curvas de saturación
-11. Planificar un experimento: la calculadora final
-12. Ejercicios, resumen y lecturas
+9. ¿Cuánta profundidad necesito? La ecuación de diseño $P(D \geq k) \geq 1 - \alpha$ (🎛️ interactivo)
+10. ¿Cuánta profundidad para ver un heterocigoto? (puente al Módulo 9)
+11. Duplicados de PCR y curvas de saturación
+12. Planificar un experimento: la calculadora final
+13. Ejercicios, resumen y lecturas
 """)
 
 nb.code(SETUP + r'''
@@ -98,12 +100,12 @@ $$
 | $N$ | número de lecturas (en *paired-end*, cada par aporta **dos** lecturas) | lecturas |
 | $G$ | tamaño del genoma (o de la región objetivo, en un exoma) | pb |
 | $L \cdot N$ | rendimiento total del experimento | pb (se suele dar en Gb $=10^9$ pb) |
-| $D_b$ | **profundidad** de la base $b$: número de lecturas que la cubren | lecturas |
+| $D_x$ | **profundidad** en la posición $x$: número de lecturas que la cubren | lecturas |
 
 Tres palabras que se confunden a menudo:
 
-* **Profundidad** ($D_b$): propiedad de **una base**. "La posición 1 234 567 tiene 28 lecturas encima."
-* **Cobertura media** ($c$): el **promedio** de $D_b$ sobre todas las bases. Es lo que se pide al laboratorio.
+* **Profundidad** ($D_x$): propiedad de **una base**. "La posición 1 234 567 tiene 28 lecturas encima."
+* **Cobertura media** ($c$): el **promedio** de $D_x$ sobre todas las bases. Es lo que se pide al laboratorio.
 * **Amplitud de cobertura** (*breadth*): la **fracción del genoma** con profundidad $\geq 1$ (o $\geq 10$, $\geq 20$…).
   Dos experimentos con la misma cobertura media pueden tener amplitudes muy distintas, como veremos en la sección 7.
 
@@ -352,26 +354,26 @@ nb.md(r"""
 
 ### La intuición
 
-Fije la mirada en **una base** $b$ del genoma. Una lectura de longitud $L$ la cubre si empieza en alguna de las $L$
-posiciones que van de $b - L + 1$ a $b$. Como el inicio se sortea entre $G$ posiciones, la probabilidad de que **una
-lectura concreta** cubra la base $b$ es $p = L/G$: un número diminuto (150 / 4.6 millones ≈ 0.00003). Pero hay
+Fije la mirada en **una posición** $x$ del genoma. Una lectura de longitud $L$ la cubre si empieza en alguna de las $L$
+posiciones que van de $x - L + 1$ a $x$. Como el inicio se sortea entre $G$ posiciones, la probabilidad de que **una
+lectura concreta** cubra la posición $x$ es $\pi = L/G$: un número diminuto (150 / 4.6 millones ≈ 0.00003). Pero hay
 **muchísimas** lecturas, cada una con su pequeña oportunidad, y todas se sortean de forma independiente.
 
-Contar cuántas de $N$ lecturas independientes "aciertan" con probabilidad $p$ es exactamente una **binomial**:
+Contar cuántas de $N$ lecturas independientes "aciertan" con probabilidad $\pi$ es exactamente una **binomial**:
 
 $$
-D_b \sim \operatorname{Binomial}\!\left(N,\ p = \tfrac{L}{G}\right),
+D_x \sim \operatorname{Binomial}\!\left(N,\ \pi = \tfrac{L}{G}\right),
 \qquad
-\mathbb{E}[D_b] = N\,\frac{L}{G} = c
+\mathbb{E}[D_x] = N\,\frac{L}{G} = c
 $$
 
-Cuando $N$ es enorme y $p$ diminuto, con $Np = c$ fijo, la binomial se convierte en la distribución de **Poisson**
+Cuando $N$ es enorme y $\pi$ diminuta, con $N\pi = c$ fijo, la binomial se convierte en la distribución de **Poisson**
 (la "ley de los sucesos raros", la misma que describe cuántas gotas de lluvia caen en una baldosa en un minuto):
 
 $$
-\boxed{\;P(D_b = k) \;=\; \frac{e^{-c}\,c^{k}}{k!}\;},
+\boxed{\;P(D_x = k) \;=\; \frac{e^{-c}\,c^{k}}{k!}\;},
 \qquad
-\operatorname{Var}(D_b) = c,
+\operatorname{Var}(D_x) = c,
 \qquad
 \operatorname{CV} = \frac{\sqrt{c}}{c} = \frac{1}{\sqrt{c}}
 $$
@@ -379,15 +381,15 @@ $$
 El caso $k = 0$ es el más importante: la probabilidad de que una base **no sea leída nunca**.
 
 $$
-P(D_b = 0) = \left(1 - \tfrac{L}{G}\right)^{N} \;\approx\; e^{-NL/G} = e^{-c}
+P(D_x = 0) = \left(1 - \tfrac{L}{G}\right)^{N} \;\approx\; e^{-NL/G} = e^{-c}
 \qquad\Longrightarrow\qquad
 \boxed{\;\text{fracción cubierta} = 1 - e^{-c}\;}
 $$
 
 | Símbolo | Significado |
 |---|---|
-| $p = L/G$ | probabilidad de que una lectura concreta cubra una base concreta |
-| $D_b$ | profundidad de la base $b$ (variable aleatoria) |
+| $\pi = L/G$ | probabilidad de que una lectura concreta cubra una base concreta |
+| $D_x$ | profundidad en la posición $x$ (variable aleatoria) |
 | $k$ | un valor posible de la profundidad: 0, 1, 2, … |
 | $k!$ | factorial de $k$ ($3! = 6$; por convención $0! = 1$) |
 | $e^{-c}$ | fracción esperada de bases **sin cubrir** |
@@ -509,23 +511,23 @@ empieza a menos de $\sigma L = L - T$ bases de la primera.
 ### Paso 2: la distancia entre inicios consecutivos
 
 Recorra el genoma de izquierda a derecha y anote dónde empieza cada lectura. Los inicios caen al azar con una densidad
-de $\alpha = N/G$ inicios por base, y los inicios de un proceso así (un **proceso de Poisson**) tienen una propiedad
+de $\rho = N/G$ inicios por base, y los inicios de un proceso así (un **proceso de Poisson**) tienen una propiedad
 clave: la distancia desde un inicio hasta el siguiente sigue una distribución **exponencial**,
 
 $$
-P(\text{distancia} > x) = e^{-\alpha x} .
+P(\text{distancia} > x) = e^{-\rho x} .
 $$
 
 Es la misma lógica de la sección anterior: que el siguiente inicio esté a más de $x$ bases equivale a que en esas $x$
-posiciones no haya caído **ningún** inicio, y la probabilidad de "ningún suceso" en una Poisson de media $\alpha x$ es
-$e^{-\alpha x}$.
+posiciones no haya caído **ningún** inicio, y la probabilidad de "ningún suceso" en una Poisson de media $\rho x$ es
+$e^{-\rho x}$.
 
 ### Paso 3: ¿cuándo termina un contig?
 
 Una lectura es la **última de su contig** si la siguiente empieza a más de $\sigma L$ bases:
 
 $$
-P(\text{la lectura cierra un contig}) = e^{-\alpha\,\sigma L} = e^{-\frac{N}{G} \sigma L} = e^{-c\sigma}
+P(\text{la lectura cierra un contig}) = e^{-\rho\,\sigma L} = e^{-\frac{N}{G} \sigma L} = e^{-c\sigma}
 $$
 
 Cada contig tiene exactamente una lectura que lo cierra. Así que, sumando sobre las $N$ lecturas:
@@ -553,7 +555,7 @@ $$
 ### Paso 5: los huecos
 
 Con $\theta = 0$ ($\sigma = 1$) en un genoma circular, cada contig va seguido de un hueco **real** (bases sin leer), así
-que hay $N e^{-c}$ huecos. Su longitud media es la distancia media sobrante entre inicios, $1/\alpha = G/N = L/c$.
+que hay $N e^{-c}$ huecos. Su longitud media es la distancia media sobrante entre inicios, $1/\rho = G/N = L/c$.
 Comprobemos que todo encaja:
 
 $$
@@ -569,7 +571,7 @@ que sí se tocan, pero con un solapamiento demasiado corto para detectarlo. La f
 | $T$ | solapamiento mínimo detectable entre dos lecturas (pb) |
 | $\theta = T/L$ | fracción de solapamiento exigida |
 | $\sigma = 1 - \theta$ | fracción "libre": la siguiente lectura debe empezar a menos de $\sigma L$ bases |
-| $\alpha = N/G$ | densidad de inicios de lectura por base |
+| $\rho = N/G$ | densidad de inicios de lectura por base |
 | $N e^{-c\sigma}$ | número esperado de contigs (islas) |
 | $e^{c\sigma}$ | número esperado de lecturas por contig |
 | $L/c$ | longitud media de un hueco real ($\theta = 0$) |
@@ -620,6 +622,39 @@ print(f"longitud media de contig (θ=0) = {lw_contig_length(8, 150):,.0f} pb")
 n_sim, len_sim = count_contigs(simulate_starts(N8, G_E, rng), 150, G_E)
 print(f"Una simulación del genoma completo: {n_sim} contigs, longitud media {len_sim.mean():,.0f} pb")
 ''')
+
+nb.md(r"""
+### Planificar el ensamblaje de una bacteria (el ejemplo del libro)
+
+Un hospital detecta un brote de *Klebsiella* y quiere ensamblar el genoma de uno de los aislados, de unos
+$G = 5\times10^6$ pb, con lecturas de $L = 150$ pb. El ensamblador necesita al menos $T = 30$ pb de solapamiento, así
+que $\theta = 0.2$ y $\sigma = 0.8$. ¿Qué cabe esperar a $1\times$, $5\times$ y $10\times$? Con $c = 5$, por ejemplo:
+$N = 5 \times 5\times10^6/150 \approx 166\,667$ lecturas, bases sin cubrir $G e^{-5} \approx 33\,690$, y contigs
+$N e^{-5 \times 0.8} = 166\,667 \times e^{-4} \approx 3\,053$. La celda completa la tabla (son las mismas cifras de la
+tabla del ejemplo del libro, capítulo 6):
+""")
+
+nb.code(r'''
+G_B, L_B, T_B = 5e6, 150, 30
+theta_B = T_B / L_B                                  # σ = 1 − θ = 0.8
+book_table = pd.DataFrame([{
+    "c": c,
+    "N (lecturas)": reads_needed(c, L_B, G_B),
+    "bases sin cubrir G·e^(−c)": G_B * np.exp(-c),
+    "contigs N·e^(−cσ)": lw_contigs(c, L_B, G_B, theta_B),
+    "longitud media de contig (pb)": lw_contig_length(c, L_B, theta_B)} for c in (1, 5, 10)])
+print(f"A 30×: contigs adicionales esperados N·e^(−24) = {lw_contigs(30, L_B, G_B, theta_B):.1e} → un único contig")
+book_table.style.format({"N (lecturas)": "{:,.0f}", "bases sin cubrir G·e^(−c)": "{:,.0f}",
+                         "contigs N·e^(−cσ)": "{:,.0f}", "longitud media de contig (pb)": "{:,.0f}"}).hide(axis="index")
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** A $5\times$ tendríamos más de tres mil fragmentos; a $10\times$, alrededor de un centenar
+> (de ~44.7 kb de media), y a $30\times$ la teoría predice $N e^{-24} \approx 4\times10^{-5}$ contigs **adicionales**: un
+> único contig. Sin embargo, los ensamblajes reales de lecturas cortas a $30$–$50\times$ terminan en decenas o cientos
+> de contigs. El modelo ignora dos cosas que veremos enseguida: las **repeticiones** (sección 6) y el **sesgo de
+> cobertura** (sección 7).
+""")
 
 nb.md(r"""
 > 🤔 **Antes de ejecutar, prediga:** si simulamos muchas veces un genoma de 300 kb con lecturas de 150 pb, ¿en qué
@@ -967,7 +1002,7 @@ En un experimento real no es así:
   ricos en AT o muy ricos en GC. Benjamini y Speed (2012) mostraron que la tasa de lecturas depende sobre todo del
   **contenido GC del fragmento completo** (no sólo de la lectura), con una curva en forma de campana: máxima en valores
   intermedios y baja en los extremos.
-* **Duplicados de PCR.** Algunos fragmentos se amplifican más que otros y se leen varias veces (sección 10).
+* **Duplicados de PCR.** Algunos fragmentos se amplifican más que otros y se leen varias veces (sección 11).
 * **Mapeabilidad.** En las repeticiones, las lecturas no se pueden asignar con seguridad y se descartan.
 
 Todos estos efectos hacen lo mismo: la **tasa** de lecturas deja de ser constante y varía de un lugar a otro. Una
@@ -1068,6 +1103,21 @@ $$
 | $\varphi$ | **dispersión**: cuánto varía la tasa entre regiones ($\varphi = 0$ es la Poisson) |
 | $r = 1/\varphi$ | parámetro de "tamaño" de la NB (el `n` de `scipy.stats.nbinom`) |
 | $\Gamma(\cdot)$ | función gamma, la generalización del factorial: $\Gamma(k+1) = k!$ |
+
+**Dos escrituras de la misma distribución.** El libro (capítulo 6) escribe la mezcla con la cobertura $c$ y el
+parámetro de forma $r$: la tasa local sigue $\lambda \sim \operatorname{Gamma}(r,\ c/r)$ (forma $r$, escala $c/r$) y
+$\operatorname{Var}(D) = c + c^{2}/r$. Aquí usamos $\mu$ y $\varphi$ porque es la notación de DESeq2 y edgeR, que
+veremos en RNA-seq. La traducción es directa:
+
+$$
+\mu = c, \qquad \varphi = \frac{1}{r}
+\qquad\Longrightarrow\qquad
+\mu + \varphi\mu^{2} = c + \frac{c^{2}}{r}.
+$$
+
+Así, $r = 10$ es $\varphi = 0.1$ (la varianza a $30\times$ es $30 + 90 = 120$, cuatro veces la de la Poisson) y
+$r = 5$ es $\varphi = 0.2$. Un $r$ grande significa un genoma homogéneo; $r \to \infty$ ($\varphi \to 0$) recupera la
+Poisson.
 
 **Ajuste por momentos.** Basta igualar la media y la varianza observadas: $\hat\mu = \bar D$ y
 $\hat\varphi = (s^2 - \bar D)/\bar D^{2}$. Si $s^2 \le \bar D$ no hay sobredispersión y nos quedamos con la Poisson.
@@ -1172,6 +1222,54 @@ nb.md(r"""
 ✅ **Compruebe su comprensión.** En un experimento, la profundidad tiene media 40 y varianza 200. ¿Cuánto vale
 $\varphi$? ¿Qué desviación estándar tendría una Poisson con esa media? (Respuesta: $\hat\varphi = (200 - 40)/1600 = 0.1$;
 Poisson: $\sqrt{40} \approx 6.3$ frente a $\sqrt{200} \approx 14.1$ observada.)
+
+### ¿Cuánto genoma queda sin leer cuando hay sesgo?
+
+Con la Poisson, cada $1\times$ adicional divide la fracción sin leer por $e \approx 2.72$. Con sobredispersión la
+historia cambia: hay regiones "difíciles" cuya tasa $\lambda$ es tan baja que secuenciar más apenas las toca. Basta
+poner $k = 0$ en la binomial negativa (con la notación del libro):
+
+$$
+\boxed{\;P(D = 0) = \left(\frac{r}{r + c}\right)^{r} = \left(1 + \frac{c}{r}\right)^{-r}\;}
+\qquad\text{frente a}\qquad P(D = 0) = e^{-c}\ \text{(Poisson)}
+$$
+
+**Ejemplo a mano** ($c = 30$, $r = 10$): $(1 + 3)^{-10} = 4^{-10} \approx 9.5\times10^{-7}$, frente a
+$e^{-30} \approx 9.4\times10^{-14}$: diez millones de veces más bases sin ninguna lectura. En un genoma humano,
+$3.1\times10^{9} \times 9.5\times10^{-7} \approx 3\,000$ bases, en vez de ninguna. Para $c \gg r$ la fórmula se
+comporta como $(c/r)^{-r}$: una **potencia** de $c$, no una exponencial. Duplicar la cobertura sólo divide lo que
+falta por $2^{r}$, sin importar cuánto hayamos secuenciado ya.
+""")
+
+nb.code(r'''
+c_grid = np.linspace(0.5, 60, 240)
+fig, ax = plt.subplots(figsize=(11, 4.6))
+ax.semilogy(c_grid, np.exp(-c_grid), color=ec.BLUE, lw=2.4)
+ax.text(2, 1e-6, "Poisson: e^(−c)", color=ec.BLUE, fontsize=10.5, fontweight="bold", ha="left")
+for r_nb, col in [(10, ec.ORANGE), (5, ec.RED)]:
+    u = (1 + c_grid / r_nb) ** (-r_nb)
+    ax.semilogy(c_grid, u, color=col, lw=2.4)
+    ax.text(36, (1 + 36 / r_nb) ** (-r_nb) * 6, f"NB r = {r_nb} (φ = {1 / r_nb:g}): (1 + c/r)^(−r)", color=col,
+            fontsize=10.5, fontweight="bold", va="bottom")
+for c_mark in (10, 30):
+    ax.axvline(c_mark, color=ec.MUTED, lw=0.9, ls=":")
+    print(f"c = {c_mark}: Poisson e^(−c) = {np.exp(-c_mark):.2e} · NB r = 10: {(1 + c_mark / 10) ** -10:.2e}"
+          f" · NB r = 5: {(1 + c_mark / 5) ** -5:.2e}")
+ax.axhline(1 / 3.1e9, color=ec.INK_2, lw=1, ls="--")
+ax.text(1, 1 / 3.1e9 * 2.2, "una base en un genoma humano", fontsize=9.5, color=ec.INK_2)
+ax.set_xlim(0, 60); ax.set_ylim(1e-14, 1.5)
+ax.set_xlabel("cobertura media c"); ax.set_ylabel("fracción del genoma con D = 0 (log)")
+ec.title(ax, "Con sobredispersión, la fracción sin leer cae como una potencia de c, no como una exponencial",
+         "Fracción esperada sin ninguna lectura: Poisson frente a binomial negativa con la misma media")
+plt.show()
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** En escala logarítmica la Poisson es una recta que cae sin freno: a $30\times$ ya está muy por
+> debajo de "una base en un genoma humano". Las curvas de la binomial negativa se **aplanan**: con $r = 5$, incluso a
+> $60\times$ quedan unas 8 000 bases humanas sin ninguna lectura. Ésa es la respuesta cuantitativa a "¿por qué no
+> secuenciamos más y ya está?": contra el sesgo, más lecturas rinden cada vez menos; hace falta cambiar la química
+> (bibliotecas sin PCR, lecturas largas) o aceptar esos huecos.
 """)
 
 # ------------------------------------------------------------------ 8 interactivo Poisson vs NB
@@ -1196,7 +1294,8 @@ pois = poisson.pmf(kk, MU)
 def phi_text(phi):
     below10 = nb_pmf(np.arange(10), MU, phi).sum()
     below20 = nb_pmf(np.arange(20), MU, phi).sum()
-    return (f"φ = {phi}: Var = {MU + phi * MU**2:.0f} · D < 10: {below10:.2%} (≈ {below10 * 3.1e9 / 1e6:,.1f} M bases humanas)"
+    r_txt = f" (r = 1/φ = {1 / phi:g})" if phi > 0 else " (Poisson)"
+    return (f"φ = {phi}{r_txt}: Var = {MU + phi * MU**2:.0f} · D < 10: {below10:.2%} (≈ {below10 * 3.1e9 / 1e6:,.1f} M bases humanas)"
             f" · D < 20: {below20:.1%}")
 
 def phi_hover(phi):
@@ -1234,9 +1333,210 @@ nb.md(r"""
 > centros de secuenciación informan la uniformidad, no sólo la media.
 """)
 
-# ------------------------------------------------------------------ 9 heterocigotos
+# ------------------------------------------------------------------ 9 diseño de la profundidad
 nb.md(r"""
-## 9. ¿Cuánta profundidad para ver un heterocigoto?
+## 9. ¿Cuánta profundidad necesito? La ecuación de diseño
+
+### La situación
+
+Un laboratorio de genética clínica ofrece la secuenciación del genoma completo para diagnosticar enfermedades raras.
+Su protocolo validado exige **al menos 10 lecturas** en una posición para emitir un genotipo, y el informe promete
+que eso se cumple en el **99 %** del genoma. Cuando el laboratorio encarga la corrida, la pregunta es muy concreta:
+**¿cuántos × hay que pedir?**
+
+La respuesta ingenua, "10×, porque queremos 10 lecturas", falla por lo que ya sabemos: la cobertura es un
+**promedio**. Con $c = 10$, la profundidad es Poisson(10) y cerca de la **mitad** de las posiciones queda por debajo
+de 10. Lo que hay que controlar no es la media sino la **cola izquierda** de la distribución: la fracción de
+posiciones con pocas lecturas debe ser menor que un 1 %. Y como la sección 7 mostró que los datos reales son
+sobredispersos, esa cola es más gruesa que la de la Poisson.
+
+### Ejemplo a mano: ¿bastan 15×? ¿Y 20×?
+
+Con la Poisson, la fracción de posiciones con menos de 10 lecturas es la suma de los diez primeros términos:
+
+$$
+P(D \le 9 \mid c) = e^{-c} \sum_{j=0}^{9} \frac{c^{j}}{j!}
+$$
+
+* **$c = 20$:** los términos $20^j/j!$ valen $1,\ 20,\ 200,\ 1\,333,\ 6\,667,\ 26\,667,\ 88\,889,\ 253\,968,\
+  634\,921,\ 1\,410\,935$; suman $\approx 2\,423\,600$. Multiplicado por $e^{-20} \approx 2.06\times10^{-9}$ da
+  $P(D \le 9) \approx 0.005$: un **0.5 %** del genoma por debajo de 10 lecturas. ✔ Cumple.
+* **$c = 15$:** la misma cuenta da $P(D \le 9) \approx 0.070$: un **7 %**. ✘ No cumple.
+
+La respuesta de la Poisson está, pues, entre 15× y 20×. Pero si los datos son sobredispersos (binomial negativa con
+$r = 10$, es decir, $\varphi = 0.1$), a $20\times$ la fracción por debajo de 10 lecturas es del **6.5 %**: el mismo
+experimento que la Poisson aprobaba **no cumple**.
+
+### La ecuación
+
+Llamemos $k$ a la profundidad mínima exigida y $\alpha$ a la fracción del genoma que toleramos por debajo de ella.
+Buscamos el **menor** $c$ tal que
+
+$$
+\boxed{\;P(D \geq k \mid c) \;=\; 1 - F(k - 1 \mid c) \;\geq\; 1 - \alpha\;}
+$$
+
+donde $F$ es la función de distribución acumulada del modelo elegido: Poisson($c$) o binomial negativa de media $c$ y
+forma $r$. No hay fórmula cerrada, pero como $P(D \ge k \mid c)$ crece con $c$, basta buscar numéricamente el punto
+de cruce (el método de Brent, `scipy.optimize.brentq`, lo encuentra en microsegundos).
+
+| Símbolo | Significado | Ejemplo clínico |
+|---|---|---|
+| $D$ | profundidad (aleatoria) en una posición | — |
+| $k$ | profundidad mínima necesaria para llamar un genotipo | 10 lecturas |
+| $\alpha$ | fracción tolerada del genoma por debajo de $k$ | 0.01 (1 %) |
+| $F(\cdot \mid c)$ | función de distribución acumulada de $D$ con cobertura media $c$ | Poisson o NB |
+| $r$ | forma de la binomial negativa ($r = 1/\varphi$; $r \to \infty$ es Poisson) | 10 o 5 |
+| $c$ | cobertura media que hay que pedir (la incógnita) | ? |
+
+> 🤔 **Antes de ejecutar, prediga:** si la Poisson pide ~19× para tener 10 lecturas en el 99 % del genoma, ¿cuánto
+> pedirá una binomial negativa con $r = 5$: 25×, 35× o 45×?
+""")
+
+nb.code(r'''
+from scipy.optimize import brentq
+
+def coverage_needed(k, alpha=0.01, r=None):
+    """Menor c con P(D ≥ k | c) ≥ 1 − α. r = None: Poisson; r: binomial negativa de media c y forma r
+    (en scipy, nbinom(n = r, p = r/(r + c))). Es la función cobertura_necesaria del libro."""
+    def excess(c):
+        sf = poisson.sf(k - 1, c) if r is None else nbinom.sf(k - 1, r, r / (r + c))
+        return sf - (1 - alpha)
+    root = brentq(excess, k / 10, 50 * k, xtol=1e-10)
+    return np.ceil(root * 100) / 100          # el menor c en pasos de 0.01× que cumple la condición
+
+MODELS = [("Poisson", None), ("NB r = 10 (φ = 0.1)", 10), ("NB r = 5 (φ = 0.2)", 5)]
+design = pd.DataFrame({name: [coverage_needed(k, 0.01, r) for k in (10, 20)] for name, r in MODELS},
+                      index=["k = 10 lecturas", "k = 20 lecturas"])
+design["NB r = 5 / Poisson"] = design["NB r = 5 (φ = 0.2)"] / design["Poisson"]
+print("Cobertura media necesaria para que el 99 % del genoma tenga al menos k lecturas:")
+print(design.round(2).to_string())
+
+# Comprobación en el sentido contrario: a 30×, ¿qué fracción queda por debajo de 10 lecturas?
+print(f"\nA 30×: P(D < 10) Poisson = {poisson.cdf(9, 30):.2e} · NB r = 10 = {nbinom.cdf(9, 10, 10 / 40):.4f}")
+print(f"Ejemplo a mano: P(D ≤ 9) Poisson a 15× = {poisson.cdf(9, 15):.3f}, a 20× = {poisson.cdf(9, 20):.4f};"
+      f" NB r = 10 a 20× = {nbinom.cdf(9, 10, 10 / 30):.3f}")
+''')
+
+nb.code(r'''
+def frac_below(k, c, r=None):
+    """P(D < k | c): fracción del genoma con menos de k lecturas."""
+    return poisson.cdf(k - 1, c) if r is None else nbinom.cdf(k - 1, r, r / (r + c))
+
+MODEL_COLORS = [ec.BLUE, ec.ORANGE, ec.RED]
+c_des = np.linspace(1, 110, 437)
+fig, axes = plt.subplots(1, 2, figsize=(13, 5.0), sharey=True)
+for ax, k in zip(axes, (10, 20)):
+    for (name, r), col in zip(MODELS, MODEL_COLORS):
+        ax.semilogy(c_des, frac_below(k, c_des, r), color=col, lw=2.4, label=name)
+        c_req = coverage_needed(k, 0.01, r)
+        ax.plot(c_req, 0.01, "o", color=col, ms=8, mec="white", mew=1.5, zorder=5)
+        left = r is None                                   # la etiqueta de la Poisson va a la izquierda del punto
+        ax.annotate(f"{c_req:.1f}×", (c_req, 0.01), xytext=(-6 if left else 4, 9), textcoords="offset points",
+                    color=col, fontsize=11, fontweight="bold", ha="right" if left else "left")
+    ax.axhline(0.01, color=ec.INK_2, lw=1, ls="--")
+    ax.text(2, 0.0085, "α = 1 % del genoma", ha="left", va="top", fontsize=9.5, color=ec.INK_2)
+    ax.set_xlim(0, 110); ax.set_ylim(1e-6, 1.2)
+    ax.set_xlabel("cobertura media c")
+    ax.set_title(f"Al menos k = {k} lecturas", loc="left", fontsize=12)
+axes[0].set_ylabel("fracción del genoma con D < k (log)")
+axes[0].legend(frameon=False, loc="lower left")
+ec.fig_title(fig, "Con datos sobredispersos hace falta entre 1.5 y 2.6 veces más cobertura que la que promete la Poisson",
+             "Menor c con P(D ≥ k) ≥ 0.99 (punto) · Poisson frente a binomial negativa de la misma media · ecuación de diseño del libro, cap. 6")
+plt.show()
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** Las tres curvas bajan al aumentar la cobertura, pero a ritmos muy distintos. La Poisson cruza
+> el umbral del 1 % a **18.8×** (para $k = 10$); con $r = 10$ hace falta **29.4×** y con $r = 5$, **44.1×**. Para
+> $k = 20$ los valores suben a **31.9×, 53.9× y 83.3×**. El modelo ideal subestima la profundidad necesaria en un
+> factor de 1.5 a 2.6. Fíjese en que la cifra "estándar" de **30×** para genomas humanos coincide casi exactamente con
+> lo que pide un modelo realista ($r = 10$) para tener unas diez lecturas en el 99 % del genoma: no es una
+> costumbre arbitraria, es la solución de esta ecuación.
+
+Ahora explore usted. La figura interactiva siguiente resuelve la ecuación para distintos valores de $k$ y traduce cada
+punto a términos que importan al encargar una corrida: cuántas megabases de un genoma humano quedarían por debajo del
+umbral, cuántas kilobases de una bacteria de 5 Mb (un aislado de un brote) y cuántas gigabases útiles habría que
+secuenciar para un genoma humano.
+
+> 🤔 **Antes de explorar, prediga:** si el laboratorio de vigilancia de un brote exige **20** lecturas antes de afirmar
+> que dos aislados difieren en un SNP, ¿cuánto sube la cobertura necesaria respecto a $k = 10$ con la binomial negativa
+> $r = 10$: un 30 %, un 80 % o el triple?
+""")
+
+nb.code(r'''
+K_OPTS = [5, 10, 15, 20, 30]
+c_int = np.round(np.arange(1, 120.5, 0.5), 1)
+G_HUMAN, G_BACT = 3.1e9, 5e6
+
+def design_traces(k):
+    """y, textos de hover y punto de diseño de cada modelo para una profundidad mínima k."""
+    ys, texts, px_, py_, ptxt = [], [], [], [], []
+    for name, r in MODELS:
+        below = frac_below(k, c_int, r)
+        ys.append(100 * (1 - below))
+        texts.append([f"<b>{name}</b> · c = {c:g}×<br>P(D ≥ {k}) = {100 * (1 - b):.2f} % del genoma"
+                      f"<br>por debajo de {k} lecturas: {100 * b:.2g} %"
+                      f"<br>→ humano: {b * G_HUMAN / 1e6:,.3g} Mb · bacteria de 5 Mb: {b * G_BACT / 1e3:,.3g} kb"
+                      f"<br>Gb útiles para un genoma humano: {c * G_HUMAN / 1e9:,.0f}"
+                      for c, b in zip(c_int, below)])
+        c_req = coverage_needed(k, 0.01, r)
+        px_.append(c_req); py_.append(99)
+        ptxt.append(f"<b>{name}</b><br>mínimo para el 99 % con ≥ {k} lecturas: <b>{c_req:.1f}×</b>"
+                    f"<br>humano: {c_req * G_HUMAN / 1e9:,.0f} Gb útiles · bacteria: {c_req * G_BACT / 1e6:,.2f} Mb útiles")
+    return ys, texts, px_, py_, ptxt
+
+def design_title(k):
+    sol = " · ".join(f"{name.split(' (')[0]}: {coverage_needed(k, 0.01, r):.1f}×" for name, r in MODELS)
+    return f"Cobertura necesaria para que el 99 % del genoma tenga al menos {k} lecturas<br><sup>{sol}</sup>"
+
+k0 = 10
+ys, texts, px_, py_, ptxt = design_traces(k0)
+fig = go.Figure()
+for i, ((name, r), col) in enumerate(zip(MODELS, MODEL_COLORS)):
+    fig.add_trace(go.Scatter(x=c_int, y=ys[i], mode="lines", name=name, line=dict(color=col, width=3),
+                             text=texts[i], hovertemplate="%{text}<extra></extra>"))
+fig.add_trace(go.Scatter(x=px_, y=py_, mode="markers", name="solución (P = 99 %)", text=ptxt,
+                         marker=dict(color=MODEL_COLORS, size=13, line=dict(color="white", width=2)),
+                         hovertemplate="%{text}<extra></extra>"))
+fig.add_hline(y=99, line=dict(color=ec.INK_2, dash="dash", width=1))
+fig.add_annotation(x=118, y=99, text="99 % del genoma", showarrow=False, yshift=-10, xanchor="right",
+                   font=dict(color=ec.INK_2, size=11))
+steps = []
+for k in K_OPTS:
+    y_k, t_k, px_k, py_k, pt_k = design_traces(k)
+    steps.append(dict(method="update", label=str(k),
+                      args=[{"y": y_k + [py_k], "x": [c_int] * 3 + [px_k], "text": t_k + [pt_k]},
+                            {"title.text": design_title(k)}, [0, 1, 2, 3]]))
+fig.update_layout(title=dict(text=design_title(k0)), height=580, margin=dict(t=120, b=140, l=80, r=30),
+                  xaxis_title="cobertura media c (×)", yaxis_title="% del genoma con D ≥ k",
+                  xaxis_range=[0, 120], yaxis_range=[80, 100.4], hovermode="closest",
+                  legend=dict(orientation="h", yanchor="bottom", y=1.02, x=1, xanchor="right"),
+                  sliders=[dict(active=K_OPTS.index(k0), steps=steps, currentvalue=dict(prefix="profundidad mínima k = "),
+                                x=0.05, len=0.9, y=-0.17, pad=dict(t=10))])
+fig.show()
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** Al mover $k$ de 10 a 20, la cobertura necesaria sube de 18.8× a 31.9× con la Poisson (un
+> 70 %) y de 29.4× a 53.9× con $r = 10$ (un 83 %): exigir el doble de lecturas **no** duplica el costo en la Poisson,
+> porque la distribución se estrecha relativamente al crecer $c$, pero con sobredispersión el término $c^2/r$ de la
+> varianza crece más deprisa y el costo se acerca al doble. Pase el cursor por la curva naranja en 30×: queda un ~0.9 %
+> del genoma por debajo de 10 lecturas, ~28 Mb de un genoma humano (más de la mitad del cromosoma 21). En una
+> bacteria de 5 Mb, ese mismo 0.9 % son ~45 kb, suficientes para esconder un gen de resistencia a antibióticos. Por eso los
+> laboratorios informan siempre el **porcentaje del genoma ≥ 10×** o **≥ 20×**, no sólo la media, y planifican con la
+> **cobertura efectiva** (tras descartar duplicados, lecturas de baja calidad y lecturas que no mapean), que puede
+> quedarse en 22× útiles en un experimento anunciado como 30×.
+
+✅ **Compruebe su comprensión.** Un colega propone diseñar un exoma con la Poisson "porque es lo que dice la teoría".
+Usando la tabla de arriba, ¿cuánta cobertura le faltaría si la captura produce una dispersión como la de $r = 5$ y
+necesita 20 lecturas en el 99 % de la región? (Respuesta: la Poisson pide 31.9×, la binomial negativa 83.3×: le
+faltaría más del doble. Con la captura de exomas, que es muy irregular, $r$ suele ser aún menor.)
+""")
+
+# ------------------------------------------------------------------ 10 heterocigotos
+nb.md(r"""
+## 10. ¿Cuánta profundidad para ver un heterocigoto?
 
 Hasta ahora preguntábamos si una base fue **leída**. Para el análisis de variantes (Módulo 9) la pregunta es más
 exigente: ¿podemos **distinguir los dos alelos**? En una posición heterocigota, la mitad de las moléculas de ADN lleva
@@ -1324,7 +1624,9 @@ nb.md(r"""
 > 14× no basta: muchas posiciones tendrán menos. Con profundidad Poisson hacen falta ~17×; con sobredispersión
 > moderada ($\varphi = 0.1$), ~24×, y con $\varphi = 0.3$, ~46×: casi el triple que con la Poisson. De ahí
 > sale la cifra estándar de **30×** para genomas humanos: con datos reales, algo sobredispersos, es lo que garantiza
-> encontrar casi todos los heterocigotos.
+> encontrar casi todos los heterocigotos. Es un argumento **complementario** al de la sección 9: allí pedíamos
+> $k = 10$ lecturas en el 99 % del genoma (≈ 29× con $r = 10$); aquí, ver el alelo alternativo al menos 3 veces en el
+> 99 % de los heterocigotos (≈ 24× con $\varphi = 0.1$). Ambos caminos llevan a la misma región de 25–30×.
 
 ¿Y por qué no pedir $k = 1$? Porque también hay **errores de secuenciación**. Si cada base tiene una probabilidad
 $\varepsilon$ de error, la probabilidad de ver por azar $k$ lecturas con **la misma** base errónea es pequeña… pero se
@@ -1350,45 +1652,46 @@ $d = 8$? (Respuesta: $0.5^{8} = 1/256 \approx 0.4\,\%$. Y la de verlas **todas**
 lecturas, un heterocigoto parece homocigoto una de cada 128 veces.)
 """)
 
-# ------------------------------------------------------------------ 10 saturación
+# ------------------------------------------------------------------ 11 saturación
 nb.md(r"""
-## 10. Duplicados de PCR y curvas de saturación
+## 11. Duplicados de PCR y curvas de saturación
 
 Una biblioteca de secuenciación contiene un número **finito** de moléculas distintas, $M$ (su **complejidad**). Cada
 lectura toma al azar una de esas moléculas, **con reemplazo**: la misma molécula puede leerse dos veces, y entonces
 tenemos un **duplicado**. Los duplicados no aportan información nueva (son la misma molécula original) y se marcan
 y descartan (Picard `MarkDuplicates`, `samtools markdup`).
 
-Al secuenciar más, cada vez más lecturas caen en moléculas ya vistas: el número de lecturas **únicas** $U$ se
-**satura**. ¡Es exactamente el mismo problema de la sección 3! Allí las lecturas caían sobre bases; aquí caen sobre
-moléculas. La probabilidad de que una molécula no se haya leído nunca tras $n$ lecturas es
-$(1 - 1/M)^n \approx e^{-n/M}$, así que:
+Al secuenciar más, cada vez más lecturas caen en moléculas ya vistas: el número de **moléculas distintas
+observadas** $D$ (las lecturas únicas) se **satura**. ¡Es exactamente el mismo problema de la sección 3! Allí las
+lecturas caían sobre bases; aquí caen sobre moléculas. La probabilidad de que una molécula concreta no se haya leído
+nunca tras $N$ lecturas es $(1 - 1/M)^N \approx e^{-N/M}$, y la esperanza de $D$ es $M$ veces la probabilidad de lo
+contrario (es la ecuación de complejidad del libro, capítulo 6, con su misma notación):
 
 $$
-\boxed{\;\mathbb{E}[U(n)] = M\left(1 - e^{-n/M}\right)\;},
+\boxed{\;\mathbb{E}[D] = M\left[1 - \left(1 - \tfrac{1}{M}\right)^{N}\right] \approx M\left(1 - e^{-N/M}\right)\;},
 \qquad
-\text{tasa de duplicados} = 1 - \frac{U(n)}{n}
+\text{tasa de duplicados} = 1 - \frac{\mathbb{E}[D]}{N}
 $$
 
 Si la PCR amplificó unas moléculas más que otras (con un "peso" $W$ que sigue una Gamma de media 1 y forma $a$),
-promediando $e^{-nW/M}$ sobre esa Gamma se obtiene otra fórmula cerrada, que satura **antes**:
+promediando $e^{-NW/M}$ sobre esa Gamma se obtiene otra fórmula cerrada, que satura **antes**:
 
 $$
-\mathbb{E}[U(n)] = M\left[1 - \left(1 + \frac{n}{aM}\right)^{-a}\right]
+\mathbb{E}[D] = M\left[1 - \left(1 + \frac{N}{aM}\right)^{-a}\right]
 \qquad (a \to \infty \text{ recupera el caso uniforme})
 $$
 
 | Símbolo | Significado |
 |---|---|
 | $M$ | complejidad de la biblioteca: número de moléculas distintas |
-| $n$ | lecturas (o pares) secuenciadas |
-| $U(n)$ | lecturas únicas (no duplicadas) |
-| $n/M$ | "cobertura de la biblioteca" |
+| $N$ | lecturas (o pares) secuenciadas |
+| $D$ | moléculas distintas observadas al menos una vez (= lecturas únicas, no duplicadas). **Ojo:** en esta sección $D$ cuenta moléculas, no es la profundidad; el libro usa la misma letra |
+| $N/M$ | "cobertura de la biblioteca" |
 | $a$ | forma de la Gamma: pequeño = amplificación muy desigual |
 
 ### Ejemplo a mano: $M = 10$ millones
 
-| $n$ | $n/M$ | $U = M(1 - e^{-n/M})$ | duplicados |
+| $N$ | $N/M$ | $\mathbb{E}[D] = M(1 - e^{-N/M})$ | duplicados $1 - \mathbb{E}[D]/N$ |
 |---|---|---|---|
 | 5 M | 0.5 | 3.93 M | 21.3 % |
 | 10 M | 1 | 6.32 M | 36.8 % |
@@ -1418,7 +1721,7 @@ def u_theory(n, M, a=None):
 n_line = np.linspace(0, n_max, 300)
 fig, axes = plt.subplots(1, 2, figsize=(12.5, 4.8))
 axes[0].plot(n_line / M_LIB, n_line / M_LIB, color=ec.MUTED, lw=1.2, ls=":")
-axes[0].text(1.25, 1.6, "sin duplicados (U = n)", color=ec.INK_2, fontsize=9.5, rotation=0)
+axes[0].text(1.25, 1.6, "sin duplicados (D = N)", color=ec.INK_2, fontsize=9.5, rotation=0)
 for a, col, lab in [(None, ec.BLUE, "uniforme"), (2, ec.ORANGE, "PCR desigual (a = 2)"), (0.5, ec.RED, "muy desigual (a = 0.5)")]:
     w = None if a is None else rng.gamma(a, 1 / a, M_LIB)
     u_sim = unique_curve(w)
@@ -1431,9 +1734,9 @@ for a, col, lab in [(None, ec.BLUE, "uniforme"), (2, ec.ORANGE, "PCR desigual (a
     axes[1].plot(n_pts / M_LIB, (1 - u_sim / n_pts) * 100, "o", color=col, ms=4.5, mec="white", mew=0.8)
 axes[0].axhline(1, color=ec.INK, lw=1, ls="--"); axes[0].text(0.05, 1.03, "complejidad M", fontsize=9.5, color=ec.INK_2)
 axes[0].set_xlim(0, 6.6); axes[0].set_ylim(0, 1.8)
-axes[0].set_xlabel("lecturas secuenciadas n / M"); axes[0].set_ylabel("lecturas únicas U / M")
+axes[0].set_xlabel("lecturas secuenciadas N / M"); axes[0].set_ylabel("moléculas distintas D / M")
 axes[0].set_title("Curva de saturación", loc="left", fontsize=12)
-axes[1].set_xlabel("lecturas secuenciadas n / M"); axes[1].set_ylabel("tasa de duplicados (%)")
+axes[1].set_xlabel("lecturas secuenciadas N / M"); axes[1].set_ylabel("tasa de duplicados (%)")
 axes[1].set_ylim(0, 100); axes[1].set_title("Duplicados", loc="left", fontsize=12)
 ec.fig_title(fig, "Secuenciar más allá de la complejidad de la biblioteca produce sobre todo duplicados",
              f"Biblioteca simulada de M = {M_LIB:,} moléculas · línea: fórmula · puntos: simulación")
@@ -1442,20 +1745,20 @@ plt.show()
 
 nb.md(r"""
 > 🔎 **Qué observamos.** Las simulaciones siguen las fórmulas. Con amplificación uniforme, al secuenciar tantas
-> lecturas como moléculas hay ($n = M$) ya se ha visto el 63 % de la biblioteca y el 37 % de las lecturas son
+> lecturas como moléculas hay ($N = M$) ya se ha visto el 63 % de la biblioteca y el 37 % de las lecturas son
 > duplicados; con amplificación desigual la curva se aplana antes, porque las moléculas "favoritas" acaparan las
 > lecturas. La lección práctica: si una secuenciación inicial muestra muchos duplicados, **no** tiene sentido pedir más
 > lecturas de la misma biblioteca; hay que preparar una biblioteca nueva, más compleja.
 
 Con la fórmula podemos **estimar $M$** a partir de una secuenciación de prueba y predecir cuántas lecturas útiles
-dará una más profunda. Sólo hay que resolver $U = M(1 - e^{-n/M})$ para $M$:
+dará una más profunda. Sólo hay que resolver $D = M(1 - e^{-N/M})$ para $M$:
 """)
 
 nb.code(r'''
 from scipy.optimize import brentq
 
 def estimate_complexity(n, u):
-    """M tal que M·(1 − e^(−n/M)) = U (ecuación de Lander-Waterman para bibliotecas)."""
+    """M tal que M·(1 − e^(−N/M)) = D (ecuación de Lander-Waterman para bibliotecas); n = N, u = D."""
     return brentq(lambda M: M * (1 - np.exp(-n / M)) - u, u, 1e4 * n)
 
 n_pilot, u_pilot = 2_000_000, 1_800_000
@@ -1472,9 +1775,9 @@ nb.md(r"""
 > cuenta, hecha **antes** de encargar la secuenciación grande, ahorra mucho dinero.
 """)
 
-# ------------------------------------------------------------------ 11 planificación
+# ------------------------------------------------------------------ 12 planificación
 nb.md(r"""
-## 11. Planificar un experimento: la calculadora final
+## 12. Planificar un experimento: la calculadora final
 
 Juntemos todo. Para pedir un servicio de secuenciación hay que traducir "quiero $c$ de cobertura útil" en **lecturas
 brutas** o **gigabases** (Gb), sabiendo que parte de lo secuenciado se pierde por el camino:
@@ -1560,9 +1863,9 @@ $100\times10^6 \times 300 = 30$ Gb brutas; útiles $30 \times 0.92 \times 0.95 =
 Suficiente para detectar variantes comunes en estudios de población, no para un diagnóstico clínico.)
 """)
 
-# ------------------------------------------------------------------ 12 ejercicios
+# ------------------------------------------------------------------ 13 ejercicios
 nb.md(r"""
-## 12. Ejercicios
+## 13. Ejercicios
 
 **Ejercicio 1 — Levadura a mano.** Se secuencia *S. cerevisiae* ($G = 12.1$ Mb) con 2 millones de pares de 2×150 pb.
 Calcule (a) la cobertura; (b) la fracción del genoma sin cubrir y el número de bases correspondiente; (c) el número de
@@ -1582,6 +1885,14 @@ obtendrían con 50 millones de lecturas, y cuántas lecturas **secuenciadas** ha
 **Ejercicio 4 — Amplitud real frente a teoría.** Con la simulación con sesgo GC de la sección 7 (`d_gc`), calcule la
 fracción del genoma de *E. coli* con $D \geq 10$ y con $D \geq 20$. Compárela con la predicción de la Poisson(30) y de
 la binomial negativa ajustada. ¿Cuál acierta más? ¿Por qué ninguna es perfecta?
+
+**Ejercicio 5 — Secuenciar un brote.** Un laboratorio de vigilancia secuenciará 48 aislados bacterianos de un brote
+hospitalario ($G = 5$ Mb cada uno). Para comparar aislados exige **al menos 20 lecturas** en el **99.9 %** del genoma
+($\alpha = 0.001$), y una corrida piloto indica una profundidad sobredispersa con $r = 10$.
+(a) Demuestre, poniendo $k = 0$ en la binomial negativa, que la fracción sin ninguna lectura es $(1 + c/r)^{-r}$, y
+compárela con $e^{-c}$ para $c = 10$ y $r = 5$ (el ejercicio del libro). (b) ¿Qué cobertura media hace falta con la
+Poisson y con la binomial negativa? (c) Si la cobertura efectiva es el 75 % de la bruta (duplicados, filtros), ¿cuántas
+gigabases brutas hay que pedir para los 48 aislados?
 """)
 
 nb.code(r'''
@@ -1635,6 +1946,22 @@ print("La NB acierta mucho más que la Poisson, pero no del todo: la profundidad
 print("concreta (no de una Gamma) y las bases vecinas están correlacionadas, algo que ningún modelo por base captura.")
 ''')
 
+nb.code(r'''
+#@title 🔑 Solución — Ejercicio 5 { display-mode: "form" }
+# (a) P(D = 0) = Γ(r)/(0!·Γ(r)) · (r/(r + c))^r · (c/(r + c))^0 = (r/(r + c))^r = (1 + c/r)^(−r)
+c5, r5 = 10, 5
+print(f"(a) c = 10, r = 5: (1 + c/r)^(−r) = 3^(−5) = {(1 + c5 / r5) ** -r5:.4f} · e^(−10) = {np.exp(-c5):.2e}"
+      f" · cociente ≈ {(1 + c5 / r5) ** -r5 / np.exp(-c5):.0f}")
+print(f"    comprobación con scipy: nbinom.pmf(0) = {nbinom.pmf(0, r5, r5 / (r5 + c5)):.4f}")
+c_pois = coverage_needed(20, alpha=0.001)
+c_nb = coverage_needed(20, alpha=0.001, r=10)
+print(f"(b) ≥ 20 lecturas en el 99.9 %: Poisson {c_pois:.1f}× · binomial negativa (r = 10) {c_nb:.1f}×")
+gb_raw = 48 * c_nb * 5e6 / 0.75 / 1e9
+print(f"(c) {48} aislados × {c_nb:.1f}× × 5 Mb / 0.75 = {gb_raw:.1f} Gb brutas"
+      f" (≈ {gb_raw * 1e9 / 300 / 1e6:.0f} M pares de 2×150)")
+print("Con sesgo, secuenciar más rinde poco: la fracción sin leer baja como una potencia de c, no exponencialmente.")
+''')
+
 nb.md(r"""
 ## 📌 Resumen
 
@@ -1649,11 +1976,14 @@ nb.md(r"""
 * Las **repeticiones** más largas que la lectura imponen un piso de contigs que la cobertura no rompe; las **lecturas
   largas** lo eliminan.
 * En datos reales, el **sesgo por GC**, los duplicados y la mapeabilidad producen **sobredispersión**: la profundidad
-  se describe mejor con una **binomial negativa**, $\operatorname{Var} = \mu + \varphi\mu^2$. La misma media puede ocultar
+  se describe mejor con una **binomial negativa**, $\operatorname{Var} = \mu + \varphi\mu^2 = c + c^2/r$ ($\mu = c$, $\varphi = 1/r$). La misma media puede ocultar
   millones de bases con poca profundidad.
+* **Diseño**: el menor $c$ con $P(D \geq k \mid c) \geq 1 - \alpha$. Para 10 lecturas en el 99 % del genoma: 18.8× (Poisson),
+  29.4× (NB $r = 10$), 44.1× (NB $r = 5$); para 20 lecturas, 31.9×, 53.9× y 83.3×. Con sesgo, la fracción sin leer es
+  $(1 + c/r)^{-r}$, que cae como una potencia de $c$ y no como $e^{-c}$. Planifique con la cobertura **efectiva**.
 * Detectar un heterocigoto con $\geq k$ lecturas alternativas es un problema binomial; promediado sobre la profundidad
   explica por qué se piden **30×** para genomas humanos.
-* La **saturación** de una biblioteca sigue $U = M(1 - e^{-n/M})$: la complejidad $M$ limita cuántas lecturas útiles
+* La **saturación** de una biblioteca sigue $\mathbb{E}[D] = M(1 - e^{-N/M})$ ($D$ moléculas distintas, $N$ lecturas): la complejidad $M$ limita cuántas lecturas útiles
   se pueden obtener; preseq extrapola esta curva.
 * Para planificar: Gb brutas $= cG/(f_{\text{obj}}(1 - f_{\text{dup}})f_{\text{útil}})$.
 

@@ -16,7 +16,7 @@ Al terminar esta clase usted podrá:
 1. **Describir** con datos reales del NHGRI cómo cayó el costo de secuenciar una megabase entre 2001 y 2022, y
    **explicar** por qué la curva "se despega" de la ley de Moore en 2008.
 2. **Explicar** el método de **Sanger** (terminadores didesoxi), **calcular** la distribución de longitudes de los
-   fragmentos y **leer** un electroferograma simulado, entendiendo por qué la calidad cae después de ~800 bases.
+   fragmentos y **leer** un electroferograma simulado, entendiendo por qué la lectura rinde 400–800 bases (hasta ~1 000 en capilares optimizados).
 3. **Seguir** paso a paso la química de **Illumina**: preparación de la librería, amplificación en puente, clústeres y
    **secuenciación por síntesis** con terminadores reversibles, en versión de **4 colores** y de **2 colores**.
 4. **Derivar** con un modelo de **phasing / pre-phasing** por qué la calidad Phred cae con el ciclo (en la Lección 2.1
@@ -32,7 +32,7 @@ Al terminar esta clase usted podrá:
 ## 🗺️ Mapa de la clase
 
 1. Veinte años de secuenciación en una gráfica: el costo por megabase (datos reales del NHGRI)
-2. Sanger: terminadores didesoxi y el electroferograma
+2. Sanger: terminadores didesoxi y el electroferograma; pirosecuenciación (454, Ion Torrent) y los homopolímeros
 3. Illumina I: la librería, el puente y los clústeres
 4. Illumina II: secuenciación por síntesis y llamado de bases (🎬 animación)
 5. Illumina III: phasing, pre-phasing y la caída de la calidad
@@ -124,7 +124,9 @@ print("Listo para la Lección 6.1")
 nb.md(r"""
 ## 1. Veinte años de secuenciación en una gráfica
 
-El primer genoma humano costó cerca de **3 000 millones de dólares** y tomó más de una década (1990–2003). Hoy un
+El Proyecto Genoma Humano completo costó cerca de **3 000 millones de dólares** y tomó más de una década (1990–2003);
+esa cifra incluye todo el proyecto (mapas, tecnología, años de ensayo). El **costo de producción** de un genoma, el que
+mide el NHGRI, era en 2001 de unos **100 millones de dólares**. Hoy un
 genoma humano a 30× de cobertura se secuencia en un día por unos cientos de dólares. Ese cambio no fue gradual: hubo un
 **salto** alrededor de 2008, cuando los secuenciadores capilares de Sanger fueron reemplazados por las plataformas
 "de nueva generación" (*next-generation sequencing*, **NGS**), que leen **millones de fragmentos en paralelo**.
@@ -159,6 +161,13 @@ En escala **logarítmica**, una caída exponencial se ve como una **recta**: por
 De 2001 a 2022 pasan 21 años, es decir $21/2 = 10.5$ mitades: con la ley de Moore, el costo habría bajado
 $2^{10.5} \approx 1\,450$ veces, a $5\,292 / 1\,450 \approx 3.6$ USD/Mb. El dato real de 2022 es **0.0058 USD/Mb**:
 $5\,292 / 0.0058 \approx 900\,000$ veces menos, unas **620 veces más barato** de lo que habría predicho Moore.
+
+**¿Por megabase o por genoma?** La tabla trae las dos columnas y no caen igual. Por genoma, el costo pasó de
+$\approx 95$ millones de USD (2001) a $\approx 525$ USD (2022), un factor de "sólo" $\approx 180\,000$; con la ley de Moore,
+partiendo de 95 millones, un genoma costaría hoy unos **70 000 USD**, frente a los ~500 reales (son las cifras del libro).
+La diferencia entre ambos factores está en la **cobertura**: $95 \times 10^6 / 5\,292 \approx 18\,000$ Mb por genoma en
+2001 (unas 6× con lecturas de Sanger) frente a $525 / 0.0058 \approx 90\,000$ Mb en 2022 (unas 30× con lecturas cortas,
+que necesitan más redundancia). La megabase se abarató más que el genoma porque hoy leemos cada genoma más veces.
 """)
 
 nb.md(r"""
@@ -182,6 +191,15 @@ eras = {"Sanger capilar (2001–2007)": costs[costs.year < 2008],
 for name, df in eras.items():
     t_half, *_ = halving_time(df)
     print(f"{name:32s} T½ = {t_half * 12:5.1f} meses")
+
+# Por genoma: costo real frente a la ley de Moore, y megabases implícitas por genoma (≈ cobertura × 3 100 Mb)
+g0, g1 = costs.cost_per_genome_usd.iloc[0], costs.cost_per_genome_usd.iloc[-1]
+moore_genome = g0 * 2 ** (-(costs.year.iloc[-1] - costs.year.iloc[0]) / 2)   # mitad cada 2 años desde 2001
+print(f"\nPor genoma: {g0:,.0f} USD (2001) → {g1:,.0f} USD (2022) · factor real {g0 / g1:,.0f}× · "
+      f"con Moore: {moore_genome:,.0f} USD")
+for i in (0, -1):
+    mb = costs.cost_per_genome_usd.iloc[i] / costs.cost_per_mb_usd.iloc[i]
+    print(f"{costs.date.iloc[i]:%Y}: {mb:,.0f} Mb por genoma ≈ {mb / 3100:.0f}× de cobertura")
 ''')
 
 nb.code(r'''
@@ -241,11 +259,12 @@ en una misma corrida con **índices**.)
 
 # ------------------------------------------------------------------ 2 Sanger
 nb.md(r"""
-## 2. Sanger: terminadores didesoxi y el electroferograma
+## 2. Sanger: terminadores didesoxi y el electroferograma; pirosecuenciación (454, Ion Torrent) y los homopolímeros
 
 En 1977 Frederick Sanger, Steve Nicklen y Alan Coulson publicaron un método tan robusto que dominó la secuenciación
 durante 30 años y con el que se leyó el primer genoma humano. Hoy se sigue usando para **confirmar** variantes, verificar
-clones y plásmidos, y como estándar de oro para lecturas cortas de una sola molécula de ADN.
+clones y plásmidos, y como estándar de oro para leer un fragmento concreto (un amplicón de PCR o un clon), del que el capilar lee una
+población clonal de millones de copias idénticas.
 
 La idea: una ADN polimerasa copia el molde a partir de un cebador. En el tubo hay los cuatro **dNTP** normales y, en
 pequeña proporción, **ddNTP** (didesoxinucleótidos): nucleótidos a los que les falta el grupo **3′-OH**. Cuando la
@@ -261,52 +280,71 @@ qué base terminó.
 
 ### ¿Cuántos fragmentos hay de cada longitud?
 
-Si en cada posición la polimerasa incorpora un ddNTP con probabilidad $r$ (independiente de la posición), la longitud
-$L$ de un fragmento sigue una distribución **geométrica**:
+Pensemos primero en una sola base, digamos la **C**, como en las cuatro reacciones separadas del artículo original de
+Sanger (una por ddNTP). Cada vez que la polimerasa llega frente a una posición del molde que pide una C, "tira una
+moneda muy cargada": casi siempre pone el dCTP normal y sigue, pero con una probabilidad pequeña $r$ pone el ddCTP y se
+detiene. Los fragmentos que terminan en C sólo "ven" las C del molde; las demás bases las atraviesan sin riesgo.
+
+Sea $K$ el número de apariciones de la base $b$ que la polimerasa atraviesa hasta terminar (incluida la última). Si las
+incorporaciones son independientes, $K$ sigue una distribución **geométrica** (ecuación 6.1 del libro):
 
 $$
-P(L = \ell) \;=\; (1 - r)^{\ell - 1}\, r
+P(K = k) \;=\; (1 - r)^{k - 1}\, r, \qquad k = 1, 2, \dots
 \qquad\qquad
-\mathbb{E}[L] = \frac{1}{r}
+\mathbb{E}[K] = \frac{1}{r}
+$$
+
+Como cada base aparece, en promedio, una vez cada cuatro posiciones, la señal de los fragmentos que terminan cerca de la
+posición $\ell$ decae aproximadamente como
+
+$$
+\frac{S(\ell)}{S(0)} \;\approx\; (1 - r)^{\ell/4}.
 $$
 
 | Símbolo | Significado |
 |---|---|
-| $r$ | probabilidad de terminar en cada posición (depende de la proporción ddNTP:dNTP) |
-| $\ell$ | longitud del fragmento, en bases desde el cebador |
-| $(1-r)^{\ell-1}$ | probabilidad de **no** haber terminado en las $\ell - 1$ posiciones previas |
+| $r$ | probabilidad de terminación **por aparición** de la base $b$ (depende del cociente ddNTP/dNTP y de la preferencia de la enzima) |
+| $K$ | número de apariciones de $b$ que la polimerasa atraviesa hasta terminar (incluida la última) |
+| $k$ | valor concreto de $K$ |
+| $\ell$ | posición en el molde, en bases desde el cebador ($\ell \approx 4k$) |
+| $(1-r)^{k-1}$ | probabilidad de **no** haber terminado en las $k - 1$ apariciones previas |
+
+Si se prefiere pensar "por posición", la tasa equivalente es $r' \approx r/4$: el fragmento sobrevive a cada posición con
+probabilidad $\approx 1 - r/4$, y $(1 - r/4)^{\ell} \approx (1-r)^{\ell/4}$. Es la forma que usará nuestro
+simulador, porque así los cuatro canales decaen igual sin depender de la composición local del molde.
 
 ### Ejemplo a mano
 
-Con $r = 0.01$ (una de cada cien incorporaciones es un terminador):
-
-| $\ell$ | $P(L = \ell) = 0.99^{\ell-1} \times 0.01$ | Relativo a $\ell = 1$ |
+| $r$ | Señal a $\ell = 400$: $(1-r)^{100}$ | Señal a $\ell = 800$: $(1-r)^{200}$ |
 |---|---|---|
-| 1 | $0.0100$ | 1.00 |
-| 100 | $0.99^{99} \times 0.01 = 0.0037$ | 0.37 |
-| 500 | $0.99^{499} \times 0.01 = 0.00007$ | 0.007 |
-| 800 | $0.99^{799} \times 0.01 = 0.0000033$ | 0.0003 |
+| 0.005 | $0.995^{100} = 0.61$ (61 %) | $0.995^{200} = 0.37$ (37 %) |
+| 0.01 | $0.99^{100} = 0.37$ (37 %) | $0.99^{200} = 0.13$ (13 %) |
 
-La señal de la posición 800 es unas 3 000 veces más débil que la de la posición 1. Además, los picos se **ensanchan** con
-la longitud (la difusión en el capilar), y la diferencia de movilidad entre $\ell$ y $\ell + 1$ bases es cada vez menor.
-Ambos efectos juntos explican por qué una lectura de Sanger llega a unas **700–1 000 bases** de buena calidad y no más.
+Con $r = 0.01$, a las 800 bases queda sólo el **13 %** de la intensidad inicial. Aumentar $r$ produce más fragmentos
+cortos (más señal al principio); disminuirlo alarga la lectura pero debilita todas las bandas. Además, los picos se
+**ensanchan** con la longitud (la difusión en el capilar), y la diferencia de movilidad entre $\ell$ y $\ell + 1$ bases es
+cada vez menor. Ambos efectos juntos explican por qué una lectura de Sanger rinde, en el uso rutinario, **400–800 bases**
+de buena calidad (hasta ~1 000 en capilares optimizados) y no más.
 La escala **Phred** que conocimos en la Lección 2.1 nació justamente para dar una calidad a cada pico de estos
 electroferogramas (Ewing y Green, 1998).
 """)
 
 nb.code(r'''
-def sanger_trace(template, r=0.004, spacing=10, rng=rng):
+def sanger_trace(template, r=0.01, spacing=10, rng=rng):
     """Electroferograma simulado de Sanger con terminadores de colores.
-    Cada posición ℓ produce un pico gaussiano en el canal de su base, centrado en ℓ·spacing, con altura proporcional a
-    P(L = ℓ) y ancho creciente con ℓ. Devuelve (tiempo, matriz 4 x tiempo, alturas de los picos)."""
+    r es la probabilidad de terminación POR APARICIÓN de la base (convención del libro). Usamos la tasa equivalente
+    por posición r' = r/4, de modo que la altura del pico ℓ es (1 - r')^(ℓ-1)·r' ≈ r'·(1 - r)^(ℓ/4): la misma caída
+    para los cuatro canales, sin depender de la composición local. Cada pico es una gaussiana en el canal de su base,
+    centrada en ℓ·spacing y con ancho creciente con ℓ. Devuelve (tiempo, matriz 4 x tiempo, alturas)."""
     n = len(template)
     t = np.arange(0, (n + 3) * spacing)
     signal = np.zeros((4, len(t)))
     ell = np.arange(1, n + 1)
-    height = (1 - r) ** (ell - 1) * r
+    r_pos = r / 4                                         # r' ≈ r/4: cada base aparece ~1 de cada 4 posiciones
+    height = (1 - r_pos) ** (ell - 1) * r_pos
     height *= rng.lognormal(0, 0.2, n)                  # variación de altura pico a pico (dependiente del contexto)
     dye = np.array([1.0, 0.8, 0.65, 0.9])                 # eficiencia distinta de cada fluoróforo (A, C, G, T)
-    sigma = spacing * (0.2 + 0.00036 * ell)              # los picos se ensanchan con la longitud
+    sigma = spacing * (0.2 + 0.0003 * ell)               # los picos se ensanchan con la longitud
     center = ell * spacing + rng.normal(0, 0.6, n).cumsum() * 0.05   # pequeñas irregularidades de movilidad
     for k, b in enumerate(template):
         c = BASES.index(b)
@@ -330,6 +368,9 @@ SPIKE_START = 21562                                       # inicio del gen S (es
 template = GENOME[SPIKE_START:SPIKE_START + 1000]
 t_s, sig_s, h_s = sanger_trace(template)
 peaks_s, calls_s, purity_s = call_sanger(t_s, sig_s)
+r_book = 0.01
+print(f"Caída de la señal con r = {r_book}: a 400 pb {(1 - r_book / 4) ** 399:.2f}, a 800 pb {(1 - r_book / 4) ** 799:.2f}   "
+      f"(fórmula del libro: 0.99^100 = {0.99 ** 100:.2f}, 0.99^200 = {0.99 ** 200:.2f})")
 print("Molde (primeras 60):   ", template[:60])
 print("Llamado (primeras 60): ", calls_s[:60])
 for a, b in [(0, 300), (300, 600), (600, 800), (800, 1000)]:
@@ -363,7 +404,7 @@ for i, base in enumerate(BASES):
     axes[0].text(1.01, 0.92 - i * 0.12, f"■ {base}", transform=axes[0].transAxes, color=ec.NUC_COLORS[base],
                  fontsize=10.5, fontweight="bold", ha="left")
 ec.fig_title(fig, "Al principio los picos son altos y separados; cerca de la base 900 se funden y el llamado se equivoca",
-             "Electroferograma simulado (terminadores de colores, r = 0.004), gen S de SARS-CoV-2 · fila gris: molde real · fila de color: bases llamadas")
+             "Electroferograma simulado (terminadores de colores, r = 0.01 por aparición, r′ = r/4 por posición), gen S de SARS-CoV-2 · fila gris: molde real · fila de color: bases llamadas")
 plt.tight_layout(); plt.show()
 ''')
 
@@ -374,9 +415,106 @@ nb.md(r"""
 > (**inserciones**). Por eso los laboratorios secuencian cada amplicón desde **ambos extremos**. En los cromatogramas
 > de los equipos ABI la G se dibuja en negro; aquí usamos los colores del curso (A verde, C azul, G amarillo, T rojo).
 
-✅ **Compruebe su comprensión.** Si duplicamos la proporción de ddNTP ($r$ de 0.004 a 0.008), ¿las lecturas serán más
-largas o más cortas? (Respuesta: más cortas; la longitud media $1/r$ baja de 250 a 125 bases, y los fragmentos largos se
-vuelven todavía más escasos.)
+✅ **Compruebe su comprensión.** Si duplicamos la proporción de ddNTP ($r$ de 0.01 a 0.02), ¿las lecturas serán más
+largas o más cortas? (Respuesta: más cortas; el número medio de apariciones atravesadas $\mathbb E[K] = 1/r$ baja de 100
+a 50, es decir, de unas 400 a unas 200 bases, y la señal a 800 bases cae del 13 % a $0.98^{200} \approx 1.8$ %.)
+""")
+
+nb.md(r"""
+### 2.1 Entre Sanger e Illumina: pirosecuenciación, 454 e Ion Torrent
+
+La primera ruptura con Sanger fue dejar de separar fragmentos por tamaño y, en cambio, **observar la síntesis mientras
+ocurre**. En la **pirosecuenciación** (Ronaghi et al., 1998), cada vez que la polimerasa incorpora un nucleótido libera
+una molécula de pirofosfato (PPᵢ); una cascada de enzimas la convierte en ATP (ATP sulfurilasa) y el ATP en un destello
+de luz (luciferasa). La máquina inyecta **un solo tipo de nucleótido a la vez** (un *flujo*): si hay destello, esa base
+es la siguiente del molde; si no, se lava y se prueba la siguiente.
+
+La plataforma **454** (Margulies et al., 2005) llevó esta química a gran escala: cada fragmento se amplificaba sobre una
+microesfera dentro de una gota de agua en aceite (**PCR en emulsión**) y las esferas se repartían en cientos de miles de
+pocillos de picolitros. En una corrida de cuatro horas leía 25 millones de bases con exactitud ≥ 99 %, y con ella se
+ensambló *de novo* el genoma de *Mycoplasma genitalium*: había nacido la "nueva generación". **Ion Torrent** usa la
+misma lógica de flujos, pero en lugar de luz mide el **cambio de pH** (los protones) que libera cada incorporación.
+
+El punto débil se deduce del propio principio. Si el molde tiene un **homopolímero** como `AAAAAA`, la polimerasa
+incorpora las seis A en un mismo flujo y el destello es, idealmente, seis veces más intenso. Distinguir 1 de 2 es fácil
+(el doble de luz); distinguir 6 de 7 es difícil (un 17 % más), porque el ruido de la medición **crece con la señal**.
+
+### Ejemplo a mano
+
+Supongamos que la intensidad de un flujo con $h$ bases idénticas es $h$ más un ruido cuya desviación estándar es un 5 %
+de la señal ($c = 0.05$), y que redondeamos la intensidad al entero más próximo. Nos equivocamos si el ruido supera media
+unidad, es decir, si $|z| > 0.5/(c\,h)$:
+
+| $h$ | Desviación $c\,h$ | Umbral $0.5/(c\,h)$ en desviaciones estándar | $P(\text{error en } h)$ |
+|---|---|---|---|
+| 1 | 0.05 | 10 | prácticamente 0 |
+| 2 | 0.10 | 5 | $6 \times 10^{-7}$ |
+| 4 | 0.20 | 2.5 | 0.012 |
+| 6 | 0.30 | 1.67 | 0.096 |
+| 8 | 0.40 | 1.25 | 0.21 |
+
+$$
+I_h \;=\; h + \eta,\quad \eta \sim \mathcal N\!\big(0,\,(c\,h)^2\big)
+\qquad\qquad
+P(\text{error en } h) \;=\; 2\left[1 - \Phi\!\left(\frac{0.5}{c\,h}\right)\right]
+$$
+
+| Símbolo | Significado |
+|---|---|
+| $h$ | longitud del homopolímero (bases idénticas incorporadas en un flujo) |
+| $I_h$ | intensidad medida en ese flujo (luz en 454, pH en Ion Torrent), en unidades de "una base" |
+| $c$ | ruido relativo: desviación estándar como fracción de la señal (valor ilustrativo) |
+| $\Phi$ | función de distribución de la normal estándar |
+
+Un error en $h$ no cambia una base por otra: añade o quita una copia. Por eso el error dominante de 454 e Ion Torrent son
+las **inserciones y deleciones en homopolímeros**, no las sustituciones (Metzker, 2010).
+""")
+
+nb.code(r'''
+from scipy.stats import norm
+c_noise = 0.05                                            # ruido relativo (ilustrativo)
+hs = np.arange(1, 11)
+p_err = 2 * (1 - norm.cdf(0.5 / (c_noise * hs)))
+for h, pe in zip(hs[:8], p_err[:8]):
+    print(f"homopolímero de {h}: P(llamar mal la longitud) = {pe:.2g}")
+
+fig, axes = plt.subplots(1, 2, figsize=(13, 4.6), gridspec_kw=dict(width_ratios=[1.5, 1]))
+ax = axes[0]
+x = np.linspace(0.3, 9.7, 2000)
+for h in range(1, 10):
+    col = ec.BLUE if h <= 3 else (ec.ORANGE if h <= 6 else ec.RED)
+    ax.fill_between(x, norm.pdf(x, h, c_noise * h), color=col, alpha=0.25, lw=0)
+    ax.plot(x, norm.pdf(x, h, c_noise * h), color=col, lw=1.6)
+    ax.text(h, norm.pdf(h, h, c_noise * h) * 1.04, f"h={h}", ha="center", fontsize=9, color=ec.INK_2)
+for b in np.arange(1.5, 9.5, 1):
+    ax.axvline(b, color=ec.MUTED, lw=0.8, ls=":")
+ax.set_xlabel("intensidad del flujo (unidades de «una base»)"); ax.set_ylabel("densidad")
+ax.set_ylim(0, norm.pdf(1, 1, c_noise) * 1.15)
+ax.set_title("Las campanas se ensanchan y se solapan al crecer h", loc="left", fontsize=11.5)
+ax = axes[1]
+ax.bar(hs, p_err, color=[ec.BLUE if h <= 3 else (ec.ORANGE if h <= 6 else ec.RED) for h in hs], width=0.65)
+for h, pe in zip(hs, p_err):
+    if pe > 1e-3:
+        ax.text(h, pe + 0.01, f"{pe:.2f}", ha="center", fontsize=9, color=ec.INK)
+ax.set_xlabel("longitud del homopolímero h"); ax.set_ylabel("P(error en la longitud)")
+ax.set_xticks(hs)
+ax.set_title("Probabilidad de contar mal", loc="left", fontsize=11.5)
+ec.fig_title(fig, "En pirosecuenciación, contar bases idénticas se vuelve una lotería a partir de h ≈ 5",
+             f"Modelo de flujo: intensidad ~ Normal(h, ({c_noise}·h)²) · líneas punteadas: umbrales de redondeo · valores ilustrativos")
+plt.tight_layout(); plt.show()
+''')
+
+nb.md(r"""
+> 🔎 **Qué observamos.** Para $h = 1$–$3$ las campanas son estrechas y no se tocan: el número de bases se lee sin
+> dudas. A partir de $h \approx 5$ cada campana invade a sus vecinas y la probabilidad de contar una base de más o de
+> menos ronda el 5 % (casi 10 % para $h = 6$ y más del 20 % para $h = 8$). El error no depende de qué base es sino de **cuántas** hay seguidas: es
+> la huella física de la química por flujos. Illumina, que veremos a continuación, evita el problema incorporando
+> **una sola base por ciclo** gracias a un bloqueo reversible; Nanopore (sección 7) tropieza con los homopolímeros por
+> otra razón.
+
+✅ **Compruebe su comprensión.** Si un instrumento reduce el ruido relativo a $c = 0.025$, ¿qué homopolímero tiene
+ahora la misma probabilidad de error que el de 4 bases con $c = 0.05$? (Respuesta: el de 8, porque el error sólo depende
+del producto $c\,h$.)
 """)
 
 # ------------------------------------------------------------------ 3 Illumina librería
@@ -668,34 +806,50 @@ $$
 y la señal del clúster en el canal de la base $b$ es la suma de las hebras que, en ese ciclo, están leyendo una $b$:
 
 $$
-S_n(b) \;=\; \beta\,\lambda^{n} \sum_k w_n(k)\;\mathbb{1}[\,t_k = b\,] \;+\; \varepsilon
-\qquad\qquad
-f_n \;=\; w_n(n) \;\approx\; (1-p-q)^{\,n}
+S_n(b) \;=\; \beta\,\lambda^{n} \sum_k w_n(k)\;\mathbb{1}[\,t_k = b\,] \;+\; \eta,
+\qquad \eta \sim \mathcal N(0, \sigma_{\text{cam}}^2)
 $$
+
+La pieza central es la fracción de hebras que **nunca** sufrieron un desfase. Una hebra sigue así tras $n$ ciclos si y
+sólo si en cada uno de ellos "no le pasó nada", lo que ocurre con probabilidad $1-\varepsilon$ por ciclo; multiplicando
+los $n$ factores (ecuación 6.2 del libro):
+
+$$
+\phi(n) \;=\; (1-\varepsilon)^{n} \;\approx\; e^{-\varepsilon n},
+\qquad \varepsilon = p + q
+$$
+
+La aproximación exponencial usa $\ln(1-\varepsilon) \approx -\varepsilon$ para $\varepsilon$ pequeño.
 
 | Símbolo | Significado |
 |---|---|
 | $p$, $q$ | probabilidad por ciclo de retrasarse (phasing) o adelantarse (pre-phasing) |
+| $\varepsilon$ | tasa total de desfase por ciclo, $p + q$ |
+| $n$ | número de ciclos completados (posición en la lectura) |
+| $\phi(n)$ | fracción de hebras que nunca se desfasaron: emiten la base correcta en el ciclo $n$ |
 | $w_n(k)$ | fracción de hebras con $k$ bases incorporadas tras el ciclo $n$ |
 | $t_k$ | base $k$-ésima del molde |
 | $\beta$, $\lambda$ | brillo del clúster y caída de la señal por ciclo (daño por el láser, pérdida de hebras) |
-| $\varepsilon$ | ruido de la cámara |
-| $f_n$ | fracción **en fase** (la que lee la base correcta) |
+| $\eta$, $\sigma_{\text{cam}}$ | ruido de la cámara y su desviación estándar |
 
 ### Ejemplo a mano
 
-Con $p = 0.002$ y $q = 0.001$ (valores típicos de un equipo moderno), $1 - p - q = 0.997$:
+Con $\varepsilon = 0.002$ (el ejemplo del libro), $1 - \varepsilon = 0.998$:
 
-| Ciclo $n$ | $f_n \approx 0.997^{\,n}$ | Hebras fuera de fase |
+| Ciclo $n$ | $\phi(n) = 0.998^{\,n}$ | Hebras desfasadas |
 |---|---|---|
-| 1 | 0.997 | 0.3 % |
-| 100 | $0.997^{100} = 0.741$ | 26 % |
-| 150 | $0.997^{150} = 0.637$ | 36 % |
-| 300 | $0.997^{300} = 0.406$ | 59 % |
+| 1 | 0.998 | 0.2 % |
+| 150 | $0.998^{150} = 0.741$ | 26 % |
+| 300 | $0.998^{300} = 0.548$ | 45 % |
 
-A 150 ciclos, más de un tercio del clúster ya no está leyendo la base correcta. La aproximación $(1-p-q)^n$ es un poco
-pesimista: una hebra que se retrasa una vez y se adelanta otra vuelve a estar en fase; el cálculo exacto con la
-recursión lo tiene en cuenta.
+Un $\varepsilon$ de dos milésimas parece despreciable, pero se **acumula**: en el ciclo 150 sólo el 74 % de las hebras
+emite el color correcto y en el ciclo 300 apenas el 55 %. En la simulación usaremos $p = 0.002$ y $q = 0.001$
+($\varepsilon = 0.003$), para el que $\phi(150) = 0.997^{150} = 0.64$.
+
+**Una precisión importante.** $\phi(n)$ cuenta las hebras que **nunca** se desfasaron, y por eso es una **cota
+inferior** de la fracción que está en fase: una hebra que se retrasa una vez y se adelanta otra vuelve a leer la base
+correcta, aunque sí sufrió eventos. El valor exacto es $w_n(n)$, que la recursión calcula y que queda un poco por encima
+de $\phi(n)$.
 """)
 
 nb.code(r'''
@@ -708,9 +862,14 @@ def phase_matrix(n_cycles, p, q):
         W[n] = w
     return W
 
-W = phase_matrix(300, 0.002, 0.001)
+def phi(n, eps):
+    """Fracción de hebras que nunca se desfasaron tras n ciclos (cota inferior de la fracción en fase)."""
+    return (1 - eps) ** n
+
+print("Ejemplo del libro, ε = 0.002:  φ(150) = %.3f   φ(300) = %.3f" % (phi(150, 0.002), phi(300, 0.002)))
+W = phase_matrix(300, 0.002, 0.001)                            # la simulación: p = 0.002, q = 0.001 → ε = 0.003
 for n in (1, 100, 150, 300):
-    print(f"ciclo {n:3d}: en fase exacto = {W[n - 1, n]:.3f}   aproximación 0.997^n = {0.997 ** n:.3f}   "
+    print(f"ciclo {n:3d}: en fase exacto wₙ(n) = {W[n - 1, n]:.3f}   cota φ(n) = 0.997^n = {phi(n, 0.003):.3f}   "
           f"atrasadas = {W[n - 1, :n].sum():.3f}   adelantadas = {W[n - 1, n + 1:].sum():.3f}")
 ''')
 
@@ -777,9 +936,9 @@ for (name, (p, q)), col in zip(settings.items(), [ec.AQUA, ec.BLUE, ec.ORANGE]):
     ax.plot(n, (1 - p - q) ** n, color=col, lw=1.2, ls="--")
     ax.text(CYC + 2, Wx[CYC - 1, CYC], f"p = {p}", color=col, fontsize=9.5, va="center", fontweight="bold")
 ax.set_xlim(0, CYC + 30); ax.set_ylim(0.3, 1.02)
-ax.set_xlabel("ciclo"); ax.set_ylabel("fracción en fase  fₙ")
+ax.set_xlabel("ciclo"); ax.set_ylabel("fracción en fase")
 ax.set_title("Fracción en fase", loc="left", fontsize=11.5)
-ax.text(3, 0.33, "línea: recursión exacta\nguiones: aproximación (1−p−q)ⁿ", fontsize=9, color=ec.INK_2)
+ax.text(3, 0.33, "línea: recursión exacta wₙ(n)\nguiones: cota φ(n) = (1−ε)ⁿ", fontsize=9, color=ec.INK_2)
 
 ax = axes[2]
 for (name, _), col in zip(settings.items(), [ec.AQUA, ec.BLUE, ec.ORANGE]):
@@ -797,8 +956,8 @@ plt.show()
 
 nb.md(r"""
 > 🔎 **Qué observamos.** A la izquierda, la fracción de hebras en fase (fila 0) se va vaciando hacia las filas de
-> retraso (−1, −2, …) y, en menor medida, de adelanto (+1): el clúster se "desparrama". En el centro, la aproximación
-> $(1-p-q)^n$ (guiones) queda apenas por debajo del cálculo exacto. A la derecha, la calidad **no se impone**: sale de
+> retraso (−1, −2, …) y, en menor medida, de adelanto (+1): el clúster se "desparrama". En el centro, la cota
+> $\phi(n) = (1-\varepsilon)^n$ (guiones) queda apenas por debajo del cálculo exacto, como corresponde a una cota inferior. A la derecha, la calidad **no se impone**: sale de
 > comparar los llamados con la verdad, y aun así reproduce la forma que usamos en la Lección 2.1 (alta y estable al
 > principio, cayendo hacia el final). Duplicar el phasing no es un detalle: la curva naranja cruza Q30 decenas de ciclos
 > antes. Por eso los equipos reales **estiman $p$ y $q$ en cada corrida** y corrigen la señal antes de llamar las bases
@@ -839,8 +998,8 @@ nb.md(r"""
 > decidir "¿hay luz o no?" empezará a llamar **G** a clústeres que simplemente se apagaron: es el mismo mecanismo de la
 > cola de poli-G, visto ahora en millones de clústeres.
 
-✅ **Compruebe su comprensión.** Con $p + q = 0.003$, ¿en qué ciclo queda en fase sólo la mitad del clúster según la
-aproximación? (Respuesta: $n = \ln 0.5 / \ln 0.997 \approx 231$ ciclos. Por eso las lecturas de Illumina rara vez pasan de
+✅ **Compruebe su comprensión.** Con $\varepsilon = p + q = 0.003$, ¿en qué ciclo cae $\phi(n)$ a la mitad? (Respuesta:
+$n = \ln 0.5 / \ln 0.997 \approx 231$ ciclos; con el $\varepsilon = 0.002$ del libro, unos 346. Por eso las lecturas de Illumina rara vez pasan de
 2 × 300.)
 """)
 
@@ -1339,9 +1498,12 @@ $$
 | 3 | $3(0.1)^2(0.9) + (0.1)^3 = 0.027 + 0.001$ | 0.028 | 15.5 |
 | 5 | $10(0.1)^3(0.9)^2 + 5(0.1)^4(0.9) + (0.1)^5$ | 0.0086 | 20.7 |
 | 9 | $126(0.1)^5(0.9)^4 + 84(0.1)^6(0.9)^3 + \dots$ | 0.00089 | 30.5 |
+| 15 | $6\,435(0.1)^8(0.9)^7 + 5\,005(0.1)^9(0.9)^6 + \dots$ | $3.4 \times 10^{-5}$ | 44.7 |
 
 Con **9 pasadas**, un método que se equivoca en 1 de cada 10 bases produce un consenso que se equivoca en menos de 1 de
-cada 1 000. La condición clave es la **independencia**: si un error fuera **sistemático** (se repite igual en todas las
+cada 1 000, y con **15** (el libro llama $k$ a este número) llega a Q44.7. La cota es pesimista: en la realidad, varias
+pasadas erróneas rara vez coinciden en el **mismo** error. Wenger et al. (2019) obtuvieron así lecturas HiFi con 99.8 %
+de exactitud y 13.5 kb de longitud media. La condición clave es la **independencia**: si un error fuera **sistemático** (se repite igual en todas las
 pasadas, como los errores dependientes del contexto), votar no ayudaría en nada. Por eso el consenso funciona muy bien en
 PacBio (errores aleatorios) y mucho peor para los errores de homopolímero de Nanopore, que se repiten molécula tras
 molécula.
@@ -1507,7 +1669,7 @@ literatura, no medidos de una corrida concreta.
 |---|---|---|
 | **Illumina** 2 × 150 | fija (150), pares con inserto ~ Normal(350, 70) | sustituciones, con la tasa por ciclo que **medimos** en la sección 5; indels casi nulos |
 | **Nanopore** (química tipo R9) | log-normal, mediana 3 kb | ~2 % sustituciones, ~1.5 % inserciones, ~2 % deleciones; deleciones × 4 en homopolímeros |
-| **PacBio HiFi** | inserto ~ Normal(15 kb, 3 kb) | 7–13 % de error por pasada; la tasa de cada lectura sale de su número de pasadas (sección 8); 70 % indels, concentrados en homopolímeros; se descartan las lecturas < Q20 |
+| **PacBio HiFi** | inserto ~ Normal(15 kb, 3 kb) | 7–13 % de error por pasada; la tasa de cada lectura sale de su número de pasadas (sección 8); 70 % indels; las pasadas individuales tienen errores aproximadamente aleatorios, y el error **residual** del consenso se concentra en homopolímeros (por eso lo ponemos ahí); se descartan las lecturas < Q20 |
 
 Una aclaración de realismo: en la vigilancia genómica de SARS-CoV-2 casi nunca se secuencia el genoma entero de una
 vez. El protocolo más usado (ARTIC; Quick et al., 2017) amplifica el genoma en ~100 **amplicones** de ~400 pb por PCR y
@@ -1610,7 +1772,7 @@ while kept < 150:
     s = int(rng_sim.integers(0, len(GENOME) - L + 1))
     tmpl_seq = GENOME[s:s + L] if rng_sim.random() < 0.5 else revcomp(GENOME[s:s + L])
     hp = homopolymer_mask(tmpl_seq)
-    w = np.where(hp, 4.0, 1.0); w = w / w.mean()                          # indels concentrados en homopolímeros
+    w = np.where(hp, 4.0, 1.0); w = w / w.mean()                          # error residual del CCS: indels en homopolímeros
     rd, a, b, c = mutate(tmpl_seq, 0.3 * e_read, 0.35 * e_read * w, 0.35 * e_read * w, rng_sim)
     rows.append(record("PacBio HiFi", kept, s, tmpl_seq, rd, a, b, c, e_read * (0.3 + 0.7 * w))); kept += 1
 
@@ -1800,8 +1962,8 @@ cada año, así que tómelos como una guía para comparar, no como cifras de cat
 | | **Sanger** (capilar) | **Illumina** (SBS) | **Oxford Nanopore** | **PacBio HiFi** |
 |---|---|---|---|---|
 | Principio | terminadores didesoxi + electroforesis | síntesis con terminadores reversibles sobre clústeres | corriente iónica a través de un poro, molécula única | fluorescencia en tiempo real, molécula única, consenso circular |
-| Longitud de lectura | 500–1 000 nt | 2 × 50 a 2 × 300 nt | típicamente 1–100 kb; hay lecturas de más de 1 Mb | 10–25 kb |
-| Precisión por lectura | ~99.9 % en la zona central | > 99.9 % en la mayoría de las bases (Q30+) | ~90–95 % (R9); ~99 % o más (R10.4.1 con *basecalling* de alta precisión) | ≥ 99 % por definición (Q20+), típicamente ~99.9 % |
+| Longitud de lectura | 400–800 nt (hasta ~1 000 en capilares optimizados) | 2 × 50 a 2 × 300 nt | típicamente 1–100 kb; hay lecturas de más de 1 Mb | 10–25 kb |
+| Precisión por lectura | ~99.9 % en la zona central | > 99.9 % en la mayoría de las bases (Q30+) | ≈85–95 % (R9); ~99 % o más (R10.4.1 con *basecalling* de alta precisión) | ≥ 99 % por definición (Q20+), típicamente ~99.9 % |
 | Error dominante | picos débiles al inicio y al final | sustituciones, crecientes con el ciclo; poli-G en 2 colores | indels, sobre todo en homopolímeros | indels residuales en homopolímeros |
 | Rendimiento por corrida | ~96 lecturas (< 0.1 Mb) | de Gb (MiSeq) a varios Tb (NovaSeq) | decenas de Gb (MinION) a cientos de Gb (PromethION) por celda | decenas de Gb por celda |
 | Costo relativo por Gb | altísimo (miles de USD por Mb) | el más bajo | bajo a medio | medio |
@@ -1819,12 +1981,13 @@ cada año, así que tómelos como una guía para comparar, no como cifras de cat
 nb.md(r"""
 ## ✍️ Ejercicios
 
-**Ejercicio 1 — Sanger y la proporción de ddNTP.** Usando $P(L = \ell) = (1-r)^{\ell-1} r$, calcule para $r = 0.002$,
-$0.004$ y $0.01$ qué fracción de los fragmentos mide entre 600 y 900 bases. ¿Qué $r$ elegiría para leer bien esa zona?
-¿Qué se sacrifica?
+**Ejercicio 1 — Sanger y la proporción de ddNTP.** Usando $P(K = k) = (1-r)^{k-1} r$ (con $r$ por aparición de la
+base y $\ell \approx 4k$), calcule para $r = 0.005$, $0.01$ y $0.02$ qué fracción de los fragmentos de un canal termina
+entre las posiciones 600 y 900 (apariciones $k = 150$ a $225$). ¿Qué $r$ elegiría para leer bien esa zona? ¿Qué se
+sacrifica?
 
 **Ejercicio 2 — Phasing.** ¿En qué ciclo cae por debajo del 50 % la fracción en fase para $p + q = 0.003$ y para
-$p + q = 0.006$? Calcúlelo con la aproximación $(1-p-q)^n$ y con `phase_matrix` (use $q = p/2$).
+$p + q = 0.006$? Calcúlelo con la cota $\phi(n) = (1-\varepsilon)^n$ y con `phase_matrix` (use $q = p/2$).
 
 **Ejercicio 3 — Un *basecaller* que usa el tiempo.** Nuestro *basecaller* llama 5 T donde hay 8. Mejórelo: cuando un
 segmento corresponde a un k-mero homopolimérico (`AAAAA`, `CCCCC`, `GGGGG`, `TTTTT`), estime cuántos k-meros había con
@@ -1841,13 +2004,13 @@ tipo R9.
 
 nb.code(r'''
 #@title 🔑 Solución — Ejercicio 1 { display-mode: "form" }
-ell = np.arange(1, 5001)
-for r in (0.002, 0.004, 0.01):
-    P = (1 - r) ** (ell - 1) * r
-    frac = P[(ell >= 600) & (ell <= 900)].sum()
-    print(f"r = {r:<6} fracción en 600–900 = {frac:.3f}   longitud media 1/r = {1 / r:.0f}")
-print("Con r = 0.002 la distribución es más plana y hay más fragmentos largos, pero cada pico recibe menos señal")
-print("(P(ℓ) ≤ r): hace falta más molde, y la resolución del capilar sigue limitando las bases más lejanas.")
+k = np.arange(1, 2001)                                   # apariciones de la base b (ℓ ≈ 4k)
+for r in (0.005, 0.01, 0.02):
+    P = (1 - r) ** (k - 1) * r
+    frac = P[(k >= 150) & (k <= 225)].sum()               # = (1-r)^149 - (1-r)^225
+    print(f"r = {r:<6} fracción en 600–900 pb = {frac:.3f}   E[K] = 1/r = {1 / r:.0f} apariciones ≈ {4 / r:.0f} pb")
+print("Con r = 0.005 la distribución es más plana y hay más fragmentos largos, pero cada pico recibe menos señal")
+print("(P(K = k) ≤ r): hace falta más molde, y la resolución del capilar sigue limitando las bases más lejanas.")
 ''')
 
 nb.code(r'''
@@ -1942,11 +2105,14 @@ nb.md(r"""
 
 * El costo por megabase (NHGRI) cayó unas 900 000 veces entre 2001 y 2022; en 2008 la llegada de la **NGS**, que lee
   millones de moléculas en paralelo, hizo que se despegara de la ley de Moore.
-* **Sanger**: los ddNTP sin 3′-OH terminan la cadena; las longitudes siguen una geométrica $(1-r)^{\ell-1}r$ y la
-  electroforesis capilar las ordena. Lecturas de ~800 nt muy precisas, pero una por capilar.
+* **Sanger**: los ddNTP sin 3′-OH terminan la cadena; el número de apariciones atravesadas sigue una geométrica
+  $(1-r)^{k-1}r$, la señal decae como $(1-r)^{\ell/4}$ y la electroforesis capilar ordena los fragmentos. Lecturas de
+  400–800 nt (hasta ~1 000 en capilares optimizados) muy precisas, pero una por capilar.
+* **Pirosecuenciación (454) e Ion Torrent**: leen por flujos de un solo nucleótido; la señal de un homopolímero es
+  proporcional a su longitud y el ruido crece con ella, de ahí sus **indels en homopolímeros**.
 * **Illumina**: librería con adaptadores (P5/P7, índices), clústeres por amplificación en puente y **secuenciación por
   síntesis** con terminadores reversibles, en 4 o 2 colores. En 2 colores la G es "oscuridad", de ahí las colas de poli-G.
-* El **phasing / pre-phasing** hace que la fracción en fase caiga como $\approx (1-p-q)^n$: de ahí la caída de la
+* El **phasing / pre-phasing** hace que la fracción de hebras nunca desfasadas caiga como $\phi(n) = (1-\varepsilon)^n$, con $\varepsilon = p + q$ (cota inferior de la fracción en fase): de ahí la caída de la
   calidad con el ciclo que en la Lección 2.1 habíamos supuesto.
 * Las lecturas **pareadas** leen ambos extremos de un inserto; su tamaño indica solapamiento, huecos o lectura de
   adaptador, y los pares discordantes delatan variantes estructurales.
@@ -1961,6 +2127,11 @@ nb.md(r"""
 
 * Sanger, F., Nicklen, S. & Coulson, A. R. (1977). DNA sequencing with chain-terminating inhibitors. *Proceedings of the
   National Academy of Sciences USA* 74(12): 5463–5467.
+* Ronaghi, M., Uhlén, M. & Nyrén, P. (1998). A sequencing method based on real-time pyrophosphate. *Science*
+  281(5375): 363–365.
+* Margulies, M. et al. (2005). Genome sequencing in microfabricated high-density picolitre reactors. *Nature*
+  437(7057): 376–380.
+* Metzker, M. L. (2010). Sequencing technologies — the next generation. *Nature Reviews Genetics* 11(1): 31–46.
 * Ewing, B. & Green, P. (1998). Base-calling of automated sequencer traces using *phred*. II. Error probabilities.
   *Genome Research* 8(3): 186–194.
 * Bentley, D. R. et al. (2008). Accurate whole human genome sequencing using reversible terminator chemistry. *Nature*
