@@ -1,0 +1,1466 @@
+{
+"source": "STRING API /api/json/enrichment (version 12.5), species 4932, queried 2026-09-30",
+"communities": {
+"0": {
+"genes": [
+"BEM1",
+"CDC24",
+"CDC42",
+"GDI1",
+"SHO1",
+"STE11",
+"STE18",
+"STE20",
+"STE4",
+"STE5",
+"STE50"
+],
+"terms": [
+{
+"category": "KEGG",
+"term": "sce04011",
+"description": "MAPK signaling pathway - yeast",
+"number_of_genes": 10,
+"number_of_genes_in_background": 114,
+"fdr": 5.51e-15,
+"p_value": 4.05e-17,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE50",
+"STE5",
+"SHO1",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000750",
+"description": "Pheromone-dependent signal transduction involved in conjugation with cellular fusion",
+"number_of_genes": 8,
+"number_of_genes_in_background": 28,
+"fdr": 2e-13,
+"p_value": 5.48e-17,
+"inputGenes": [
+"CDC24",
+"STE50",
+"STE5",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0007165",
+"description": "Signal transduction",
+"number_of_genes": 10,
+"number_of_genes_in_background": 356,
+"fdr": 1.02e-09,
+"p_value": 2.52e-12,
+"inputGenes": [
+"CDC24",
+"STE50",
+"STE5",
+"SHO1",
+"GDI1",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0030447",
+"description": "Filamentous growth",
+"number_of_genes": 7,
+"number_of_genes_in_background": 91,
+"fdr": 1.12e-08,
+"p_value": 3.98e-11,
+"inputGenes": [
+"STE50",
+"STE5",
+"SHO1",
+"STE20",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0141124",
+"description": "Intracellular signaling cassette",
+"number_of_genes": 7,
+"number_of_genes_in_background": 96,
+"fdr": 1.48e-08,
+"p_value": 5.69e-11,
+"inputGenes": [
+"STE50",
+"STE5",
+"SHO1",
+"GDI1",
+"STE20",
+"CDC42",
+"STE11"
+]
+},
+{
+"category": "Process",
+"term": "GO:0070887",
+"description": "Cellular response to chemical stimulus",
+"number_of_genes": 9,
+"number_of_genes_in_background": 324,
+"fdr": 2.3e-08,
+"p_value": 9.46e-11,
+"inputGenes": [
+"CDC24",
+"STE50",
+"STE5",
+"SHO1",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000165",
+"description": "MAPK cascade",
+"number_of_genes": 5,
+"number_of_genes_in_background": 29,
+"fdr": 2.57e-07,
+"p_value": 1.2e-09,
+"inputGenes": [
+"STE50",
+"STE5",
+"SHO1",
+"STE20",
+"STE11"
+]
+},
+{
+"category": "Process",
+"term": "GO:0035556",
+"description": "Intracellular signal transduction",
+"number_of_genes": 8,
+"number_of_genes_in_background": 283,
+"fdr": 3.83e-07,
+"p_value": 1.89e-09,
+"inputGenes": [
+"CDC24",
+"STE50",
+"STE5",
+"SHO1",
+"GDI1",
+"STE20",
+"CDC42",
+"STE11"
+]
+},
+{
+"category": "Process",
+"term": "GO:0030010",
+"description": "Establishment of cell polarity",
+"number_of_genes": 6,
+"number_of_genes_in_background": 85,
+"fdr": 4.84e-07,
+"p_value": 2.52e-09,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE50",
+"SHO1",
+"STE20",
+"CDC42"
+]
+},
+{
+"category": "Process",
+"term": "GO:0007232",
+"description": "Osmosensory signaling pathway via Sho1 osmosensor",
+"number_of_genes": 4,
+"number_of_genes_in_background": 9,
+"fdr": 5.12e-07,
+"p_value": 2.94e-09,
+"inputGenes": [
+"STE50",
+"SHO1",
+"STE20",
+"STE11"
+]
+},
+{
+"category": "Component",
+"term": "GO:0005937",
+"description": "Mating projection",
+"number_of_genes": 7,
+"number_of_genes_in_background": 135,
+"fdr": 5.23e-07,
+"p_value": 5.59e-10,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE5",
+"SHO1",
+"STE20",
+"CDC42",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0001403",
+"description": "Invasive growth in response to glucose limitation",
+"number_of_genes": 5,
+"number_of_genes_in_background": 43,
+"fdr": 1.21e-06,
+"p_value": 7.29e-09,
+"inputGenes": [
+"STE5",
+"STE20",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0001402",
+"description": "Signal transduction involved in filamentous growth",
+"number_of_genes": 4,
+"number_of_genes_in_background": 13,
+"fdr": 1.55e-06,
+"p_value": 9.77e-09,
+"inputGenes": [
+"STE50",
+"SHO1",
+"STE20",
+"STE11"
+]
+},
+{
+"category": "Component",
+"term": "GO:0043332",
+"description": "Mating projection tip",
+"number_of_genes": 6,
+"number_of_genes_in_background": 124,
+"fdr": 5.13e-06,
+"p_value": 2.2e-08,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE5",
+"SHO1",
+"STE20",
+"CDC42"
+]
+},
+{
+"category": "Process",
+"term": "GO:0009966",
+"description": "Regulation of signal transduction",
+"number_of_genes": 6,
+"number_of_genes_in_background": 162,
+"fdr": 1.35e-05,
+"p_value": 1.02e-07,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE5",
+"STE20",
+"STE18",
+"STE4"
+]
+},
+{
+"category": "Component",
+"term": "GO:0120171",
+"description": "Cdc24p-Far1p-Gbetagamma complex",
+"number_of_genes": 3,
+"number_of_genes_in_background": 4,
+"fdr": 1.6e-05,
+"p_value": 1.2e-07,
+"inputGenes": [
+"CDC24",
+"STE18",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0048518",
+"description": "Positive regulation of biological process",
+"number_of_genes": 9,
+"number_of_genes_in_background": 825,
+"fdr": 3.74e-05,
+"p_value": 3.38e-07,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE50",
+"STE5",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0050794",
+"description": "Regulation of cellular process",
+"number_of_genes": 11,
+"number_of_genes_in_background": 1719,
+"fdr": 4.14e-05,
+"p_value": 3.85e-07,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE50",
+"STE5",
+"SHO1",
+"GDI1",
+"STE20",
+"STE18",
+"CDC42",
+"STE11",
+"STE4"
+]
+},
+{
+"category": "Process",
+"term": "GO:0010969",
+"description": "Regulation of pheromone-dependent signal transduction involved in conjugation with cellular fusion",
+"number_of_genes": 3,
+"number_of_genes_in_background": 8,
+"fdr": 5.55e-05,
+"p_value": 5.62e-07,
+"inputGenes": [
+"CDC24",
+"STE18",
+"STE4"
+]
+},
+{
+"category": "Component",
+"term": "GO:0000131",
+"description": "Incipient cellular bud site",
+"number_of_genes": 4,
+"number_of_genes_in_background": 70,
+"fdr": 0.00047,
+"p_value": 4.5e-06,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE20",
+"CDC42"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000281",
+"description": "Mitotic cytokinesis",
+"number_of_genes": 4,
+"number_of_genes_in_background": 81,
+"fdr": 0.00065,
+"p_value": 7.84e-06,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"SHO1",
+"STE20"
+]
+},
+{
+"category": "Component",
+"term": "GO:0071944",
+"description": "Cell periphery",
+"number_of_genes": 8,
+"number_of_genes_in_background": 840,
+"fdr": 0.00077,
+"p_value": 8.2e-06,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE5",
+"SHO1",
+"STE20",
+"STE18",
+"CDC42",
+"STE4"
+]
+},
+{
+"category": "Component",
+"term": "GO:0005938",
+"description": "Cell cortex",
+"number_of_genes": 5,
+"number_of_genes_in_background": 197,
+"fdr": 0.00086,
+"p_value": 1.01e-05,
+"inputGenes": [
+"CDC24",
+"BEM1",
+"STE18",
+"CDC42",
+"STE4"
+]
+},
+{
+"category": "Component",
+"term": "GO:0031680",
+"description": "G-protein beta/gamma-subunit complex",
+"number_of_genes": 2,
+"number_of_genes_in_background": 2,
+"fdr": 0.0012,
+"p_value": 1.51e-05,
+"inputGenes": [
+"STE18",
+"STE4"
+]
+},
+{
+"category": "Function",
+"term": "GO:0035591",
+"description": "Signaling adaptor activity",
+"number_of_genes": 3,
+"number_of_genes_in_background": 9,
+"fdr": 0.0012,
+"p_value": 7.48e-07,
+"inputGenes": [
+"STE5",
+"SHO1",
+"STE4"
+]
+}
+]
+},
+"1": {
+"genes": [
+"DIG1",
+"DIG2",
+"FUS3",
+"KSS1",
+"MSG5",
+"PIN3",
+"STE12",
+"STE7"
+],
+"terms": [
+{
+"category": "KEGG",
+"term": "sce04011",
+"description": "MAPK signaling pathway - yeast",
+"number_of_genes": 7,
+"number_of_genes_in_background": 114,
+"fdr": 6.22e-10,
+"p_value": 4.57e-12,
+"inputGenes": [
+"FUS3",
+"STE7",
+"DIG2",
+"KSS1",
+"STE12",
+"MSG5",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0071444",
+"description": "Cellular response to pheromone",
+"number_of_genes": 7,
+"number_of_genes_in_background": 73,
+"fdr": 8.45e-10,
+"p_value": 2.31e-13,
+"inputGenes": [
+"FUS3",
+"STE7",
+"DIG2",
+"KSS1",
+"STE12",
+"MSG5",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0045894",
+"description": "Negative regulation of mating-type specific transcription, DNA-templated",
+"number_of_genes": 3,
+"number_of_genes_in_background": 3,
+"fdr": 2.12e-05,
+"p_value": 2.33e-08,
+"inputGenes": [
+"DIG2",
+"STE12",
+"DIG1"
+]
+},
+{
+"category": "Component",
+"term": "GO:1990526",
+"description": "Ste12p-Dig1p-Dig2p complex",
+"number_of_genes": 3,
+"number_of_genes_in_background": 3,
+"fdr": 2.17e-05,
+"p_value": 2.33e-08,
+"inputGenes": [
+"DIG2",
+"STE12",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000165",
+"description": "MAPK cascade",
+"number_of_genes": 4,
+"number_of_genes_in_background": 29,
+"fdr": 2.29e-05,
+"p_value": 3.56e-08,
+"inputGenes": [
+"FUS3",
+"STE7",
+"KSS1",
+"MSG5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000750",
+"description": "Pheromone-dependent signal transduction involved in conjugation with cellular fusion",
+"number_of_genes": 4,
+"number_of_genes_in_background": 28,
+"fdr": 2.29e-05,
+"p_value": 3.13e-08,
+"inputGenes": [
+"FUS3",
+"STE7",
+"KSS1",
+"MSG5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0071507",
+"description": "Pheromone response MAPK cascade",
+"number_of_genes": 3,
+"number_of_genes_in_background": 6,
+"fdr": 3.24e-05,
+"p_value": 9.75e-08,
+"inputGenes": [
+"FUS3",
+"STE7",
+"MSG5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0001403",
+"description": "Invasive growth in response to glucose limitation",
+"number_of_genes": 4,
+"number_of_genes_in_background": 43,
+"fdr": 4.33e-05,
+"p_value": 1.54e-07,
+"inputGenes": [
+"FUS3",
+"STE7",
+"KSS1",
+"STE12"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000747",
+"description": "Conjugation with cellular fusion",
+"number_of_genes": 4,
+"number_of_genes_in_background": 68,
+"fdr": 0.00019,
+"p_value": 8.78e-07,
+"inputGenes": [
+"FUS3",
+"STE7",
+"STE12",
+"MSG5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0022414",
+"description": "Reproductive process",
+"number_of_genes": 6,
+"number_of_genes_in_background": 455,
+"fdr": 0.00047,
+"p_value": 2.77e-06,
+"inputGenes": [
+"FUS3",
+"STE7",
+"DIG2",
+"STE12",
+"MSG5",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0051128",
+"description": "Regulation of cellular component organization",
+"number_of_genes": 6,
+"number_of_genes_in_background": 449,
+"fdr": 0.00047,
+"p_value": 2.57e-06,
+"inputGenes": [
+"DIG2",
+"KSS1",
+"STE12",
+"MSG5",
+"DIG1",
+"PIN3"
+]
+},
+{
+"category": "Process",
+"term": "GO:2000220",
+"description": "Regulation of pseudohyphal growth",
+"number_of_genes": 3,
+"number_of_genes_in_background": 25,
+"fdr": 0.00053,
+"p_value": 3.76e-06,
+"inputGenes": [
+"DIG2",
+"STE12",
+"DIG1"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04620",
+"description": "Toll-like receptor signaling pathway",
+"number_of_genes": 2,
+"number_of_genes_in_background": 3,
+"fdr": 0.00087,
+"p_value": 1.28e-05,
+"inputGenes": [
+"FUS3",
+"KSS1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0050794",
+"description": "Regulation of cellular process",
+"number_of_genes": 8,
+"number_of_genes_in_background": 1719,
+"fdr": 0.0025,
+"p_value": 2.15e-05,
+"inputGenes": [
+"FUS3",
+"STE7",
+"DIG2",
+"KSS1",
+"STE12",
+"MSG5",
+"DIG1",
+"PIN3"
+]
+},
+{
+"category": "Process",
+"term": "GO:2000218",
+"description": "Negative regulation of invasive growth in response to glucose limitation",
+"number_of_genes": 2,
+"number_of_genes_in_background": 6,
+"fdr": 0.0036,
+"p_value": 3.58e-05,
+"inputGenes": [
+"DIG2",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0048523",
+"description": "Negative regulation of cellular process",
+"number_of_genes": 6,
+"number_of_genes_in_background": 741,
+"fdr": 0.0045,
+"p_value": 4.69e-05,
+"inputGenes": [
+"FUS3",
+"DIG2",
+"STE12",
+"MSG5",
+"DIG1",
+"PIN3"
+]
+},
+{
+"category": "Component",
+"term": "GO:1990527",
+"description": "Tec1p-Ste12p-Dig1p complex",
+"number_of_genes": 2,
+"number_of_genes_in_background": 3,
+"fdr": 0.006,
+"p_value": 1.28e-05,
+"inputGenes": [
+"STE12",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0043409",
+"description": "Negative regulation of MAPK cascade",
+"number_of_genes": 2,
+"number_of_genes_in_background": 10,
+"fdr": 0.0073,
+"p_value": 8.41e-05,
+"inputGenes": [
+"FUS3",
+"MSG5"
+]
+},
+{
+"category": "Process",
+"term": "GO:2000221",
+"description": "Negative regulation of pseudohyphal growth",
+"number_of_genes": 2,
+"number_of_genes_in_background": 10,
+"fdr": 0.0073,
+"p_value": 8.41e-05,
+"inputGenes": [
+"DIG2",
+"DIG1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0001402",
+"description": "Signal transduction involved in filamentous growth",
+"number_of_genes": 2,
+"number_of_genes_in_background": 13,
+"fdr": 0.0106,
+"p_value": 0.00013,
+"inputGenes": [
+"STE7",
+"KSS1"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04148",
+"description": "Efferocytosis",
+"number_of_genes": 2,
+"number_of_genes_in_background": 26,
+"fdr": 0.0216,
+"p_value": 0.00048,
+"inputGenes": [
+"FUS3",
+"KSS1"
+]
+},
+{
+"category": "Component",
+"term": "GO:0042597",
+"description": "Periplasmic space",
+"number_of_genes": 2,
+"number_of_genes_in_background": 9,
+"fdr": 0.0219,
+"p_value": 7.02e-05,
+"inputGenes": [
+"FUS3",
+"KSS1"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000122",
+"description": "Negative regulation of transcription by RNA polymerase II",
+"number_of_genes": 3,
+"number_of_genes_in_background": 154,
+"fdr": 0.0433,
+"p_value": 0.00068,
+"inputGenes": [
+"DIG2",
+"STE12",
+"DIG1"
+]
+},
+{
+"category": "Function",
+"term": "GO:0004707",
+"description": "MAP kinase activity",
+"number_of_genes": 2,
+"number_of_genes_in_background": 5,
+"fdr": 0.0439,
+"p_value": 2.69e-05,
+"inputGenes": [
+"FUS3",
+"KSS1"
+]
+}
+]
+},
+"2": {
+"genes": [
+"SDH3",
+"TIM10",
+"TIM12",
+"TIM18",
+"TIM22",
+"TIM54",
+"TIM9"
+],
+"terms": [
+{
+"category": "Component",
+"term": "GO:0042721",
+"description": "TIM22 mitochondrial import inner membrane insertion complex",
+"number_of_genes": 7,
+"number_of_genes_in_background": 7,
+"fdr": 2.95e-17,
+"p_value": 3.16e-20,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM9",
+"TIM10",
+"TIM54",
+"SDH3",
+"TIM18"
+]
+},
+{
+"category": "Process",
+"term": "GO:0045039",
+"description": "Protein insertion into mitochondrial inner membrane",
+"number_of_genes": 7,
+"number_of_genes_in_background": 26,
+"fdr": 1.44e-13,
+"p_value": 3.93e-17,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM9",
+"TIM10",
+"TIM54",
+"SDH3",
+"TIM18"
+]
+},
+{
+"category": "Function",
+"term": "GO:0140318",
+"description": "Protein transporter activity",
+"number_of_genes": 6,
+"number_of_genes_in_background": 50,
+"fdr": 3.2e-09,
+"p_value": 1.96e-12,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM9",
+"TIM10",
+"TIM54",
+"TIM18"
+]
+},
+{
+"category": "Component",
+"term": "GO:0005758",
+"description": "Mitochondrial intermembrane space",
+"number_of_genes": 5,
+"number_of_genes_in_background": 93,
+"fdr": 1.78e-06,
+"p_value": 1.33e-08,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM9",
+"TIM10",
+"TIM54"
+]
+},
+{
+"category": "Component",
+"term": "GO:0042719",
+"description": "Mitochondrial intermembrane space chaperone complex",
+"number_of_genes": 3,
+"number_of_genes_in_background": 5,
+"fdr": 3.46e-06,
+"p_value": 4.07e-08,
+"inputGenes": [
+"TIM12",
+"TIM9",
+"TIM10"
+]
+},
+{
+"category": "Function",
+"term": "GO:0008320",
+"description": "Protein transmembrane transporter activity",
+"number_of_genes": 4,
+"number_of_genes_in_background": 37,
+"fdr": 3.6e-05,
+"p_value": 4.41e-08,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM54",
+"TIM18"
+]
+},
+{
+"category": "Process",
+"term": "GO:0015031",
+"description": "Protein transport",
+"number_of_genes": 6,
+"number_of_genes_in_background": 578,
+"fdr": 0.00052,
+"p_value": 3.02e-06,
+"inputGenes": [
+"TIM12",
+"TIM22",
+"TIM9",
+"TIM10",
+"TIM54",
+"TIM18"
+]
+}
+]
+},
+"3": {
+"genes": [
+"HOG1",
+"PBS2",
+"PTP2",
+"PTP3",
+"SSK2",
+"SSK22"
+],
+"terms": [
+{
+"category": "Process",
+"term": "GO:0000165",
+"description": "MAPK cascade",
+"number_of_genes": 6,
+"number_of_genes_in_background": 29,
+"fdr": 5.15e-11,
+"p_value": 1.41e-14,
+"inputGenes": [
+"SSK22",
+"PTP3",
+"PBS2",
+"HOG1",
+"SSK2",
+"PTP2"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04011",
+"description": "MAPK signaling pathway - yeast",
+"number_of_genes": 6,
+"number_of_genes_in_background": 114,
+"fdr": 4.31e-09,
+"p_value": 3.17e-11,
+"inputGenes": [
+"SSK22",
+"PTP3",
+"PBS2",
+"HOG1",
+"SSK2",
+"PTP2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0071474",
+"description": "Cellular hyperosmotic response",
+"number_of_genes": 5,
+"number_of_genes_in_background": 24,
+"fdr": 1.24e-08,
+"p_value": 6.79e-12,
+"inputGenes": [
+"PTP3",
+"PBS2",
+"HOG1",
+"SSK2",
+"PTP2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0038066",
+"description": "p38MAPK cascade",
+"number_of_genes": 3,
+"number_of_genes_in_background": 6,
+"fdr": 9.81e-06,
+"p_value": 3.49e-08,
+"inputGenes": [
+"SSK22",
+"PBS2",
+"SSK2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0051403",
+"description": "Stress-activated MAPK cascade",
+"number_of_genes": 3,
+"number_of_genes_in_background": 13,
+"fdr": 5.3e-05,
+"p_value": 2.32e-07,
+"inputGenes": [
+"SSK22",
+"HOG1",
+"SSK2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0007231",
+"description": "Osmosensory signaling pathway",
+"number_of_genes": 3,
+"number_of_genes_in_background": 15,
+"fdr": 6.86e-05,
+"p_value": 3.38e-07,
+"inputGenes": [
+"PBS2",
+"HOG1",
+"SSK2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0033554",
+"description": "Cellular response to stress",
+"number_of_genes": 6,
+"number_of_genes_in_background": 804,
+"fdr": 0.00061,
+"p_value": 3.34e-06,
+"inputGenes": [
+"SSK22",
+"PTP3",
+"PBS2",
+"HOG1",
+"SSK2",
+"PTP2"
+]
+},
+{
+"category": "Function",
+"term": "GO:0140096",
+"description": "Catalytic activity, acting on a protein",
+"number_of_genes": 6,
+"number_of_genes_in_background": 587,
+"fdr": 0.00084,
+"p_value": 5.11e-07,
+"inputGenes": [
+"SSK22",
+"PTP3",
+"PBS2",
+"HOG1",
+"SSK2",
+"PTP2"
+]
+},
+{
+"category": "Process",
+"term": "GO:1903138",
+"description": "Negative regulation of cell integrity MAPK cascade",
+"number_of_genes": 2,
+"number_of_genes_in_background": 3,
+"fdr": 0.0011,
+"p_value": 6.87e-06,
+"inputGenes": [
+"PTP3",
+"PTP2"
+]
+},
+{
+"category": "Function",
+"term": "GO:0004674",
+"description": "Protein serine/threonine kinase activity",
+"number_of_genes": 4,
+"number_of_genes_in_background": 128,
+"fdr": 0.0014,
+"p_value": 2.22e-06,
+"inputGenes": [
+"SSK22",
+"PBS2",
+"HOG1",
+"SSK2"
+]
+},
+{
+"category": "Function",
+"term": "GO:0106310",
+"description": "Protein serine kinase activity",
+"number_of_genes": 4,
+"number_of_genes_in_background": 120,
+"fdr": 0.0014,
+"p_value": 1.72e-06,
+"inputGenes": [
+"SSK22",
+"PBS2",
+"HOG1",
+"SSK2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0071507",
+"description": "Pheromone response MAPK cascade",
+"number_of_genes": 2,
+"number_of_genes_in_background": 6,
+"fdr": 0.0026,
+"p_value": 1.92e-05,
+"inputGenes": [
+"PTP3",
+"PTP2"
+]
+},
+{
+"category": "Function",
+"term": "GO:0004709",
+"description": "MAP kinase kinase kinase activity",
+"number_of_genes": 2,
+"number_of_genes_in_background": 4,
+"fdr": 0.0034,
+"p_value": 1.03e-05,
+"inputGenes": [
+"SSK22",
+"SSK2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0043937",
+"description": "Regulation of sporulation",
+"number_of_genes": 2,
+"number_of_genes_in_background": 17,
+"fdr": 0.0129,
+"p_value": 0.00012,
+"inputGenes": [
+"PTP3",
+"PTP2"
+]
+},
+{
+"category": "Function",
+"term": "GO:0004725",
+"description": "Protein tyrosine phosphatase activity",
+"number_of_genes": 2,
+"number_of_genes_in_background": 17,
+"fdr": 0.0212,
+"p_value": 0.00012,
+"inputGenes": [
+"PTP3",
+"PTP2"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04139",
+"description": "Mitophagy - yeast",
+"number_of_genes": 2,
+"number_of_genes_in_background": 40,
+"fdr": 0.0396,
+"p_value": 0.00058,
+"inputGenes": [
+"PBS2",
+"HOG1"
+]
+}
+]
+},
+"4": {
+"genes": [
+"CDC28",
+"CLB5",
+"CLN2",
+"FAR1"
+],
+"terms": [
+{
+"category": "KEGG",
+"term": "sce04011",
+"description": "MAPK signaling pathway - yeast",
+"number_of_genes": 4,
+"number_of_genes_in_background": 114,
+"fdr": 1.32e-05,
+"p_value": 9.69e-08,
+"inputGenes": [
+"CDC28",
+"FAR1",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04111",
+"description": "Cell cycle - yeast",
+"number_of_genes": 4,
+"number_of_genes_in_background": 130,
+"fdr": 1.32e-05,
+"p_value": 1.62e-07,
+"inputGenes": [
+"CDC28",
+"FAR1",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Function",
+"term": "GO:0016538",
+"description": "Cyclin-dependent protein serine/threonine kinase regulator activity",
+"number_of_genes": 3,
+"number_of_genes_in_background": 32,
+"fdr": 0.00089,
+"p_value": 5.44e-07,
+"inputGenes": [
+"FAR1",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0007346",
+"description": "Regulation of mitotic cell cycle",
+"number_of_genes": 4,
+"number_of_genes_in_background": 173,
+"fdr": 0.0011,
+"p_value": 4.99e-07,
+"inputGenes": [
+"CDC28",
+"FAR1",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:1902806",
+"description": "Regulation of cell cycle G1/S phase transition",
+"number_of_genes": 3,
+"number_of_genes_in_background": 26,
+"fdr": 0.0011,
+"p_value": 3.04e-07,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Component",
+"term": "GO:0000307",
+"description": "Cyclin-dependent protein kinase holoenzyme complex",
+"number_of_genes": 3,
+"number_of_genes_in_background": 43,
+"fdr": 0.0012,
+"p_value": 1.26e-06,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "KEGG",
+"term": "sce04113",
+"description": "Meiosis - yeast",
+"number_of_genes": 3,
+"number_of_genes_in_background": 132,
+"fdr": 0.0015,
+"p_value": 3.29e-05,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0045931",
+"description": "Positive regulation of mitotic cell cycle",
+"number_of_genes": 3,
+"number_of_genes_in_background": 44,
+"fdr": 0.0016,
+"p_value": 1.35e-06,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000082",
+"description": "G1/S transition of mitotic cell cycle",
+"number_of_genes": 3,
+"number_of_genes_in_background": 61,
+"fdr": 0.0032,
+"p_value": 3.45e-06,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0051301",
+"description": "Cell division",
+"number_of_genes": 4,
+"number_of_genes_in_background": 288,
+"fdr": 0.0032,
+"p_value": 3.75e-06,
+"inputGenes": [
+"CDC28",
+"FAR1",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0090169",
+"description": "Regulation of spindle assembly",
+"number_of_genes": 2,
+"number_of_genes_in_background": 6,
+"fdr": 0.0035,
+"p_value": 7.7e-06,
+"inputGenes": [
+"CDC28",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0010696",
+"description": "Positive regulation of mitotic spindle pole body separation",
+"number_of_genes": 2,
+"number_of_genes_in_background": 7,
+"fdr": 0.004,
+"p_value": 9.89e-06,
+"inputGenes": [
+"CDC28",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0090068",
+"description": "Positive regulation of cell cycle process",
+"number_of_genes": 3,
+"number_of_genes_in_background": 93,
+"fdr": 0.0043,
+"p_value": 1.18e-05,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:1901990",
+"description": "Regulation of mitotic cell cycle phase transition",
+"number_of_genes": 3,
+"number_of_genes_in_background": 128,
+"fdr": 0.0069,
+"p_value": 3.01e-05,
+"inputGenes": [
+"CDC28",
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0045740",
+"description": "Positive regulation of DNA replication",
+"number_of_genes": 2,
+"number_of_genes_in_background": 14,
+"fdr": 0.0071,
+"p_value": 3.29e-05,
+"inputGenes": [
+"CDC28",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0007089",
+"description": "Traversing start control point of mitotic cell cycle",
+"number_of_genes": 2,
+"number_of_genes_in_background": 17,
+"fdr": 0.0095,
+"p_value": 4.69e-05,
+"inputGenes": [
+"CLN2",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0009966",
+"description": "Regulation of signal transduction",
+"number_of_genes": 3,
+"number_of_genes_in_background": 162,
+"fdr": 0.0105,
+"p_value": 6.02e-05,
+"inputGenes": [
+"CDC28",
+"FAR1",
+"CLN2"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000086",
+"description": "G2/M transition of mitotic cell cycle",
+"number_of_genes": 2,
+"number_of_genes_in_background": 41,
+"fdr": 0.0281,
+"p_value": 0.00025,
+"inputGenes": [
+"CDC28",
+"CLB5"
+]
+},
+{
+"category": "Process",
+"term": "GO:0000749",
+"description": "Response to pheromone triggering conjugation with cellular fusion",
+"number_of_genes": 2,
+"number_of_genes_in_background": 56,
+"fdr": 0.0456,
+"p_value": 0.00045,
+"inputGenes": [
+"FAR1",
+"CLN2"
+]
+}
+]
+}
+}
+}

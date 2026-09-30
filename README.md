@@ -145,8 +145,10 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 ### Módulo 16 · Biología de sistemas y redes
 
-- 16.1 Redes de interacción proteína-proteína · *próximamente*
-- 16.2 Redes de regulación génica y modelos ODE · *próximamente*
+| Lección | Tema | Abrir |
+|---|---|---|
+| 16.1 | Redes de interacción proteína-proteína: grado, mundo pequeño, libre de escala, centralidad y módulos en la red de levadura (STRING) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-16-sistemas-redes/16.1_redes_ppi.ipynb) |
+| 16.2 | Redes de regulación y modelos dinámicos: autorregulación, FFL, interruptor biestable, represilador, Gillespie y RegulonDB | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/juvenalyosa/bioinformatica-practica/blob/main/modulo-16-sistemas-redes/16.2_redes_regulacion_ode.ipynb) |
 
 ### Módulo 17 · Machine Learning e IA en bioinformática
 
@@ -181,6 +183,7 @@ bioinformatica-practica/
 ├── modulo-13-epigenomica/
 ├── modulo-14-metagenomica/
 ├── modulo-15-estructural/
+├── modulo-16-sistemas-redes/
 ├── modulo-17-machine-learning/
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
