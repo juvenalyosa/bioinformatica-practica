@@ -1,0 +1,34 @@
+{
+ "note": "Corrida de referencia del curso: Apple M (arm64), 2 hilos, 60 000 lecturas (30 000 pares) de SRR2584863 contra NC_012967.1",
+ "versions": {
+  "bwa": "0.7.19-r1273",
+  "minimap2": "2.31-r1302",
+  "samtools": "1.24"
+ },
+ "seconds": {
+  "bwa index": 0.71,
+  "bwa mem": 0.93,
+  "minimap2 -ax sr (incluye indexar)": 0.39
+ },
+ "bwa_mem_pestat": [
+  "[M::mem_pestat] # candidate unique pairs for (FF, FR, RF, RR): (122, 27681, 8, 112)",
+  "[M::mem_pestat] analyzing insert size distribution for orientation FF...",
+  "[M::mem_pestat] (25, 50, 75) percentile: (428, 830, 2208)",
+  "[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 5768)",
+  "[M::mem_pestat] mean and std.dev: (1181.13, 1195.73)",
+  "[M::mem_pestat] low and high boundaries for proper pairs: (1, 7548)",
+  "[M::mem_pestat] analyzing insert size distribution for orientation FR...",
+  "[M::mem_pestat] (25, 50, 75) percentile: (268, 547, 746)",
+  "[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 1702)",
+  "[M::mem_pestat] mean and std.dev: (524.65, 288.66)",
+  "[M::mem_pestat] low and high boundaries for proper pairs: (1, 2180)",
+  "[M::mem_pestat] skip orientation RF as there are not enough pairs",
+  "[M::mem_pestat] analyzing insert size distribution for orientation RR...",
+  "[M::mem_pestat] (25, 50, 75) percentile: (390, 857, 2236)",
+  "[M::mem_pestat] low and high boundaries for computing mean and std.dev: (1, 5928)",
+  "[M::mem_pestat] mean and std.dev: (1230.97, 1286.36)",
+  "[M::mem_pestat] low and high boundaries for proper pairs: (1, 7774)",
+  "[M::mem_pestat] skip orientation FF",
+  "[M::mem_pestat] skip orientation RR"
+ ]
+}
