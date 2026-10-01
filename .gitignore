@@ -2,3 +2,8 @@
 __pycache__/
 .DS_Store
 *.pyc
+
+# Libro: en el repositorio sólo se publica el PDF y su licencia (las fuentes LaTeX quedan en local)
+libro/*
+!libro/bioinformatica-practica.pdf
+!libro/LICENSE

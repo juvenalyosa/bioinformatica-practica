@@ -1,4 +1,0 @@
-# profundidad media en ventanas de 500 pb, solo MAPQ >= 20
-mosdepth -t 4 -n --by 500 -Q 20 m1 m1.bam
-zcat m1.regions.bed.gz | head -3       # crom inicio fin media
-cat m1.mosdepth.summary.txt            # media por cromosoma

@@ -1,3 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{n}{reg2bin}\PYG{p}{(}\PYG{n}{beg}\PYG{p}{,} \PYG{n}{end}\PYG{p}{)}
-\end{MintedVerbatim}

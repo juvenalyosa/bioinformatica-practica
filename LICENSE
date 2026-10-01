@@ -1,3 +1,13 @@
+Este repositorio usa dos licencias distintas:
+
+- Código del curso (notebooks, scripts de Python y utilidades): licencia MIT, cuyo
+  texto completo aparece abajo.
+- El libro (libro/bioinformatica-practica.pdf): licencia de SOLO LECTURA, todos los
+  derechos reservados. No se permite redistribuirlo, modificarlo ni usarlo con fines
+  comerciales. Véase libro/LICENSE. La licencia MIT de abajo NO se aplica al libro.
+
+------------------------------------------------------------------------------
+
 MIT License
 
 Copyright (c) 2026 Juvenal Yosa, PhD <juvenal.yosa@gmail.com>

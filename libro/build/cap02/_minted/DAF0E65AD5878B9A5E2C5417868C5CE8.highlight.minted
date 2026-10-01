@@ -1,9 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-gene\PYG{+w}{            }\PYG{l+m}{21563}..25384
-\PYG{+w}{                }/gene\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}S\PYGZdq{}}
-CDS\PYG{+w}{             }\PYG{l+m}{21563}..25384
-\PYG{+w}{                }/gene\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}S\PYGZdq{}}
-\PYG{+w}{                }/codon\PYGZus{}start\PYG{o}{=}\PYG{l+m}{1}
-\PYG{+w}{                }/product\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}surface glycoprotein\PYGZdq{}}
-\PYG{+w}{                }/protein\PYGZus{}id\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}YP\PYGZus{}009724390.1\PYGZdq{}}
-\end{MintedVerbatim}

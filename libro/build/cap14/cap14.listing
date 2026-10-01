@@ -1,7 +1,0 @@
-megahit -1 m1_R1.fq.gz -2 m1_R2.fq.gz -o asm_m1 -t 16
-bowtie2-build asm_m1/final.contigs.fa idx_m1
-bowtie2 -x idx_m1 -1 m1_R1.fq.gz -2 m1_R2.fq.gz -p 16 \
-  | samtools sort -o m1.bam
-jgi_summarize_bam_contig_depths --outputDepth prof.txt m1.bam
-metabat2 -i asm_m1/final.contigs.fa -a prof.txt -o bins/bin
-checkm lineage_wf -x fa -t 16 bins/ checkm_out/

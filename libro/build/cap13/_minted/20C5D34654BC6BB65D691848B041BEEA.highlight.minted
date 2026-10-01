@@ -1,6 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{} ChIP de un factor de transcripción, pares de lecturas}
-macs3\PYG{+w}{ }callpeak\PYG{+w}{ }\PYGZhy{}t\PYG{+w}{ }chip\PYGZus{}rep1.bam\PYG{+w}{ }\PYGZhy{}c\PYG{+w}{ }input.bam\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}f\PYG{+w}{ }BAMPE\PYG{+w}{ }\PYGZhy{}g\PYG{+w}{ }hs\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }ctcf\PYGZus{}rep1\PYG{+w}{ }\PYGZhy{}q\PYG{+w}{ }\PYG{l+m}{0}.01\PYG{+w}{ }\PYGZhy{}\PYGZhy{}outdir\PYG{+w}{ }picos/
-\PYG{c+c1}{\PYGZsh{} salidas: *\PYGZus{}peaks.narrowPeak (BED6+4) y *\PYGZus{}summits.bed}
-\end{MintedVerbatim}

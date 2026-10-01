@@ -1,7 +1,0 @@
-prokka --outdir prokka_cepa --prefix cepa --kingdom Bacteria \
-    --cpus 8 contigs_500.fasta
-
-bakta --db bakta_db/ --output bakta_cepa --prefix cepa \
-    --threads 8 contigs_500.fasta
-
-awk '$3 == "CDS"' bakta_cepa/cepa.gff3 | wc -l   # nº de CDS

@@ -1,8 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-snakemake\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{                  }\PYG{c+c1}{\PYGZsh{} ensayo en seco: qué trabajos y por qué}
-snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}dag\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }dag.dot\PYG{+w}{     }\PYG{c+c1}{\PYGZsh{} grafo de trabajos en formato Graphviz}
-dot\PYG{+w}{ }\PYGZhy{}Tpdf\PYG{+w}{ }dag.dot\PYG{+w}{ }\PYGZhy{}o\PYG{+w}{ }dag.pdf
-snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cores\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }\PYGZhy{}\PYGZhy{}sdm\PYG{+w}{ }conda\PYG{+w}{   }\PYG{c+c1}{\PYGZsh{} entornos conda por regla}
-snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cores\PYG{+w}{ }\PYG{l+m}{16}\PYG{+w}{ }\PYGZhy{}R\PYG{+w}{ }filtrar\PYG{+w}{  }\PYG{c+c1}{\PYGZsh{} rehace filtrar y descendientes}
-snakemake\PYG{+w}{ }\PYGZhy{}\PYGZhy{}report\PYG{+w}{ }informe.html\PYG{+w}{    }\PYG{c+c1}{\PYGZsh{} informe HTML con procedencia}
-\end{MintedVerbatim}

@@ -1,7 +1,0 @@
-# IQ-TREE 2: selección de modelo + árbol ML + UFBoot + SH-aLRT
-iqtree2 -s primates.fasta -m MFP -B 1000 -alrt 1000 -T AUTO
-# salida: primates.fasta.iqtree (informe), .treefile (árbol)
-
-# RAxML 8: 100 réplicas bootstrap rápidas + búsqueda ML (GTR+G)
-raxmlHPC -f a -s primates.phy -n prim -m GTRGAMMA \
-         -p 12345 -x 12345 -N 100

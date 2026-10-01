@@ -1,9 +1,0 @@
-# 100 pb alrededor de la cumbre de cada pico
-awk -v OFS='\t' '{s=$2+$10-50; print $1,s,s+100}' \
-    ctcf_idr.narrowPeak > cumbres.bed
-bedtools getfasta -fi hg38.fa -bed cumbres.bed -fo cumbres.fa
-# MEME Suite: de novo + enriquecimiento + centralidad
-meme-chip -oc memechip -meme-nmotifs 5 \
-    -db JASPAR2022_CORE_vertebrates.meme cumbres.fa
-# HOMER: fondo emparejado por GC
-findMotifsGenome.pl cumbres.bed hg38 homer_out -size given

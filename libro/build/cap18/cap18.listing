@@ -1,4 +1,0 @@
-pytest -q tests/                          # pruebas unitarias
-snakemake --lint                          # buenas practicas del flujo
-snakemake -n --configfile tests/config_mini.yaml       # ensayo en seco
-snakemake --cores 2 --sdm conda --configfile tests/config_mini.yaml

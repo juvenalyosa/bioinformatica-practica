@@ -1,9 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{} IQ\PYGZhy{}TREE 2: selección de modelo + árbol ML + UFBoot + SH\PYGZhy{}aLRT}
-iqtree2\PYG{+w}{ }\PYGZhy{}s\PYG{+w}{ }primates.fasta\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }MFP\PYG{+w}{ }\PYGZhy{}B\PYG{+w}{ }\PYG{l+m}{1000}\PYG{+w}{ }\PYGZhy{}alrt\PYG{+w}{ }\PYG{l+m}{1000}\PYG{+w}{ }\PYGZhy{}T\PYG{+w}{ }AUTO
-\PYG{c+c1}{\PYGZsh{} salida: primates.fasta.iqtree (informe), .treefile (árbol)}
-
-\PYG{c+c1}{\PYGZsh{} RAxML 8: 100 réplicas bootstrap rápidas + búsqueda ML (GTR+G)}
-raxmlHPC\PYG{+w}{ }\PYGZhy{}f\PYG{+w}{ }a\PYG{+w}{ }\PYGZhy{}s\PYG{+w}{ }primates.phy\PYG{+w}{ }\PYGZhy{}n\PYG{+w}{ }prim\PYG{+w}{ }\PYGZhy{}m\PYG{+w}{ }GTRGAMMA\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{         }\PYGZhy{}p\PYG{+w}{ }\PYG{l+m}{12345}\PYG{+w}{ }\PYGZhy{}x\PYG{+w}{ }\PYG{l+m}{12345}\PYG{+w}{ }\PYGZhy{}N\PYG{+w}{ }\PYG{l+m}{100}
-\end{MintedVerbatim}

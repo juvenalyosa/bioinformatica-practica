@@ -1,9 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{} VEP con cache local (GRCh38) y salida VCF}
-vep\PYG{+w}{ }\PYGZhy{}i\PYG{+w}{ }final.vcf.gz\PYG{+w}{ }\PYGZhy{}\PYGZhy{}cache\PYG{+w}{ }\PYGZhy{}\PYGZhy{}offline\PYG{+w}{ }\PYGZhy{}\PYGZhy{}assembly\PYG{+w}{ }GRCh38\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}everything\PYG{+w}{ }\PYGZhy{}\PYGZhy{}pick\PYG{+w}{ }\PYGZhy{}\PYGZhy{}vcf\PYG{+w}{ }\PYGZhy{}\PYGZhy{}compress\PYGZus{}output\PYG{+w}{ }bgzip\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}o\PYG{+w}{ }anotado.vcf.gz
-\PYG{c+c1}{\PYGZsh{} Alternativa: SnpEff (base de datos preconstruida)}
-java\PYG{+w}{ }\PYGZhy{}Xmx8g\PYG{+w}{ }\PYGZhy{}jar\PYG{+w}{ }snpEff.jar\PYG{+w}{ }GRCh38.105\PYG{+w}{ }final.vcf.gz\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZgt{}\PYG{+w}{ }anotado\PYGZus{}snpeff.vcf
-\end{MintedVerbatim}

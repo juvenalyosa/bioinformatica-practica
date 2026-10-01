@@ -1,3 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{n}{X}\PYG{p}{[}\PYG{p}{:}\PYG{p}{,} \PYG{k+kc}{None}\PYG{p}{]} \PYG{o}{==} \PYG{n}{Y}\PYG{p}{[}\PYG{k+kc}{None}\PYG{p}{,} \PYG{p}{:}\PYG{p}{]}
-\end{MintedVerbatim}

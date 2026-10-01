@@ -1,8 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{}\PYGZsh{}fileformat=VCFv4.2}
-\PYG{c+c1}{\PYGZsh{}\PYGZsh{}FORMAT=\PYGZlt{}ID=GT,Number=1,Type=String,Description=\PYGZdq{}Genotipo\PYGZdq{}\PYGZgt{}}
-\PYG{c+c1}{\PYGZsh{}\PYGZsh{}FORMAT=\PYGZlt{}ID=PL,Number=G,Type=Integer,Description=\PYGZdq{}Verosimilitudes\PYGZdq{}\PYGZgt{}}
-\PYG{c+c1}{\PYGZsh{}CHROM POS ID REF ALT QUAL FILTER INFO   FORMAT S1        S2}
-chr17\PYG{+w}{  }\PYG{l+m}{101}\PYG{+w}{ }.\PYG{+w}{  }C\PYG{+w}{   }T\PYG{+w}{   }\PYG{l+m}{50}\PYG{+w}{   }PASS\PYG{+w}{   }\PYG{n+nv}{AC}\PYG{o}{=}\PYG{l+m}{3}\PYG{+w}{   }GT:PL\PYG{+w}{  }\PYG{l+m}{0}/1:50,0,90\PYG{+w}{ }\PYG{l+m}{1}/1:.
-chr17\PYG{+w}{  }\PYG{l+m}{102}\PYG{+w}{ }.\PYG{+w}{  }CAG\PYG{+w}{ }C\PYG{+w}{   }\PYG{l+m}{38}\PYG{+w}{   }PASS\PYG{+w}{   }\PYG{n+nv}{AC}\PYG{o}{=}\PYG{l+m}{1}\PYG{+w}{   }GT:PL\PYG{+w}{  }\PYG{l+m}{0}/1:.\PYG{+w}{       }\PYG{l+m}{0}/0:.
-\end{MintedVerbatim}

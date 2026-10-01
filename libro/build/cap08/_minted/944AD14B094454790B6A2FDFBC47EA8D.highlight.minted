@@ -1,9 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-prokka\PYG{+w}{ }\PYGZhy{}\PYGZhy{}outdir\PYG{+w}{ }prokka\PYGZus{}cepa\PYG{+w}{ }\PYGZhy{}\PYGZhy{}prefix\PYG{+w}{ }cepa\PYG{+w}{ }\PYGZhy{}\PYGZhy{}kingdom\PYG{+w}{ }Bacteria\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}cpus\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }contigs\PYGZus{}500.fasta
-
-bakta\PYG{+w}{ }\PYGZhy{}\PYGZhy{}db\PYG{+w}{ }bakta\PYGZus{}db/\PYG{+w}{ }\PYGZhy{}\PYGZhy{}output\PYG{+w}{ }bakta\PYGZus{}cepa\PYG{+w}{ }\PYGZhy{}\PYGZhy{}prefix\PYG{+w}{ }cepa\PYG{+w}{ }\PYG{l+s+se}{\PYGZbs{}}
-\PYG{+w}{    }\PYGZhy{}\PYGZhy{}threads\PYG{+w}{ }\PYG{l+m}{8}\PYG{+w}{ }contigs\PYGZus{}500.fasta
-
-awk\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZdl{}3 == \PYGZdq{}CDS\PYGZdq{}\PYGZsq{}}\PYG{+w}{ }bakta\PYGZus{}cepa/cepa.gff3\PYG{+w}{ }\PYG{err}{|}\PYG{+w}{ }wc\PYG{+w}{ }\PYGZhy{}l\PYG{+w}{   }\PYG{c+c1}{\PYGZsh{} nº de CDS}
-\end{MintedVerbatim}

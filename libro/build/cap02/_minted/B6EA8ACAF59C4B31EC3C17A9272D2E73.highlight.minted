@@ -1,5 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-\PYG{c+c1}{\PYGZsh{}\PYGZsh{}gff\PYGZhy{}version 3}
-NC\PYGZus{}045512.2\PYG{+w}{  }RefSeq\PYG{+w}{  }gene\PYG{+w}{  }\PYG{l+m}{21563}\PYG{+w}{  }\PYG{l+m}{25384}\PYG{+w}{  }.\PYG{+w}{  }+\PYG{+w}{  }.\PYG{+w}{  }\PYG{n+nv}{ID}\PYG{o}{=}gene\PYGZhy{}S\PYG{p}{;}\PYG{n+nv}{Name}\PYG{o}{=}S
-NC\PYGZus{}045512.2\PYG{+w}{  }RefSeq\PYG{+w}{  }CDS\PYG{+w}{   }\PYG{l+m}{21563}\PYG{+w}{  }\PYG{l+m}{25384}\PYG{+w}{  }.\PYG{+w}{  }+\PYG{+w}{  }\PYG{l+m}{0}\PYG{+w}{  }\PYG{n+nv}{ID}\PYG{o}{=}cds\PYGZhy{}S\PYG{p}{;}\PYG{n+nv}{Parent}\PYG{o}{=}gene\PYGZhy{}S
-\end{MintedVerbatim}

@@ -1,6 +1,6 @@
 # 🧬 Bioinformática Práctica
 
-[![Copiloto: Claude](https://img.shields.io/badge/Copiloto-Claude-D97757?logo=claude&logoColor=white)](https://claude.ai) [![Licencia: MIT](https://img.shields.io/badge/Licencia-MIT-2a78d6.svg)](LICENSE)
+[![Copiloto: Claude](https://img.shields.io/badge/Copiloto-Claude-D97757?logo=claude&logoColor=white)](https://claude.ai) [![Código: MIT](https://img.shields.io/badge/Código-MIT-2a78d6.svg)](LICENSE) [![Libro: solo lectura](https://img.shields.io/badge/Libro-solo%20lectura-8a1c1c.svg)](libro/LICENSE)
 
 👤 **Juvenal Yosa, PhD** · ✉️ [juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com) · 🤖 Copiloto: **Claude** (Anthropic)
 
@@ -9,6 +9,21 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 * **Idioma:** explicaciones en español; código y términos técnicos en inglés (como en la literatura).
 * **Requisitos:** un navegador y una cuenta de Google. Todo corre en Colab gratuito.
 * **Cómo usarlo:** haga clic en el botón *Open in Colab* de cada lección y ejecute las celdas en orden (`Shift + Enter`).
+
+## 📖 Libro del curso
+
+**Bioinformática Práctica — De la secuencia al sistema** · Juvenal Yosa, PhD (2026)
+
+El libro acompaña al curso capítulo a capítulo: la teoría completa, las ecuaciones y los ejemplos resueltos que cada
+notebook reproduce. Cada lección de Colab enlaza a su capítulo y cada capítulo a su lección.
+
+📕 **[Leer el libro (PDF)](https://github.com/juvenalyosa/bioinformatica-practica/blob/main/libro/bioinformatica-practica.pdf)** ·
+[descarga directa](https://raw.githubusercontent.com/juvenalyosa/bioinformatica-practica/main/libro/bioinformatica-practica.pdf)
+
+> 🔒 **Licencia de solo lectura.** © 2026 Juvenal Yosa, PhD. Todos los derechos reservados. El libro puede leerse,
+> pero no se permite copiarlo, redistribuirlo ni compartirlo (total o parcialmente), usarlo con fines comerciales,
+> modificarlo, traducirlo ni usar su contenido para entrenar sistemas de IA sin autorización escrita del autor.
+> Véase [libro/LICENSE](libro/LICENSE).
 
 ## 📚 Temario
 
@@ -188,6 +203,7 @@ bioinformatica-practica/
 ├── modulo-16-sistemas-redes/
 ├── modulo-17-machine-learning/
 ├── modulo-18-flujos-proyecto/
+├── libro/                   # el libro del curso (sólo el PDF, licencia de solo lectura)
 ├── assets/                  # vistas previas GIF de las animaciones
 ├── utils/estilo_curso.py    # estilo gráfico común (paleta validada para daltonismo)
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
@@ -200,5 +216,10 @@ Todas las figuras usan `utils/estilo_curso.py`: paleta categórica en orden fijo
 
 ## 📄 Licencia y autoría
 
-© 2026 **Juvenal Yosa, PhD** ([juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com)). Código bajo [licencia MIT](LICENSE).
+© 2026 **Juvenal Yosa, PhD** ([juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com)).
+
+* **Código del curso** (notebooks, scripts y utilidades): [licencia MIT](LICENSE).
+* **Libro** (`libro/bioinformatica-practica.pdf`): [licencia de solo lectura](libro/LICENSE), todos los derechos
+  reservados; no se permite redistribuirlo, modificarlo ni usarlo comercialmente.
+
 Material desarrollado con **Claude** (Anthropic) como copiloto.

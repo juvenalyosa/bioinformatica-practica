@@ -1,5 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\},codes={\catcode`\$=3\catcode`\^=7\catcode`\_=8\relax}]
-sha256sum\PYG{+w}{ }datos/*.fastq.gz\PYG{+w}{ }ref/genoma.fa\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }checksums.sha256
-git\PYG{+w}{ }add\PYG{+w}{ }checksums.sha256\PYG{+w}{          }\PYG{c+c1}{\PYGZsh{} la lista de sumas SI va en Git}
-sha256sum\PYG{+w}{ }\PYGZhy{}c\PYG{+w}{ }checksums.sha256\PYG{+w}{     }\PYG{c+c1}{\PYGZsh{} en otra maquina: OK / FAILED}
-\end{MintedVerbatim}
