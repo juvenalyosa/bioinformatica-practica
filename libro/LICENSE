@@ -1,0 +1,27 @@
+Bioinformática Práctica — De la secuencia al sistema
+© 2026 Juvenal Yosa, PhD <juvenal.yosa@gmail.com>
+Todos los derechos reservados.
+
+LICENSE OF THE BOOK: READ-ONLY. ALL RIGHTS RESERVED.
+
+Licencia de solo lectura
+------------------------
+El autor concede únicamente el permiso de LEER el libro (bioinformatica-practica.pdf),
+en pantalla o mediante una copia descargada para uso personal, privado y de estudio.
+
+Sin autorización previa y por escrito del autor, NO se permite:
+  - copiar, reproducir, imprimir para terceros, redistribuir, publicar o compartir el
+    libro, total o parcialmente, por ningún medio (sitios web, repositorios, plataformas
+    de cursos, redes sociales, correo, mensajería, etc.), con o sin ánimo de lucro;
+  - usarlo con fines comerciales de ningún tipo;
+  - modificarlo, traducirlo, adaptarlo, resumirlo o crear obras derivadas;
+  - extraer su texto, figuras, tablas o ejercicios para incorporarlos a otros materiales;
+  - usar su contenido para entrenar o ajustar sistemas de inteligencia artificial.
+
+Se admiten citas breves con la referencia completa a la obra, en los términos del derecho
+de cita de la legislación aplicable.
+
+Para cualquier otro uso, escriba al autor: juvenal.yosa@gmail.com
+
+Esta licencia se aplica al libro. El código de los laboratorios del curso (notebooks y
+scripts del repositorio) tiene su propia licencia (MIT), descrita en ../LICENSE.
