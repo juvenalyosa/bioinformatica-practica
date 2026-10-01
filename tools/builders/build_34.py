@@ -55,6 +55,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import SeqIO
 from Bio.Align import substitution_matrices, PairwiseAligner
 

@@ -40,6 +40,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import SeqIO, Entrez
 from Bio.Seq import Seq
 ''')

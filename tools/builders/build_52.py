@@ -57,6 +57,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import SeqIO, Phylo
 from Bio.Phylo.TreeConstruction import DistanceMatrix, DistanceTreeConstructor
 

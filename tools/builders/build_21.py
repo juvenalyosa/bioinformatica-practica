@@ -48,6 +48,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import SeqIO, Entrez
 from Bio.Seq import Seq
 Entrez.email = "su.correo@ejemplo.com"     # ← escriba aquí su correo (el NCBI lo pide)

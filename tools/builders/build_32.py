@@ -51,6 +51,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import SeqIO
 from Bio.Align import PairwiseAligner
 RAW = "https://raw.githubusercontent.com/juvenalyosa/bioinformatica-practica/main"

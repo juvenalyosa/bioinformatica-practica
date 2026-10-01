@@ -66,6 +66,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio.PDB import PDBParser, MMCIFParser, PPBuilder, NeighborSearch
 from Bio.PDB.MMCIF2Dict import MMCIF2Dict
 from Bio.PDB.vectors import calc_dihedral

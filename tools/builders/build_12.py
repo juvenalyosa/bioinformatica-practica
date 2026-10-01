@@ -39,6 +39,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 import plotly.express as px
 import plotly.graph_objects as go
 from Bio import SeqIO, Entrez

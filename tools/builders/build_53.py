@@ -55,6 +55,7 @@ try:
     import Bio
 except ImportError:
     %pip install -q biopython
+    import Bio
 from Bio import AlignIO, Phylo, SeqIO
 
 RAW = "https://raw.githubusercontent.com/juvenalyosa/bioinformatica-practica/main"
