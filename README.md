@@ -4,9 +4,8 @@
 
 👤 **Juvenal Yosa, PhD** · ✉️ [juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com) · 🤖 Copiloto: **Claude** (Anthropic)
 
-Curso de **bioinformática práctica para maestría**, en español. Cada lección es un notebook de Google Colab que funciona como una **clase completa**: primero una explicación intuitiva con ejemplos cotidianos, luego la teoría formal (ecuaciones explicadas término a término) y los **experimentos computacionales ahí mismo**, con figuras, animaciones y gráficos interactivos de calidad de publicación.
+Curso de **bioinformática práctica para maestría**, en español. Cada lección es un notebook de Google Colab que funciona como una **clase completa**: primero una explicación intuitiva con ejemplos cotidianos, luego la teoría formal (ecuaciones explicadas término a término) y los **experimentos computacionales ahí mismo**, con figuras, animaciones y gráficos interactivos.
 
-* **Idioma:** explicaciones en español; código y términos técnicos en inglés (como en la literatura).
 * **Requisitos:** un navegador y una cuenta de Google. Todo corre en Colab gratuito.
 * **Cómo usarlo:** haga clic en el botón *Open in Colab* de cada lección y ejecute las celdas en orden (`Shift + Enter`).
 
@@ -209,10 +208,6 @@ bioinformatica-practica/
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
 └── data/                    # copias de respaldo de datos pequeños
 ```
-
-## 🎨 Estilo gráfico
-
-Todas las figuras usan `utils/estilo_curso.py`: paleta categórica en orden fijo validada para daltonismo, colores de nucleótidos convencionales (siempre acompañados de su letra), títulos que enuncian la conclusión y animaciones HTML que se reproducen dentro del notebook.
 
 ## 📄 Licencia y autoría
 
