@@ -660,6 +660,7 @@ Antes de ejecutar la animación, **prediga**: ¿cuántas lecturas hacen falta pa
 """)
 
 nb.code(r'''
+course_file("SRR2584863_REL606_variant_windows.bam.bai")     # el índice (.bai) debe estar junto al BAM
 win_bam = pysam.AlignmentFile(course_file("SRR2584863_REL606_variant_windows.bam"))
 SITE, SREF, SALT = 648_692, "C", "T"
 col_reads = []
