@@ -1268,7 +1268,7 @@ fig, axes = plt.subplots(1, 2, figsize=(13, 4.4), width_ratios=[1.3, 1])
 bins = np.linspace(min(null_max.min(), real_max.min()), sd_pwm.max(0).sum() + 0.3, 45)
 for data, color, label in [(null_max, ec.MUTED, "barajadas (nula)"), (coding_max, ec.ORANGE, "interior de genes"),
                            (real_max, ec.BLUE, "región −20..−1 (prueba)")]:
-    axes[0].hist(data, bins=bins, density=True, histtype="step", lw=2, color=color, label=label)
+    axes[0].hist(data, bins=bins, density=True, histtype="step", linewidth=2, color=color, label=label)
 axes[0].axvline(thr_fdr, color=ec.INK_2, lw=1, ls="--")
 axes[0].text(thr_fdr + 0.1, axes[0].get_ylim()[1] * 0.93, "umbral\nFDR 20 %", fontsize=9.5, color=ec.INK_2, va="top")
 axes[0].set_xlabel("Puntaje máximo en la ventana (bits)"); axes[0].set_ylabel("Densidad")

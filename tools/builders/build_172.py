@@ -1398,9 +1398,9 @@ fig, ax = plt.subplots(figsize=(10, 4.6))
 bins = np.linspace(0.15, 0.85, 36)
 ax.hist([gc(s) for s in bg_by["prueba"] + bg_by["entrenamiento"] + bg_by["validación"]], bins=bins, density=True,
         color=ec.MUTED, alpha=0.5, label="fondo genómico (negativos del modelo A)")
-ax.hist([gc(s) for s in subset(pos_rows, "entrenamiento")], bins=bins, density=True, histtype="step", lw=2.5,
+ax.hist([gc(s) for s in subset(pos_rows, "entrenamiento")], bins=bins, density=True, histtype="step", linewidth=2.5,
         color=ec.BLUE, label="picos de CTCF (positivos)")
-ax.hist([gc(s) for s in subset(shuf_rows, "entrenamiento")], bins=bins, density=True, histtype="step", lw=2, ls="--",
+ax.hist([gc(s) for s in subset(shuf_rows, "entrenamiento")], bins=bins, density=True, histtype="step", linewidth=2, ls="--",
         color=ec.ORANGE, label="picos barajados (negativos del modelo B)")
 ax.set_xlabel("fracción GC en la ventana de 100 pb"); ax.set_ylabel("densidad")
 ax.legend(loc="upper right", frameon=False)

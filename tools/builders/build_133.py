@@ -889,7 +889,7 @@ nb.code(r'''
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13, 4.4), width_ratios=[1, 1.2])
 bins_gc = np.linspace(0.1, 0.9, 33)
 ax1.hist(bg["gc100"], bins=bins_gc, density=True, color=ec.MUTED, alpha=0.55, label="fondo genómico al azar")
-ax1.hist(peaks["gc100"], bins=bins_gc, density=True, histtype="step", lw=2.4, color=ec.BLUE, label="picos de CTCF (±50 pb)")
+ax1.hist(peaks["gc100"], bins=bins_gc, density=True, histtype="step", linewidth=2.4, color=ec.BLUE, label="picos de CTCF (±50 pb)")
 ax1.set_xlabel("fracción GC en 100 pb"); ax1.set_ylabel("densidad")
 ax1.legend(loc="upper right", frameon=False)
 ax1.set_title("Los picos son más ricos en GC que el genoma", fontsize=11, loc="left")

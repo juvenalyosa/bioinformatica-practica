@@ -491,7 +491,7 @@ bins = np.logspace(0, np.log10(3000), 40)
 for (short, sets), col in zip(libraries.items(), [ec.RED, ec.ORANGE, ec.BLUE]):
     sz = np.array([len(s & universe) for s in sets.values()])
     sz = sz[sz > 0]
-    ax.hist(sz, bins=bins, histtype="step", lw=2, color=col, weights=np.full(len(sz), 1 / len(sz)))
+    ax.hist(sz, bins=bins, histtype="step", linewidth=2, color=col, weights=np.full(len(sz), 1 / len(sz)))
 ax.set_xscale("log")
 ax.axvspan(15, 500, color=ec.GRID, alpha=0.5, zorder=0)
 ymax = ax.get_ylim()[1]

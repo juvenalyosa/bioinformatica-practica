@@ -913,7 +913,7 @@ for dim, col in zip((2, 10, 30), (ec.ORANGE, ec.AQUA, ec.BLUE)):
     dd = np.linalg.norm(pts[1:] - pts[0], axis=1)
     dd /= np.median(dd)
     ax.hist(dd, bins=np.linspace(0, 2.5, 60), density=True, histtype="stepfilled", alpha=0.35, color=col)
-    ax.hist(dd, bins=np.linspace(0, 2.5, 60), density=True, histtype="step", lw=1.6, color=col)
+    ax.hist(dd, bins=np.linspace(0, 2.5, 60), density=True, histtype="step", linewidth=1.6, color=col)
     ax.text({2: 1.55, 10: 1.3, 30: 1.2}[dim], {2: 0.8, 10: 2.0, 30: 3.0}[dim], f"{dim} dimensiones", color=col,
             fontsize=10.5, fontweight="bold")
 ax.set_xlabel("distancia a una célula (÷ mediana)"); ax.set_ylabel("densidad")

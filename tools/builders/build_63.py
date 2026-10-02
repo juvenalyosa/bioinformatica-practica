@@ -1200,7 +1200,7 @@ fig, ax = plt.subplots(figsize=(11, 4.4))
 hb = np.linspace(0, 60, 121)
 for i, (wv, col, lab) in enumerate([(win_unif, ec.BLUE, "uniforme"), (win_gcd, ec.ORANGE, "con sesgo GC"),
                                     (win_corr, ec.GREEN, "sesgo corregido")]):
-    ax.hist(wv, bins=hb, histtype="step", lw=2.2, color=col, density=True)
+    ax.hist(wv, bins=hb, histtype="step", linewidth=2.2, color=col, density=True)
     ax.text(0.03, 0.88 - 0.1 * i, f"{lab}: CV = {wv.std() / wv.mean():.2f}", transform=ax.transAxes,
             color=col, fontsize=10.5, fontweight="bold")
 ax.set_xlim(0, 55)

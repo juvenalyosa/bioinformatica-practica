@@ -1219,7 +1219,7 @@ a1.text(0.5, t_diff[N_d - 1] + 6, "4N·ln 2 = 138,6", ha="center", fontsize=10, 
 a1.text(0.03, 125, "línea: difusión\npuntos: cadena exacta", fontsize=9.5, color=ec.INK_2)
 a1.set_xlabel("frecuencia inicial p"); a1.set_ylabel("generaciones hasta la absorción"); a1.set_ylim(0, 160)
 ec.title(a1, "Los alelos intermedios tardan más en absorberse", "Tiempo medio t̄(p), N = 50")
-a2.hist(BOOK["t_abs"], bins=np.arange(0, 700, 20), color="#9ec5f4", edgecolor=ec.BLUE, lw=0.5)
+a2.hist(BOOK["t_abs"], bins=np.arange(0, 700, 20), color="#9ec5f4", edgecolor=ec.BLUE, linewidth=0.5)
 a2.axvline(BOOK["t_abs"].mean(), color=ec.ORANGE, lw=2)
 a2.text(BOOK["t_abs"].mean() + 10, a2.get_ylim()[1] * 0.9, f"media {BOOK['t_abs'].mean():.1f}", fontsize=10, color=ec.INK_2)
 a2.set_xlabel("generación de absorción"); a2.set_ylabel("réplicas")
