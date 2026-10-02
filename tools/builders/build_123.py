@@ -62,7 +62,7 @@ try:
     import scanpy as sc
     import igraph, leidenalg  # noqa: F401  (Leiden)
 except ImportError:
-    %pip install -q scanpy leidenalg igraph "networkx<3.6"   # networkx < 3.6: el Louvain del libro
+    %pip install -q scanpy leidenalg igraph "networkx<3.6" "pandas=={pd.__version__}" "numpy=={np.__version__}"   # networkx < 3.6: el Louvain del libro
     import scanpy as sc
 import networkx as nx
 from sklearn.neighbors import NearestNeighbors

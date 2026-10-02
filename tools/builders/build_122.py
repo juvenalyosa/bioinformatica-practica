@@ -73,7 +73,7 @@ warnings.filterwarnings("ignore", message="IProgress not found")
 try:
     import scanpy as sc
 except ImportError:
-    %pip install -q scanpy
+    %pip install -q scanpy "pandas=={pd.__version__}" "numpy=={np.__version__}"
     import scanpy as sc
 import anndata as ad
 sc.settings.verbosity = 0

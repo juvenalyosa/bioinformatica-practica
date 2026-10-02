@@ -618,9 +618,9 @@ $k-\ell+1 = 5$ subcadenas de 31 letras y se representa por la de menor *hash*.
 """)
 
 nb.code(r'''
-ecoli_raw = gzip.decompress(course_bytes("NC_000913.3.fasta.gz",
-    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_000913.3&rettype=fasta&retmode=text"))
-if ecoli_raw[:2] == b"\x1f\x8b":
+ecoli_raw = course_bytes("NC_000913.3.fasta.gz",
+    "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=NC_000913.3&rettype=fasta&retmode=text")
+if ecoli_raw[:2] == b"\x1f\x8b":                  # la copia del curso viene comprimida; NCBI la sirve en texto plano
     ecoli_raw = gzip.decompress(ecoli_raw)
 ecoli_seq = encode(ecoli_raw.split(b"\n", 1)[1].replace(b"\n", b""))
 seg = ecoli_seq[1_000_000:1_200_000]

@@ -62,7 +62,7 @@ from matplotlib.colors import LogNorm
 try:
     import scanpy as sc
 except ImportError:
-    %pip install -q scanpy
+    %pip install -q scanpy "pandas=={pd.__version__}" "numpy=={np.__version__}"
     import scanpy as sc
 import anndata as ad
 warnings.filterwarnings("ignore", category=FutureWarning)

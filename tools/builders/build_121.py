@@ -58,7 +58,7 @@ from matplotlib.patches import Circle
 try:
     import scanpy as sc
 except ImportError:
-    %pip install -q scanpy scikit-misc
+    %pip install -q scanpy scikit-misc "pandas=={pd.__version__}" "numpy=={np.__version__}"
     import scanpy as sc
 try:
     import skimage  # noqa: F401  (Scrublet lo usa para fijar su umbral automático)

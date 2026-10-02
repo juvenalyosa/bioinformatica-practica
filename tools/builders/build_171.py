@@ -81,6 +81,8 @@ def course_file(name, fallback_url=None):
     if os.path.exists(local):
         return local
     if not os.path.exists(name):
+        if os.path.dirname(name):
+            os.makedirs(os.path.dirname(name), exist_ok=True)       # p. ej. api_cache/ en Colab
         try:
             urllib.request.urlretrieve(f"{RAW}/data/{name}", name)
         except Exception:
