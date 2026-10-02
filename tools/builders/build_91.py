@@ -200,6 +200,7 @@ posiciones.
 """)
 
 nb.code(r'''
+D8 = [("A", 30), ("A", 30), ("A", 20), ("G", 30), ("G", 30), ("G", 10)]   # la columna 8 del libro
 REF15 = "TCAGGCTAACGTTCA"                  # referencia, posiciones 1..15
 # lecturas: (inicio, fin, base en la columna 8, calidad, hebra)
 TOY_READS = [(1, 11, "A", 30, "+"), (3, 14, "G", 30, "-"), (2, 12, "A", 30, "+"),
@@ -226,7 +227,6 @@ ec.title(ax, "En la columna 8, tres lecturas dicen A y tres dicen G: contar voto
          "Seis lecturas (la punta indica la hebra) · sólo se dibujan las bases que importan · opacidad = calidad Phred")
 plt.show()
 
-D8 = [("A", 30), ("A", 30), ("A", 20), ("G", 30), ("G", 30), ("G", 10)]   # la columna 8 del libro
 print("Columna 8 (base, Q):", D8)
 ''')
 
