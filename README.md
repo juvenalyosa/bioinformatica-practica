@@ -1,6 +1,6 @@
 # 🧬 Bioinformática Práctica
 
-[![Copiloto: Claude](https://img.shields.io/badge/Copiloto-Claude-D97757?logo=claude&logoColor=white)](https://claude.ai) [![Código: MIT](https://img.shields.io/badge/Código-MIT-2a78d6.svg)](LICENSE) [![Libro: solo lectura](https://img.shields.io/badge/Libro-solo%20lectura-8a1c1c.svg)](libro/LICENSE)
+[![Copiloto: Claude](https://img.shields.io/badge/Copiloto-Claude-D97757?logo=claude&logoColor=white)](https://claude.ai) [![Código: MIT](https://img.shields.io/badge/Código-MIT-2a78d6.svg)](LICENSE) [![Libro: solo lectura](https://img.shields.io/badge/Libro-solo%20lectura-8a1c1c.svg)](libro/LICENSE) [![Apoye el proyecto: Buy Me a Coffee](https://img.shields.io/badge/Apoye%20el%20proyecto-Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/juvenalyosx)
 
 👤 **Juvenal Yosa, PhD** · ✉️ [juvenal.yosa@gmail.com](mailto:juvenal.yosa@gmail.com) · 🤖 Copiloto: **Claude** (Anthropic)
 
@@ -8,6 +8,9 @@ Curso de **bioinformática práctica para maestría**, en español. Cada lecció
 
 * **Requisitos:** un navegador y una cuenta de Google. Todo corre en Colab gratuito.
 * **Cómo usarlo:** haga clic en el botón *Open in Colab* de cada lección y ejecute las celdas en orden (`Shift + Enter`).
+
+> ☕ **Este curso es gratuito y lo seguirá siendo.** Si le sirve para estudiar, enseñar o trabajar, puede ayudar a
+> mantenerlo vivo con un café: **[buymeacoffee.com/juvenalyosx](https://buymeacoffee.com/juvenalyosx)**.
 
 ## 📖 Libro del curso
 
@@ -208,6 +211,34 @@ bioinformatica-practica/
 ├── tools/                   # scripts para construir (builders/) y probar los notebooks
 └── data/                    # copias de respaldo de datos pequeños
 ```
+
+## ☕ Apoye este proyecto
+
+**Bioinformática Práctica** es un curso de maestría completo, en español y **gratuito**: 19 módulos y 56 clases
+ejecutables en Colab, con datos reales, figuras, animaciones y un libro de más de 850 páginas que lo acompaña capítulo a
+capítulo. Detrás hay cientos de horas de preparación, revisión y pruebas para que cada lección funcione con solo
+pulsar un botón, sin instalar nada y sin pagar matrículas.
+
+Mi objetivo es que cualquier estudiante de habla hispana, en cualquier país y con cualquier presupuesto, pueda
+aprender bioinformática de verdad. Si este material le ha ahorrado horas, le ha ayudado a preparar una clase, una
+tesis o una entrevista de trabajo, o simplemente cree que el conocimiento debe ser accesible, **su apoyo marca la
+diferencia**.
+
+Con su aporte, el proyecto puede:
+
+* 🔄 **Mantenerse al día**: actualizar las lecciones cuando cambian las herramientas, las bases de datos o Colab.
+* 🧪 **Crecer**: sumar nuevos módulos, casos reales y ejercicios.
+* 🛠️ **Corregirse rápido**: atender los problemas que reportan los estudiantes.
+* 🌎 **Seguir siendo gratuito** para todos.
+
+<p align="center">
+  <a href="https://buymeacoffee.com/juvenalyosx"><img src="https://img.buymeacoffee.com/button-api/?text=Inv%C3%ADteme%20un%20caf%C3%A9&emoji=%E2%98%95&slug=juvenalyosx&button_colour=FFDD00&font_colour=000000&font_family=Lato&outline_colour=000000&coffee_colour=ffffff" alt="Invíteme un café" height="50"></a>
+</p>
+
+<p align="center"><b><a href="https://buymeacoffee.com/juvenalyosx">buymeacoffee.com/juvenalyosx</a></b></p>
+
+Cualquier aporte, por pequeño que sea, cuenta, y también ayuda mucho **compartir el curso**, darle una ⭐ al repositorio
+en GitHub y contarme qué le ha servido. ¡Gracias por ser parte de esto! 🧬
 
 ## 📄 Licencia y autoría
 
