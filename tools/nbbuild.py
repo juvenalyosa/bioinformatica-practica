@@ -38,10 +38,12 @@ def header(path, title, module, duration, level, prereq):
 
 FOOTER = f"""---
 
+☕ **¿Le sirvió esta clase?** El curso es gratuito y seguirá siéndolo; puede apoyarlo invitándome un café en [buymeacoffee.com/juvenalyosx](https://buymeacoffee.com/juvenalyosx). ¡Gracias!
+
 <sub>**Bioinformática Práctica** · © 2026 {AUTHOR} · [{EMAIL}](mailto:{EMAIL}) · Código bajo licencia MIT ·
 Desarrollado con **Claude** (Anthropic) como copiloto.</sub>
 
-{CLAUDE_BADGE}
+{CLAUDE_BADGE} [![Apoye el proyecto: Buy Me a Coffee](https://img.shields.io/badge/Apoye%20el%20proyecto-Buy%20Me%20a%20Coffee-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/juvenalyosx)
 """
 
 
